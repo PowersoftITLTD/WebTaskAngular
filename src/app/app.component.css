@@ -1,0 +1,22 @@
+/* body {
+    overflow: hidden;
+} */
+
+/* @import url('../assets2/css/main.css'); */
+
+
+app-side-panel{
+    position: absolute;
+}
+
+.component-adjustment{
+    padding-left: 18%;
+}
+
+.component-adjustment-padding {
+    padding-left: 3%; 
+}
+
+
+
+

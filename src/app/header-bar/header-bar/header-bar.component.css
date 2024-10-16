@@ -1,0 +1,165 @@
+/* @import url('../../../assets2/css/main.css');
+@import url('../../../assets/icons/fuse-icon-font/style.css'); */
+
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css');
+
+
+
+.menu {
+    display: none !important;
+    position: absolute !important;
+    top: 70px !important; 
+    right: 100px !important;
+    background-color: white !important;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    z-index: 1000 !important;
+    width:18rem;
+}
+
+.menu.active {
+    display: block !important;
+}
+
+.menu ul {
+    list-style: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.menu ul li {
+    padding: 10px !important;
+}
+
+.menu ul li a {
+    text-decoration: none !important;
+    color: #333 !important;
+}
+
+.menu ul li.divider {
+    border-top: 1px solid #ddd !important;
+}
+
+.menu-2 {
+    display: none !important;
+    position: absolute !important;
+    top: 70px !important; 
+    left: 0!important;
+    background-color: white !important;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    z-index: 1000 !important;
+    width:18rem;
+}
+
+.menu-2.active {
+    display: block !important;
+}
+
+.menu-2 ul {
+    list-style: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.menu-2 ul li {
+    padding: 10px !important;
+}
+
+.menu-2 ul li a {
+    text-decoration: none !important;
+    color: #333 !important;
+}
+
+.menu-2 ul li.divider {
+    border-top: 1px solid #ddd !important;
+}
+
+
+/* Keyframe animation for sliding and scaling */
+@keyframes slideIn {
+    0% {
+        transform: translateY(-50px);
+        opacity: 0;
+    }
+    100% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideOut {
+    0% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(-50px);
+        opacity: 0;
+    }
+}
+
+/* Dialog container with animation */
+.dialog-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.dialog-container.visible {
+    opacity: 1;
+    visibility: visible;
+    animation: slideIn 0.5s ease-out;
+}
+
+/* For closing animation */
+.dialog-container.closing {
+    animation: slideOut 0.3s ease-out;
+}
+
+/* Style for the dialog */
+app-reset-password {
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transform: scale(0.9); /* Slightly scale down initially */
+    transition: transform 0.3s ease;
+}
+
+.dialog-container.visible app-reset-password {
+    transform: scale(1);
+}
+
+.responsive_name{
+    display: none;
+}
+
+
+
+
+@media only screen and (max-width: 575px) {
+   
+    .menu{
+        right: 5px !important;
+    }
+
+    .menu-2{
+        left:5px !important;
+    }
+
+    .responsive_name{
+        font-size: large;
+        display: block;
+    }
+}
+
+

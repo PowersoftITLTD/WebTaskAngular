@@ -1,0 +1,76 @@
+<body
+  class="layout layout-vertical layout-left-navigation layout-below-toolbar layout-below-footer side-bar-hover side-bar-scroll"
+  [class.open]="isOpen">
+  <div id="wrapper" class="">
+
+    <aside id="aside" class="aside aside-left" data-fuse-bar="aside" data-fuse-bar-media-step="md"
+      data-fuse-bar-position="left">
+      <div class="aside-content bg-primary-700 text-auto">
+        <div class="aside-toolbar">
+          <div class="logo" *ngIf="loggedInUser && loggedInUser.length > 0">       
+            <span class="logo-icon">{{ loggedInUser[0]?.COMPANY_NAME.charAt(0) }}</span>
+            <span class="logo-text">{{ loggedInUser[0]?.COMPANY_NAME}}</span>
+          </div>
+
+          <button id="toggle-fold-aside-button" type="button" class="btn btn-icon d-none d-lg-block"
+            data-fuse-aside-toggle-fold>
+            <i class="icon icon-backburger"></i>
+          </button>
+        </div>
+
+        <ul class="nav flex-column" id="sidenav" data-children=".nav-item">
+          <li class="subheader">
+            <span>APPS</span>
+          </li>
+
+          <div class="side-bar-scroll">
+            <li class="nav-item" role="tab">
+              <a class="nav-link ripple with-arrow btn" (click)="navigateToDashboardProject()"
+                [ngClass]="{ 'active': selectedTab === 'dashboard' }">
+                <i class="icon s-4 icon-tile-four"></i>
+                <span>Dashboards</span>
+              </a>
+            </li>
+
+            <li class="nav-item" role="tab">
+              <a class="nav-link ripple with-arrow btn" (click)="toggleTaskDropdown()">
+                <i class="icon s-4 icon-checkbox-marked"></i>
+                <span>Task Management</span>
+              </a>
+              <ul class="nav flex-column" *ngIf="isTaskDropdownOpen">
+
+                <li class="nav-item ">
+                  <a class="nav-link ripple btn" [ngClass]="{ 'active': selectedTab === 'task-management' }" (click)="navigateToTask()">
+                    <div class="py-2">
+                      <i class="icon s-4 icon-checkbox-marked"></i>
+                      <span>Task</span>
+                    </div>                    
+                  </a>
+                </li>
+
+                <li class="nav-item">
+                  <a class="nav-link ripple btn" [ngClass]="{ 'active': selectedTab === 'recursive-task' }" (click)="navigateToRecursiveTask()">
+                    <div class="py-2">
+                      <i class="icon s-4 icon-checkbox-marked"></i>
+                      <span>Recursive Task</span>
+                    </div>                  
+                  </a>
+                </li>
+
+              </ul>
+            </li>            
+                        
+            <li class="nav-item" role="tab">
+              <a class="nav-link ripple with-arrow btn" (click)="navigateToUploadProject()"
+                [ngClass]="{ 'active': selectedTab === 'project-uploader' }">
+                <i class="icon s-4 icon-checkbox-marked"></i>
+                <span>Project Uploader</span>
+              </a>
+            </li>
+            
+          </div>
+        </ul>
+      </div>
+    </aside>
+  </div>
+</body>

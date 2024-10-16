@@ -1,0 +1,135 @@
+<div class="layout layout-vertical layout-left-navigation layout-below-toolbar side-bar-hover table-scroll-container" style="height: 100%;">
+    <div class="tab-pane fade show active p-3" id="home-tab-pane" role="tabpanel" aria-labelledby="home-tab">
+        <!-- WIDGET GROUP -->
+        <div class="widget-group row no-gutters grid ">
+    
+            <!-- WIDGET 1 -->
+            <div class="col-12 col-sm-6 col-xl-3 p-3" >
+    
+                <div class="widget card" type="button" (click)="navigateToTodayPage()">
+    
+                    <div class="widget-header pl-4 pr-2 row no-gutters align-items-center justify-content-between">
+    
+                        <div class="col">
+                            <span class="h6"><small>Today's</small></span>
+                        </div>
+    
+                        <button type="button" class="btn btn-icon">
+                            <i class=""></i>
+                        </button>
+    
+                    </div>
+    
+                    <div class="widget-content pt-2 pb-8 d-flex flex-column align-items-center justify-content-center">
+    
+                        <div class="title text-secondary task-font" type="button">{{todayTasksCount}}</div>
+    
+                    </div>            
+                </div>
+            </div>
+            <!-- / WIDGET 1 -->
+    
+            <!-- WIDGET 2 -->
+            <div class="col-12 col-sm-6 col-xl-3 p-3" >
+    
+                <div class="widget card" type="button" (click)="navigateToOverDuePage()">
+    
+                    <div class="widget-header pl-4 pr-2 row no-gutters align-items-center justify-content-between" >
+    
+                        <div class="col" >
+                            <span class="h6"><small>Overdue</small></span>
+                        </div>
+    
+                        <button type="button" class="btn btn-icon">
+                            <i class=""></i>
+                        </button>
+                    </div>
+    
+                    <div class="widget-content pt-2 pb-8 d-flex flex-column align-items-center justify-content-center">
+                        <div class="title text-danger task-font" >{{overdueTasksCount}}</div>
+                    </div>              
+                </div>
+            </div>
+            <!-- / WIDGET 2 -->
+    
+            <!-- WIDGET 3 -->
+            <div class="col-12 col-sm-6 col-xl-3 p-3" >
+    
+                <div class="widget card" type="button" (click)="navigateToFuturePage()">
+    
+                    <div class="widget-header pl-4 pr-2 row no-gutters align-items-center justify-content-between">
+    
+                        <div class="col">
+                            <span class="h6"><small>Future</small></span>
+                        </div>
+    
+                        <button type="button" class="btn btn-icon">
+                            <i class=""></i>
+                        </button>
+    
+                    </div>
+    
+                    <div class="widget-content pt-2 pb-8 d-flex flex-column align-items-center justify-content-center">
+                        <div class="title text-warning task-font">{{futureTasksCount}}</div>
+                    </div>            
+                </div>
+            </div>
+            <!-- / WIDGET 3 -->
+    
+            <!-- WIDGET 4 -->
+            <div class="col-12 col-sm-6 col-xl-3 p-3" >
+    
+                <div class="widget card" type="button" (click)="navigateToAllocatedButNotStarted()">
+    
+                    <div class="widget-header pl-4 pr-2 row no-gutters align-items-center justify-content-between">
+    
+                        <div class="col">
+                            <span class="h6"><small>Allocated / Not Started / WIP</small></span>
+                        </div>
+    
+                        <button type="button" class="btn btn-icon">
+                            <i class=""></i>
+                        </button>
+    
+                    </div>
+    
+                    <div class="widget-content pt-2 pb-8 d-flex flex-column align-items-center justify-content-center">
+                        <div class="title text-info task-font" >{{allocatedButNotStartedTasksCount}}</div>
+                    </div>               
+                </div>
+            </div>    
+            
+            <div class="col-12 col-sm-6 col-xl-3 p-3" >
+    
+                <div class="widget card" type="button" (click)="navigateToReview()">
+    
+                    <div class="widget-header pl-4 pr-2 row no-gutters align-items-center justify-content-between">
+    
+                        <div class="col">
+                            <span class="h6"><small>Review</small></span>
+                        </div>
+    
+                        <button  class="btn btn-icon">
+                            <i class=""></i>
+                        </button>    
+                    </div>
+    
+                    <div class="widget-content pt-2 pb-8 d-flex flex-column align-items-center justify-content-center">
+                        <div class="title text-info task-font" >{{reviewTasksCount}}</div>
+                    </div>               
+                </div>
+            </div>
+             
+    
+            <!-- <div class="col-12">
+    
+                <div class="widget widget4 card" type="button">
+    
+                    <app-team-members></app-team-members>
+              
+                </div>
+            </div>   -->
+    
+        </div>    
+    </div>
+</div>

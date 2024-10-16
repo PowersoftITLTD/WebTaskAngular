@@ -1,0 +1,69 @@
+<body class="" >
+    <!-- <main> -->
+        <div id=""> 
+            
+             <!-- <app-side-panel></app-side-panel>  -->
+         
+            <div class="">
+
+
+
+                <app-header-bar (loggedInUserEmitter)="receiveLoggedInUser($event)"></app-header-bar>
+
+
+                <div class="content">
+
+                    <div id="" class="page-layout simple right-sidebar">
+
+                        <div class="page-content-wrapper">
+
+
+
+                            <!-- HEADER -->
+                            <div class="bg-primary text-auto d-flex flex-column justify-content-between px-6 pb-0">
+
+                                <div class="row no-gutters align-items-start justify-content-between flex-nowrap">
+
+                                    <div>
+                                        <span class="h2">Welcome, {{user[0]?.FIRST_NAME}}!</span>
+                                    </div>
+                                 
+                                </div>
+
+                            </div>
+                            <!-- / HEADER -->
+
+                            <!-- CONTENT -->
+                            <div class="page-content">
+
+                                <ul class="nav nav-tabs pl-2" id="myTab" role="tablist">
+
+                                    <li class="nav-item">
+                                        <a class="nav-link btn" [class.active]="selectedTab === 'home'" (click)="selectedTab = 'home'"   role="tab" aria-controls="home-tab-pane" aria-expanded="true"><div class="pl-2 pt-1">Home</div></a>
+                                    </li>
+
+                                    <li class="nav-item">
+                                        <a class="nav-link btn" [class.active]="selectedTab === 'team-progress'" (click)="selectedTab = 'team-progress'" id="budget-summary-tab"   role="tab" aria-controls="budget-summary-tab-pane"><div class="pt-1">Team Progress</div></a>
+                                    </li>                                 
+                                </ul>
+
+                                <div class="tab-content side-bar-scroll">
+
+                                    <app-home *ngIf="selectedTab === 'home'"></app-home>
+
+                                    <app-team-progress *ngIf="selectedTab === 'team-progress'"></app-team-progress>
+
+                                    <!-- <app-team-members *ngIf="selectedTab === 'team-members'"></app-team-members> -->
+                                    
+                                </div>
+                            </div>
+                            <!-- / CONTENT -->
+                        </div>
+                    </div>
+                    <script type="text/javascript" src="../assets/js/apps/dashboard/project.js"></script>
+                </div>            
+            </div>           
+        </div>
+    <!-- </main> -->
+</body>
+

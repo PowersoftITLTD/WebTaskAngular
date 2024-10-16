@@ -1,0 +1,116 @@
+/* @import url('../../../assets/css/main.css'); */
+
+
+.afterLoad {
+    position: fixed;
+    left: 0px;
+    top: 0px;
+    width: 100%;
+    height: 100%;
+    z-index: 9999;
+} 
+
+/* body{
+    height:100%;
+    margin:10px;
+} */
+
+.left_side {
+    background-repeat: no-repeat;
+    height: 100vh;
+    display: table;
+    background-size: cover;
+}
+.header_message{
+    color:white;
+    vertical-align: middle; 
+    display: table-cell;
+    padding:50px;
+}
+
+
+.form{
+    background-color: white;  
+    position: absolute;  
+    right:0px;
+    padding:70px;
+    height:100%;
+    margin-top: 100px;
+    
+}
+.forgot_password{
+    float: right;
+}
+.newcard{
+    margin:40px;
+    
+}
+
+.not-allowed {
+    pointer-events: auto! important;
+    cursor: not-allowed! important;
+}
+
+.left_side {
+    background-image: url('../../../assets2/images/backgrounds/dark-material-bg.jpg');
+    background-repeat: no-repeat;
+    display: table;
+    background-size: cover;
+}
+.header_message{
+    color:white;
+    vertical-align: middle; 
+    display: table-cell;
+    padding:50px;
+}
+
+.form{
+    background-color: white;  
+    position: absolute;  
+    right:0px;
+    padding:70px;
+    height:100%;
+    margin-top: 100px;
+    
+}
+.forgot_password{
+    float: right;
+}
+
+
+
+.hidden {
+    display: none;
+}
+
+.transparent-btn {
+    background-color: transparent !important;
+}
+
+.login-main{
+    position: relative;
+}
+
+@media only screen and (min-width: 768px) {
+    /* tablets and desktop */
+}
+
+@media only screen and (max-width: 767px) {
+    /* phones */
+    .left_side{
+        display: none;
+        
+    }
+    .form{
+        width:100%;
+        margin:auto;
+    }
+    .forgot_password{
+        right:0;
+    }
+}
+
+@media only screen and (max-width: 767px) and (orientation: portrait) {
+    /* portrait phones */
+}
+

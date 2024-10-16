@@ -1,0 +1,25 @@
+/* You can add global styles to this file, and also import other style files */
+
+@import '~ngx-toastr/toastr.css';
+@import url('assets/css/main.css');
+@import url('assets/Content/css/main.css');
+@import url('assets/icons/fuse-icon-font/style.css');
+
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+
+
+smart-drop-down-list {
+	min-height: 35px;
+	height: auto;
+	width: 300px;
+}
+
+
+/* .mat-dialog-container {
+    display: flex;  
+    justify-content: center;
+    align-items: center;
+  } */

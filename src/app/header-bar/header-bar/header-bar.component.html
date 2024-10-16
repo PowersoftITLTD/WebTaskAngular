@@ -1,0 +1,78 @@
+<!-- <app-side-panel [isOpen]="isSidePanelOpen"></app-side-panel> -->
+<!-- <app-side-panel></app-side-panel> -->
+
+<nav id="toolbar" class="bg-white">
+
+    <div class="row no-gutters align-items-center flex-nowrap">
+
+        <div class="col">
+
+
+            <div class="row no-gutters align-items-center flex-nowrap">
+                <button type="button" (click)="toggleSidePanel()" class="toggle-aside-button btn btn-icon d-block d-lg-none fa fa-bar" >
+                    <i class="fa fa-bars"></i>
+                </button>
+                <div class="toolbar-separator d-block d-lg-none"></div>
+                <div class="toolbar-separator"></div>
+            </div>
+        </div>
+        <div class="col-auto"> 
+
+               
+            <div class="row no-gutters align-items-center justify-content-end">
+
+                <button class="avatar-button responsive_name" (click)="toggleMenu()">
+                    <div class="">
+                        <span class="username mx-13">{{loggedInUser?.FIRST_NAME}} {{loggedInUser?.LAST_NAME}} &nbsp; &nbsp;</span>
+                    </div>
+                </button>
+                
+                <button class="avatar-button" (click)="toggleMenu()">
+                    <div class="avatar-wrapper">
+                        <img class="avatar" src="../assets/images/avatars/profile.jpg">                
+                        <i class="status text-green icon-checkbox-marked-circle s-4"></i>
+                    </div>
+                    <span class="username mx-3 d-none d-md-block">{{loggedInUser?.FIRST_NAME}} &nbsp; &nbsp;</span>
+                </button>
+            
+
+               
+                <div class="toolbar-separator"></div>
+                <button type="button" class="search-button btn btn-icon">
+                    <!-- <i class="icon icon-magnify"></i> -->
+                </button>
+                <!-- <div class="toolbar-separator"></div>
+                <div class="toolbar-separator"></div> -->
+                <button type="button" class="quick-panel-button btn btn-icon">
+                    <!-- <i class="icon icon-format-list-bulleted"></i> -->
+                </button>
+            </div>                          
+        </div>
+    </div>
+</nav>
+
+
+<div class="menu" [class.active]="isMenuOpen">
+    <ul>
+        <!-- <li type="button"><a><i class="icon-account"></i> My Profile</a></li> -->
+        <li type="button" (click)="openChangePasswordDialog()"><a><i class="icon-lock-reset"></i> Change Password</a></li>
+        <li type="button" (click)="logout()"><a><i class="icon-logout" type="button"></i> Logout</a></li>
+    </ul>
+</div>
+
+
+<div class="menu-2" [class.active]="isSidePanelOpen">
+    <ul>
+        <li type="button" (click)="navigateToDashboardProject()"><a><i class="icon s-4 icon-tile-four"></i> Dashboard</a></li>
+        <li type="button" (click)="navigateToTaskManagement()"><a><i class="icon s-4 icon-checkbox-marked"></i> Task Management</a></li>
+        <li type="button" (click)="navigateToUploadProject()"><a><i class="icon s-4 icon-checkbox-marked"></i> Project Uploader</a></li>
+    </ul>
+</div>
+
+
+
+
+
+<!-- <div class="dialog-container" [class.visible]="isDialogOpen" [class.closing]="isDialogClosing">
+    <app-reset-password (close)="closeDialog()"></app-reset-password>
+</div> -->

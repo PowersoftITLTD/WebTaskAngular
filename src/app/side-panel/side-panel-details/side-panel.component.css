@@ -1,0 +1,96 @@
+/* @import url('../../../assets/css/main.css'); */
+/* @import url('../../../assets/Content/css/main.css'); */
+
+/* @import url('../../../assets/icons/fuse-icon-font/style.css'); */
+
+.card-p6 {
+  max-height: 800px;
+  overflow: auto;
+}
+
+body {
+  box-shadow: 5px 0 1rem rgba(50, 40, 40, 0.3) !important;
+}
+
+
+.page-content-wrapper {
+  height: 2px !important;
+}
+
+.button {
+  transform: rotate(180deg) !important;
+}
+
+#wrapper {
+  margin-bottom: 30rem;
+}
+
+
+#sidenav {
+  height: 100% !important;
+  margin-bottom: 13rem !important;
+  overflow-y: auto !important;
+  max-height: calc(300vh - 100px) !important;
+}
+
+
+.side-bar-hover {
+  background-color: #2D323E !important;
+  width: 25rem;
+  top: 0;
+  left: 0;
+  max-height: 1500px !important;
+  background-color: #fff;
+  z-index: 9999;
+}
+
+
+
+
+.side-bar-scroll {  
+  min-height: calc(300vh - 1000px);
+  overflow-y: auto;
+}
+
+.side-bar-scroll::-webkit-scrollbar {
+  width: 1px !important;
+}
+
+.side-bar-scroll::-webkit-scrollbar-track {
+  background-color: transparent !important;
+}
+
+.side-bar-scroll::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.3) !important;
+  border-radius: 5px !important;
+}
+
+.side-bar-scroll::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(0, 0, 0, 0.5) !important;
+}
+
+@keyframes scrollbarAnimation {
+  0% {
+    opacity: 0 !important;
+  }
+
+  100% {
+    opacity: 1 !important;
+  }
+}
+
+.side-bar-scroll::-webkit-scrollbar-thumb {
+  animation: scrollbarAnimation 0.5s ease !important;
+}
+
+@media (max-width: 992px) {
+  .side-bar-hover {
+    display: none;
+  }
+}
+
+
+img {
+  width: 3rem;
+  height: auto;
+}

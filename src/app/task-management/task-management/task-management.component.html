@@ -1,0 +1,261 @@
+<body class="layout layout-vertical layout-left-navigation layout-below-toolbar layout-below-footer content-bar-scroll">
+    <main>
+        <div id="wrapper" class="content-bar-scroll">
+
+            <!-- <app-side-panel></app-side-panel>  -->
+
+            <div class="content-wrapper">
+
+                <app-header-bar></app-header-bar>
+
+                <div class="content">
+
+                    <div id="project-dashboard" class="page-layout simple right-sidebar">
+
+                        <div class="page-content-wrapper">
+
+                            <div id="todo" class="page-layout carded left-sidebar">
+                                <div class="top-bg bg-primary"></div>
+                                <aside class="page-sidebar " data-fuse-bar="todo-sidebar" data-fuse-bar-media-step="md">
+                                    <!-- HEADER -->
+                                    <div class="header d-flex flex-column justify-content-between p-6 light-fg ">
+                                        <div class="logo d-flex align-items-center pt-7">
+                                            <i class="icon-checkbox-marked mr-4"></i>
+                                            <br>
+                                            <span class="logo-text h4">Task</span>
+                                        </div>
+                                        <div class="account">
+                                        </div>
+                                    </div>
+                                    <!-- / HEADER -->
+                                    <div class="content side-bar-scroll">
+                                        <div class="p-8">
+                                            <button type="button" (click)="addTaskDetails()"
+                                                class="btn btn-secondary btn-block">ADD TASK</button>                                           
+                                        </div>
+
+                                       
+                                        <ul class="nav flex-column">
+
+                                            <li class="nav-item">
+                                                <a class="nav-link ripple" id="aAllTask" (click)="myActionable()"
+                                                    [ngClass]="{ 'active': selectedTab === 'actionable' }"
+                                                    type="button">
+                                                    <i class="fas fa-bars" style="font-size: 0.90em;"></i>
+                                                    <!-- This line adds smaller bar icons -->
+                                                    <span>
+                                                        My Actionable
+                                                        <span class="">({{ count.length > 0 ? count[0]?.Default : 0
+                                                            }})</span>
+                                                    </span>
+                                                </a>
+                                            </li>
+
+
+                                            <li class="divider"></li>
+                                            <li class="subheader">
+                                                Filters
+                                            </li>
+
+                                            <li class="nav-item">
+                                                <a class="nav-link ripple" type="button" id="aAllocated_To_Me"
+                                                    (click)="AllocatedToMe()"
+                                                    [ngClass]="{ 'active': selectedTab === 'allocatedToMe' }">
+                                                    <i class="fas fa-thumbtack" style="font-size: 0.90em;"></i>
+
+                                                    <span>
+                                                        Allocated To Me
+                                                        <span class="">({{count[0]?.ALLOCATEDTOME}})</span>
+                                                    </span>
+                                                </a>
+                                            </li>
+
+                                            <li class="nav-item">
+                                                <a class="nav-link ripple" type="button"
+                                                    [ngClass]="{ 'active': selectedTab === 'allocatedByMe' }"
+                                                    id="aAllocated_By_Me" (click)="AllocatedByMe()">
+                                                    <i class="fas fa-calendar" style="font-size: 0.90em;"></i>
+                                                    <span>
+                                                        Allocated By Me
+                                                        <span class="">({{count[0]?.ALLOCATEDBYME}})</span>
+                                                    </span>
+                                                </a>
+                                            </li>
+
+                                            <li class="nav-item">
+                                                <a class="nav-link ripple" type="button"
+                                                    [ngClass]="{ 'active': selectedTab === 'completedByMe' }"
+                                                    (click)="completedByMe()">
+                                                    <i class="fas fa-check" style="font-size: 0.90em;"></i>
+                                                    <span>Completed By Me ({{count[0]?.COMPLETEDBYME}})</span>
+                                                </a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link ripple" type="button"
+                                                    [ngClass]="{ 'active': selectedTab === 'completedForMe' }"
+                                                    (click)="completedForMe()">
+                                                    <i class="fas fa-check" style="font-size: 0.90em;"></i>
+                                                    <span>Completed For Me ({{count[0]?.COMPLETEDFORME}})</span>
+                                                </a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link ripple" type="button"
+                                                    [ngClass]="{ 'active': selectedTab === 'cancelled' }"
+                                                    (click)="cancelled()">
+                                                    <i class="fas fa-times-circle" style="font-size: 0.90em;"></i>
+                                                    <span>
+                                                        Cancelled ({{count[0]?.CANCELCLOSE}})
+                                                    </span>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+
+                                </aside>
+
+                                <div class="page-content-wrapper">
+                                    <!-- HEADER -->
+                                    <div class="py-3 d-flex flex-column justify-content-center light-fg">
+                                        <div class="search-bar row align-items-center no-gutters bg-white text-auto">
+                                            <button type="button" (click)="toggleSidebar()"
+                                                class="sidebar-toggle-button fas fa-sort-up d-block d-lg-none"
+                                                data-fuse-bar-toggle="todo-sidebar">
+                                                <i class="fa fa-bars"></i>
+                                            </button>
+                                            <i class="icon-magnify fa-lg mx-2 py-3"></i>
+                                            <input class="search-bar-input col" type="text"
+                                                placeholder="Search for a task" [(ngModel)]="_SearchText">
+                                        </div>
+                                    </div>
+                                    <!-- / HEADER -->
+                                    <div class="card" style="height:100%;">
+                                        <!-- CONTENT -->
+                                        <!-- CONTENT TOOLBAR -->
+                                        <div
+                                            class="toolbar d-flex align-items-center justify-content-between p-3 p-sm-6">
+                                            <select id="_FilterSelection" class="custom-select mb-2 mr-sm-2 mb-sm-0"
+                                                placeholder="Due Date" [(ngModel)]="selectedOption"
+                                                (ngModelChange)="onFilterSelectionChange($event)">
+                                                <option *ngFor="let option of _FilterSelection" [value]="option">
+                                                    {{ option }}
+                                                </option>
+                                            </select>
+                                            <div>
+                                                <select class="custom-select mb-2 mr-sm-2 mb-sm-0" placeholder="Order"
+                                                    (change)="onFilterTypeChange($event)"                                                   
+                                                    ng-model="selected">
+                                                    <option [value]="'creationDate'" [selected]="filterType === 'creationDate'">Creation Date</option>
+                                                    <option [value]="'completionDate'" [selected]="filterType === 'completionDate'">Completion Date</option>
+                                                </select>
+                                                <button type="button" (click)="toggleSortOrder()" style="background-color: white;">
+                                                    <i class="fas fa-sort-amount-up-alt" [hidden]="!isAscending" [class.active]="isAscending"></i>
+                                                    <i class="fas fa-sort-amount-down-alt" [hidden]="isAscending" [class.active]="!isAscending"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <!-- / CONTENT TOOLBAR -->
+                                        <div class="card">
+                                            <div class="side-bar-scroll">
+                                                <div class="page-content-card"><!--style="height: 100%"-->
+                                                    <div class="todo-items w-10">
+
+                                                        <div id="dvMain_$index"
+                                                            class="todo-item  py-4 ripple row no-gutters flex-wrap flex-sm-nowrap align-items-center"
+                                                            *ngFor="let t of taskList | taskFilter:_SearchText | taskDue: selectedOption:isAscending; let i = index">
+                                                            <button type="button" class="handle btn btn-icon mr-1">
+                                                                <img id="ImgStatusOfTask" *ngIf="t.CATEGORY=='PUBLIC'"
+                                                                    src="../../../assets/Content/icons/PublicTask.png"
+                                                                    class="avatar" />
+                                                                <img id="ImgStatusOfTask" *ngIf="t.CATEGORY!='PUBLIC'"
+                                                                    src="../../../assets/Content/icons/PrivateTask.png"
+                                                                    class="avatar" />
+                                                            </button>
+
+                                                            <div class="info col px-4" type="button"
+                                                                (click)="openSelectedTask(t)">
+                                                                <div class="title"
+                                                                    style="font-family: 'Muli', 'Helvetica Neue', 'Arial', sans-serif;font-weight:bold;float:left;width:100%">
+                                                                    <span style="color:#328da8;">{{t.TASK_NO}} </span>
+                                                                    {{t.TASK_NAME}} <span
+                                                                        style="float:right;color:#328da8;margin-left:154px;"></span>
+                                                                    <span class="title" style="float:right">[Req By :
+                                                                        {{t.COMPLETION_DATE}}]</span>
+                                                                </div>
+
+                                                                <div style="float: right;">
+                                                                    <div class="tooltip_Mouse">
+                                                                        <br />
+                                                                        <img id="{{'ImgStatusOfTask_' + t.id}}"
+                                                                            style="float:right;width:4rem;height:4rem;display:block;"
+                                                                            [src]="getIcon(t.STATUS)" />
+                                                                    </div>
+                                                                </div>
+
+                                                                <br />
+                                                                <div class="notes mt-1">
+                                                                    {{t.TASK_DESCRIPTION}}
+                                                                </div>
+
+                                                                <div class="tags">
+                                                                    <div class="tag badge mt-2 mr-1">
+                                                                        <div class="row no-gutters align-items-center">
+                                                                            <i class="fas fa-user small-icon pt-2"></i>
+                                                                            <div class="tag-label pt-1">
+                                                                                {{t.RESPONSIBLE_TAG}}</div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div class="tag badge mt-2 mr-1"
+                                                                        style="margin-left:22px"
+                                                                        *ngIf="t.TAGS && t.TAGS.length !== 0">
+                                                                        <div class="row no-gutters align-items-center">
+                                                                            <div class="tag-color mr-2"
+                                                                                style="background-color: #388E3C;">
+                                                                            </div>
+                                                                            <div class="tag-label">{{t.TAGS}}</div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div class="tag badge mt-2 mr-1"
+                                                                        style="margin-left:22px"
+                                                                        *ngIf="t.PROJECT_NAME && t.PROJECT_NAME.length !== 0">
+                                                                        <div class="row no-gutters align-items-center">
+                                                                            <!-- <div class="tag-color mr-2"></div> -->
+                                                                            <img src="https://static.thenounproject.com/png/3332980-200.png"
+                                                                                alt="Project Icon 3332980"
+                                                                                style="height:25px">
+                                                                            <div class="tag-label">{{t.PROJECT_NAME}}
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div>
+                                                            <table class="table table-striped">
+                                                                <tbody>
+                                                                    <tr *ngIf="taskList.length === 0 || ''"
+                                                                        class="no-data" style="display: table-row;">
+                                                                        <td colspan="4"
+                                                                            style="text-align:center;font-weight:900">No
+                                                                            data</td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- <app-time-and-weather></app-time-and-weather> -->
+                    </div>
+                    <script type="text/javascript" src="../assets/js/apps/dashboard/project.js"></script>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>

@@ -1,0 +1,120 @@
+<body
+  class="layout layout-vertical layout-left-navigation layout-below-toolbar layout-below-footer component-adjustment">
+  <main>
+    <div id="wrapper">  
+      <div id="e-commerce-products" class="page-layout carded full-width mt-1 mb-1">
+        <div class="">
+          <div class="first-tab-scroll">
+            <div class="row mr-1 ml-1">
+              <div class="card" style="width:100%; padding: 10px 10px 10px 10px;">
+                <div *ngIf="loading" class="text-center">
+                  <div class="spinner-border text-primary" role="status">
+                    <span class="sr-only">Loading...</span>
+                  </div>
+                </div>
+                <div *ngIf="!loading" class="progress-details table-scroll-container">
+                  <table class="task-table">
+
+                    <thead>
+                      <tr>
+                        <th>Task Number</th>
+                        <th>Task Name</th>
+                        <th class="truncate-date">Description</th>
+                        <th class="truncate-date">Completion Date</th>
+                        <th>Actionable</th>
+                        <th>Status %</th>
+                        <th>Status</th>
+                        <th>Responsible</th>
+                      </tr>
+                    </thead>
+
+                    <tbody>
+                      <ng-template #recursiveTaskTemplate let-tasks>
+                        <ng-container *ngFor="let task of tasks">
+                          <tr>
+                            <td style="width: 170px;">
+
+                              <ng-container *ngIf="task.TASK_NO.TASK_NO">
+                                <span
+                                  [style.marginLeft.px]="calculateIndentation(task.TASK_NO.TASK_NO, task.subtask && task.subtask.length > 0 ? 10 : 15)">
+                                  <mat-icon *ngIf="task.subtask && task.subtask.length > 0"
+                                    (click)="toggleVisibility(task)" style="cursor: pointer;">
+                                    <img
+                                      src="../../../../assets/Content/images/{{ task.visible ? 'collapse.png' : 'expand.png' }}">
+                                  </mat-icon>
+                                  {{ task.TASK_NO.TASK_NO }}
+                                </span>
+                              </ng-container>
+                            </td>
+                            <td class="truncate-text">{{ task.TASK_NO?.TASK_NAME }}</td>
+                            <td class="truncate-text">{{ task.TASK_NO?.TASK_DESCRIPTION }}</td>
+                            <td>{{ task.TASK_NO?.COMPLETION_DATE }}</td>
+                            <td>{{ task.TASK_NO?.ACTIONABLE }}</td>
+
+                            <td>
+                              <div class="progress-container">
+                                <div class="progress-bar" [style.width.%]="task.TASK_NO?.STATUS_PERC">
+                                  <span>{{ task.TASK_NO?.STATUS_PERC }}%</span>
+                                </div>
+                              </div>
+                            </td>
+
+                            <td>{{ task.TASK_NO?.STATUS }}</td>
+                            <td class="truncate-text">{{ task.TASK_NO?.RESPONSIBLE }}</td>
+
+                          </tr>
+                          <ng-container *ngIf="task.visible && task.subtask && task.subtask.length > 0">
+                            <ng-container
+                              *ngTemplateOutlet="recursiveTaskTemplate; context: { $implicit: task.subtask }"></ng-container>
+                          </ng-container>
+                        </ng-container>
+                      </ng-template>
+
+                      <ng-container *ngFor="let task of subTasks">
+                        <tr>
+                          <td style="width: 170px;">
+                            <ng-container *ngIf="task.TASK_NO.TASK_NO">
+                              <span
+                                [style.marginLeft.px]="calculateIndentation(task.TASK_NO.TASK_NO, task.subtask && task.subtask.length > 0 ? 12 : 17)">
+                                <mat-icon *ngIf="task.subtask && task.subtask.length > 0"
+                                  (click)="toggleVisibility(task)" style="cursor: pointer;">
+                                  <img
+                                    src="../../../../assets/Content/images/{{ task.visible ? 'collapse.png' : 'expand.png' }}">
+                                </mat-icon>
+                                {{ task.TASK_NO.TASK_NO }}
+                              </span>
+                            </ng-container>
+                          </td>
+                          <td class="truncate-text">{{ task.TASK_NO?.TASK_NAME }}</td>
+                          <td class="truncate-text">{{ task.TASK_NO?.TASK_DESCRIPTION }}</td>
+                          <td>{{ task.TASK_NO?.COMPLETION_DATE }}</td>
+                          <td class="truncate-text">{{ task.TASK_NO?.ACTIONABLE }}</td>
+
+                          <td>
+                            <div class="progress-container">
+                              <div class="progress-bar" [style.width.%]="task.TASK_NO?.STATUS_PERC">
+                                <span>{{ task.TASK_NO?.STATUS_PERC }}%</span>
+                              </div>
+                            </div>
+                          </td>
+
+                          <td>{{ task.TASK_NO?.STATUS }}</td>
+                          <td class="truncate-text">{{ task.TASK_NO?.RESPONSIBLE }}</td>
+                        </tr>
+                        <ng-container *ngIf="task.visible && task.subtask && task.subtask.length > 0">
+                          <ng-container
+                            *ngTemplateOutlet="recursiveTaskTemplate; context: { $implicit: task.subtask }"></ng-container>
+                        </ng-container>
+                      </ng-container>
+                    </tbody>
+
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>   
+    </div>
+  </main>
+</body>

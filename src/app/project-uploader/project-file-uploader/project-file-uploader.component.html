@@ -1,0 +1,51 @@
+<app-header-bar (loggedInUserEmitter)="receiveLoggedInUser($event)"></app-header-bar>
+
+<div class="tab-pane fade show main" id="ProgressTab" role="tabpanel" aria-labelledby="product-images-tab">
+    <div class="card">
+        <form style="width: 100%;">
+            <div class="input-group mb-4">
+                <div class="container-fluid">
+                    <div class="row page-content justify-content-center pr-8">
+                        <span class="pt-4"></span>
+                        <div class="attachment form-group">
+                            <div class="source-preview-wrapper">
+                                <!-- <label>Please upload file</label> -->
+                                <div class="custom-file attachment">
+                                    <input type="file" style="width: 70rem;" class="custom-file-input" (change)="uploadExcelFile($event)" id="TaskProgressFile">
+                                    <label class="custom-file-label mr-3" for="customFile" id="TaskAttachmentDetails">Attachment if any:</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="attachment form-group">
+                            <div class="source-preview-wrapper">
+                                <button type="button" class="btn btn-info"> <!--mt-7-->
+                                    <div (click)="readFileData()"><div *ngIf="!loading">Read</div></div>
+                                    <div class="spinner-border mt-2" *ngIf="loading" role="status"></div>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <ng-template *ngIf="loading" class="loading lodingMessage">
+        <img src="../../../assets/images/100flops.png" alt="Loading...">
+    </ng-template>
+    <div >
+    </div>
+
+    <div class="page-layout carded full-width" style="width:100%;" *ngIf="!loading">
+        <div class="progress-details table-scroll-container">
+            <table class="task-table">
+                <tbody>
+                    <tr *ngFor="let row of data; let i = index">
+                        <td>{{ i === 0 ? 'Sr no.' : i }}</td>
+                        <td *ngFor="let val of row">{{ val }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
