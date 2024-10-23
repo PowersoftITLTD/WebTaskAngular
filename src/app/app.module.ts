@@ -22,6 +22,7 @@ import { TagInputModule } from 'ngx-chips';
 // import { MatTreeModule } from '@angular/material/tree';
 // import { TaskManagementModule } from './task-management/task-management.module';
 import { LocationStrategy, HashLocationStrategy } from '@angular/common';
+import { IgxComboModule, IgxButtonModule, IgxCardModule } from 'igniteui-angular';
 
 
 
@@ -83,6 +84,11 @@ import { LocationStrategy, HashLocationStrategy } from '@angular/common';
 
     //Tag
     TagInputModule,
+
+    // IgxComboModule,
+    // IgxComboModule,
+    // IgxButtonModule,
+    // IgxCardModule,
 
     // SessionModule,
 

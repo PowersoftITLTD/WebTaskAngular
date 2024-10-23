@@ -1,0 +1,387 @@
+<body class="layout layout-left-navigation layout-below-toolbar layout-below-footer">
+    <main>
+        <div id="wrapper">
+            <div class="content-wrapper">
+                <div class="">
+                    <div id="e-commerce-product" class="simple tabbed">
+                        <app-header-bar (loggedInUserEmitter)="receiveLoggedInUser($event)"></app-header-bar>
+
+                        <div class="bg-primary py-6 text-auto row align-items-center justify-content-between p-6">
+
+                            <div class="row no-gutters align-items-center">
+                                <div class="product-image mr-4 ml-8">
+                                    <img
+                                        src="../../../../assets/Content/images/ecommerce/product-image-placeholder.png">
+                                </div>
+                                <div class="truncate-date">
+                                    <b>Approval Tempelate</b>
+                                </div>
+                            </div>
+
+                            <div class="flex-grow-1"></div>
+
+
+                        </div>
+
+
+                        <div class="accordion card tab-content" style="height: 8000px;">
+                            <div *ngFor="let item of accordionItems; let i = index" class="accordion-item">
+
+                                <h2 class="accordion-header">
+                                    <button (click)="toggle(i)" class="accordion-button">
+                                        {{ item.title }}
+                                    </button>
+                                </h2>
+
+                                <div class="accordion-body" [class.show]="activeIndices.includes(i)">
+                                    <form>
+                                        <div class="mb-3" *ngIf="i === 0">
+
+
+                                            <div class="row">
+
+                                                <div class="col-xs-12 col-xl-4 col-md-12">
+                                                    <div class="form-group">
+                                                        <label for="category">Building</label>
+                                                        <select class="h6 form-control">
+                                                            <option> --SELECT--</option>
+                                                            <option> Dummy Building 1 </option>
+                                                            <option> Dummy Building 2 </option>
+                                                            <option> Dummy Building 3 </option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-xs-12 col-xl-4 col-md-12">
+                                                    <div class="form-group">
+                                                        <label for="category">Standard</label>
+                                                        <select class="h6 form-control">
+                                                            <option> --SELECT--</option>
+                                                            <option> Dummy Standard 1 </option>
+                                                            <option> Dummy Standard 2 </option>
+                                                            <option> Dummy Standard 3 </option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-xs-12 col-xl-4 col-md-12">
+                                                    <div class="form-group">
+                                                        <label for="category">Statutory Autority</label>
+                                                        <select class="h6 form-control">
+                                                            <option> --SELECT--</option>
+                                                            <option> Dummy Autority 1 </option>
+                                                            <option> Dummy Autority 2 </option>
+                                                            <option> Dummy Autority 3 </option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="accordion-body card" [class.show]="activeIndices.includes(i)">
+                                    <form>
+                                        <div class="mb-3" *ngIf="i === 1">
+
+
+                                            <div class="row">
+
+                                                <div class="col-xs-12 col-xl-4 col-md-12">
+
+                                                    <div class="form-group">
+                                                        <label for="taskName">Short Description</label>
+                                                        <input type="text" maxlength="150" class="form-control"
+                                                            maxlength="150" />
+
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-xs-12 col-xl-4 col-md-12">
+                                                    <div class="form-group">
+                                                        <label for="taskDescription">Long Description</label>
+                                                        <textarea class="form-control"
+                                                            aria-describedby="task description" rows="3"
+                                                            maxlength="1000"></textarea>
+
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-xs-12 col-xl-4 col-md-12">
+                                                    <div class="form-group">
+                                                        <label for="taskName">Abbr.</label>
+                                                        <input type="text" maxlength="150" class="form-control"
+                                                            maxlength="150" />
+
+                                                    </div>
+
+                                                </div>
+
+                                                <div class="col-xs-12 col-xl-4 col-md-12">
+                                                    <div class="form-group">
+                                                        <label for="category">Departrment</label>
+                                                        <select class="h6 form-control">
+                                                            <option> --SELECT--</option>
+                                                            <option> Dummy Departrment 1 </option>
+                                                            <option> Dummy Departrment 2 </option>
+                                                            <option> Dummy Departrment 3 </option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+
+                                           
+
+                                                <div class="col-xs-12 col-xl-4 col-md-12">
+                                                    <div class="form-group">
+                                                        <label for="category">Responsible Person</label>
+                                                        <select class="h6 form-control">
+                                                            <option> --SELECT--</option>
+                                                            <option> Dummy Person 1 </option>
+                                                            <option> Dummy Person 2 </option>
+                                                            <option> Dummy Person 3 </option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-xs-12 col-xl-4 col-md-12">
+                                                    <div class="form-group">
+                                                        <label for="category">Job Role</label>
+                                                        <select class="h6 form-control">
+                                                            <option> --SELECT--</option>
+                                                            <option> Dummy Role 1 </option>
+                                                            <option> Dummy Role 2 </option>
+                                                            <option> Dummy Role 3 </option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-xs-12 col-xl-4 col-md-12">
+                                                    <div class="form-group">
+                                                        <label for="taskName">No. of Days Required</label>
+                                                        <input type="text" maxlength="150" class="form-control"
+                                                            maxlength="150" />
+                                                    </div>
+                                                </div>
+                                                <div class="col-xs-12 col-xl-4 col-md-12">
+                                                    <div class="form-group">
+                                                        <label for="category">Sanctioning Authority</label>
+                                                        <select class="h6 form-control">
+                                                            <option> --SELECT--</option>
+                                                            <option> Dummy Authority & Department 1 </option>
+                                                            <option> Dummy Authority & Department 2 </option>
+                                                            <option> Dummy Authority & Department 3 </option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-xs-12 col-xl-4 col-md-12">
+                                                    <div class="form-group">
+                                                        <label for="taskName">Department</label>
+                                                        <input type="text" maxlength="150" class="form-control"
+                                                            maxlength="150" />
+                                                    </div>
+                                                </div>
+
+
+
+
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+
+                                <div class="accordion-body card" [class.show]="activeIndices.includes(i)">
+                                    <form>
+                                        <div class="mb-3" *ngIf="i === 2">
+                                            <div class="row justify-content-between" >
+
+                                                <div class="col-xs-12 col-xl-4 col-md-12 mx-4">
+                                                    <div class="row">
+                                                        <div class="form-group sample-wrapper">
+                                                            <h6>Details:</h6>
+                                                            <div class="sample-wrapper" >
+                                                                <div class="">
+                                                                    <div  class="city-tag">
+                                                                        <br>
+                                                                        <table class="table table-active">
+                                                                            <thead>
+                                                                                <th>Sr No.</th>
+                                                                                <th>Document Name</th>
+                                                                                <th>Document Category</th>
+                                                                            </thead>
+                                                                            <tbody *ngFor="let city of selectedCities; let i = index">
+                                                                                <td>{{i + 1}}</td>
+                                                                                <td>{{city.name}}</td>
+                                                                                <td>{{city.country}}</td>
+                                                                            </tbody>
+                                                                        </table>
+                                                                    </div>
+                                                                    <br>
+                                                                </div>
+                                                            </div>                                                       
+                                                        </div>
+                                                       
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-xs-12 col-xl-6 col-md-12 ">
+                                                    <div class="form-group sample-wrapper">
+                                                        <label for="category">Document</label>
+                                                        <div class="sample-wrapper">
+                                                            <div class="pl-4 combo-section">
+                                                                <input type="text" [(ngModel)]="searchTerm"
+                                                                       (input)="filterCities()" placeholder="Select Document"
+                                                                       class="search-input" [ngModelOptions]="{standalone: true}" />
+                                                                       <div *ngIf="filteredCities.length > 0" class="dropdown" style="height: 510px;">
+                                                                        <li class="dropdown-list">
+                                                                            <ng-container *ngFor="let country of getUniqueCountries()">
+                                                                                <div class="country-header justify-content-center" style="color: rgb(216, 87, 87);">
+                                                                                    <b>{{ country }}</b>
+                                                                                </div>
+                                                                                <ng-container *ngFor="let city of getGroupedAndSortedCities()[country]">
+                                                                                    <li (click)="toggleSelection(city)" [class.selected]="isSelected(city)">
+                                                                                        {{ city.name }} ({{ city.country }})
+                                                                                    </li>
+                                                                                </ng-container>
+                                                                            </ng-container>
+                                                                        </li>
+                                                                    </div>
+                                                                    
+                                                                <!-- <button (click)="selectFavorites()" class="select-button">Select Favorites</button> -->
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+                                                
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                                
+                                <div class="accordion-body card" [class.show]="activeIndices.includes(i)">
+                                    <form>
+                                        <div class="mb-3" *ngIf="i === 3">
+                                          
+                                            <div class="row justify-content-between" >
+
+                                                <div class="col-xs-12 col-xl-4 col-md-12 mx-4">
+                                                    <div class="row">
+                                                        <div class="form-group sample-wrapper">
+                                                            <h6>Details:</h6>
+                                                            <div class="sample-wrapper" >
+                                                                <div class="">
+                                                                    <div  class="city-tag">
+                                                                        <br>
+                                                                        <table class="table table-active">
+                                                                            <thead>
+                                                                                <th>Sr No.</th>
+                                                                                <th>Document Name</th>
+                                                                                <th>Document Category</th>
+                                                                            </thead>
+                                                                            <tbody *ngFor="let city of selectedCities; let i = index">
+                                                                                <td>{{i + 1}}</td>
+                                                                                <td>{{city.name}}</td>
+                                                                                <td>{{city.country}}</td>
+                                                                            </tbody>
+                                                                        </table>
+                                                                        
+                                                                    </div>
+                                                                    <br>
+                                                                </div>
+                                                            </div>                                                       
+                                                        </div>
+                                                       
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-xs-12 col-xl-6 col-md-12 ">
+                                                    <div class="form-group sample-wrapper">
+                                                        <label for="category">Document</label>
+                                                        <div class="sample-wrapper">
+                                                            <div class="pl-4 combo-section">
+                                                                <input type="text" [(ngModel)]="searchTerm"
+                                                                       (input)="filterCities()" placeholder="Select Cities"
+                                                                       class="search-input" [ngModelOptions]="{standalone: true}" />
+                                                                       <div *ngIf="filteredCities.length > 0" class="dropdown" style="height: 510px;">
+                                                                        <li class="dropdown-list">
+                                                                            <ng-container *ngFor="let country of getUniqueCountries()">
+                                                                                <div class="country-header justify-content-center" style="color: rgb(216, 87, 87);">
+                                                                                    <b>{{ country }}</b>
+                                                                                </div>
+                                                                                <ng-container *ngFor="let city of getGroupedAndSortedCities()[country]">
+                                                                                    <li (click)="toggleSelection(city)" [class.selected]="isSelected(city)">
+                                                                                        {{ city.name }} ({{ city.country }})
+                                                                                    </li>
+                                                                                </ng-container>
+                                                                            </ng-container>
+                                                                        </li>
+                                                                    </div>
+                                                                    
+                                                                <!-- <button (click)="selectFavorites()" class="select-button">Select Favorites</button> -->
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>                                                                                                
+                                            </div>
+                                        </div>
+                                    </form>                                 
+                                </div>     
+                                
+                                <div class="accordion-body card" [class.show]="activeIndices.includes(i)">
+                                    <form>
+                                        <div class="mb-3" *ngIf="i === 4">
+                                            <div class="form-group sample-wrapper">
+                                                <h6>&nbsp;Details:</h6>
+                                                <table class="table table-active">
+                                                    <thead>
+                                                        <th scope="col">Sr No.</th>
+                                                        <th scope="col">Abbrivation</th>
+                                                        <th scope="col">Short Description</th>
+                                                        <th scope="col">Days Required</th>
+                                                        <th scope="col">Authority Department</th>
+                                                        <th scope="col">End Resultt</th>
+                                                    </thead>
+                                                    <tr class="table-info">
+                                                        <td>1</td>
+                                                        <td>Abbrivation 1</td>
+                                                        <td>Short Description 1</td>
+                                                        <td>Days Required 1</td>
+                                                        <td>Authority Department 1</td>
+                                                        <td>End Result 1</td>
+                                                    </tr>
+                                                    <tr class="table-active">
+                                                        <td>2</td>
+                                                        <td>Abbrivation 2</td>
+                                                        <td>Short Description 2</td>
+                                                        <td>Days Required 2</td>
+                                                        <td>Authority Department 2</td>
+                                                        <td>End Result 2</td>
+                                                    </tr>
+                                                    <tr class="table-info">
+                                                        <td>3</td>
+                                                        <td>Abbrivation 3</td>
+                                                        <td>Short Description 3</td>
+                                                        <td>Days Required 3</td>
+                                                        <td>Authority Department 3</td>
+                                                        <td>End Result 3</td>
+                                                    </tr>
+                                                    <tr class="table-active">
+                                                        <td>4</td>
+                                                        <td>Abbrivation 4</td>
+                                                        <td>Short Description 4</td>
+                                                        <td>Days Required 4</td>
+                                                        <td>Authority Department 4</td>
+                                                        <td>End Result 4</td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                           
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>

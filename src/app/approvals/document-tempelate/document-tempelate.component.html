@@ -1,0 +1,195 @@
+<body class="layout layout-left-navigation layout-below-toolbar layout-below-footer">
+    <main>
+        <div id="wrapper">
+            <div class="content-wrapper">
+                <div class="">
+                    <div id="e-commerce-product" class="simple tabbed">
+                        <app-header-bar (loggedInUserEmitter)="receiveLoggedInUser($event)"></app-header-bar>
+
+                        <div class="bg-primary py-6 text-auto row align-items-center justify-content-between p-6">
+
+                            <div class="row no-gutters align-items-center">
+                                <div class="product-image mr-4 ml-8">
+                                    <img
+                                        src="../../../../assets/Content/images/ecommerce/product-image-placeholder.png">
+                                </div>
+                                <div class="truncate-date">
+                                    <b>Document Tempelate</b>
+                                </div>
+                            </div>
+
+                            <div class="flex-grow-1"></div>
+
+                        </div>
+                        <br>
+                        <div class="container-fluid">
+                            <div class="card p-6 tab-content">
+                                <div class="row">
+
+                                    <div class="col-xs-12 col-xl-6 col-md-12">
+                                        <div class="form-group">
+                                          <label for="taskName">Document Abbrivation</label>
+                                          <input type="text" maxlength="150" class="form-control" maxlength="150"
+                                            />
+                                        </div>
+                                    </div>                                                                                            
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-xs-12 col-xl-6 col-md-12">
+                                        <div class="form-group">
+                                          <label for="taskName">Document Number Field Name</label>
+                                          <input type="text" maxlength="150" class="form-control" maxlength="150"
+                                            />
+                                        </div>
+                                    </div>
+
+
+                                    <div class="col-xs-12 col-xl-3 col-md-12">
+                                        <div class="form-group">
+                                            <label for="documentApplicable">Document No. Applicable</label>
+                                            <div>
+                                                <label>
+                                                    <input type="radio" name="documentApplicable" value="Yes"> Yes
+                                                </label>
+                                                <br>
+                                                <label>
+                                                    <input type="radio" name="documentApplicable" value="No"> No
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                    <div class="col-xs-12 col-xl-3 col-md-12">
+                                        <div class="form-group">
+                                            <label for="documentApplicable">Validity Applicable</label>
+                                            <div>
+                                                <label>
+                                                    <input type="radio" name="documentApplicable1" value="Yes"> Yes
+                                                </label>
+                                                <br>
+                                                <label>
+                                                    <input type="radio" name="documentApplicable1" value="No"> No
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-xs-12 col-xl-6 col-md-12">
+                                        <div class="form-group">
+                                          <label for="taskName">Document date field Name</label>
+                                          <input type="text" maxlength="150" class="form-control" maxlength="150"
+                                            />
+                                        </div>
+                                    </div>
+
+
+                                    <div class="col-xs-12 col-xl-3 col-md-12">
+                                        <div class="form-group">
+                                            <label for="documentApplicable">Document date Applicable</label>
+                                            <div>
+                                                <label>
+                                                    <input type="radio" name="documentApplicable" value="Yes"> Yes
+                                                </label>
+                                                <br>
+                                                <label>
+                                                    <input type="radio" name="documentApplicable" value="No"> No
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-12 col-xl-3 col-md-12">
+                                        <div class="form-group">
+                                            <label for="documentApplicable">Attachment Applicable</label>
+                                            <div>
+                                                <label>
+                                                    <input type="radio" name="documentApplicable" value="Yes"> Yes
+                                                </label>
+                                                <br>
+                                                <label>
+                                                    <input type="radio" name="documentApplicable" value="No"> No
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <!-- <div class="row">
+                                    <div class="col-xs-12 col-xl-3 col-md-12">
+                                        <div class="form-group">
+                                            <label for="documentApplicable">Validity Applicable</label>
+                                            <div>
+                                                <label>
+                                                    <input type="radio" name="documentApplicable" value="Yes"> Yes
+                                                </label>
+                                                <br>
+                                                <label>
+                                                    <input type="radio" name="documentApplicable" value="No"> No
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-12 col-xl-3 col-md-12">
+                                        <div class="form-group">
+                                            <label for="documentApplicable">Attachment Applicable</label>
+                                            <div>
+                                                <label>
+                                                    <input type="radio" name="documentApplicable" value="Yes"> Yes
+                                                </label>
+                                                <br>
+                                                <label>
+                                                    <input type="radio" name="documentApplicable" value="No"> No
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div> -->
+                           
+
+                            
+                            </div>
+                              
+                        </div>
+                        <br>
+                        <div class="accordion card tab-content">
+                            <div *ngFor="let item of accordionItems; let i = index" class="accordion-item">
+
+                                <h2 class="accordion-header">
+                                    <button (click)="toggle(i)" class="accordion-button">
+                                        {{ item.title }}
+                                    </button>
+                                </h2>
+                                <div class="accordion-body" [class.show]="activeIndices.includes(i)">
+                                    <form>
+                                        <div class="mb-3" *ngIf="i === 0">
+
+                                            <!-- For accordion 1 -->
+
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="accordion-body card" [class.show]="activeIndices.includes(i)">
+                                    <form>
+                                        <div class="mb-3" *ngIf="i === 1">
+
+
+                                            <!-- For accordion 2 -->
+
+
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>

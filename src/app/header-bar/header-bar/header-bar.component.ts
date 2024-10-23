@@ -133,6 +133,11 @@ constructor(private loginService:CredentialService,
     this.selectedTab = 'project-uploader'
   }
 
+  navigateToRecTaskManagement(){
+    this.router.navigate(['task/recursive-task']);
+    this.selectedTab = 'recursive-task-management'
+  }
+
 
   emitLoggedInUser(): void {
     this.loggedInUserEmitter.emit(this.loggedInUser);

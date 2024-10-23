@@ -117,7 +117,7 @@
                                                                     <div class="tag badge mt-2 mr-1" style="margin-left:22px" >
                                                                         <div class="row no-gutters align-items-center">
                                                                             <div class="tag-color mr-2" style="background-color: #388E3C;"></div>
-                                                                            <div class="tag-label"> Recursivre task description</div>
+                                                                            <div class="tag-label">{{t.term}}</div>
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -126,7 +126,7 @@
                                                         <div >
                                                             <table class="table table-striped">
                                                                 <tbody>
-                                                                    <tr *ngIf="selectedDetails.length === 0 || ''" class="no-data" style="display: table-row;">
+                                                                    <tr *ngIf="taskList.length === 0 || ''" class="no-data" style="display: table-row;">
                                                                         <td colspan="4" style="text-align:center;font-weight:900">No data</td>
                                                                     </tr>                                                
                                                                 </tbody>

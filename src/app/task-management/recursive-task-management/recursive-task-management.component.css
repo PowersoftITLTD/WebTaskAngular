@@ -15,7 +15,7 @@ select{
   }
 
 .side-bar-scroll {
-    max-height: calc(100vh - 240px);
+    max-height: calc(100vh - 260px);
     max-width: 100%;
     overflow-x: auto;
     overflow-y: auto; 
@@ -78,6 +78,13 @@ select{
 }
 
 @media only screen and (max-width: 992px) {
+
+  .side-bar-scroll {
+    max-height: calc(100vh - 350px);
+    max-width: 100%;
+    /* overflow-x: auto; */
+    overflow-y: auto;
+  }
 
   .department{
       width:45%;

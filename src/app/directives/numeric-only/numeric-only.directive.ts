@@ -9,9 +9,11 @@ export class NumericOnlyDirective {
 
   @HostListener('keydown', ['$event'])
   onKeyDown(event: KeyboardEvent) {
+    const validKeys = /[1-9\b]|ArrowLeft|ArrowRight|Backspace/;
+
 
     // console.log('Event check: ',event)
-    if (!event.key.match(/[\d\b\ArrowLeft\ArrowRight\Backspace]/)) {
+    if (!event.key.match(validKeys)) {
       event.preventDefault();
     }
   }

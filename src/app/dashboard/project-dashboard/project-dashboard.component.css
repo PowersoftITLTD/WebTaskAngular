@@ -1,14 +1,10 @@
-/* @import url('../../../assets/css/main.css'); */
-
 [fuse-cloak],
 .fuse-cloak {
     display: none !important;
 }
 
-/* Scroll Bar */
 .side-bar-scroll {
     max-height: calc(100vh - 150px); 
-    /* max-height: 600px !important; */
     overflow: auto !important;
 }
 
@@ -71,8 +67,3 @@ body{
         padding-left: 0px !important;
     }
 }
-
-
-/* body{
-    position: absolute;
-} */

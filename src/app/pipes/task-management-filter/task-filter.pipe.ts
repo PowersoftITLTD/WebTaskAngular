@@ -16,7 +16,11 @@ export class TaskFilterPipe implements PipeTransform {
       (task.TASK_NO && task.TASK_NO.toString().includes(searchText)) ||
       (task.TAGS && Array.isArray(task.TAGS) && task.TAGS.some((tag:string) => tag.toLowerCase().includes(searchText))) ||
       (task.PROJECT_NAME && task.PROJECT_NAME.toLowerCase().includes(searchText)) ||
-      (task.RESPONSIBLE_TAG && task.RESPONSIBLE_TAG.toLowerCase().includes(searchText))
+      (task.RESPONSIBLE_TAG && task.RESPONSIBLE_TAG.toLowerCase().includes(searchText)) ||
+      (task.tasK_DESCRIPTION && task.tasK_DESCRIPTION.toLowerCase().includes(searchText)) ||
+      (task.term && task.term.toLowerCase().includes(searchText)) ||
+      (task.lasT_UPDATED_BY && task.createD_BY_Name.toLowerCase().includes(searchText)) ||
+      (task.lasT_UPDATED_BY && task.lasT_UPDATED_BY_name.toLowerCase().includes(searchText))
     );
   }
   

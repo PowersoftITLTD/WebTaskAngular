@@ -1,4 +1,4 @@
-<div (mouseleave)="showDropDown = false" class="dropdown-container" >
+<div  class="dropdown-container" >
     <button type="button" class="drop-toggle btn flat" (click)="showDropDown = !showDropDown" >
         <span *ngIf="checkedList.length > 0">{{checkedList.join(', ')}}</span>
         <i class="fa fa-angle-down"></i>

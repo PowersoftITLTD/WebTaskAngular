@@ -1,4 +1,4 @@
-/* @import url('../../../assets/Content/css/main.css'); */
+@import url('https://stackpath.bootstrapcdn.com/bootstrap/4.6.0/js/bootstrap.min.js');
 
 .progress {
   background: #bebfbf;
@@ -239,10 +239,6 @@ body {
   width: 50%;
 }
 
-/* .month_class_row{
-  width: 100rem;
-} */
-
 
 @media only screen and (max-width: 992px) {
   body {
@@ -273,19 +269,6 @@ body {
   .month_class{
     width: 32.5rem;
   }
-
-
-  /* .month_class_row{
-    width: 0rem;
-  } */
-  /* .checkbox-container {
-    display: flex;
-    flex-direction: column;
-  }
-
-  .checkbox-item {
-    margin-bottom: 0.5rem;
-  } */
 }
 
 

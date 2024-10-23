@@ -101,6 +101,8 @@ export class SelectedTaskInfoComponent implements OnInit {
 
           this.taskDetails = taskDetails
 
+          console.log('taskDetails', taskDetails)
+
           // console.log('this.taskDetails[0]?.PROJECT_MKEY', this.taskDetails[0])
 
           this.apiService.getSubProjectDetails(this.taskDetails[0]?.PROJECT_MKEY).subscribe(

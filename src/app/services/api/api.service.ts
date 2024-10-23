@@ -136,13 +136,15 @@ export class ApiService {
   }
 
 
+
+
+
   /**RECURSIVE TASK INTEGRATION**/
 
 
   //login
   login(loginName: string, loginPassword: string): Observable<any> {
 
-    console.log(`come to me ${loginName} and ${loginPassword}`)
     const headers = new HttpHeaders({
       'accept': 'text/plain'
     });
@@ -194,6 +196,22 @@ export class ApiService {
     return storedUser 
   }
   
+  recursiveFileUploader(file: File, additionalAttributes: any, token: string): Observable<any> {
+    const formData = new FormData();
+    
+    formData.append('file', file, file.name);
+    
+    Object.keys(additionalAttributes).forEach(key => {
+      formData.append(key, additionalAttributes[key]);
+    });
+  
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
+  
+    return this.http.post(`${this._apiUrl_1}api/RecursiveUploader`, formData, { headers });
+  }
+
 
   getToken(): string | null {
     return localStorage.getItem('jwtToken');

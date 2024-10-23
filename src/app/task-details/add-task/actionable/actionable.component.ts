@@ -234,6 +234,8 @@ export class ActionableComponent implements OnInit {
   }
 
   fileUrl(filePath: string) {
+
+    console.log('filePath', filePath)
     return `http://182.78.248.166:8070/Task/Task/${filePath}`;
   }
 

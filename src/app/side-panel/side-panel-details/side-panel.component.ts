@@ -43,6 +43,7 @@ export class SidePanelComponent implements OnInit {
 
 
   isTaskDropdownOpen: boolean = false;
+  isApprovalDropdown:boolean = false;
 
   //selectedTab
   selectedTab: string = '';
@@ -94,6 +95,9 @@ export class SidePanelComponent implements OnInit {
     this.isTaskDropdownOpen = !this.isTaskDropdownOpen;
   }
 
+  toggleApprovalDropdown() {
+    this.isApprovalDropdown = !this.isApprovalDropdown;
+  }
   navigateToTask() {
     this.router.navigate(['task/task-management']);
     this.selectedTab = 'task-management'
@@ -102,6 +106,41 @@ export class SidePanelComponent implements OnInit {
   navigateToRecursiveTask() {
     this.router.navigate(['task/recursive-task']);
     this.selectedTab = 'recursive-task'
+  }
+
+  navigateToApprovlTempelate() {
+    this.router.navigate(['approval-tempelate/add-approval-tempelate']);
+    this.selectedTab = 'approval-tempelate'
+  }
+
+  navigateToDocumentTempelate() {
+    this.router.navigate(['approvals/document-tempelate']);
+    this.selectedTab = 'document-tempelate'
+  }
+
+  navigateToApprovedTempelate() {
+    this.router.navigate(['approvals/approved-tempelate']);
+    this.selectedTab = 'approved-tempelate'
+  }
+
+  navigateToProjectDefination() {
+    this.router.navigate(['approvals/project-defination']);
+    this.selectedTab = 'project-defination'
+  }
+
+  navigateToProjectDD() {
+    this.router.navigate(['approvals/project-document-depository']);
+    this.selectedTab = 'project-document-depository'
+  }
+
+  navigateToProjectDS() {
+    this.router.navigate(['approvals/project-document-search']);
+    this.selectedTab = 'project-document-search'
+  }
+
+  navigateToApprovalTaskInitiation() {
+    this.router.navigate(['approvals/approval-task-initiation']);
+    this.selectedTab = 'approval-task-initiation'
   }
 
   setActiveTab() {

@@ -63,6 +63,9 @@ export class RecursiveTaskManagementComponent implements OnInit {
   mkey: number | any
   isSidebarOpen: boolean = false;
 
+  project:any;
+  sub_proj:any;
+
   isAscending: boolean = true;
 
   source:any;
@@ -105,10 +108,38 @@ export class RecursiveTaskManagementComponent implements OnInit {
 
     this.onLogin();
     this.fetchEmployeeName();
+    this.fetchProjectData();    
+
   }
  
 
 
+  fetchProjectData(): void {
+    this.apiService.getProjectDetails().subscribe(
+      (data: any) => {
+        this.project = data;
+        console.log("Project", this.project);
+      },
+      (error: ErrorHandler) => {
+        console.log(error, 'Error Occurred while fetching projects');
+      }
+    );
+  }
+
+
+  // fetchSubProj(){
+
+  //   this.apiService.getSubProjectDetails(proj.MASTER_MKEY).subscribe(
+  //     (data: any) => {
+  //       this.sub_proj = data;
+  //       // console.log('this.sub_proj',this.sub_proj)                                  
+  //     },
+  //     (error: ErrorHandler) => {
+  //       console.log(error, 'Error Occurred while fetching sub-projects');
+  //     }
+  //   );
+  
+  // }
   onLogin() {   
 
     this.dataService.validateUser(this.loginName, this.loginPassword);
@@ -175,13 +206,51 @@ fetchTaskDetails() {
     this.recursiveLogginUser = this.apiService.getRecursiveUser();
     this.apiService.getRecursiveTaskManagement(this.recursiveLogginUser).subscribe(response => {
       this.taskList = response;
-      
-      // After fetching task details, we can merge employee names
       this.mergeEmployeeNamesWithTasks();
+      this.mergingProjAndSubProjName();
     }, error => {
       console.error('Failed to fetch task details:', error);
     });
 }
+
+
+mergingProjAndSubProjName() {
+
+  if (!this.project || !Array.isArray(this.project)) {
+    console.error('Project list is undefined or not an array');
+    return;
+  }
+
+  const projectMap = new Map(this.project.map((proj: any) => [proj.MASTER_MKEY, proj.TYPE_DESC]));
+
+  this.project.forEach((proj: any) => {
+    this.apiService.getSubProjectDetails(proj.MASTER_MKEY).subscribe(
+      (data: any) => {
+        this.sub_proj = data;
+
+        const subProjectMap = new Map(this.sub_proj.map((sub: any) => [sub.MASTER_MKEY, sub.TYPE_DESC]));
+        
+        if (this.taskList && this.taskList.length > 0) { 
+          this.taskList.forEach((task: any) => {
+
+              task.project_Name = projectMap.get(task.projecT_ID) || '0';
+              task.sub_project_Name = subProjectMap.get(task.suB_PROJECT_ID) || '0'; // Adjust key as needed
+          });
+        } else {
+            console.error('taskList is undefined or empty');
+        }
+      },
+      (error: ErrorHandler) => {
+        console.log(error, 'Error Occurred while fetching sub-projects');
+      }
+    );
+  });
+
+}
+
+
+
+
 
 mergeEmployeeNamesWithTasks() {
     const employeeMap = new Map(this.employees.map(emp => [emp.MKEY, emp.Assign_to]));
@@ -189,6 +258,7 @@ mergeEmployeeNamesWithTasks() {
     this.taskList.forEach(task => {
       task.createD_BY_Name = employeeMap.get(task.createD_BY) || 'Unknown';
       task.lasT_UPDATED_BY_name = employeeMap.get(task.lasT_UPDATED_BY) || 'Unknown';
+      task.assign_To_Name = employeeMap.get(task.assigneD_TO) || 'NA'
     });
 
     // console.log('Merged Task List:', this.taskList);
@@ -246,108 +316,6 @@ mergeEmployeeNamesWithTasks() {
   openSelectedTask(data: any) {
     this.router.navigate(['recursive-task', 'add-recursive-task', { Task_Num: data.mkey }], {state: { taskData: data }});
   }
-
-
-  // getIcon(status: string): string {
-  //   switch (status.toUpperCase()) {
-  //     case 'CREATED':
-  //       return '../../../assets/Content/icons/Created.png';
-  //     case 'SUB TASK CREATED':
-  //       return '../../../assets/Content/icons/SubTask1.png';
-  //     case 'CANCEL':
-  //       return '../../../assets/Content/icons/Cancell.png';
-  //     case 'CANCELLED':
-  //       return '../../../assets/Content/icons/Cancell.png';
-  //     case 'CANCEL INITIATED':
-  //       return '../../../assets/Content/icons/Cancell.png';
-  //     case 'CLOSE':
-  //       return '../../../assets/Content/icons/Cancelled.png';
-  //     case 'CLOSE INITIATED':
-  //       return '../../../assets/Content/icons/Completed.png';
-  //     case 'WORK IN PROGRESS':
-  //     case 'RE-WORK':
-  //       return '../../../assets/Content/icons/WIP.jpg';
-  //     case 'COMPLETED':
-  //       return '../../../assets/Content/icons/completed.jpg';
-  //     default:
-  //       return '';
-  //   }
-  // }
-
-
-  // myActionable() {
-  //   this.selectedTab = 'actionable';
-  //   const option = 'DEFAULT';
-  //   this.fetchTaskDetails(this.loggedInUser[0]?.MKEY, option);
-  //   this.router.navigate([], {
-  //     relativeTo: this.activatedRoute,
-  //     queryParams: { source: 'actionable' },
-  //     queryParamsHandling: 'merge' 
-  //   });
-  //   this.resetSource();
-  // }
-
-  // AllocatedToMe() {
-  //   this.selectedTab = 'allocatedToMe';
-  //   const option = 'ALLOCATEDTOME';
-  //   this.fetchTaskDetails(this.loggedInUser[0]?.MKEY, option);
-  //   this.router.navigate([], {
-  //     relativeTo: this.activatedRoute,
-  //     queryParams: { source: 'allocatedButNotStarted' },
-  //     queryParamsHandling: 'merge' 
-  //   });
-    
-  //   this.resetSource();
-  // }
-
-  // AllocatedByMe() {
-  //   this.selectedTab = 'allocatedByMe';
-  //   const option = 'ALLOCATEDBYME';
-  //   this.fetchTaskDetails(this.loggedInUser[0]?.MKEY, option);
-  //   this.router.navigate([], {
-  //     relativeTo: this.activatedRoute,
-  //     queryParams: { source: 'allocatedByMe' },
-  //     queryParamsHandling: 'merge' 
-  //   });
-  //   this.resetSource()
-  // }
-
-  // completedByMe() {
-  //   this.selectedTab = 'completedByMe';
-  //   const option = 'COMPLETEDBYME';
-  //   this.fetchTaskDetails(this.loggedInUser[0]?.MKEY, option);
-  //   this.router.navigate([], {
-  //     relativeTo: this.activatedRoute,
-  //     queryParams: { source: 'completedByMe' },
-  //     queryParamsHandling: 'merge' 
-  //   });
-  //   this.resetSource()
-  // }
-
-  // completedForMe() {
-  //   this.selectedTab = 'completedForMe';
-  //   const option = 'COMPLETEDFORME';
-  //   this.fetchTaskDetails(this.loggedInUser[0]?.MKEY, option);
-  //   this.router.navigate([], {
-  //     relativeTo: this.activatedRoute,
-  //     queryParams: { source: 'completedForMe' },
-  //     queryParamsHandling: 'merge' 
-  //   });
-  //   this.resetSource()
-
-  // }
-
-  // cancelled() {
-  //   this.selectedTab = 'cancelled';
-  //   const option = 'CANCELCLOSE';   
-  //   this.fetchTaskDetails(this.loggedInUser[0]?.MKEY, option);
-  //   this.resetSource()
-  //   this.router.navigate([], {
-  //     relativeTo: this.activatedRoute,
-  //     queryParams: { source: 'cancelled' },
-  //     queryParamsHandling: 'merge' 
-  //   });
-  // }
 
 
   resetSource() {

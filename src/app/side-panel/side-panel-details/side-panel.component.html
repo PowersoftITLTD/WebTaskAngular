@@ -57,6 +57,15 @@
                   </a>
                 </li>
 
+                <li class="nav-item">
+                  <a class="nav-link ripple btn" [ngClass]="{ 'active': selectedTab === 'approval-tempelate' }" (click)="navigateToApprovlTempelate()">
+                    <div class="py-2">
+                      <i class="icon s-4 icon-checkbox-marked"></i>
+                      <span>Approval Tempelate</span>
+                    </div>                  
+                  </a>
+                </li>
+
               </ul>
             </li>            
                         
@@ -66,6 +75,73 @@
                 <i class="icon s-4 icon-checkbox-marked"></i>
                 <span>Project Uploader</span>
               </a>
+            </li>
+
+            <li class="nav-item" role="tab">
+              <a class="nav-link ripple with-arrow btn" (click)="toggleApprovalDropdown()">
+                <i class="icon s-4 icon-checkbox-marked"></i>
+                <span>Approvals</span>
+              </a>
+              <ul class="nav flex-column" *ngIf="isApprovalDropdown">
+
+                <li class="nav-item">
+                  <a class="nav-link ripple btn" [ngClass]="{ 'active': selectedTab === 'document-tempelate' }" (click)="navigateToDocumentTempelate()">
+                    <div class="py-2">
+                      <i class="icon s-4 icon-checkbox-marked"></i>
+                      <span>Document Tempelate</span>
+                    </div>                  
+                  </a>
+                </li>
+
+                <li class="nav-item">
+                  <a class="nav-link ripple btn" [ngClass]="{ 'active': selectedTab === 'approved-tempelate' }" (click)="navigateToApprovedTempelate()">
+                    <div class="py-2">
+                      <i class="icon s-4 icon-checkbox-marked"></i>
+                      <span>Approved Tempelate</span>
+                    </div>                  
+                  </a>
+                </li>
+
+                <li class="nav-item">
+                  <a class="nav-link ripple btn" [ngClass]="{ 'active': selectedTab === 'project-defination' }" (click)="navigateToProjectDefination()">
+                    <div class="py-2">
+                      <i class="icon s-4 icon-checkbox-marked"></i>
+                      <span>Project Defination</span>
+                    </div>                  
+                  </a>
+                </li>
+
+                <li class="nav-item">
+                  <a class="nav-link ripple btn" [ngClass]="{ 'active': selectedTab === 'project-document-depository' }" (click)="navigateToProjectDD()">
+                    <div class="">
+                      <i class="icon s-4 icon-checkbox-marked "></i>
+                      <span>Project Document </span><br>
+                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                      <span>Depository</span>
+                    </div>                  
+                  </a>
+                </li>
+
+                <li class="nav-item">
+                  <a class="nav-link ripple btn" [ngClass]="{ 'active': selectedTab === 'project-document-search' }" (click)="navigateToProjectDS()">
+                    <div class="py-2">
+                      <i class="icon s-4 icon-checkbox-marked"></i>
+                      <span>Project Document Search</span>
+                    </div>                  
+                  </a>
+                </li>
+
+                <li class="nav-item">
+                  <a class="nav-link ripple btn" [ngClass]="{ 'active': selectedTab === 'approval-task-initiation' }" (click)="navigateToApprovalTaskInitiation()">
+                    <div class="py-2">
+                      <i class="icon s-4 icon-checkbox-marked"></i>
+                      <span>Approval Task Initiation</span>
+                    </div>                  
+                  </a>
+                </li>
+
+              </ul>
             </li>
             
           </div>

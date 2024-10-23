@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, HostListener, Input, OnInit, Output } from '@angular/core';
 
 @Component({
     selector: 'app-multi-select-dropdown',
@@ -25,6 +25,16 @@ export class MultiSelectDropdownComponent implements OnInit {
         this.checkedList = [];
 
 
+    }
+
+    @HostListener('document:click', ['$event'])
+    onDocumentClick(event: MouseEvent) {
+      const target = event.target as HTMLElement;
+      const dropdown = document.querySelector('.dropdown-container') as HTMLElement;
+  
+      if (this.showDropDown && dropdown && !dropdown.contains(target)) {
+        this.showDropDown = false;
+      }
     }
 
     ngOnInit(): void {
@@ -71,9 +81,10 @@ export class MultiSelectDropdownComponent implements OnInit {
                     if (monthItem) {
 
                         monthItem.checked = true;
-
                         if(monthItem.checked = true){
-                            this.toggleMonthDaySelection(this.list.name  , true);
+
+                            console.log(this.list.name)
+                            this.toggleMonthDaySelection(this.list.name , true);
 
                         }
                     }
@@ -88,6 +99,10 @@ export class MultiSelectDropdownComponent implements OnInit {
             this.toggleMonthDaySelection(this.list.name = 'All', true);
 
         }
+
+        // if (this.taskData && (this.taskData.term !== 'Month')) {
+        //     this.toggleMonthDaySelection(this.list.name = 'All', true);
+        // }
 
     }
 

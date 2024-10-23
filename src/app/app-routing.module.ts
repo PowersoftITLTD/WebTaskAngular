@@ -30,8 +30,14 @@ const routes: Routes = [
   // add recursive task
   { path: 'recursive-task', loadChildren: () => import('../app/add-recursive-task/add-recursive-task.module').then(m => m.AddRecursiveTaskModule), canActivate: [AuthGuardGuard] },
 
+  //add approval tempelate
+  { path: 'approval-tempelate', loadChildren:() => import('../app/approval-tempelate/approval-tempelate.module').then(m => m.ApprovalTempelateModule), canActivate:[AuthGuardGuard] },
+
   // Project-uploader
-  { path: 'project-uploader', loadChildren: () => import('../app/project-uploader/project-uploader.module').then(m => m.ProjectUploaderModule), canActivate: [AuthGuardGuard] }
+  { path: 'project-uploader', loadChildren: () => import('../app/project-uploader/project-uploader.module').then(m => m.ProjectUploaderModule), canActivate: [AuthGuardGuard] },
+
+  //approvals
+  { path:'approvals', loadChildren:()=> import('../app/approvals/approvals.module').then(m => m.ApprovalsModule), canActivate:[AuthGuardGuard]}
 
 ];
 
