@@ -10,14 +10,24 @@ import { TaskDuePipe } from '../pipes/task-date-filter/task-due.pipe';
 import { SidePanelModule } from '../side-panel/SidePanelModule';
 import { PipeContentModule } from '../pipes/pipe-content.module';
 import { RecursiveTaskManagementComponent } from './recursive-task-management/recursive-task-management.component';
+<<<<<<< HEAD
+import { ApprovalScreenComponent } from './approval-screen/approval-screen.component';
+=======
+>>>>>>> parent of cb45e19 (Adding Updated Packages 27-11-2024)
 
 
 
 @NgModule({
   declarations: [
     TaskManagementComponent,
+<<<<<<< HEAD
+    RecursiveTaskManagementComponent,
+    ApprovalScreenComponent,
+    TaskDuePipe,
+=======
     TaskDuePipe,
     RecursiveTaskManagementComponent,
+>>>>>>> parent of cb45e19 (Adding Updated Packages 27-11-2024)
   ],
   exports:[
     TaskManagementComponent,    

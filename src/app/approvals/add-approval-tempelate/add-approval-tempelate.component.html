@@ -1,0 +1,439 @@
+<body class="layout layout-left-navigation layout-below-toolbar layout-below-footer">
+    <main>
+        <div id="wrapper">
+            <div class="content-wrapper">
+                <div class="">
+                    <div id="e-commerce-product" class="simple tabbed">
+                        <app-header-bar (loggedInUserEmitter)="receiveLoggedInUser($event)"></app-header-bar>
+
+                        <div class="bg-primary py-3 text-auto row align-items-center justify-content-between ">
+
+                            <div class="row no-gutters align-items-center">
+                                <div class="product-image mr-4 ml-8">
+                                    <img
+                                        src="../../../../assets/Content/images/ecommerce/product-image-placeholder.png">
+                                </div>
+                                <div class="truncate-date">
+                                    <b>Approval Tempelate</b>
+                                </div>
+                            </div>
+
+
+                            <div class="flex-grow-1"></div>
+                            <div class="mr-8">
+                                <button type="submit" class="btn btn-light mr-2" (click)="onAddTempDoc()"
+                                    id="btnSaveTask">
+                                    SAVE
+                                </button>
+                            </div>
+                        </div>
+
+                        <form [formGroup]="approvalTempForm" (ngSubmit)="onSubmit()">
+                            <div class="accordion  tab-content">
+                                <div *ngFor="let item of accordionItems; let i = index" class="accordion-item">
+
+                                    <h2 class="accordion-header">
+                                        <button (click)="toggle(i)" type="button" class="accordion-button ">
+                                            {{ item.title }}
+                                        </button>
+                                    </h2>
+
+                                    <div class="accordion-body " [class.show]="activeIndices.includes(i)">
+                                        <div class="" *ngIf="i === 0">
+
+
+                                            <div class="row mx-1 mb-2">
+
+                                                <div class="col-xs-12 col-xl-4 col-md-12">
+                                                    <div class="form-group">
+                                                        <label for="category">Building</label>
+                                                        <select class="h6 form-control" formControlName="building">
+                                                            <option value="">--SELECT--</option>
+                                                            <option *ngFor="let building of buildingList"
+                                                                [value]="building.mkey">{{building.typE_DESC}}</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-xs-12 col-xl-4 col-md-12">
+                                                    <div class="form-group">
+                                                        <label for="category">Standard</label>
+                                                        <select class="h6 form-control" formControlName="standard">
+                                                            <option value="">--SELECT--</option>
+                                                            <option *ngFor="let standard of standardList"
+                                                                [value]="standard.mkey"> {{standard.typE_DESC}}</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-xs-12 col-xl-4 col-md-12">
+                                                    <div class="form-group">
+                                                        <label for="category">Statutory Autority</label>
+                                                        <select class="h6 form-control" formControlName="statutoryAuth">
+                                                            <option value="">--SELECT--</option>
+                                                            <option *ngFor="let statutoryAuth of statutoryAuthList"
+                                                                [value]="statutoryAuth.mkey">{{statutoryAuth.typE_DESC}}
+                                                            </option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="accordion-body" [class.show]="activeIndices.includes(i)">
+                                        <div class="mb-3" *ngIf="i === 1">
+
+
+                                            <div class="row mx-1">
+
+                                                <div class="col-xs-12 col-xl-4 col-md-12">
+
+                                                    <div class="form-group">
+                                                        <label for="taskName">Short Description</label>
+                                                        <input type="text" maxlength="150"
+                                                            formControlName="shortDescription" class="form-control"
+                                                            maxlength="150" />
+
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-xs-12 col-xl-4 col-md-12">
+                                                    <div class="form-group">
+                                                        <label for="taskDescription">Long Description</label>
+                                                        <textarea class="form-control"
+                                                            aria-describedby="task description"
+                                                            formControlName="longDescrition" rows="3"
+                                                            maxlength="1000"></textarea>
+
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-xs-12 col-xl-4 col-md-12">
+                                                    <div class="form-group">
+                                                        <label for="taskName">Abbr.</label>
+                                                        <input type="text" maxlength="150" class="form-control"
+                                                            maxlength="150" formControlName="abbr" />
+                                                    </div>
+                                                    <div *ngIf="abbrivationError" class="text-danger">
+                                                        {{ abbrivationError }}
+                                                    </div>
+
+
+                                                </div>
+
+                                                <div class="col-xs-12 col-xl-4 col-md-12">
+                                                    <div class="form-group">
+                                                        <label for="category">Departrment</label>
+                                                        <select class="h6 form-control" formControlName="department">
+                                                            <option value=""> --SELECT--</option>
+                                                            <option *ngFor="let dept of departmentList"
+                                                                [value]="dept.mkey">{{dept.typE_DESC}}</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+
+
+
+                                                <div class="col-xs-12 col-xl-4 col-md-12">
+                                                    <div class="form-group">
+                                                        <label for="category">Responsible Person</label>
+                                                        <!-- <ng-container *ngIf="!taskData?.mkey"> -->
+                                                        <input type="text" class="form-control"
+                                                            formControlName="assignedTo"
+                                                            (input)="filterEmployees($event)" appAlphabeticOnly />
+                                                        <!-- </ng-container> -->
+
+                                                        <div style="width: 100%;" class="pr-10 mt-1">
+                                                            <ul>
+                                                                <li *ngFor="let event of filteredEmployees; let i = index;"
+                                                                    class="active" type="button"
+                                                                    [class.inactive]="filteredEmployees"
+                                                                    (click)="selectEmployee(event);">
+                                                                    {{ event.Assign_to }}
+                                                                </li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-xs-12 col-xl-4 col-md-12">
+                                                    <div class="form-group">
+                                                        <label for="category">Job Role</label>
+                                                        <select class="h6 form-control" formControlName="jobRole">
+                                                            <option value="">--SELECT--</option>
+                                                            <option *ngFor="let jobRole of jobRoleList"
+                                                                [value]="jobRole.mkey">{{jobRole.typE_DESC}}</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-xs-12 col-xl-4 col-md-12">
+                                                    <div class="form-group">
+                                                        <label for="taskName">No. of Days Required</label>
+                                                        <input type="number" maxlength="150" appNumericOnly
+                                                            formControlName="noOfDays" class="form-control"
+                                                            maxlength="150" />
+                                                    </div>
+                                                </div>
+                                                <div class="col-xs-12 col-xl-4 col-md-12">
+                                                    <div class="form-group">
+                                                        <label for="category">Sanctioning Authority</label>
+                                                        <select class="h6 form-control"
+                                                            formControlName="sanctioningAuth">
+                                                            <option value=""> --SELECT--</option>
+                                                            <option *ngFor="let sanctioningAuth of SanctoningAuthList"
+                                                                [value]="sanctioningAuth.mkey">
+                                                                {{sanctioningAuth.typE_DESC}} </option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-xs-12 col-xl-4 col-md-12">
+                                                    <div class="form-group">
+                                                        <label for="taskName">Sanctioning Department</label>
+                                                        <input type="text" maxlength="150"
+                                                            formControlName="sanctioningDept" class="form-control"
+                                                            maxlength="150" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- End Result Accordion Section -->
+                                    <div class="accordion-body " [class.show]="activeIndices.includes(i)">
+                                        <div class="mb-3" *ngIf="i === 2">
+                                            <div class="row justify-content-between">
+                                                <!-- Left Column: Table of Selected Documents -->
+                                                <div class="col-xs-6 col-xl-4 col-md-12 mx-4">
+                                                    <div class="row">
+                                                        <div class="form-group sample-wrapper">
+                                                            <h6>Details:</h6>
+                                                            <div class="sample-wrapper">
+                                                                <div class="city-tag">
+                                                                    <br>
+                                                                    <table class="table table-active">
+                                                                        <thead>
+                                                                            <tr>
+                                                                                <th>Sr No.</th>
+                                                                                <th>Document Category</th>
+                                                                                <th>Document Name</th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                            <tr
+                                                                                *ngFor="let city of selectedDocsMap['endResult']; let i = index">
+                                                                                <td>{{i + 1}}</td>
+                                                                                <td>{{city.attributE2}}</td>
+                                                                                <td>{{city.typE_DESC}}</td>
+                                                                            </tr>
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
+                                                                <br>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Right Column: Search and Select Documents -->
+                                                <div class="col-xs-6 col-xl-6 col-md-12">
+                                                    <div class="form-group sample-wrapper">
+                                                        <label for="category">Document</label>
+                                                        <div class="sample-wrapper">
+                                                            <div class="pl-4 combo-section">
+                                                                <input type="text" (input)="filterCities()"
+                                                                    placeholder="Select Document"
+                                                                    class="search-input" />
+                                                                <div *ngIf="filteredDocs.length > 0" class="dropdown"
+                                                                    style="height: 510px;">
+                                                                    <ul class="dropdown-list">
+                                                                        <ng-container
+                                                                            *ngFor="let category of getUniqueDocs('endResult')">
+                                                                            <div class="country-header justify-content-center"
+                                                                                style="color: rgb(216, 87, 87);">
+                                                                                <b>{{ category }}</b>
+                                                                            </div>
+                                                                            <ng-container
+                                                                                *ngFor="let sortedDoc of getGroupedAndSortedDocs('endResult')[category]">
+                                                                                <li (click)="toggleSelection('endResult', sortedDoc)"
+                                                                                    [class.selected]="isSelected('endResult', sortedDoc)">
+                                                                                    {{ sortedDoc.typE_DESC }} ({{
+                                                                                    sortedDoc.attributE2 }})
+                                                                                </li>
+                                                                            </ng-container>
+                                                                        </ng-container>
+                                                                    </ul>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Checklist Accordion Section -->
+                                    <div class="accordion-body " [class.show]="activeIndices.includes(i)">
+                                        <div class="mb-3" *ngIf="i === 3">
+                                            <div class="row justify-content-between">
+                                                <div class="col-xs-12 col-xl-4 col-md-12 mx-4">
+                                                    <div class="row">
+                                                        <div class="form-group sample-wrapper">
+                                                            <h6>Details:</h6>
+                                                            <div class="sample-wrapper">
+                                                                <div class="city-tag">
+                                                                    <br>
+                                                                    <table class="table table-active">
+                                                                        <thead>
+                                                                            <th>Sr No.</th>
+                                                                            <th>Document Name</th>
+                                                                            <th>Document Category</th>
+                                                                        </thead>
+                                                                        <tbody
+                                                                            *ngFor="let city of selectedDocsMap['checklist']; let i = index">
+                                                                            <td>{{i + 1}}</td>
+                                                                            <td>{{city.attributE2}}</td>
+                                                                            <td>{{city.typE_DESC}}</td>
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
+                                                                <br>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-xs-12 col-xl-6 col-md-12">
+                                                    <div class="form-group sample-wrapper">
+                                                        <label for="category">Document</label>
+                                                        <div class="sample-wrapper">
+                                                            <div class="pl-4 combo-section">
+                                                                <input type="text" (input)="filterCities()"
+                                                                    placeholder="Select Documents" class="search-input" />
+                                                                <div *ngIf="filteredDocs.length > 0" class="dropdown"
+                                                                    style="height: 510px;">
+                                                                    <ul class="dropdown-list">
+                                                                        <ng-container
+                                                                            *ngFor="let country of getUniqueDocs('checklist')">
+                                                                            <div class="country-header justify-content-center"
+                                                                                style="color: rgb(216, 87, 87);">
+                                                                                <b>{{ country }}</b>
+                                                                            </div>
+                                                                            <ng-container
+                                                                                *ngFor="let sortedDoc of getGroupedAndSortedDocs('checklist')[country]">
+                                                                                <li (click)="toggleSelection('checklist', sortedDoc)"
+                                                                                    [class.selected]="isSelected('checklist', sortedDoc)">
+                                                                                    {{ sortedDoc.typE_DESC }} ({{
+                                                                                    sortedDoc.attributE2 }})
+                                                                                </li>
+                                                                            </ng-container>
+                                                                        </ng-container>
+                                                                    </ul>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                    <div class="accordion-body " [class.show]="activeIndices.includes(i)">
+                                        <div class="mb-3" *ngIf="i === 4">
+                                            <div class=" sample-wrapper">
+                                                <div class="sample-wrapper">
+                                                    <table class="table mb-5 ml-2 mr-5">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Sr No.</th>
+                                                                <th>Sequential No.</th>
+                                                                <th>Abbreviation</th>
+                                                                <th>Short Description</th>
+                                                                <th>Days Required</th>
+                                                                <th>Authority Department</th>
+                                                                <th>End Result</th>
+                                                                <th>
+                                                                    <!-- Button for adding a new row -->
+                                                                    <i class="fa-solid fa-plus btn" type="button"
+                                                                        (click)="addRow()"></i>
+                                                                </th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody formArrayName="rows">
+                                                            <ng-container *ngIf="getRelAbbr.length > 0">
+                                                                <tr *ngFor="let row of approvalTempForm.get('rows').controls; let i = index"
+                                                                    [formGroupName]="i">
+                                                                    <td>{{ i + 1 }}</td>
+                                                                    <td>
+                                                                        <input class="form-control" type="number"
+                                                                            formControlName="sequentialNo" />
+                                                                    </td>
+                                                                    <td>
+                                                                        <div class="input-container">
+                                                                            <select class="form-control mt-1"
+                                                                                formControlName="abbrivation"
+                                                                                (change)="onAbbrChange($event, row)">
+                                                                                <option value="" style="width: 15rem">
+                                                                                    --SELECT--</option>
+                                                                                <option
+                                                                                    *ngFor="let option of getRelAbbr"
+                                                                                    [value]="option.maiN_ABBR">{{
+                                                                                    option.maiN_ABBR }}
+                                                                                </option>
+                                                                            </select>
+                                                                            <input class="form-control"
+                                                                                style="width: 15rem"
+                                                                                placeholder="--SELECT--"
+                                                                                formControlName="abbrivation"
+                                                                                type="text" readonly />
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>
+                                                                        <input class="form-control"
+                                                                            formControlName="shorT_DESCRIPTION"
+                                                                            type="text" readonly />
+                                                                    </td>
+                                                                    <td>
+                                                                        <input class="form-control"
+                                                                            formControlName="nO_DAYS_REQUIRED"
+                                                                            type="number" readonly />
+                                                                    </td>
+                                                                    <td>
+                                                                        <input class="form-control"
+                                                                            formControlName="sanctioN_DEPARTMENT"
+                                                                            type="text" readonly />
+                                                                    </td>
+                                                                    <td>
+                                                                        <input class="form-control"
+                                                                            formControlName="enD_RESULT_DOC" type="text"
+                                                                            readonly />
+                                                                    </td>
+                                                                    <td>
+                                                                        <i class="fa fa-trash ml-6" type="button"
+                                                                            style="font-size: small; color: rgb(0, 110, 255)"
+                                                                            (click)="removeRow(i)"></i>
+                                                                    </td>
+                                                                </tr>
+                                                            </ng-container>
+                                                        </tbody>
+
+                                                    </table>
+                                                    <div *ngIf="getRelAbbr.length === 0 || ''"
+                                                        class="no-data d-flex justify-content-center align-items-center">
+                                                        No row to show
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>

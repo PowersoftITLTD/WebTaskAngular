@@ -14,6 +14,27 @@
   z-index: 1000 !important;
 }
 
+<<<<<<< HEAD
+
+
+.form-group {
+  margin-bottom: 10px; /* Adjust the bottom margin */
+}
+
+.form-group label {
+  font-size: 0.9em; /* Optionally reduce label font size */
+}
+
+.form-group select,
+.form-group input {
+  height: 30px; /* Set a smaller height */
+  padding: 5px; /* Adjust padding */
+  font-size: 0.9em; /* Optionally reduce font size */
+}
+
+
+=======
+>>>>>>> parent of cb45e19 (Adding Updated Packages 27-11-2024)
 .menu.inactive {
   display: none !important;
 }

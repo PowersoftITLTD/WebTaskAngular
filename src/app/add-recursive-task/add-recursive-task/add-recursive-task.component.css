@@ -240,6 +240,20 @@ body {
 }
 
 
+<<<<<<< HEAD
+.form-group {
+  margin-bottom: 5px; /* Adjust the bottom margin */
+}
+
+.form-group label {
+  font-size: 0.9em; /* Optionally reduce label font size */
+}
+
+
+
+
+=======
+>>>>>>> parent of cb45e19 (Adding Updated Packages 27-11-2024)
 @media only screen and (max-width: 992px) {
   body {
     padding-left: 0;

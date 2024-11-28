@@ -201,13 +201,13 @@ body {
 
 
 .tab-content {
-  max-height: calc(100vh - 100px);
+  max-height: calc(100vh - 138px);
   overflow-x: auto;
   overflow-y: auto;
 }
 
 .tab-content::-webkit-scrollbar {
-  width: 2px;
+  width: 8px;
 }
 
 .tab-content::-webkit-scrollbar-track {
@@ -256,6 +256,17 @@ body {
   width: 100%;
   text-align: center;
 }
+
+
+
+
+
+
+
+
+
+
+
 
 
 .input-container {
@@ -348,15 +359,19 @@ body {
 }
 
 
-.classification-border{
-  border-style: solid;
-  border-width: thin;
-  border-color: #bebfbf;
-}
 
-/* .combo-section {
+
+
+
+
+
+
+
+
+
+.combo-section {
   position: relative;
-} */
+}
 
 .search-input {
   width: 100%;
@@ -366,15 +381,15 @@ body {
   margin-bottom: 5px;
 }
 
-/* .dropdown {
+.dropdown {
   position: relative;
-} */
+}
 
 .dropdown-list {
   border: 1px solid #ccc;
   max-height: 500px;
   overflow-y: auto;
-  /* position: absolute; */
+  position: absolute;
   width: 100%;
   background: white;
   border-radius: 4px;

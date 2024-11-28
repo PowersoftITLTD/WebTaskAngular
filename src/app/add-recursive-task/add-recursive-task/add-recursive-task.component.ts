@@ -170,6 +170,10 @@ export class AddRecursiveTaskComponent implements OnInit, OnDestroy {
       if (RecursiveTaskData) {
         try {
           this.taskData = JSON.parse(RecursiveTaskData);
+<<<<<<< HEAD
+          console.log('Check task data',this.taskData)
+=======
+>>>>>>> parent of cb45e19 (Adding Updated Packages 27-11-2024)
           if (!isNewTask) {
             this.updatedDetails = this.taskData.mkey ? true : false;
           }
@@ -178,6 +182,10 @@ export class AddRecursiveTaskComponent implements OnInit, OnDestroy {
         }
       }
     }
+<<<<<<< HEAD
+    
+=======
+>>>>>>> parent of cb45e19 (Adding Updated Packages 27-11-2024)
     this.list =
       [
         { name: 'All', checked: true },
@@ -239,6 +247,10 @@ export class AddRecursiveTaskComponent implements OnInit, OnDestroy {
       const tagsArray = this.taskData.tags.split(',');
 
       this.selectedTags = tagsArray
+<<<<<<< HEAD
+      // console.log('tagsArray', tagsArray  )
+    }   
+=======
       console.log('tagsArray', tagsArray  )
     }
    
@@ -249,6 +261,7 @@ export class AddRecursiveTaskComponent implements OnInit, OnDestroy {
     //   this.taskData.attributE13 = "1";
     // }
 
+>>>>>>> parent of cb45e19 (Adding Updated Packages 27-11-2024)
   }
 
 
@@ -256,17 +269,24 @@ export class AddRecursiveTaskComponent implements OnInit, OnDestroy {
     this.apiService.getSubProjectDetails(this.taskData.projecT_ID).subscribe(
       (data: any) => {
         this.sub_proj = data;
+<<<<<<< HEAD
+        // console.log('this.sub_proj',this.sub_proj)                                  
+=======
         console.log('this.sub_proj',this.sub_proj)                                  
+>>>>>>> parent of cb45e19 (Adding Updated Packages 27-11-2024)
       },
       (error: ErrorHandler) => {
         console.log(error, 'Error Occurred while fetching sub-projects');
       }
     );
 
+<<<<<<< HEAD
+=======
     // this.recursiveTaskForm.patchValue({
     //   noOfDays: this.taskData[0].noOfDays
     // });
 
+>>>>>>> parent of cb45e19 (Adding Updated Packages 27-11-2024)
     if (this.taskData.length > 0 && this.taskData.tags !== null) {
       const tagsArray = this.taskData.tags.split(',');
       this.selectedTags = tagsArray;
@@ -525,16 +545,22 @@ export class AddRecursiveTaskComponent implements OnInit, OnDestroy {
         }
       }
     })
+<<<<<<< HEAD
+=======
 
+>>>>>>> parent of cb45e19 (Adding Updated Packages 27-11-2024)
   }
 
 
 
+<<<<<<< HEAD
+=======
 
 
 
 
 
+>>>>>>> parent of cb45e19 (Adding Updated Packages 27-11-2024)
   //Update
   updateRecursiveData() {
 

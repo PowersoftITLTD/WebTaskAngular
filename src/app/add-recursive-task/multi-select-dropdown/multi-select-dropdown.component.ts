@@ -83,7 +83,11 @@ export class MultiSelectDropdownComponent implements OnInit {
                         monthItem.checked = true;
                         if(monthItem.checked = true){
 
+<<<<<<< HEAD
+                            // console.log(this.list.name)
+=======
                             console.log(this.list.name)
+>>>>>>> parent of cb45e19 (Adding Updated Packages 27-11-2024)
                             this.toggleMonthDaySelection(this.list.name , true);
 
                         }

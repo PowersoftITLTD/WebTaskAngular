@@ -148,6 +148,17 @@ export class ApiService {
     const headers = new HttpHeaders({
       'accept': 'text/plain'
     });
+<<<<<<< HEAD
+
+    const params: any = {
+      LOGIN_NAME: loginName,
+      LOGIN_PASSWORD: loginPassword,
+      ClientId: '099153c2625149bc8ecb3e85e03f0022',
+      Base64Secret: 'IxrAjDoa2FqElO7IhrSrUJELhUckePEPVpaePlS_Xaw',
+      name: 'res'
+    };
+
+=======
     
     const params:any = {
       LOGIN_NAME: loginName,
@@ -157,6 +168,7 @@ export class ApiService {
       name:'res'
     };
  
+>>>>>>> parent of cb45e19 (Adding Updated Packages 27-11-2024)
 
     localStorage.setItem('recursiveLogin', JSON.stringify([params]));
 
@@ -178,6 +190,18 @@ export class ApiService {
     return this.http.get<any>(`${this._apiUrl_1}api/TaskManagement`, { headers });
   }
 
+<<<<<<< HEAD
+
+  addRecursiveTask(task: any, jwtToken: string): Observable<any> {
+    const headers = new HttpHeaders({ Authorization: `Bearer ${jwtToken}` });
+    return this.http.post<any>(`${this._apiUrl_1}api/TaskManagement`, task, { headers })
+  }
+
+
+  updateRecursiveTask(mkey: number, task: any, jwtToken: string): Observable<any> {
+    const headers = new HttpHeaders({ Authorization: `Bearer ${jwtToken}` });
+    return this.http.put<any>(`${this._apiUrl_1}api/TaskManagement/${mkey}`, task, { headers })
+=======
   
   addRecursiveTask(task:any, jwtToken: string): Observable<any>{
     const headers = new HttpHeaders({ Authorization: `Bearer ${jwtToken}` });
@@ -188,11 +212,160 @@ export class ApiService {
   updateRecursiveTask(mkey:number, task:any, jwtToken: string): Observable<any>{
     const headers = new HttpHeaders({ Authorization: `Bearer ${jwtToken}` });
     return this.http.put<any>(`${this._apiUrl_1}api/TaskManagement/${mkey}`, task , {headers})
+>>>>>>> parent of cb45e19 (Adding Updated Packages 27-11-2024)
   }
 
 
   getRecursiveUser(): any {
     const storedUser = localStorage.getItem('jwtToken'); // Retrieve the token
+<<<<<<< HEAD
+    return storedUser
+  }
+
+  recursiveFileUploader(file: File, additionalAttributes: any, token: string): Observable<any> {
+    const formData = new FormData();
+
+    formData.append('file', file, file.name);
+
+    Object.keys(additionalAttributes).forEach(key => {
+      formData.append(key, additionalAttributes[key]);
+    });
+
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
+
+    return this.http.post(`${this._apiUrl_1}api/RecursiveUploader`, formData, { headers });
+  }
+
+  //Document Tempelate
+  getDocumentTempelate(loggedInMkey: number, jwtToken: string): Observable<any> {
+    const headers = new HttpHeaders({ Authorization: `Bearer ${jwtToken}` });
+    return this.http.get<any>(`${this._apiUrl_1}api/DocumentTemplate?${loggedInMkey}`, { headers });
+  }
+
+  postDocumentTempelate(tempDocData: any, jwtToken: string): Observable<any> {
+    const headers = new HttpHeaders({ Authorization: `Bearer ${jwtToken}` });
+    return this.http.post<any>(`${this._apiUrl_1}api/DocumentTemplate`, tempDocData, { headers });
+  }
+
+
+  //Approval Tempelate
+
+  getApprovalTemp(jwtToken: string): Observable<any> {
+    const headers = new HttpHeaders({ Authorization: `Bearer ${jwtToken}` }); // Ensure there's a space after 'Bearer'
+    
+    return this.http.get<any>(`${this._apiUrl_1}api/ApprovalTemplate`, { headers }).pipe(
+      catchError((error) => {
+        console.error('Error fetching approval templates', error);
+        // Return an observable with a user-friendly error message if needed
+        return throwError('Failed to fetch approval templates');
+      })
+    );
+  }
+  
+
+  postApprovalTemp(approvalTemp: any, jwtToken: string): Observable<any> {
+    const headers = new HttpHeaders({ Authorization: `Bearer ${jwtToken}` });
+    return this.http.post<any>(`${this._apiUrl_1}api/ApprovalTemplate`, approvalTemp, { headers });
+  }
+
+
+  //Project Defination
+  postProjectDefination(projDef: any, jwtToken: string): Observable<any>{
+    const headers = new HttpHeaders({ Authorization: `Bearer ${jwtToken}` });
+    return this.http.post<any>(`${this._apiUrl_1}api/ProjectDefination`, projDef, { headers });
+  }
+
+  getProjectDefination(jwtToken: string, user_mkey:number): Observable<any>{
+    const headers = new HttpHeaders({ Authorization: `Bearer ${jwtToken}` });
+    return this.http.get<any>(`${this._apiUrl_1}api/ProjectDefination?LoggedIN=${user_mkey}&FormName=asdkj&MethodName=aaskjd`, {headers})
+  }
+
+
+  
+  //Dropdown of approvals
+  getBuildingClassificationDP(jwtToken: string): Observable<any> {
+    const headers = new HttpHeaders({ Authorization: `Bearer ${jwtToken}` });
+    return this.http.get<any>(`${this._apiUrl_1}api/ViewClassification/building-classification`, { headers })
+  }
+
+  getStandardDP(jwtToken: string): Observable<any> {
+    const headers = new HttpHeaders({ Authorization: `Bearer ${jwtToken}` });
+    return this.http.get<any>(`${this._apiUrl_1}api/ViewClassification/Standard-Type`, { headers })
+  }
+
+  getStatutoryAuthorityDP(jwtToken: string): Observable<any> {
+    const headers = new HttpHeaders({ Authorization: `Bearer ${jwtToken}` });
+    return this.http.get<any>(`${this._apiUrl_1}api/ViewClassification/Statutory-type`, { headers })
+  }
+
+  getDocTypeDP(jwtToken: string): Observable<any> {
+    const headers = new HttpHeaders({ Authorization: `Bearer ${jwtToken}` });
+    return this.http.get<any>(`${this._apiUrl_1}api/ViewClassification/doc-type`, { headers })
+  }
+
+
+  getDocCategory(jwtToken:any):Observable<any>{
+    const headers = new HttpHeaders({Authorization: `Bearer ${jwtToken}`});
+    return this.http.get<any>(`${this._apiUrl_1}api/ViewClassification/Document-Category`, {headers})
+  }
+
+  getJobRoleDP(jwtToken: string): Observable<any> {
+    const headers = new HttpHeaders({ Authorization: `Bearer ${jwtToken}` });
+    return this.http.get<any>(`${this._apiUrl_1}api/ViewClassification/JOB-ROLE-type`, { headers })
+  }
+
+  getDepartmentDP(jwtToken: string): Observable<any> {
+    const headers = new HttpHeaders({ Authorization: `Bearer ${jwtToken}` });
+    return this.http.get<any>(`${this._apiUrl_1}api/ViewClassification/DEPARTMENT`, { headers })
+  }
+
+  getSanctoningAuthDP(jwtToken: string): Observable<any> {
+    const headers = new HttpHeaders({ Authorization: `Bearer ${jwtToken}` });
+    return this.http.get<any>(`${this._apiUrl_1}api/ViewClassification/Sanctioning-Authority`, { headers })
+  }
+
+  getSanctoningDeptDP(jwtToken: string): Observable<any> {
+    const headers = new HttpHeaders({ Authorization: `Bearer ${jwtToken}` });
+    return this.http.get<any>(`${this._apiUrl_1}api/ViewClassification/Sanctioning-Department`, { headers })
+  }
+
+
+  //Abbrivation 
+  getAbbrivationCheck(strABBR: string, jwtToken: string) {
+    const headers = new HttpHeaders({ Authorization: `Bearer ${jwtToken}` });
+    return this.http.get<any>(`${this._apiUrl_1}api/ApprovalTemplate/GetCheckABBR?strABBR=${strABBR}`, { headers })
+  }
+
+  projectDefinationOption(userMkey: number, jwtToken: string, building: number, Standard: number, Authority: number): Observable<any> {
+    const headers = new HttpHeaders({ Authorization: `Bearer ${jwtToken}` });    
+    const url = `${this._apiUrl_1}api/ProjectDefination/ProjectDefination/Get-Approval-Details?LoggedInID=${userMkey}&BUILDING_TYPE=${building}&BUILDING_STANDARD=${Standard}&STATUTORY_AUTHORITY=${Authority}`;    
+    return this.http.get<any>(url, { headers });
+  }
+
+  GetAbbrAndShortAbbr(Building:string,Standard:string,Authority:string,jwtToken: string){
+    const headers = new HttpHeaders({ Authorization: `Bearer ${jwtToken}` });
+    return this.http.get<any>(`${this._apiUrl_1}api/ApprovalTemplate/GetAbbrAndShortAbbr?Building=${Building}&Standard=${Standard}&Authority=${Authority}`, { headers })
+  }
+
+
+
+getProjDocDepositoryFeilds(jwtToken:string, mkey:any, user_mkey:any): Observable<any> {
+  const headers = new HttpHeaders({ Authorization: `Bearer ${jwtToken}` });
+  return this.http.get<any>(`${this._apiUrl_1}api/ProjectDocumentDepository/Get-Document-Details?MKEY=${mkey}&ATTRIBUTE1=${user_mkey}&ATTRIBUTE2=GET_LIST&ATTRIBUTE3=GET`, {headers})
+}
+
+postProjectDocument(jwtToken:string, data: any): Observable<any> {
+  const url = `${this._apiUrl_1}api/ProjectDocumentDepository/Post-Project-Document-Depsitory`;  
+  const headers = new HttpHeaders({ 'Authorization': `Bearer ${jwtToken}`});
+  return this.http.post(url, data, { headers });
+}
+
+
+  
+//Token service
+=======
     return storedUser 
   }
   
@@ -213,6 +386,7 @@ export class ApiService {
   }
 
 
+>>>>>>> parent of cb45e19 (Adding Updated Packages 27-11-2024)
   getToken(): string | null {
     return localStorage.getItem('jwtToken');
   }
@@ -220,10 +394,17 @@ export class ApiService {
   recursiveTasklogout() {
     localStorage.removeItem('jwtToken');
   }
+<<<<<<< HEAD
+
+  isLoggedIn(): boolean {
+    return this.getToken() !== null;
+  }
+=======
  
 
   isLoggedIn(): boolean {
     return this.getToken() !== null;
   } 
 
+>>>>>>> parent of cb45e19 (Adding Updated Packages 27-11-2024)
 }

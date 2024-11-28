@@ -55,6 +55,11 @@ export class RecursiveTaskManagementComponent implements OnInit {
   filteredTasks: any[] = [];
 
   @Input() recursiveLogginUser: any = {};
+<<<<<<< HEAD
+  @Input() loggedInUser: any;
+
+=======
+>>>>>>> parent of cb45e19 (Adding Updated Packages 27-11-2024)
 
   NewTaskOrSubTask: string = '';
 
@@ -69,7 +74,10 @@ export class RecursiveTaskManagementComponent implements OnInit {
   isAscending: boolean = true;
 
   source:any;
+<<<<<<< HEAD
+=======
   loggedInUser:any;
+>>>>>>> parent of cb45e19 (Adding Updated Packages 27-11-2024)
 
   createdOrUpdatedUserName:any
 
@@ -118,7 +126,11 @@ export class RecursiveTaskManagementComponent implements OnInit {
     this.apiService.getProjectDetails().subscribe(
       (data: any) => {
         this.project = data;
+<<<<<<< HEAD
+        // console.log("Project", this.project);
+=======
         console.log("Project", this.project);
+>>>>>>> parent of cb45e19 (Adding Updated Packages 27-11-2024)
       },
       (error: ErrorHandler) => {
         console.log(error, 'Error Occurred while fetching projects');
@@ -204,8 +216,27 @@ export class RecursiveTaskManagementComponent implements OnInit {
 
 fetchTaskDetails() {
     this.recursiveLogginUser = this.apiService.getRecursiveUser();
+<<<<<<< HEAD
+    this.loggedInUser = this.dataService.getUser();
+
+    this.apiService.getRecursiveTaskManagement(this.recursiveLogginUser).subscribe(response => {
+      if (response) {
+        // Filter the data based on matching MKEY with assigneD_TO or createD_BY
+        const filteredData = response.filter((selectedUserRes: any) => {
+          const mkey = this.loggedInUser[0].MKEY;
+          // Check if either assigneD_TO or createD_BY matches MKEY
+          return selectedUserRes.assigneD_TO === mkey || selectedUserRes.createD_BY === mkey;
+        });
+
+        this.taskList = filteredData
+    
+        // console.log('Filtered Dashboard response:', filteredData);
+      }
+      // this.taskList = response;
+=======
     this.apiService.getRecursiveTaskManagement(this.recursiveLogginUser).subscribe(response => {
       this.taskList = response;
+>>>>>>> parent of cb45e19 (Adding Updated Packages 27-11-2024)
       this.mergeEmployeeNamesWithTasks();
       this.mergingProjAndSubProjName();
     }, error => {
@@ -249,9 +280,12 @@ mergingProjAndSubProjName() {
 }
 
 
+<<<<<<< HEAD
+=======
 
 
 
+>>>>>>> parent of cb45e19 (Adding Updated Packages 27-11-2024)
 mergeEmployeeNamesWithTasks() {
     const employeeMap = new Map(this.employees.map(emp => [emp.MKEY, emp.Assign_to]));
 

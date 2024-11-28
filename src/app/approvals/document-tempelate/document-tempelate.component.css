@@ -86,6 +86,32 @@ table.task-table td {
   opacity: 0;
 }
 
+<<<<<<< HEAD
+.form-group {
+  margin-bottom: 10px; /* Decrease bottom margin */
+}
+
+.form-control {
+  padding: 5px; /* Decrease padding */
+  height: 30px; /* Set a specific height */
+}
+
+.form-group {
+  margin-bottom: 0.2rem !important; 
+}
+
+.form-group label {
+  margin-bottom: 0.1rem !important; 
+}
+
+.form-group input,
+.form-group textarea {
+  padding: 0.2rem !important;
+  height: auto !important; 
+}
+
+=======
+>>>>>>> parent of cb45e19 (Adding Updated Packages 27-11-2024)
 
 
 /*dropdown*/
@@ -226,13 +252,21 @@ body {
 }
 
 .tab-content {
+<<<<<<< HEAD
+  max-height: calc(100vh - 340px);
+=======
   max-height: calc(100vh - 400px);
+>>>>>>> parent of cb45e19 (Adding Updated Packages 27-11-2024)
   overflow-x: auto;
   overflow-y: auto;
 }
 
 .tab-content::-webkit-scrollbar {
+<<<<<<< HEAD
+  width: 1px;
+=======
   width: 8px;
+>>>>>>> parent of cb45e19 (Adding Updated Packages 27-11-2024)
 }
 
 .tab-content::-webkit-scrollbar-track {

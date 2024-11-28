@@ -19,11 +19,19 @@
         </div>
 
         <ul class="nav flex-column" id="sidenav" data-children=".nav-item">
+<<<<<<< HEAD
+          <div class="subheader">
+            <span>APPS</span>
+          </div>
+
+          <div class="tab-content">
+=======
           <li class="subheader">
             <span>APPS</span>
           </li>
 
           <div class="side-bar-scroll">
+>>>>>>> parent of cb45e19 (Adding Updated Packages 27-11-2024)
             <li class="nav-item" role="tab">
               <a class="nav-link ripple with-arrow btn" (click)="navigateToDashboardProject()"
                 [ngClass]="{ 'active': selectedTab === 'dashboard' }">
@@ -57,14 +65,23 @@
                   </a>
                 </li>
 
+<<<<<<< HEAD
+                <!-- <li class="nav-item">
+                  <a class="nav-link ripple btn" [ngClass]="{ 'active': selectedTab === 'approval-screen' }" (click)="navigateToApprovlTempelate()">
+=======
                 <li class="nav-item">
                   <a class="nav-link ripple btn" [ngClass]="{ 'active': selectedTab === 'approval-tempelate' }" (click)="navigateToApprovlTempelate()">
+>>>>>>> parent of cb45e19 (Adding Updated Packages 27-11-2024)
                     <div class="py-2">
                       <i class="icon s-4 icon-checkbox-marked"></i>
                       <span>Approval Tempelate</span>
                     </div>                  
                   </a>
+<<<<<<< HEAD
+                </li> -->
+=======
                 </li>
+>>>>>>> parent of cb45e19 (Adding Updated Packages 27-11-2024)
 
               </ul>
             </li>            
@@ -77,7 +94,11 @@
               </a>
             </li>
 
+<<<<<<< HEAD
+            <li class="nav-item" role="tab" *ngIf="selectedUserAccess()">
+=======
             <li class="nav-item" role="tab">
+>>>>>>> parent of cb45e19 (Adding Updated Packages 27-11-2024)
               <a class="nav-link ripple with-arrow btn" (click)="toggleApprovalDropdown()">
                 <i class="icon s-4 icon-checkbox-marked"></i>
                 <span>Approvals</span>
@@ -85,19 +106,33 @@
               <ul class="nav flex-column" *ngIf="isApprovalDropdown">
 
                 <li class="nav-item">
+<<<<<<< HEAD
+                  <a class="nav-link ripple btn"  [ngClass]="{ 'active': selectedTab === 'document-tempelate' }" (click)="navigateToDocumentTempelate()">
+                    <div class="py-2">
+                      <i class="icon s-4 icon-checkbox-marked"></i>
+                      <span><small>Document Tempelate</small></span>
+=======
                   <a class="nav-link ripple btn" [ngClass]="{ 'active': selectedTab === 'document-tempelate' }" (click)="navigateToDocumentTempelate()">
                     <div class="py-2">
                       <i class="icon s-4 icon-checkbox-marked"></i>
                       <span>Document Tempelate</span>
+>>>>>>> parent of cb45e19 (Adding Updated Packages 27-11-2024)
                     </div>                  
                   </a>
                 </li>
 
                 <li class="nav-item">
+<<<<<<< HEAD
+                  <a class="nav-link ripple btn" [ngClass]="{ 'active': selectedTab === 'authority-tempelate' }" (click)="navigateToApprovlTempelate()" >  <!--[ngClass]="{ 'active': selectedTab === 'approved-tempelate' }" (click)="navigateToApprovedTempelate()"-->
+                    <div class="py-2">
+                      <i class="icon s-4 icon-checkbox-marked"></i>
+                      <span><small>Approved Tempelate</small></span>
+=======
                   <a class="nav-link ripple btn" [ngClass]="{ 'active': selectedTab === 'approved-tempelate' }" (click)="navigateToApprovedTempelate()">
                     <div class="py-2">
                       <i class="icon s-4 icon-checkbox-marked"></i>
                       <span>Approved Tempelate</span>
+>>>>>>> parent of cb45e19 (Adding Updated Packages 27-11-2024)
                     </div>                  
                   </a>
                 </li>
@@ -106,28 +141,44 @@
                   <a class="nav-link ripple btn" [ngClass]="{ 'active': selectedTab === 'project-defination' }" (click)="navigateToProjectDefination()">
                     <div class="py-2">
                       <i class="icon s-4 icon-checkbox-marked"></i>
+<<<<<<< HEAD
+                      <span><small>Project Defination</small></span>
+=======
                       <span>Project Defination</span>
+>>>>>>> parent of cb45e19 (Adding Updated Packages 27-11-2024)
                     </div>                  
                   </a>
                 </li>
 
                 <li class="nav-item">
                   <a class="nav-link ripple btn" [ngClass]="{ 'active': selectedTab === 'project-document-depository' }" (click)="navigateToProjectDD()">
+<<<<<<< HEAD
+                    <div class="mt-2">
+                      <i class="icon s-4 icon-checkbox-marked"></i>
+                      <span><small>Project Document Depository</small> </span>                     
+=======
                     <div class="">
                       <i class="icon s-4 icon-checkbox-marked "></i>
                       <span>Project Document </span><br>
                       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                       <span>Depository</span>
+>>>>>>> parent of cb45e19 (Adding Updated Packages 27-11-2024)
                     </div>                  
                   </a>
                 </li>
 
                 <li class="nav-item">
                   <a class="nav-link ripple btn" [ngClass]="{ 'active': selectedTab === 'project-document-search' }" (click)="navigateToProjectDS()">
+<<<<<<< HEAD
+                    <div class="mt-2">
+                      <i class="icon s-4 icon-checkbox-marked"></i>
+                      <span><small>Project Document Search</small></span>
+=======
                     <div class="py-2">
                       <i class="icon s-4 icon-checkbox-marked"></i>
                       <span>Project Document Search</span>
+>>>>>>> parent of cb45e19 (Adding Updated Packages 27-11-2024)
                     </div>                  
                   </a>
                 </li>
@@ -136,7 +187,11 @@
                   <a class="nav-link ripple btn" [ngClass]="{ 'active': selectedTab === 'approval-task-initiation' }" (click)="navigateToApprovalTaskInitiation()">
                     <div class="py-2">
                       <i class="icon s-4 icon-checkbox-marked"></i>
+<<<<<<< HEAD
+                      <span><small>Approval Task Initiation</small></span>
+=======
                       <span>Approval Task Initiation</span>
+>>>>>>> parent of cb45e19 (Adding Updated Packages 27-11-2024)
                     </div>                  
                   </a>
                 </li>

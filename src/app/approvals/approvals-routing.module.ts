@@ -5,10 +5,18 @@ import { ProjectDefinationComponent } from './project-defination/project-definat
 import { ProjectDocumentDepositoryComponent } from './project-document-depository/project-document-depository.component';
 import { ProjectDocumentSearchComponent } from './project-document-search/project-document-search.component';
 import { ApprovalTaskInitationComponent } from './approval-task-initation/approval-task-initation.component';
+<<<<<<< HEAD
+import { AddApprovalTempelateComponent } from './add-approval-tempelate/add-approval-tempelate.component';
+// import { ApprovedTempelateComponent } from './approved-tempelate/approved-tempelate.component';
+
+const routes: Routes = [
+  {path:'approved-tempelate', component:AddApprovalTempelateComponent},
+=======
 import { ApprovedTempelateComponent } from './approved-tempelate/approved-tempelate.component';
 
 const routes: Routes = [
   {path:'approved-tempelate', component:ApprovedTempelateComponent},
+>>>>>>> parent of cb45e19 (Adding Updated Packages 27-11-2024)
   {path:'document-tempelate', component:DocumentTempelateComponent},
   {path:'project-defination', component:ProjectDefinationComponent},
   {path:'project-document-depository', component:ProjectDocumentDepositoryComponent},
