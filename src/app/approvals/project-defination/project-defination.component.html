@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 <body class="layout layout-left-navigation layout-below-toolbar layout-below-footer">
   <main>
     <div id="wrapper">
@@ -20,9 +19,18 @@
 
               <div class="flex-grow-1"></div>
               <div class="mr-8">
-                <button type="submit" class="btn btn-light mr-2" (click)="onAddProjDef()" id="btnSaveTask">
-                  ADD
-                </button>
+                <div *ngIf="!taskData?.mkey">
+                  <button type="submit" class="btn btn-light mr-2" (click)="onAddProjDef()" id="btnSaveTask">
+                    ADD
+                  </button>
+                </div>
+
+                <div *ngIf="taskData?.mkey">
+                  <button type="submit" class="btn btn-light mr-2" (click)="updateProjectDef()" id="btnSaveTask">
+                    SAVE
+                  </button>
+                </div>
+              
               </div>
 
             </div>
@@ -437,12 +445,26 @@
                                       <td class="truncate-text">{{ task.TASK_NO?.resposiblE_EMP }}</td>
                                       <td class="truncate-text">{{ task.TASK_NO?.enD_RESULT_DOC }}</td>
                                       <td>
-                                        <input type="date" class="form-control" [(ngModel)]="task.TASK_NO.start_date"
-                                          [ngModelOptions]="{standalone: true}" name="staDate_new" />
+                                        <ng-container *ngIf="taskData?.mkey">
+                                          <input type="date" class="form-control" (ngModelChange)="task.TASK_NO.start_date = $event" [ngModel]="task.TASK_NO.start_date | date: 'yyyy-MM-dd'"
+                                          [ngModelOptions]="{standalone: true}" name="staDate_new_{{task.TASK_NO}}" />
+                                        </ng-container>
+  
+                                        <ng-container *ngIf="!taskData?.mkey">
+                                          <input type="date" class="form-control" [(ngModel)]="task.TASK_NO.start_date"
+                                          [ngModelOptions]="{standalone: true}" name="staDate_new_{{task.TASK_NO}}" />
+                                        </ng-container>                                                                            
                                       </td>
                                       <td>
-                                        <input type="date" class="form-control" [(ngModel)]="task.TASK_NO.end_date"
+                                        <ng-container *ngIf="taskData?.mkey">
+                                          <input type="date" class="form-control" (ngModelChange)="task.TASK_NO.end_date = $event"  [ngModel]="task.TASK_NO.end_date | date: 'yyyy-MM-dd'"
                                           [ngModelOptions]="{standalone: true}" name="endDate_new" />
+                                        </ng-container>
+                                        <ng-container *ngIf="!taskData?.mkey">
+                                          <input type="date" class="form-control" [(ngModel)]="task.TASK_NO.end_date"
+                                          [ngModelOptions]="{standalone: true}" name="endDate_new" />
+                                        </ng-container>
+                                      
                                       </td>
                                       <td class="truncate-text">Created</td>
                                     </tr>
@@ -542,12 +564,26 @@
                                     <td class="truncate-text">{{ task.TASK_NO?.resposiblE_EMP }}</td>
                                     <td class="truncate-text">{{ task.TASK_NO?.enD_RESULT_DOC }}</td>
                                     <td>
-                                      <input type="date" class="form-control" [(ngModel)]="task.TASK_NO.start_date"
-                                        [ngModelOptions]="{standalone: true}" name="staDate_new" />
+                                      <ng-container *ngIf="taskData?.mkey">
+                                        <input type="date" class="form-control" (ngModelChange)="task.TASK_NO.start_date = $event"  [ngModel]="task.TASK_NO.start_date | date: 'yyyy-MM-dd'"
+                                        [ngModelOptions]="{standalone: true}" name="staDate_new_{{task.TASK_NO}}" />
+                                      </ng-container>
+
+                                      <ng-container *ngIf="!taskData?.mkey">
+                                        <input type="date" class="form-control" [(ngModel)]="task.TASK_NO.start_date"
+                                        [ngModelOptions]="{standalone: true}" name="staDate_new_{{task.TASK_NO}}" />
+                                      </ng-container>                                                                            
                                     </td>
                                     <td>
-                                      <input type="date" class="form-control" [(ngModel)]="task.TASK_NO.end_date"
+                                      <ng-container *ngIf="taskData?.mkey">
+                                        <input type="date" class="form-control" (ngModelChange)="task.TASK_NO.end_date = $event" [ngModel]="task.TASK_NO.end_date | date: 'yyyy-MM-dd'"
                                         [ngModelOptions]="{standalone: true}" name="endDate_new" />
+                                      </ng-container>
+                                      <ng-container *ngIf="!taskData?.mkey">
+                                        <input type="date" class="form-control" [(ngModel)]="task.TASK_NO.end_date"
+                                        [ngModelOptions]="{standalone: true}" name="endDate_new" />
+                                      </ng-container>
+                                    
                                     </td>
                                     <td class="truncate-text">Created</td>
                                   </tr>
@@ -636,6 +672,3 @@
     </div>
   </main>
 </body>
-=======
-<p>project-defination works!</p>
->>>>>>> parent of cb45e19 (Adding Updated Packages 27-11-2024)

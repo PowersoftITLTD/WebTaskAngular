@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import { AfterViewInit, Component, ErrorHandler, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
@@ -7,16 +6,12 @@ import { CredentialService } from 'src/app/services/credential/credential.servic
 import { CITIES, ICity } from '../add-approval-tempelate/cities';
 import { Router } from '@angular/router';
 import { forkJoin } from 'rxjs';
-=======
-import { Component, OnInit } from '@angular/core';
->>>>>>> parent of cb45e19 (Adding Updated Packages 27-11-2024)
 
 @Component({
   selector: 'app-project-defination',
   templateUrl: './project-defination.component.html',
   styleUrls: ['./project-defination.component.css']
 })
-<<<<<<< HEAD
 export class ProjectDefinationComponent implements OnInit, OnDestroy {
 
 
@@ -142,13 +137,14 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
     if (this.taskData && this.taskData.mkey) {
       // this.toggleTasksOnInit()
       // this.toggleSelection(this.taskData.approvalS_ABBR_LIST)
-      // this.getTree_new();
+      this.selectedOptionList();
+      
+      this.getTree_new();
       this.getSubProj();      
     }
     this.initilizeProjDefForm();
     this.fetchEmployeeName();
     // this.selectedOptionList();
-
     // this.isSelected(2);
     
 
@@ -207,9 +203,13 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
       this.selectedTasks.add(task);
     }
 
+    console.log('selectedTasks: ',[task])
+    console.log('new_list_of_selectedSeqArr: ',this.new_list_of_selectedSeqArr)
+
+
     const selectedTasksArray = [...this.selectedTasks];
 
-    console.log('selectedTaskArr',selectedTasksArray)
+    // console.log('selectedTaskArr',selectedTasksArray)
 
     this.selectedSeqArr = this.sortTasksBySequence(selectedTasksArray);
 
@@ -231,71 +231,9 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
 
     // console.log('uniqueTasks', uniqueTasks);
 
-
-
-
     this.uniqueSubTask = uniqueTasks
 
   }
-
-//   toggleTasksOnInit(): void {
-//     // Get the task ID of the first task in approvalS_ABBR_LIST
-//     const taskData = this.taskData.approvalS_ABBR_LIST[0];
-//     console.log('taskData', taskData)
-//     const taskId = taskData.tasK_NO;  // Assuming taskData has TASK_NO
-
-//     console.log('Toggling task with TASK_NO', taskId);
-
-//     // Check if the task is already selected
-//     if (this.selectedTasksId.has(taskId)) {
-//         // If already selected, remove it
-//         this.selectedTasksId.delete(taskId);
-//         this.selectedTasks.delete(taskData);  // Remove the task from selected tasks
-//     } else {
-//         // If not selected, add it
-//         this.selectedTasksId.add(taskId);
-//         this.selectedTasks.add(taskData);  // Add the task to selected tasks
-//     }
-
-//     // Process the selected tasks after toggling
-//     const selectedTasksArray = [...this.selectedTasks];
-
-//     console.log('selectedTaskArr', selectedTasksArray);
-
-//     // Sort the selected tasks (replace with your actual sorting function)
-//     this.selectedSeqArr = this.sortTasksBySequence(selectedTasksArray);
-
-//     // Flatten the tasks (replace with your actual flattening function)
-//     const flattenedTasks = this.breakToLinear(this.selectedSeqArr);
-
-//     // Ensure tasks are unique by removing duplicates
-//     const seen = new Set();
-//     const uniqueTasks = flattenedTasks.filter(task => {
-//         if (seen.has(task.TASK_NO)) {
-//             return false;
-//         }
-//         seen.add(task.TASK_NO);
-//         return true;
-//     });
-
-//     // Update unique subtask list
-//     this.uniqueSubTask = uniqueTasks;
-// }
-
-
-
-
-  // // Dummy sorting function, replace with your actual implementation
-  // sortTasksBySequence(tasks: any[]): any[] {
-  //   return tasks.sort((a, b) => a.TASK_NO - b.TASK_NO);  // Example sorting by TASK_NO
-  // }
-
-  // // Dummy flattening function, replace with your actual implementation
-  //   breakToLinear(tasks: any[]): any[] {
-  //   // Example flattening logic (adjust based on your actual data structure)
-  //   return tasks.flat();  // Assuming tasks can be flattened
-  
-
 
 
   newToggltSel(taskArray: any) {
@@ -387,6 +325,45 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
     console.log('SUB_PROJECT', SUB_PROJECT)
     const addProjectDefination = {
       projecT_NAME: SUB_PROJECT.MASTER_MKEY.toString(),
+      projecT_ABBR: this.projectDefForm.get('projectAbbr')?.value,
+      property: PROJECT.MASTER_MKEY,
+      legaL_ENTITY: this.projectDefForm.get('legalEntity')?.value,
+      projecT_ADDRESS: this.projectDefForm.get('projAddress')?.value,
+      buildinG_CLASSIFICATION: Number(this.projectDefForm.get('bldCla')?.value),
+      buildinG_STANDARD: Number(this.projectDefForm.get('blsStandard')?.value),
+      statutorY_AUTHORITY: Number(this.projectDefForm.get('statutoryAuth')?.value),
+      attributE1: "",
+      attributE2: "",
+      attributE3: "",
+      createD_BY: USER_CRED[0].MKEY,
+      lasT_UPDATED_BY: USER_CRED[0].MKEY,
+      approvalS_ABBR_LIST: subTaskList
+    }
+
+    console.log(addProjectDefination)
+    this.apiService.postProjectDefination(addProjectDefination, this.recursiveLogginUser).subscribe({
+      next: (addData: any) => {
+        console.log('Data added successfully', addData)
+      }, error: (error: ErrorHandler) => {
+        console.log('Unable to get data', error)
+      }
+    })
+  }
+
+
+  updateProjectDef() {
+    const USER_CRED = this.credentialService.getUser();
+    this.recursiveLogginUser = this.apiService.getRecursiveUser();
+
+    const PROJECT = this.projectDefForm.get('property')?.value;
+    const SUB_PROJECT = this.projectDefForm.get('subProject')?.value;
+
+    const subTaskList = this.uniqList
+
+    console.log('PROJECT', PROJECT)
+    console.log('SUB_PROJECT', SUB_PROJECT)
+    const addProjectDefination = {
+      projecT_NAME: SUB_PROJECT.MASTER_MKEY,
       projecT_ABBR: this.projectDefForm.get('projectAbbr')?.value,
       property: PROJECT.MASTER_MKEY,
       legaL_ENTITY: this.projectDefForm.get('legalEntity')?.value,
@@ -614,7 +591,8 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
         this.apiService.projectDefinationOption(USER_CRED[0]?.MKEY, token, buildingCla, buildingStd, statutoryAuth).subscribe({
           next: (gerAbbrRelData) => {
             // console.log('Get list: ', gerAbbrRelData)
-            this.projDefinationTable = gerAbbrRelData
+            // this.projDefinationTable = gerAbbrRelData
+            console.log('gerAbbrRelData', gerAbbrRelData)
             this.getTree(gerAbbrRelData);
           },
           error: (err) => {
@@ -627,45 +605,33 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
       }       
   }
 
-  // checkAndClick() {
-  //   if (this.taskData.mkey) {
-  //     // Trigger click event programmatically
-  //     this.getOptionList();
-  //   }
-  // }
+  selectedOptionList(){
 
-  // selectedOptionList(){
+      console.log('selectedOptionList come here')
+      const token = this.apiService.getRecursiveUser();
+      const USER_CRED = this.credentialService.getUser();
 
-  //     console.log('selectedOptionList come here')
-  //     const token = this.apiService.getRecursiveUser();
-  //     const USER_CRED = this.credentialService.getUser();
+      const buildingCla = this.taskData.buildinG_CLASSIFICATION;
+      const buildingStd = this.taskData.buildinG_STANDARD;
+      const statutoryAuth = this.taskData.statutorY_AUTHORITY;
 
-  //     const buildingCla = this.taskData.buildinG_CLASSIFICATION;
-  //     const buildingStd = this.taskData.buildinG_STANDARD;
-  //     const statutoryAuth = this.taskData.statutorY_AUTHORITY;
-
-  //     console.log(typeof this.taskData.buildinG_CLASSIFICATION)
-
-  //     console.log(`buildingCla:  ${buildingCla} buildingStd: ${buildingStd} statutoryAuth: ${statutoryAuth}`)
-  //     console.log('USER_CRED[0]?.MKEY', USER_CRED[0]?.MKEY)
-  //     if (buildingCla && buildingStd && statutoryAuth) {
-  //       this.recursiveLogginUser = this.apiService.getRecursiveUser();
-  //       this.apiService.projectDefinationOption(USER_CRED[0]?.MKEY, token, buildingCla, buildingStd, statutoryAuth).subscribe({
-  //         next: (gerAbbrRelData) => {
-  //           console.log('Get list: ', gerAbbrRelData)
-  //           this.projDefinationTable = gerAbbrRelData
-  //           this.getTree(gerAbbrRelData);
-  //         },
-  //         error: (err) => {
-  //           console.error('API Error:', err);
-  //         }
-  //       });
-  //     } else {
-  //       this.tostar.error('Please select all classification');
-  //       return;
-  //     }
-    
-  // }
+      if (buildingCla && buildingStd && statutoryAuth) {
+        this.recursiveLogginUser = this.apiService.getRecursiveUser();
+        this.apiService.projectDefinationOption(USER_CRED[0]?.MKEY, token, buildingCla, buildingStd, statutoryAuth).subscribe({
+          next: (gerAbbrRelData) => {
+            console.log('Get list: ', gerAbbrRelData)
+            this.projDefinationTable = gerAbbrRelData
+            this.getTree(gerAbbrRelData);
+          },
+          error: (err) => {
+            console.error('API Error:', err);
+          }
+        });
+      } else {
+        this.tostar.error('Please select all classification');
+        return;
+      }    
+  }
   
 
   sortTasksBySequence(tasks: any[]): any[] {
@@ -699,6 +665,8 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
   calculateIndentation(taskNo: string, baseIndent: number, sd: any, ed: any): number {
 
     const task = this.selectedSeqArr.find(task => task.TASK_NO.TASK_NO === taskNo);
+
+    // console.log('task', task)
 
     if (task && Object.values(task).every(value => value !== undefined)) {
       this.unFlatternArr = [task]; // Assign to the class property only if no undefined values
@@ -789,29 +757,50 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
   }
 
 
-
-
-  getTree(optionList: any[] = [], _jobRoleList: any[] = [], _departmentList: any[] = []) {
+ async getTree(optionList: any[] = [], _jobRoleList: any[] = [], _departmentList: any[] = []) {
     
    
+    this.recursiveLogginUser = this.apiService.getRecursiveUser();
 
     // console.log('optionList', optionList)
     // console.log('this.jobRoleList_new', this.jobRoleList_new)
     // console.log('this.departmentList_new', this.departmentList_new)
 
+    let department_new: any;
+    let jobRole_new: any;
+
+    // Fetch the department data asynchronously via the API service using await
+    try {
+        // First fetch department data
+        department_new = await this.apiService.getDepartmentDP(this.recursiveLogginUser).toPromise();
+        console.log('Department:', department_new);  // Here, department_new will contain the actual data
+
+        // Then fetch job role data
+        jobRole_new = await this.apiService.getJobRoleDP(this.recursiveLogginUser).toPromise();
+        console.log('jobRole_new:', jobRole_new);  // Here, jobRole_new will contain the actual data
+    } catch (error) {
+        console.error('Error fetching data:', error);
+    }
+    
+    // At this point, department_new and jobRole_new will have the fetched data
+    console.log('department_new after awaiting:', department_new);
+    console.log('jobRole_new after awaiting:', jobRole_new);
+
+
     const check = this.convertTaskNo(optionList);
 
     console.log(optionList);
-    const jobRoleList = this.jobRoleList;
-    const departmentList = this.departmentList
+    const jobRoleList = jobRole_new;
+    const departmentList = department_new
 
     // this.taskData.approvalS_ABBR_LIST
        const optionListArr = optionList
       .filter((item: any) => item.tasK_NO !== null)
       .map((item: any) => {
-        const jobRole = jobRoleList.find(role => role.mkey === parseInt(item.JOB_ROLE));
-        const departmentRole = departmentList.find(department => department.mkey === parseInt(item.AUTHORITY_DEPARTMENT))
+        const jobRole = jobRoleList.find((role:any) => role.mkey === parseInt(item.JOB_ROLE));
+        const departmentRole = departmentList.find((department:any) => department.mkey === parseInt(item.AUTHORITY_DEPARTMENT))
         const assignedEmployee = this.employees.find(employee => employee.MKEY === parseInt(item.RESPOSIBLE_EMP_MKEY));
+
 
         return {
           TASK_NO: item.TASK_NO,
@@ -823,8 +812,8 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
           joB_ROLE_mkey: jobRole.mkey || 0,
           department: departmentRole ? departmentRole.typE_DESC : "Not found",
           department_mkey: departmentRole.mkey,
-          resposiblE_EMP: assignedEmployee.Assign_to,
-          resposiblE_EMP_MKEY: assignedEmployee.MKEY
+          // resposiblE_EMP: assignedEmployee.Assign_to,
+          // resposiblE_EMP_MKEY: assignedEmployee.MKEY
         }
       });
 
@@ -970,7 +959,10 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
 
     this.subTasks = [...this.subTasks, ...filteredTasks];
 
-    console.log('subTasks', this.subTasks)
+    // this.selectedSeqArr = [...this.subTasks]
+
+
+    console.log('subTasks noParentTree', this.subTasks)
 
   }
 
@@ -1042,22 +1034,42 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
 
 
 
-  getTree_new() {
-    
-
+ async getTree_new() { 
 
     this.convertTaskNo(this.taskData.approvalS_ABBR_LIST);
 
 
-    const jobRoleList = this.jobRoleList;
-    const departmentList = this.departmentList
+    let department_new: any;
+    let jobRole_new: any;
+
+    // Fetch the department data asynchronously via the API service using await
+    try {
+        // First fetch department data
+        department_new = await this.apiService.getDepartmentDP(this.recursiveLogginUser).toPromise();
+        console.log('Department:', department_new);  // Here, department_new will contain the actual data
+
+        // Then fetch job role data
+        jobRole_new = await this.apiService.getJobRoleDP(this.recursiveLogginUser).toPromise();
+        console.log('jobRole_new:', jobRole_new);  // Here, jobRole_new will contain the actual data
+    } catch (error) {
+        console.error('Error fetching data:', error);
+    }
+    
+    // At this point, department_new and jobRole_new will have the fetched data
+    console.log('department_new after awaiting:', department_new);
+    console.log('jobRole_new after awaiting:', jobRole_new);
+
+    console.log('this.taskData.approvalS_ABBR_LIST.tentativE_END_DATE', this.taskData.approvalS_ABBR_LIST?.tentativE_END_DATE)
+
+    const jobRoleList = jobRole_new;
+    const departmentList = department_new
 
     this.taskData.approvalS_ABBR_LIST
        const optionListArr = this.taskData.approvalS_ABBR_LIST
       .filter((item: any) => item.tasK_NO !== null)
       .map((item: any) => {
-        const jobRole = jobRoleList.find(role => role.mkey === parseInt(item.JOB_ROLE));
-        const departmentRole = departmentList.find(department => department.mkey === parseInt(item.AUTHORITY_DEPARTMENT))
+        const jobRole = jobRoleList.find((role:any) => role.mkey === parseInt(item.joB_ROLE));
+        const departmentRole = departmentList.find((department:any) => department.mkey === parseInt(item.department))
         const assignedEmployee = this.employees.find(employee => employee.MKEY === parseInt(item.RESPOSIBLE_EMP_MKEY));
 
         return {
@@ -1066,10 +1078,12 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
           abbR_SHORT_DESC: item.approvaL_DESCRIPTION,
           dayS_REQUIERD: item.dayS_REQUIRED,
           enD_RESULT_DOC: item.outpuT_DOCUMENT,
-          // joB_ROLE: jobRole ? jobRole.typE_DESC : "Not found",
-          // joB_ROLE_mkey: jobRole.mkey || 0,
-          // department: departmentRole ? departmentRole.typE_DESC : "Not found",
-          // department_mkey: departmentRole.mkey,
+          joB_ROLE: jobRole ? jobRole.typE_DESC : "Not found",
+          joB_ROLE_mkey: jobRole.mkey || 0,
+          department: departmentRole ? departmentRole.typE_DESC : "Not found",
+          department_mkey: departmentRole.mkey,
+          start_date:item.tentativE_START_DATE,
+          end_date:item.tentativE_END_DATE
           // resposiblE_EMP: assignedEmployee.Assign_to,
           // resposiblE_EMP_MKEY: assignedEmployee.MKEY
         }
@@ -1160,15 +1174,18 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
       }
     });
 
+    console.log('check noSubParentTasks', noSubParentTasks)
     this.loading = false;
 
-    // this.new_list_of_selectedSeqArr = [...this.subTasks]
-    console.log('new_list_of_selectedSeqArr:', this.new_list_of_selectedSeqArr);
-    this.noParentTree(noSubParentTasks)
+    this.selectedSeqArr = [...this.subTasks]
+    console.log('new_list_of_selectedSeqArr:', this.selectedSeqArr);
+    this.noParentTree_new(noSubParentTasks)
   }
 
 
-  noParentTree_new(noParentTree: any) {
+  noParentTree_new(noParentTree?: any) {
+
+    console.log('noParentTree', noParentTree)
 
     const no_parent_arr = noParentTree.map((item: any) => ({
       TASK_NO: item,
@@ -1217,22 +1234,29 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
 
     this.subTasks = [...this.subTasks, ...filteredTasks];
 
-    // this.new_list_of_selectedSeqArr = [...this.subTasks]
 
-    console.log('subTasks', this.subTasks)
+    this.selectedSeqArr = [...this.subTasks];
 
+    console.log('no parent subTasks', this.selectedSeqArr)
+
+    this.new_list_of_selectedSeqArr = this.selectedSeqArr
+
+    console.log('new_list_of_selectedSeqArr', this.new_list_of_selectedSeqArr)
+
+  }
+
+
+  formatDate(date: Date): string {
+
+    console.log('date',date)
+    const dateObj = new Date(date); // Parse the input date string into a Date object
+    const day = String(dateObj.getDate()).padStart(2, '0');  // Get day with 2 digits
+    const month = String(dateObj.getMonth() + 1).padStart(2, '0'); // Get month with 2 digits (months are 0-indexed)
+    const year = dateObj.getFullYear();  // Get the full year
+    return `${month}-${day}-${year}`;  // Return in dd-mm-yyyy format
   }
 
   ngOnDestroy(): void {
     sessionStorage.removeItem('task');
   }
-=======
-export class ProjectDefinationComponent implements OnInit {
-
-  constructor() { }
-
-  ngOnInit(): void {
-  }
-
->>>>>>> parent of cb45e19 (Adding Updated Packages 27-11-2024)
 }

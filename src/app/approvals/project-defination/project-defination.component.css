@@ -260,6 +260,28 @@
   }
 
 
+  .input-container {
+    position: relative;
+  }
+  
+  .input-container input {
+    width: 100%;
+    display: none; /* Make the first input visible by default */
+  }
+  
+  .input-container:hover .select {
+    display: none; /* Show the text input on hover */
+  }
+  
+  .input-container:hover input[type="date"] {
+    display: block; /* Hide the date input on hover */
+  }
+  
+  .input-container .select {
+    display: block; /* Initially hide the text input */
+  }
+
+
   .fa-solid {
     display: inline-flex;        
     justify-content: center;     
