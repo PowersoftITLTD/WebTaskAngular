@@ -1,325 +1,516 @@
-<<<<<<< HEAD
 <body class="layout layout-left-navigation layout-below-toolbar layout-below-footer">
-    <main>
-        <div id="wrapper">
-            <div class="content-wrapper">
-                <div class="">
-                    <div id="e-commerce-product" class="simple tabbed">
-                        <app-header-bar (loggedInUserEmitter)="receiveLoggedInUser($event)"></app-header-bar>
+  <main>
+    <div id="wrapper">
+      <div class="content-wrapper">
+        <div class="">
+          <div id="e-commerce-product" class="simple tabbed">
+            <app-header-bar (loggedInUserEmitter)="receiveLoggedInUser($event)"></app-header-bar>
 
-                        <div class="bg-primary text-auto row align-items-center justify-content-between p-3">
+            <div class="bg-primary text-auto row align-items-center justify-content-between p-3">
 
-                            <div class="row no-gutters align-items-center">
-                                <div class="product-image mr-4 ml-8">
-                                    <img
-                                        src="../../../../assets/Content/images/ecommerce/product-image-placeholder.png">
-                                </div>
-                                <div>
-                                    <b>Approval Task Initiation</b>
-                                </div>
-                            </div>
-
-                            <div class="flex-grow-1"></div>
-
-                        </div>
-                        <div class="tab-content">
-                            <div class="p-3">
-
-                                <div class="row ">
-                
-                                <div class="col-xs-12 col-xl-4 col-md-12">
-                                    <div class="form-group">
-                                        <label for="taskName">Project</label>
-                                          <input type="text" maxlength="150" class="form-control" maxlength="150" />
-                                    </div>
-                                </div>
-                                  <div class="col-xs-12 col-xl-4 col-md-12">
-                                    <div class="form-group">
-                                      <label for="taskName">Project Approvel Series No.</label>
-                                      <input type="number" maxlength="150" class="form-control" maxlength="150" />
-                                    </div>
-                                  </div>
-                                  <div class="col-xs-12 col-xl-4 col-md-12">
-                                    <div class="form-group">
-                                      <label for="taskName">Project Manager</label>
-                                      <input type="text" maxlength="150" class="form-control" maxlength="150" />
-                                    </div>
-                                  </div>                               
-                                </div>
-    
-                                <div class="row ">
-                                    <div class="col-xs-12 col-xl-4 col-md-12 ">
-                                        <div class="form-group">
-                                            <label for="taskName">Task Abbrivation</label>
-                                            <input type="text" maxlength="150" class="form-control" maxlength="150" />                                            
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label for="taskName">Task Short Description</label>
-                                            <input type="text" maxlength="150" class="form-control" maxlength="150" />
-                                        </div>
-                                    </div>                                      
-                                    <div class="col-xs-12 col-xl-8 col-md-12 mt-1">
-                                        <div class="form-group" >
-                                        <label for="taskName">Task Description</label>
-                                        <textarea type="text" maxlength="150" class="form-control" style="height: 12rem;" rows="5" maxlength="150"> </textarea>
-                                        </div>
-                                    </div>                                            
-                                </div>      
-                                
-                                <div class="row">
-                                    <div class="col-xs-12 col-xl-4 col-md-12 ">
-                                        <div class="form-group">
-                                            <label for="taskName">Sanctioning Authority</label>
-                                            <input type="text" maxlength="150" class="form-control" maxlength="150" />
-                                        </div>
-                                    </div>
-                                    <div class="col-xs-12 col-xl-4 col-md-12 ">
-                                        <div class="form-group">
-                                            <label for="taskName">Sanctioning Department</label>
-                                            <input type="text" maxlength="150" class="form-control" maxlength="150" />
-                                        </div>
-                                    </div>
-
-                                    <div class="col-xs-12 col-xl-4 col-md-12">
-                                      <div class="form-group">
-                                          <label for="taskName">Compliton Date</label>
-                                            <input type="date" maxlength="150" class="form-control" maxlength="150" />
-                                      </div>
-                                  </div>
-                                </div>
-    
-                                <div class="row">
-    
-                                    <div class="col-xs-12 col-xl-4 col-md-12">
-                                        <div class="form-group">
-                                            <label for="taskName">Responsible Person</label>
-                                              <input type="text" maxlength="150" class="form-control" maxlength="150" />
-                                        </div>
-                                    </div>
-
-                                    <div class="col-xs-12 col-xl-4 col-md-12">
-                                        <div class="form-group">
-                                            <label for="taskName">Job Role</label>
-                                              <input type="text" maxlength="150" class="form-control" maxlength="150" />
-                                        </div>
-                                    </div>   
-
-                                    <div class="col-xs-12 col-xl-4 col-md-12">
-                                        <div class="form-group">
-                                            <label for="taskName">Department</label>
-                                            <input type="text" maxlength="150" class="form-control" maxlength="150" />
-                                        </div>
-                                    </div>                                                                   
-                                  
-                                   
-                                </div>                                       
-                            </div>
-    
-                            <div class="accordion card">
-                                <div *ngFor="let item of accordionItems; let i = index" class="accordion-item">
-    
-                                    <h2 class="accordion-header">
-                                        <button (click)="toggle(i)" class="accordion-button">
-                                            {{ item.title }}
-                                        </button>
-                                    </h2>
-                                    <div class="accordion-body" [class.show]="activeIndices.includes(i)" > <!--[class.show]="activeIndices.includes(i)"-->
-                                        <form>
-                                            <div class="" *ngIf="i === 0">
-    
-                                                <!-- For accordion 1 -->
-                                                <div class="" >
-                                                    <div class="row mx-1" >
-                    
-                                                        <div class="form-group sample-wrapper" style="width: 100%;">
-                                                            <table class="table table-active" >
-                                                                <thead>
-                                                                    <th scope="col">Sr No.</th>
-                                                                    <th scope="col">Document</th>
-                                                                    <th scope="col">Category</th>
-                                                                    <th scope="col">Document</th>
-                                                                    <th scope="col">Document Name</th>
-                                                                    <th scope="col">Document Number</th>
-                                                                    <th scope="col">Document Date</th>
-                                                                    <th scope="col">Validity</th>
-                                                                    <th scope="col">Attachment</th>
-                                                                </thead>
-                                                                <tr class="table-info">
-                                                                    <td>1</td>
-                                                                    <td>Document 1</td>
-                                                                    <td>Category 1</td>
-                                                                    <td>File 1</td>
-                                                                    <td>CFO NOC</td>
-                                                                    <td>265489</td>
-                                                                    <td>24-10-2024</td>
-                                                                    <td>Validity 1</td>
-                                                                    <td>Attachment</td>
-                                                                </tr>
-                                                                <tr class="table-active">
-                                                                    <td>2</td>
-                                                                    <td>Document 2</td>
-                                                                    <td>Category 2</td>
-                                                                    <td>File 2</td>
-                                                                    <td>MOEF NOC</td>
-                                                                    <td>265489</td>
-                                                                    <td>24-10-2024</td>
-                                                                    <td>Validity 2</td>
-                                                                    <td>Attachment</td>
-                                                                </tr>
-                                                                <tr class="table-info">
-                                                                    <td>3</td>
-                                                                    <td>Document 3</td>
-                                                                    <td>Category 3</td>
-                                                                    <td>File 3</td>
-                                                                    <td>7/ 12 utara</td>
-                                                                    <td>265489</td>
-                                                                    <td>24-10-2024</td>
-                                                                    <td>Validity 3</td>
-                                                                    <td>Attachment</td>
-                                                                </tr>
-                                                                <tr class="table-active">
-                                                                    <td>4</td>
-                                                                    <td>Document     4</td>
-                                                                    <td>Category 4</td>
-                                                                    <td>File 4</td>
-                                                                    <td>EETC ( Traffic)  EODB</td>
-                                                                    <td>265489</td>
-                                                                    <td>24-10-2024</td>
-                                                                    <td>Validity 4</td>
-                                                                    <td>Attachment</td>
-                                                                </tr>
-                                                            </table>
-                                                        </div>                                                                                        
-                                                    </div>                                                                 
-                                                </div>
-    
-                                            </div>
-                                        </form>
-                                    </div>
-                                    <div class="accordion-body card" [class.show]="activeIndices.includes(i)"> <!--[class.show]="activeIndices.includes(i)"-->
-                                        <form>
-                                            <div class="mb-3" *ngIf="i === 1">
-                                              
-    
-    
-                                                <!-- For accordion 2 -->
-                                                <div *ngIf="!loading" class="progress-details table-scroll-container">
-                                                    <table class="task-table">
-                  
-                                                      <thead class="table-header">
-                                                        <tr>
-                                                          <th>Sr No</th>
-                                                          <th>Abbrivation</th>
-                                                          <th class="truncate-date">Approved Description</th>
-                                                          <th>Days Required</th>
-                                                          <th>Department</th>
-                                                          <th>Job Role</th>
-                                                          <th>Responsible Person</th>
-                                                          <th>Output Document</th>
-                                                          <th>Tentative Start Date</th>
-                                                          <th>Tentative End Date</th>
-                                                          <th>Status</th>
-                                                        </tr>
-                                                      </thead>
-                  
-                                                      <tbody>
-                                                        <ng-template #recursiveTaskTemplate let-tasks>
-                                                          <ng-container *ngFor="let task of tasks">
-                                                            <tr>
-                                                              <td style="width: 300px;">
-                  
-                                                                <ng-container *ngIf="task.TASK_NO.TASK_NO">
-                                                                  <span
-                                                                    [style.marginLeft.px]="calculateIndentation(task.TASK_NO.TASK_NO, task.subtask && task.subtask.length > 0 ? 15 : 30)">
-                                                                    <mat-icon *ngIf="task.subtask && task.subtask.length > 0"
-                                                                      (click)="toggleVisibility(task)" style="cursor: pointer;">
-                                                                      <img
-                                                                        src="../../../../assets/Content/images/{{ task.visible ? 'collapse.png' : 'expand.png' }}">
-                                                                    </mat-icon>
-                                                                    {{ task.TASK_NO.TASK_NO }}
-                                                                  </span>
-                                                                </ng-container>
-                                                              </td>
-                                                              <td class="truncate-text">{{ task.TASK_NO?.Abbrivation }}</td>
-                                                              <td class="truncate-text">{{ task.TASK_NO?.Approved_Description }}</td>
-                                                              <td class="truncate-text">{{ task.TASK_NO?.Days_Required }}</td>
-                                                              <td class="truncate-text">{{ task.TASK_NO?.Department }}</td>
-                                                              <td class="truncate-text">{{ task.TASK_NO?.Job_Role }}</td>
-                                                              <td class="truncate-text">{{ task.TASK_NO?.Responsible_Person }}</td>
-                                                              <td class="truncate-text">{{ task.TASK_NO?.Output_Document }}</td>
-                                                              <td>
-                                                                <input type="date" class="form-control" aria-describedby="depth" name="staDate_new"
-                                                                formControlName="staDate_new" />
-                                                              </td>
-                                                              <!-- <td class="truncate-text">{{ task.TASK_NO?.Tentative_Start_Date }}</td>
-                                                              <td class="truncate-text">{{ task.TASK_NO?.Tentative_End_Date }}</td> -->
-                                                              <td class="truncate-text">{{ task.TASK_NO?.status }}</td>
-                                                            </tr>
-                                                            <ng-container *ngIf="task.visible && task.subtask && task.subtask.length > 0">
-                                                              <ng-container
-                                                                *ngTemplateOutlet="recursiveTaskTemplate; context: { $implicit: task.subtask }"></ng-container>
-                                                            </ng-container>
-                                                          </ng-container>
-                                                        </ng-template>
-                  
-                                                        <ng-container *ngFor="let task of subTasks">
-                                                          <tr>
-                                                            <td style="width: 300px;">
-                                                              <ng-container *ngIf="task.TASK_NO.TASK_NO">
-                                                                <span
-                                                                  [style.marginLeft.px]="calculateIndentation(task.TASK_NO.TASK_NO, task.subtask && task.subtask.length > 0 ? 20 : 17)">
-                                                                  <mat-icon *ngIf="task.subtask && task.subtask.length > 0"
-                                                                    (click)="toggleVisibility(task)" style="cursor: pointer;">
-                                                                    <img
-                                                                      src="../../../../assets/Content/images/{{ task.visible ? 'collapse.png' : 'expand.png' }}">
-                                                                  </mat-icon>
-                                                                  {{ task.TASK_NO.TASK_NO }}
-                                                                </span>
-                                                              </ng-container>
-                                                            </td>
-                                                            <td class="truncate-text">{{ task.TASK_NO?.Abbrivation }}</td>
-                                                            <td class="truncate-text">{{ task.TASK_NO?.Approved_Description }}</td>
-                                                            <td class="truncate-text">{{ task.TASK_NO?.Days_Required }}</td>
-                                                            <td class="truncate-text">{{ task.TASK_NO?.Department }}</td>
-                                                            <td class="truncate-text">{{ task.TASK_NO?.Job_Role }}</td>
-                                                            <td class="truncate-text">{{ task.TASK_NO?.Responsible_Person }}</td>
-                                                            <td class="truncate-text">{{ task.TASK_NO?.Output_Document }}</td>
-                                                            <td>
-                                                              <input type="date" class="form-control" aria-describedby="depth" name="staDate_new"
-                                                               />
-                                                            </td>
-                                                            <td>
-                                                              <input type="date" class="form-control" aria-describedby="depth" name="staDate_new"
-                                                               />
-                                                            </td>
-                                                            <!-- <td class="truncate-text">{{ task.TASK_NO?.Tentative_Start_Date }}</td>
-                                                            <td class="truncate-text">{{ task.TASK_NO?.Tentative_End_Date }}</td> -->
-                                                            <td class="truncate-text">{{ task.TASK_NO?.status }}</td>
-                                                          </tr>
-                                                          <ng-container *ngIf="task.visible && task.subtask && task.subtask.length > 0">
-                                                            <ng-container
-                                                              *ngTemplateOutlet="recursiveTaskTemplate; context: { $implicit: task.subtask }"></ng-container>
-                                                          </ng-container>
-                                                        </ng-container>
-                                                      </tbody>
-                  
-                                                    </table>
-                                                  </div>
-    
-    
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>                     
-                    </div>
+              <div class="row no-gutters align-items-center">
+                <div class="product-image mr-4 ml-8">
+                  <img src="../../../../assets/Content/images/ecommerce/product-image-placeholder.png">
                 </div>
+                <div>
+                  <b>Approval Task Initiation</b>
+                </div>
+              </div>
+
+              <div class="flex-grow-1"></div>
+
             </div>
+            <form [formGroup]="appeInitForm" (ngSubmit)="onSubmit()">
+              <div class="tab-content">
+                <div class="p-3">
+
+                  <div class="row">
+                    <div class="col-xs-12 col-xl-4 col-md-12">
+                      <div class="form-group">
+                        <label for="taskName">Property</label>
+
+                        <ng-container *ngIf="taskData?.MKEY">
+                          <select class="form-control" formControlName="property" #projectSelect
+                            (change)="onProjectSelect(projectSelect)">
+                            <option value="0">Select</option>
+                            <option *ngFor="let p of project" [ngValue]="p" [selected]="p.TYPE_DESC === taskData.project_Name">
+                              <!--[selected]="p.TYPE_DESC === taskData.project_Name"-->
+                              {{ p.TYPE_DESC }}
+                            </option>
+                          </select>
+                        </ng-container>
+
+                        <ng-container *ngIf="!taskData?.MKEY">
+                          <select class="form-control " formControlName="property" #projectSelect
+                            (change)="onProjectSelect(projectSelect)">
+                            <option value="0" selected>Select</option>
+                            <option *ngFor="let p of project" [ngValue]="p">{{ p.TYPE_DESC }}</option>
+                          </select>
+                        </ng-container>
+
+                      </div>
+                    </div>
+                    <div class="col-xs-12 col-xl-4 col-md-12">
+                      <div class="form-group">
+                        <label for="category">Building</label>
+
+                        <ng-container *ngIf="taskData?.MKEY">
+                          <select class="form-control" formControlName="building" name="subProject">
+                            <option value="0">Select</option>
+                            <option *ngFor="let s of sub_proj" [selected]="s.TYPE_DESC === taskData.sub_proj_name">
+                              {{ s.TYPE_DESC }}
+                            </option>
+                          </select>
+                        </ng-container>
+
+                        <ng-container *ngIf="!taskData?.MKEY">
+                          <select class="form-control" formControlName="building" name="subProject">
+                            <option value="0">Select</option>
+                            <option *ngFor="let s of sub_proj">
+                              {{ s.TYPE_DESC }}
+                            </option>
+                          </select>
+                        </ng-container>
+
+                      </div>
+                    </div>
+                    <div class="col-xs-12 col-xl-4 col-md-12">
+                      <div class="form-group">
+                        <label for="taskName">Initiator</label>
+                        <input type="text" formControlName="projectManager" maxlength="150" class="form-control"
+                          maxlength="150" />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="row ">
+                    <div class="col-xs-12 col-xl-4 col-md-12 ">
+                      <div class="form-group">
+
+                        <label for="taskName">Task Abbrivation</label>
+
+                        <ng-container *ngIf="taskData?.MKEY">
+                          <input type="text" maxlength="150" formControlName="abbrivation"
+                            [(ngModel)]="taskData.MAIN_ABBR" class="form-control" maxlength="150" />
+                        </ng-container>
+
+                        <ng-container *ngIf="!taskData?.MKEY">
+                          <input type="text" maxlength="150" formControlName="abbrivation" class="form-control"
+                            maxlength="150" />
+                        </ng-container>
+
+                      </div>
+
+                      <div class="form-group">
+
+                        <ng-container *ngIf="taskData.MKEY">
+                          <label for="taskName">Task Short Description</label>
+                          <input type="text" maxlength="150" formControlName="shortDescription"
+                            [(ngModel)]="taskData.SHORT_DESCRIPTION" class="form-control" maxlength="150" />
+                        </ng-container>
+
+                        <ng-container *ngIf="!taskData.MKEY">
+                          <label for="taskName">Task Short Description</label>
+                          <input type="text" maxlength="150" formControlName="shortDescription" class="form-control"
+                            maxlength="150" />
+                        </ng-container>
+
+                      </div>
+                    </div>
+                    <div class="col-xs-12 col-xl-8 col-md-12 mt-1">
+                      <div class="form-group">
+                        <label for="taskName">Task Description</label>
+                        <ng-container *ngIf="taskData.MKEY">
+                          <textarea type="text" formControlName="longDescriotion"
+                            [(ngModel)]="taskData.LONG_DESCRIPTION" class="form-control" style="height: 12rem;" rows="5"
+                            maxlength="150"> </textarea>
+                        </ng-container>
+
+                        <ng-container *ngIf="!taskData.MKEY">
+                          <textarea type="text" formControlName="longDescriotion" class="form-control"
+                            style="height: 12rem;" rows="5" maxlength="150"> </textarea>
+                        </ng-container>
+
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-xs-12 col-xl-4 col-md-12 ">
+                      <div class="form-group">
+                        <label for="category">Sanctioning Authority</label>
+
+                        <ng-container *ngIf="taskData?.MKEY">
+                          <select class="form-control">
+                            <option value=""> --SELECT--</option>
+                            <option *ngFor="let sanctioningAuth of SanctoningAuthList" [value]="sanctioningAuth.mkey"
+                              [selected]="sanctioningAuth.typE_DESC === taskData.SANCTION_AUTHORITY_NAME">
+                              {{sanctioningAuth.typE_DESC}} </option>
+                          </select>
+                        </ng-container>
+
+                        <ng-container *ngIf="!taskData?.MKEY">
+                          <select class="form-control">
+                            <option value=""> --SELECT--</option>
+                            <option *ngFor="let sanctioningAuth of SanctoningAuthList" [value]="sanctioningAuth.mkey"
+                              [selected]="sanctioningAuth.typE_DESC === taskData.SANCTION_AUTHORITY_NAME">
+                              {{sanctioningAuth.typE_DESC}} </option>
+                          </select>
+                        </ng-container>
+                      </div>
+                    </div>
+                    <div class="col-xs-12 col-xl-4 col-md-12 ">
+
+                      <div class="form-group">
+
+                        <ng-container *ngIf="taskData.MKEY">
+                          <label for="taskName">Sanctioning Department</label>
+                          <input type="text" maxlength="150" formControlName="sanctioningDepartment"
+                            [(ngModel)]="taskData.SANCTION_DEPARTMENT" class="form-control" maxlength="150" />
+                        </ng-container>
+
+                        <ng-container *ngIf="!taskData.MKEY">
+                          <label for="taskName">Sanctioning Department</label>
+                          <input type="text" maxlength="150" formControlName="sanctioningDepartment"
+                            class="form-control" maxlength="150" />
+                        </ng-container>
+                      </div>
+                    </div>
+
+                    <div class="col-xs-12 col-xl-4 col-md-12">
+                      <div class="form-group">
+                        <label for="taskName">Compliton Date</label>
+                        <input type="date" formControlName="complitionDate" maxlength="150" class="form-control"
+                          maxlength="150" />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="row">
+
+                    <div class="col-xs-12 col-xl-4 col-md-12">
+                      <div class="form-group">
+                        <label for="category">Responsible Person</label>
+
+                        <ng-container *ngIf="taskData?.MKEY">
+                          <input type="text" class="form-control" formControlName="responsiblePerson"
+                            (input)="filterEmployees($event)" appAlphabeticOnly />
+                        </ng-container>
+
+                        <ng-container *ngIf="!taskData?.MKEY">
+                          <input type="text" class="form-control" formControlName="responsiblePerson"
+                            (input)="filterEmployees($event)" appAlphabeticOnly />
+                        </ng-container>
+
+                        <div style="width: 100%;" class="pr-10 mt-1">
+                          <ul>
+                            <li *ngFor="let event of filteredEmployees; let i = index;" class="active" type="button"
+                              [class.inactive]="filteredEmployees" (click)="selectEmployee(event);">
+                              {{ event.Assign_to }}
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="col-xs-12 col-xl-4 col-md-12">
+                      <div class="form-group">
+                        <label for="category">Job Role</label>
+                        <select class="h6 form-control">
+                          <option value="">--SELECT--</option>
+                          <option *ngFor="let jobRole of jobRoleList" [value]="jobRole.mkey"
+                            [selected]="jobRole.typE_DESC === taskData.JOB_ROLE_NAME">{{jobRole.typE_DESC}}</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div class="col-xs-12 col-xl-4 col-md-12">
+                      <div class="form-group">
+                        <label for="category">Departrment</label>
+                        <select class="h6 form-control">
+                          <option value=""> --SELECT--</option>
+                          <option *ngFor="let dept of departmentList" [value]="dept.mkey"
+                            [selected]="dept.typE_DESC === taskData.AUTHORITY_DEPARTMENT_NAME">{{dept.typE_DESC}}
+                          </option>
+                        </select>
+                      </div>
+                    </div>
+
+
+                  </div>
+                </div>
+
+                <div class="accordion">
+                  <div *ngFor="let item of accordionItems; let i = index" class="accordion-item">
+
+                    <h2 class="accordion-header">
+                      <button (click)="toggle(i)" class="accordion-button" type="button">
+                        {{ item.title }}
+                      </button>
+                    </h2>
+
+                    <div class="accordion-body" [class.show]="activeIndices.includes(i)">
+                      <!--[class.show]="activeIndices.includes(i)"-->
+                      <form>
+                        <div class="mb-3" *ngIf="i === 0">
+
+
+
+                          <!-- For accordion 2 -->
+                          <div *ngIf="!loading" class="progress-details">
+                            <div class="table-scroll-container mx-2">
+                              <table class="table table-active">
+
+                                <thead class="table-header">
+                                  <tr>
+                                    <th><i class="fas fa-edit"></i></th>
+                                    <th>Sr No</th>
+                                    <th>Abbrivation</th>
+                                    <th class="truncate-date">Approved Description</th>
+                                    <th>Days Required</th>
+                                    <th>Department</th>
+                                    <th>Job Role</th>
+                                    <th>Responsible Person</th>
+                                    <th>Output Document</th>
+                                    <th>Tentative Start Date</th>
+                                    <th>Tentative End Date</th>
+                                    <th>Status</th>
+                                  </tr>
+                                </thead>
+
+                                <tbody>
+                                  <ng-template #recursiveTaskTemplate let-tasks>
+                                    <ng-container *ngFor="let task of tasks">
+                                      <tr>
+                                        <td>
+                                          <div class="d-flex justify-content-end  mr-3">
+                                            <i class="fa fa-pencil" style="font-size:15px" type="button"
+                                              (click)="toggleFormVisibility_main(task.TASK_NO.TASK_NO)"></i>
+                                          </div>
+                                        </td>
+                                        <td style="min-width: 300px;">
+
+                                          <ng-container *ngIf="task.TASK_NO.TASK_NO">
+                                            <span
+                                              [style.marginLeft.px]="calculateIndentation(task.TASK_NO.TASK_NO, task.subtask && task.subtask.length > 0 ? 15 : 30)">
+                                              <mat-icon *ngIf="task.subtask && task.subtask.length > 0"
+                                                (click)="toggleVisibility(task)" style="cursor: pointer;">
+                                                <img
+                                                  src="../../../../assets/Content/images/{{ task.visible ? 'collapse.png' : 'expand.png' }}">
+                                              </mat-icon>
+                                              {{ task.TASK_NO.TASK_NO }}
+                                            </span>
+                                          </ng-container>
+                                        </td>
+                                        <td class="truncate-text">{{ task.TASK_NO?.maiN_ABBR }}</td>
+                                        <td class="truncate-text">{{ task.TASK_NO?.abbR_SHORT_DESC }}</td>
+                                        <td class="truncate-text">{{ task.TASK_NO?.dayS_REQUIERD }}</td>
+                                        <td class="truncate-text">{{ task.TASK_NO?.department }}</td>
+                                        <td class="truncate-text">{{ task.TASK_NO?.joB_ROLE }}</td>
+                                        <td class="truncate-text">{{ task.TASK_NO?.Responsible_Person }}</td>
+                                        <td class="truncate-text">{{ task.TASK_NO?.enD_RESULT_DOC }}</td>
+
+                                        <td>
+                                          <input type="date" class="form-control"
+                                            (ngModelChange)="task.TASK_NO.start_date = $event"
+                                            [ngModel]="task.TASK_NO.start_date | date: 'yyyy-MM-dd'"
+                                            aria-describedby="depth" name="staDate_new" />
+                                        </td>
+                                        <td>
+                                          <input type="date" class="form-control"
+                                            (ngModelChange)="task.TASK_NO.start_date = $event"
+                                            [ngModel]="task.TASK_NO.start_date | date: 'yyyy-MM-dd'"
+                                            aria-describedby="depth" name="staDate_new" />
+                                        </td>
+                                        <td class="truncate-text">{{ task.TASK_NO?.status }}</td>
+                                      </tr>
+                                      <tr *ngIf="formVisibleMap[task.TASK_NO.TASK_NO]">
+                                        <td colspan="12">
+                                          <form>
+                                            <div class="form-container">
+                                              <div class="classification-border">
+                                                <div class="row pl-3">
+                                                
+                                                  <!-- Seq No input -->
+                                                
+                                          
+                                                  <!-- N.of.Days input -->
+                                                  <div class="col-xs-12 col-xl-1 col-md-12">
+                                                    <div class="form-group d-flex justify-content-between">
+                                                      <label class="days-label" for="taskName">N.O.D</label>
+                                                      <input type="number" class="days-input form-control" maxlength="150" />
+                                                    </div>
+                                                  </div>
+                                          
+                                                  <!-- Abbreviation input -->
+                                                  <div class="col-xs-12 col-xl-3 col-md-12">
+                                                    <div class="form-group d-flex justify-content-between">
+                                                      <label class="abbr-label" for="abbreviation">Abbreviation</label>
+                                                      <input type="text" class="abbr-input form-control" maxlength="150" />
+                                                    </div>
+                                                  </div>
+                                          
+                                                  <!-- Department select -->
+                                                  <div class="col-xs-12 col-xl-4 col-md-12">
+                                                    <div class="form-group d-flex justify-content-between">
+                                                      <label class="dept-label" for="department">Department</label>
+                                                      <select class="dept-select form-control">
+                                                        <option value=""> --SELECT--</option>
+                                                        <!-- Replace with your dynamic options -->
+                                                        <option value="1">IT</option>
+                                                        <option value="2">HR</option>
+                                                      </select>
+                                                    </div>
+                                                  </div>
+                                          
+                                                  <!-- Job Role select -->
+                                                  <div class="col-xs-12 col-xl-4 col-md-12">
+                                                    <div class="form-group d-flex justify-content-between">
+                                                      <label class="jobrole-label" for="jobRole">Job Role</label>
+                                                      <select class="jobrole-select form-control">
+                                                        <option value="">--SELECT--</option>
+                                                        <!-- Replace with your dynamic options -->
+                                                        <option value="1">Developer</option>
+                                                        <option value="2">Manager</option>
+                                                      </select>
+                                                    </div>
+                                                  </div>
+                                          
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </form>
+                                          
+                                        </td>
+                                      </tr>
+                                      <ng-container *ngIf="task.visible && task.subtask && task.subtask.length > 0">
+                                        <ng-container
+                                          *ngTemplateOutlet="recursiveTaskTemplate; context: { $implicit: task.subtask }"></ng-container>
+                                      </ng-container>
+                                    </ng-container>
+                                  </ng-template>
+
+                                  <ng-container *ngFor="let task of subTasks">
+                                    <tr>
+                                      <td>
+                                        <div class="d-flex justify-content-end  mr-3">
+                                          <i class="fa fa-pencil" style="font-size:15px" type="button"
+                                            (click)="toggleFormVisibility_main(task.TASK_NO.TASK_NO)"></i>
+                                        </div>
+                                      </td>
+                                      <td style="width: 300px;">
+                                        <ng-container *ngIf="task.TASK_NO.TASK_NO">
+                                          <span
+                                            [style.marginLeft.px]="calculateIndentation(task.TASK_NO.TASK_NO, task.subtask && task.subtask.length > 0 ? 20 : 17)">
+                                            <mat-icon *ngIf="task.subtask && task.subtask.length > 0"
+                                              (click)="toggleVisibility(task)" style="cursor: pointer;">
+                                              <img
+                                                src="../../../../assets/Content/images/{{ task.visible ? 'collapse.png' : 'expand.png' }}">
+                                            </mat-icon>
+                                            {{ task.TASK_NO.TASK_NO.trim() }}
+                                          </span>
+                                        </ng-container>
+                                      </td>
+                                      <td class="truncate-text">{{ task.TASK_NO?.maiN_ABBR }}</td>
+                                      <td class="truncate-text">{{ task.TASK_NO?.abbR_SHORT_DESC }}</td>
+                                      <td class="truncate-text">{{ task.TASK_NO?.dayS_REQUIERD }}</td>
+                                      <td class="truncate-text">{{ task.TASK_NO?.department }}</td>
+                                      <td class="truncate-text">{{ task.TASK_NO?.joB_ROLE }}</td>
+                                      <td class="truncate-text">{{ task.TASK_NO?.Responsible_Person }}</td>
+                                      <td class="truncate-text">{{ task.TASK_NO?.enD_RESULT_DOC }}</td>
+                                      <!-- <td class="truncate-text">{{ task.TASK_NO?.STATUS }}</td> -->
+
+                                      <td>
+                                        <input type="date" class="form-control"
+                                          (ngModelChange)="task.TASK_NO.start_date = $event"
+                                          [ngModel]="task.TASK_NO.start_date | date: 'yyyy-MM-dd'"
+                                          aria-describedby="depth" name="staDate_new" />
+                                      </td>
+                                      <td>
+                                        <input type="date" class="form-control"
+                                          (ngModelChange)="task.TASK_NO.start_date = $event"
+                                          [ngModel]="task.TASK_NO.start_date | date: 'yyyy-MM-dd'"
+                                          aria-describedby="depth" name="staDate_new" />
+                                      </td>
+                                      <td class="truncate-text">{{ task.TASK_NO?.status }}</td>
+                                    </tr>
+                                    <tr *ngIf="formVisibleMap[task.TASK_NO.TASK_NO]">
+                                      <td colspan="12">
+                                        <form>
+                                          <div class="form-container">
+                                            <div class="classification-border">
+                                              <div class="row pl-3">
+                                                
+                                                <!-- Seq No input -->
+                                              
+                                        
+                                                <div class="col-xs-12 col-xl-1 col-md-12">
+                                                  <div class="form-group d-flex justify-content-between">
+                                                    <label class="days-label" for="taskName">N.O.D</label>
+                                                    <input type="number" class="days-input form-control" maxlength="150" />
+                                                  </div>
+                                                </div>
+                                        
+                                                <div class="col-xs-12 col-xl-3 col-md-12">
+                                                  <div class="form-group d-flex justify-content-between">
+                                                    <label class="abbr-label" for="abbreviation">Abbreviation</label>
+                                                    <input type="text" class="abbr-input form-control" maxlength="150" />
+                                                  </div>
+                                                </div>
+                                        
+                                                <div class="col-xs-12 col-xl-4 col-md-12">
+                                                  <div class="form-group d-flex justify-content-between">
+                                                    <label class="dept-label" for="department">Department</label>
+                                                    <select class="dept-select form-control">
+                                                      <option value=""> --SELECT--</option>
+                                                      <!-- Replace with your dynamic options -->
+                                                      <option value="1">IT</option>
+                                                      <option value="2">HR</option>
+                                                    </select>
+                                                  </div>
+                                                </div>
+                                        
+                                                <!-- Job Role select -->
+                                                <div class="col-xs-12 col-xl-4 col-md-12">
+                                                  <div class="form-group d-flex justify-content-between">
+                                                    <label class="jobrole-label" for="jobRole">Job Role</label>
+                                                    <select class="jobrole-select form-control">
+                                                      <option value="">--SELECT--</option>
+                                                      <!-- Replace with your dynamic options -->
+                                                      <option value="1">Developer</option>
+                                                      <option value="2">Manager</option>
+                                                    </select>
+                                                  </div>
+                                                </div>
+                                        
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </form>
+                                      </td>
+                                    </tr>
+                                    <ng-container *ngIf="task.visible && task.subtask && task.subtask.length > 0">
+                                      <ng-container
+                                        *ngTemplateOutlet="recursiveTaskTemplate; context: { $implicit: task.subtask }"></ng-container>
+                                    </ng-container>
+                                  </ng-container>
+                                </tbody>
+
+                              </table>
+                            </div>
+
+                          </div>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </form>
+
+          </div>
         </div>
-    </main>
-</body>   
-=======
-<p>approval-task-initation works!</p>
->>>>>>> parent of cb45e19 (Adding Updated Packages 27-11-2024)
+      </div>
+    </div>
+  </main>
+</body>
