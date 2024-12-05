@@ -287,7 +287,7 @@ td:hover{
 
 
 .highlight {
-  background-color: #f1f1f1;  /* Light gray background for selected row */
+  background-color: #d5bcbc;  /* Light gray background for selected row */
   border-left: 5px solid #007bff;  /* Optional left border to indicate selection */
 }
 
@@ -296,7 +296,22 @@ td:hover{
 }
 
 
+select[disabled], select.disabled {
+  background-color: #e0e0e0; /* Light grey background */
+  color: #a1a1a1; /* Light grey text */
+  cursor: not-allowed; /* Changes cursor to indicate the field is disabled */
+}
 
+/* Apply to all disabled inputs */
+input.form-control[disabled] {
+  background-color: #e0e0e0 !important; /* Light grey background */
+  color: #a1a1a1 !important; /* Light grey text */
+  cursor: not-allowed !important; /* Indicate it's disabled */
+}
+
+small{
+  color: red;
+}
 
 .fa-solid {
   display: inline-flex;        

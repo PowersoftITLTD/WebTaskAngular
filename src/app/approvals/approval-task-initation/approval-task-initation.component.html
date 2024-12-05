@@ -36,15 +36,17 @@
                         <label for="taskName">Property</label>
 
                         <ng-container *ngIf="taskData?.MKEY">
-                          <select class="form-control" formControlName="property" #projectSelect
+                          <select class="form-control" formControlName="property" #projectSelect [class.disabled]="true"
+                            [attr.disabled]="true" [disabled]="isFieldDisabled"
                             (change)="onProjectSelect(projectSelect)">
                             <option value="0">Select</option>
-                            <option *ngFor="let p of project" [ngValue]="p" [selected]="p.TYPE_DESC === taskData.project_Name">
-                              <!--[selected]="p.TYPE_DESC === taskData.project_Name"-->
+                            <option *ngFor="let p of project" [ngValue]="p"
+                              [selected]="p.TYPE_DESC === taskData.project_Name">
                               {{ p.TYPE_DESC }}
                             </option>
                           </select>
                         </ng-container>
+
 
                         <ng-container *ngIf="!taskData?.MKEY">
                           <select class="form-control " formControlName="property" #projectSelect
@@ -60,38 +62,40 @@
                       <div class="form-group">
                         <label for="category">Building</label>
 
-                        <div class="input-container">
-                          
+                        <div class="">
+
                           <!-- First container (input), displayed when taskData?.MKEY is truthy -->
                           <div class="input">
-                            <select class="form-control">
+                            <select class="form-control" [class.disabled]="true" [attr.disabled]="true"
+                              [disabled]="isFieldDisabled">
                               <option value="0">Select</option>
-                              <option *ngFor="let s of sub_proj" [ngValue]="s" [selected]="s.TYPE_DESC === taskData.sub_proj_name">
+                              <option *ngFor="let s of sub_proj" [ngValue]="s"
+                                [selected]="s.TYPE_DESC === taskData.sub_proj_name">
                                 {{ s.TYPE_DESC }}
                               </option>
                             </select>
                           </div>
-                          
+
                           <!-- Second container (select), displayed when taskData?.MKEY is falsy -->
-                          <div class="select">
+                          <!-- <div class="select">
                             <select class="form-control" formControlName="building">
                               <option value="0">Select</option>
                               <option *ngFor="let s of sub_proj" [ngValue]="s">
                                 {{ s.TYPE_DESC }}
                               </option>
                             </select>
-                          </div>
+                          </div> -->
                         </div>
-                        
-                        
-                        
+
+
+
 
                       </div>
                     </div>
                     <div class="col-xs-12 col-xl-4 col-md-12">
                       <div class="form-group">
-                        <label for="taskName">Initiator</label>
-                        <input type="text" formControlName="projectManager" maxlength="150" class="form-control"
+                        <label for="taskName">Initiator&nbsp;<small>*</small></label>
+                        <input type="text" formControlName="projectManager" maxlength="150" [ngStyle]="isFieldDisabled ? { 'background-color': 'rgb(238 236 195)', 'color': '#11111', 'cursor': 'allowed' } : {}" class="form-control"
                           maxlength="150" />
                       </div>
                     </div>
@@ -104,8 +108,10 @@
                         <label for="taskName">Task Abbrivation / Serial No.</label>
 
                         <ng-container *ngIf="taskData?.MKEY">
-                          <input type="text" maxlength="150" formControlName="abbrivation"
-                            [(ngModel)]="taskData.MAIN_ABBR" class="form-control" maxlength="150" />
+                          <input type="text" maxlength="150" formControlName="abbrivation" [disabled]="isFieldDisabled"
+                            [(ngModel)]="taskData.MAIN_ABBR" class="form-control"
+                            [ngStyle]="isFieldDisabled ? { 'background-color': '#e0e0e0', 'color': '#a1a1a1', 'cursor': 'not-allowed' } : {}"
+                            maxlength="150" />
                         </ng-container>
 
                         <ng-container *ngIf="!taskData?.MKEY">
@@ -118,13 +124,14 @@
                       <div class="form-group">
 
                         <ng-container *ngIf="taskData.MKEY">
-                          <label for="taskName">Task Short Description</label>
+                          <label for="taskName">Task Short Description <small>*</small></label>
                           <input type="text" maxlength="150" formControlName="shortDescription"
+                            [ngStyle]="isFieldDisabled ? { 'background-color': 'rgb(238 236 195)', 'color': '#11111', 'cursor': 'allowed' } : {}"
                             [(ngModel)]="taskData.SHORT_DESCRIPTION" class="form-control" maxlength="150" />
                         </ng-container>
 
                         <ng-container *ngIf="!taskData.MKEY">
-                          <label for="taskName">Task Short Description</label>
+                          <label for="taskName">Task Short Description<small>*</small></label>
                           <input type="text" maxlength="150" formControlName="shortDescription" class="form-control"
                             maxlength="150" />
                         </ng-container>
@@ -133,9 +140,10 @@
                     </div>
                     <div class="col-xs-12 col-xl-8 col-md-12 mt-1">
                       <div class="form-group">
-                        <label for="taskName">Task Description</label>
+                        <label for="taskName">Task Description&nbsp;<small>*</small></label>
                         <ng-container *ngIf="taskData.MKEY">
                           <textarea type="text" formControlName="longDescriotion"
+                            [ngStyle]="isFieldDisabled ? { 'background-color': 'rgb(238 236 195)', 'color': '#11111', 'cursor': 'allowed' } : {}"
                             [(ngModel)]="taskData.LONG_DESCRIPTION" class="form-control" style="height: 12rem;" rows="5"
                             maxlength="150"> </textarea>
                         </ng-container>
@@ -155,7 +163,8 @@
                         <label for="category">Sanctioning Authority</label>
 
                         <ng-container *ngIf="taskData?.MKEY">
-                          <select class="form-control" formControlName="sanctioningAuth">
+                          <select class="form-control" formControlName="sanctioningAuth" [class.disabled]="true"
+                            [attr.disabled]="true" [disabled]="isFieldDisabled">
                             <option value=""> --SELECT--</option>
                             <option *ngFor="let sanctioningAuth of SanctoningAuthList" [value]="sanctioningAuth.mkey"
                               [selected]="sanctioningAuth.typE_DESC === taskData.SANCTION_AUTHORITY_NAME">
@@ -180,6 +189,7 @@
                         <ng-container *ngIf="taskData.MKEY">
                           <label for="taskName">Sanctioning Department</label>
                           <input type="text" maxlength="150" formControlName="sanctioningDepartment"
+                            [ngStyle]="isFieldDisabled ? { 'background-color': '#e0e0e0', 'color': '#a1a1a1', 'cursor': 'not-allowed' } : {}"
                             [(ngModel)]="taskData.SANCTION_DEPARTMENT" class="form-control" maxlength="150" />
                         </ng-container>
 
@@ -193,8 +203,8 @@
 
                     <div class="col-xs-12 col-xl-4 col-md-12">
                       <div class="form-group">
-                        <label for="taskName">Compliton Date</label>
-                        <input type="date" formControlName="complitionDate" maxlength="150" class="form-control"
+                        <label for="taskName" >Compliton Date&nbsp;<small>*</small></label>
+                        <input type="date" [ngStyle]="isFieldDisabled ? { 'background-color': 'rgb(238 236 195)', 'color': '#11111', 'cursor': 'allowed' } : {}" formControlName="complitionDate" maxlength="150" class="form-control"
                           maxlength="150" />
                       </div>
                     </div>
@@ -204,11 +214,11 @@
 
                     <div class="col-xs-12 col-xl-4 col-md-12">
                       <div class="form-group">
-                        <label for="category">Responsible Person</label>
+                        <label for="category">Responsible Person&nbsp;<small>*</small></label>
 
                         <ng-container *ngIf="taskData?.MKEY">
                           <input type="text" class="form-control" formControlName="responsiblePerson"
-                            (input)="filterEmployees($event)" appAlphabeticOnly />
+                            (input)="filterEmployees($event)" appAlphabeticOnly [ngStyle]="isFieldDisabled ? { 'background-color': 'rgb(238 236 195)', 'color': '#11111', 'cursor': 'allowed' } : {}"/>
                         </ng-container>
 
                         <ng-container *ngIf="!taskData?.MKEY">
@@ -230,7 +240,8 @@
                     <div class="col-xs-12 col-xl-4 col-md-12">
                       <div class="form-group">
                         <label for="category">Job Role</label>
-                        <select class="h6 form-control" formControlName="jobRole">
+                        <select class="h6 form-control" formControlName="jobRole" [class.disabled]="true"
+                          [attr.disabled]="true" [disabled]="isFieldDisabled">
                           <option value="">--SELECT--</option>
                           <option *ngFor="let jobRole of jobRoleList" [value]="jobRole.mkey"
                             [selected]="jobRole.typE_DESC === taskData.JOB_ROLE_NAME">{{jobRole.typE_DESC}}</option>
@@ -241,7 +252,8 @@
                     <div class="col-xs-12 col-xl-4 col-md-12">
                       <div class="form-group">
                         <label for="category">Departrment</label>
-                        <select class="h6 form-control">
+                        <select class="h6 form-control" [class.disabled]="true" [attr.disabled]="true"
+                          [disabled]="isFieldDisabled">
                           <option value=""> --SELECT--</option>
                           <option *ngFor="let dept of departmentList" [value]="dept.mkey"
                             [selected]="dept.typE_DESC === taskData.AUTHORITY_DEPARTMENT_NAME">{{dept.typE_DESC}}
@@ -325,15 +337,19 @@
                                         <td class="truncate-text">{{ task.TASK_NO?.enD_RESULT_DOC }}</td>
 
                                         <td>
-                                          <input type="date" class="form-control" (ngModelChange)="task.TASK_NO.start_date = $event"  [ngModel]="task.TASK_NO.start_date | date: 'yyyy-MM-dd'"
-                                          [ngModelOptions]="{standalone: true}" name="staDate_new_{{task.TASK_NO}}" />
+                                          <input type="date" class="form-control"
+                                            (ngModelChange)="task.TASK_NO.start_date = $event"
+                                            [ngModel]="task.TASK_NO.start_date | date: 'yyyy-MM-dd'"
+                                            [ngModelOptions]="{standalone: true}" name="staDate_new_{{task.TASK_NO}}" />
                                         </td>
-                              
+
                                         <td>
-                                          <input type="date" class="form-control" (ngModelChange)="task.TASK_NO.end_date = $event" [ngModel]="task.TASK_NO.end_date | date: 'yyyy-MM-dd'"
-                                          [ngModelOptions]="{standalone: true}" name="endDate_new" />
+                                          <input type="date" class="form-control"
+                                            (ngModelChange)="task.TASK_NO.end_date = $event"
+                                            [ngModel]="task.TASK_NO.end_date | date: 'yyyy-MM-dd'"
+                                            [ngModelOptions]="{standalone: true}" name="endDate_new" />
                                         </td>
-                                        
+
                                         <td class="truncate-text">{{ task.TASK_NO?.status }}</td>
                                       </tr>
                                       <tr *ngIf="formVisibleMap[task.TASK_NO.TASK_NO]">
@@ -341,89 +357,121 @@
                                           <form>
                                             <div class="">
                                               <div class="classification-border" style="margin-right:50rem">
-                                                <div class="row pl-3">                                                                                                                                    
-                                             
+  
+                                              
+  
+                                                <div class="row pl-3">
+  
                                                   <div class="col-xs-12 col-xl-3 col-md-12">
                                                     <div class="form-group d-flex justify-content-between">
                                                       <label class="abbr-label" for="abbreviation">Abbreviation</label>
-                                                      <input type="text" class="abbr-input form-control" maxlength="150" />
+                                                      <input type="text" class="abbr-input form-control" maxlength="150"
+                                                        [value]="task.TASK_NO?.maiN_ABBR" [class.disabled]="true"
+                                                        [attr.disabled]="true" [disabled]="isFieldDisabled" />
+                                                    </div>
+  
+                                                    <div class="form-group d-flex justify-content-between">
+                                                      <label class="abbr-label" for="abbreviation">Start
+                                                        Date</label>
+                                                      <input type="date" class="form-control"
+                                                        [ngStyle]="isFieldDisabled ? { 'background-color': 'rgb(238 236 195)', 'color': '#11111', 'cursor': 'allowed' } : {}"  
+                                                        (ngModelChange)="task.TASK_NO.start_date = $event"
+                                                        [ngModel]="task.TASK_NO.start_date | date: 'yyyy-MM-dd'"
+                                                        [ngModelOptions]="{standalone: true}"
+                                                        name="staDate_new_{{task.TASK_NO}}" />
+  
                                                     </div>
                                                   </div>
   
-                                                  <div class="col-xs-12 col-xl-2 col-md-12">
-                                                    <div class="form-group d-flex justify-content-between">
-                                                      <label class="days-label" for="taskName">Days required</label>
-                                                      <input type="number"  placeholder="Abbrivation"  class="days-input form-control" maxlength="150" />
-                                                    </div>
-                                                  </div>
-                                          
-                                                  <div class="col-xs-12 col-xl-4 col-md-12">
-                                                    <div class="form-group d-flex justify-content-between">
-                                                      <label class="dept-label" for="department">Department</label>
-                                                      <select class="dept-select form-control">
-                                                        <option value=""> --SELECT--</option>
-                                                        <option value="1">IT</option>
-                                                        <option value="2">HR</option>
-                                                      </select>
-                                                    </div>
-                                                  </div>
-                                          
                                                   <div class="col-xs-12 col-xl-3 col-md-12">
                                                     <div class="form-group d-flex justify-content-between">
-                                                      <label class="jobrole-label" for="jobRole">Job Role</label>
-                                                      <select class="jobrole-select form-control">
-                                                        <option value="">--SELECT--</option>
-                                                        <option value="1">Developer</option>
-                                                        <option value="2">Manager</option>
-                                                      </select>
+                                                      <label class="days-label" for="taskName">Short Description</label>
+                                                      <input [ngStyle]="isFieldDisabled ? { 'background-color': 'rgb(238 236 195)', 'color': '#11111', 'cursor': 'allowed' } : {}" 
+                                                       type="text" class="abbr-input form-control"
+                                                      maxlength="150" />
+                                                    </div>
+  
+  
+                                                    <div class="form-group d-flex justify-content-between">
+                                                      <label class="abbr-label" for="abbreviation">End 
+                                                        Date</label>
+                                                        <input type="date" class="form-control"
+                                                        [ngStyle]="isFieldDisabled ? { 'background-color': 'rgb(238 236 195)', 'color': '#11111', 'cursor': 'allowed' } : {}"
+                                                        (ngModelChange)="task.TASK_NO.end_date = $event"
+                                                        [ngModel]="task.TASK_NO.end_date | date: 'yyyy-MM-dd'"
+                                                        [ngModelOptions]="{standalone: true}" name="endDate_new" />
                                                     </div>
                                                   </div>
-                                                                                         
+  
+                                                  <div class="col-xs-12 col-xl-6 col-md-12">
+                                                    
+                                                    <div class="form-group d-flex justify-content-between">
+                                                      <label class="abbr-label" for="abbreviation">Long
+                                                        Description</label>
+                                                      <textarea class="form-control" style="height: 2rem;" 
+                                                        [ngStyle]="isFieldDisabled ? { 'background-color': 'rgb(238 236 195)', 'color': '#11111', 'cursor': 'allowed' } : {}" rows="4"
+                                                        [value]="task.TASK_NO?.abbR_SHORT_DESC"></textarea>
+                                                    </div>
+                                                  </div>
+  
                                                 </div>
-
-                                                <div class="row pl-3">                                                                                                                                    
+  
+                                                <div class="row pl-3">
+  
+                                                  <div class="col-xs-12 col-xl-3 col-md-12">
+                                                      <div class="form-group d-flex justify-content-between">
+                                                        <label class="abbr-label" for="abbreviation" 
+                                                        >Responsible
+                                                          Person</label>
+                                                        <input type="text" class="abbr-input form-control"
+                                                        [ngStyle]="isFieldDisabled ? { 'background-color': 'rgb(238 236 195)', 'color': '#11111', 'cursor': 'allowed' } : {}"
+                                                          maxlength="150" />
+                                                      </div>                                                 
+                                                  </div>
                                              
+  
                                                   <div class="col-xs-12 col-xl-3 col-md-12">
                                                     <div class="form-group d-flex justify-content-between">
-                                                      <label class="abbr-label" for="abbreviation">Abbreviation</label>
-                                                      <input type="text" class="abbr-input form-control" maxlength="150" />
+                                                      <label class="dept-label" for="department">Departrment</label>
+                                                      <select class="dept-select form-control" [class.disabled]="true"
+                                                        [attr.disabled]="true" [disabled]="isFieldDisabled">
+                                                        <option value=""> --SELECT--</option>
+                                                        <option *ngFor="let dept of departmentList" [value]="dept.mkey"
+                                                          [selected]="dept.typE_DESC === task.TASK_NO?.department">
+                                                          {{dept.typE_DESC}}
+                                                        </option>
+                                                      </select>
                                                     </div>
                                                   </div>
   
-                                                  <div class="col-xs-12 col-xl-2 col-md-12">
-                                                    <div class="form-group d-flex justify-content-between">
-                                                      <label class="days-label" for="taskName">Days required</label>
-                                                      <input type="number"  placeholder="Abbrivation"  class="days-input form-control" maxlength="150" />
-                                                    </div>
-                                                  </div>
-                                          
-                                                  <div class="col-xs-12 col-xl-4 col-md-12">
-                                                    <div class="form-group d-flex justify-content-between">
-                                                      <label class="dept-label" for="department">Department</label>
-                                                      <select class="dept-select form-control">
-                                                        <option value=""> --SELECT--</option>
-                                                        <option value="1">IT</option>
-                                                        <option value="2">HR</option>
-                                                      </select>
-                                                    </div>
-                                                  </div>
-                                          
                                                   <div class="col-xs-12 col-xl-3 col-md-12">
                                                     <div class="form-group d-flex justify-content-between">
                                                       <label class="jobrole-label" for="jobRole">Job Role</label>
-                                                      <select class="jobrole-select form-control">
-                                                        <option value="">--SELECT--</option>
-                                                        <option value="1">Developer</option>
-                                                        <option value="2">Manager</option>
+                                                      <select class="dept-select form-control"
+                                                        [value]="task.TASK_NO?.joB_ROLE" [class.disabled]="true"
+                                                        [attr.disabled]="true" [disabled]="isFieldDisabled">
+                                                        <option *ngFor="let jobRole of jobRoleList" [value]="jobRole.mkey"
+                                                          [selected]="jobRole.typE_DESC === task.TASK_NO?.joB_ROLE">
+                                                          {{ jobRole.typE_DESC }}
+                                                        </option>
                                                       </select>
                                                     </div>
                                                   </div>
-                                                                                         
+  
+                                                  <div class="col-xs-12 col-xl-3 col-md-12">
+                                                    <div class="form-group d-flex justify-content-between">
+                                                      <label class="days-label" for="taskName">Output Document</label>
+                                                      <input type="text" [value]="task.TASK_NO?.enD_RESULT_DOC"
+                                                        [class.disabled]="true" [attr.disabled]="true"
+                                                        [disabled]="isFieldDisabled" class="days-input form-control"
+                                                        maxlength="150" />
+                                                    </div>
+                                                  </div>
+                                                  
                                                 </div>
                                               </div>
                                             </div>
                                           </form>
-                                          
                                         </td>
                                       </tr>
                                       <ng-container *ngIf="task.visible && task.subtask && task.subtask.length > 0">
@@ -464,143 +512,137 @@
                                       <!-- <td class="truncate-text">{{ task.TASK_NO?.STATUS }}</td> -->
 
                                       <td>
-                                        <input type="date" class="form-control" (ngModelChange)="task.TASK_NO.start_date = $event"  [ngModel]="task.TASK_NO.start_date | date: 'yyyy-MM-dd'"
-                                        [ngModelOptions]="{standalone: true}" name="staDate_new_{{task.TASK_NO}}" />
+                                        <input type="date" class="form-control"
+                                          (ngModelChange)="task.TASK_NO.start_date = $event"
+                                          [ngModel]="task.TASK_NO.start_date | date: 'yyyy-MM-dd'"
+                                          [ngModelOptions]="{standalone: true}" name="staDate_new_{{task.TASK_NO}}" />
                                       </td>
-                            
+
                                       <td>
-                                        <input type="date" class="form-control" (ngModelChange)="task.TASK_NO.end_date = $event" [ngModel]="task.TASK_NO.end_date | date: 'yyyy-MM-dd'"
-                                        [ngModelOptions]="{standalone: true}" name="endDate_new" />
+                                        <input type="date" class="form-control"
+                                          (ngModelChange)="task.TASK_NO.end_date = $event"
+                                          [ngModel]="task.TASK_NO.end_date | date: 'yyyy-MM-dd'"
+                                          [ngModelOptions]="{standalone: true}" name="endDate_new" />
                                       </td>
-                                      
+
                                       <td class="truncate-text">{{ task.TASK_NO?.status }}</td>
                                     </tr>
-                                    <tr *ngIf="formVisibleMap[task.TASK_NO.TASK_NO]" >
+                                    <tr *ngIf="formVisibleMap[task.TASK_NO.TASK_NO]">
                                       <td colspan="12">
                                         <form>
                                           <div class="">
-                                            <div class="classification-border"  style="margin-right:50rem">
-                                              <!-- <div class="row pl-3">
-                                                                                                                                                                                    
+                                            <div class="classification-border" style="margin-right:50rem">
+
+                                            
+
+                                              <div class="row pl-3">
+
                                                 <div class="col-xs-12 col-xl-3 col-md-12">
                                                   <div class="form-group d-flex justify-content-between">
                                                     <label class="abbr-label" for="abbreviation">Abbreviation</label>
-                                                    <input type="text" placeholder="Abbrivation" class="abbr-input form-control" maxlength="150" />
+                                                    <input type="text" class="abbr-input form-control" maxlength="150"
+                                                      [value]="task.TASK_NO?.maiN_ABBR" [class.disabled]="true"
+                                                      [attr.disabled]="true" [disabled]="isFieldDisabled" />
                                                   </div>
-                                                </div>
-                                        
-                                                <div class="col-xs-12 col-xl-4 col-md-12">
+
                                                   <div class="form-group d-flex justify-content-between">
-                                                    <label class="dept-label" for="department">Department</label>
-                                                    <select class="dept-select form-control">
-                                                      <option value=""> --SELECT--</option>
-                                                      <option value="1">IT</option>
-                                                      <option value="2">HR</option>
-                                                    </select>
-                                                  </div>
-                                                </div>
-                                        
-                                                <div class="col-xs-12 col-xl-4 col-md-12">
-                                                  <div class="form-group d-flex justify-content-between">
-                                                    <label class="jobrole-label" for="jobRole">Job Role</label>
-                                                    <select class="jobrole-select form-control">
-                                                      <option value="">--SELECT--</option>
-                                                      <option value="1">Developer</option>
-                                                      <option value="2">Manager</option>
-                                                    </select>
+                                                    <label class="abbr-label" for="abbreviation">Start
+                                                      Date</label>
+                                                    <input type="date" class="form-control"
+                                                      [ngStyle]="isFieldDisabled ? { 'background-color': 'rgb(238 236 195)', 'color': '#11111', 'cursor': 'allowed' } : {}"  
+                                                      (ngModelChange)="task.TASK_NO.start_date = $event"
+                                                      [ngModel]="task.TASK_NO.start_date | date: 'yyyy-MM-dd'"
+                                                      [ngModelOptions]="{standalone: true}"
+                                                      name="staDate_new_{{task.TASK_NO}}" />
+
                                                   </div>
                                                 </div>
 
-                                               
-                                        
-                                              </div> -->
-                                              <div class="row pl-3">                                                                                                                                    
-                                             
                                                 <div class="col-xs-12 col-xl-3 col-md-12">
                                                   <div class="form-group d-flex justify-content-between">
-                                                    <label class="abbr-label" for="abbreviation">Abbreviation</label>
-                                                    <input type="text" class="abbr-input form-control" maxlength="150" />
+                                                    <label class="days-label" for="taskName">Short Description</label>
+                                                    <input [ngStyle]="isFieldDisabled ? { 'background-color': 'rgb(238 236 195)', 'color': '#11111', 'cursor': 'allowed' } : {}" 
+                                                     type="text" class="abbr-input form-control"
+                                                    maxlength="150" />
+                                                  </div>
+
+
+                                                  <div class="form-group d-flex justify-content-between">
+                                                    <label class="abbr-label" for="abbreviation">End 
+                                                      Date</label>
+                                                      <input type="date" class="form-control"
+                                                      [ngStyle]="isFieldDisabled ? { 'background-color': 'rgb(238 236 195)', 'color': '#11111', 'cursor': 'allowed' } : {}"
+                                                      (ngModelChange)="task.TASK_NO.end_date = $event"
+                                                      [ngModel]="task.TASK_NO.end_date | date: 'yyyy-MM-dd'"
+                                                      [ngModelOptions]="{standalone: true}" name="endDate_new" />
                                                   </div>
                                                 </div>
 
-                                                <div class="col-xs-12 col-xl-2 col-md-12">
+                                                <div class="col-xs-12 col-xl-6 col-md-12">
+                                                  
                                                   <div class="form-group d-flex justify-content-between">
-                                                    <label class="days-label" for="taskName">Days required</label>
-                                                    <input type="number"  placeholder="Abbrivation"  class="days-input form-control" maxlength="150" />
+                                                    <label class="abbr-label" for="abbreviation">Long
+                                                      Description</label>
+                                                    <textarea class="form-control" style="height: 2rem;" 
+                                                      [ngStyle]="isFieldDisabled ? { 'background-color': 'rgb(238 236 195)', 'color': '#11111', 'cursor': 'allowed' } : {}" rows="4"
+                                                      [value]="task.TASK_NO?.abbR_SHORT_DESC"></textarea>
                                                   </div>
                                                 </div>
-                                        
-                                                <div class="col-xs-12 col-xl-4 col-md-12">
-                                                  <div class="form-group d-flex justify-content-between">
-                                                    <label class="dept-label" for="department">Department</label>
-                                                    <select class="dept-select form-control">
-                                                      <option value=""> --SELECT--</option>
-                                                      <option value="1">IT</option>
-                                                      <option value="2">HR</option>
-                                                    </select>
-                                                  </div>
-                                                </div>
-                                        
-                                                <div class="col-xs-12 col-xl-3 col-md-12">
-                                                  <div class="form-group d-flex justify-content-between">
-                                                    <label class="jobrole-label" for="jobRole">Job Role</label>
-                                                    <select class="jobrole-select form-control">
-                                                      <option value="">--SELECT--</option>
-                                                      <option value="1">Developer</option>
-                                                      <option value="2">Manager</option>
-                                                    </select>
-                                                  </div>
-                                                </div>
-                                                                                       
+
                                               </div>
 
-                                              <div class="row pl-3">                                                                                                                                    
-                                             
+                                              <div class="row pl-3">
+
+                                                <div class="col-xs-12 col-xl-3 col-md-12">
+                                                    <div class="form-group d-flex justify-content-between">
+                                                      <label class="abbr-label" for="abbreviation" 
+                                                      >Responsible
+                                                        Person</label>
+                                                      <input type="text" class="abbr-input form-control"
+                                                      [ngStyle]="isFieldDisabled ? { 'background-color': 'rgb(238 236 195)', 'color': '#11111', 'cursor': 'allowed' } : {}"
+                                                        maxlength="150" />
+                                                    </div>                                                 
+                                                </div>
+                                           
+
                                                 <div class="col-xs-12 col-xl-3 col-md-12">
                                                   <div class="form-group d-flex justify-content-between">
-                                                    <label class="abbr-label" for="abbreviation">Responsible Person</label>
-                                                    <input type="text" class="abbr-input form-control" maxlength="150" />
+                                                    <label class="dept-label" for="department">Departrment</label>
+                                                    <select class="dept-select form-control" [class.disabled]="true"
+                                                      [attr.disabled]="true" [disabled]="isFieldDisabled">
+                                                      <option value=""> --SELECT--</option>
+                                                      <option *ngFor="let dept of departmentList" [value]="dept.mkey"
+                                                        [selected]="dept.typE_DESC === task.TASK_NO?.department">
+                                                        {{dept.typE_DESC}}
+                                                      </option>
+                                                    </select>
                                                   </div>
+                                                </div>
 
+                                                <div class="col-xs-12 col-xl-3 col-md-12">
                                                   <div class="form-group d-flex justify-content-between">
-                                                    <label class="abbr-label" for="abbreviation">Responsible Person</label>
-                                                    <input type="text" class="abbr-input form-control" maxlength="150" />
+                                                    <label class="jobrole-label" for="jobRole">Job Role</label>
+                                                    <select class="dept-select form-control"
+                                                      [value]="task.TASK_NO?.joB_ROLE" [class.disabled]="true"
+                                                      [attr.disabled]="true" [disabled]="isFieldDisabled">
+                                                      <option *ngFor="let jobRole of jobRoleList" [value]="jobRole.mkey"
+                                                        [selected]="jobRole.typE_DESC === task.TASK_NO?.joB_ROLE">
+                                                        {{ jobRole.typE_DESC }}
+                                                      </option>
+                                                    </select>
                                                   </div>
                                                 </div>
 
                                                 <div class="col-xs-12 col-xl-3 col-md-12">
                                                   <div class="form-group d-flex justify-content-between">
                                                     <label class="days-label" for="taskName">Output Document</label>
-                                                    <input type="number"  placeholder="Abbrivation"  class="days-input form-control" maxlength="150" />
-                                                  </div>
-
-
-                                                  <div class="form-group d-flex justify-content-between">
-                                                    <label class="abbr-label" for="abbreviation">Abbreviation</label>
-                                                    <input type="text" class="abbr-input form-control" maxlength="150" />
+                                                    <input type="text" [value]="task.TASK_NO?.enD_RESULT_DOC"
+                                                      [class.disabled]="true" [attr.disabled]="true"
+                                                      [disabled]="isFieldDisabled" class="days-input form-control"
+                                                      maxlength="150" />
                                                   </div>
                                                 </div>
-                                        
-                                                <div class="col-xs-12 col-xl-6 col-md-12">
-                                                  <div class="form-group d-flex justify-content-between">
-                                                    <label class="abbr-label" for="abbreviation">Long Description</label>
-                                                    <textarea type="text" 
-                                                     class="form-control" style="height: 2rem;" rows="4"
-                                                    maxlength="150"> </textarea>
-                                                  </div>
-                                                </div>
-                                        
-                                                <!-- <div class="col-xs-12 col-xl-3 col-md-12">
-                                                  <div class="form-group d-flex justify-content-between">
-                                                    <label class="jobrole-label" for="jobRole">Job Role</label>
-                                                    <select class="jobrole-select form-control">
-                                                      <option value="">--SELECT--</option>
-                                                      <option value="1">Developer</option>
-                                                      <option value="2">Manager</option>
-                                                    </select>
-                                                  </div>
-                                                </div> -->
-                                                                                       
+                                                
                                               </div>
                                             </div>
                                           </div>

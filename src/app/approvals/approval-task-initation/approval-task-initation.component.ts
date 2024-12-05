@@ -27,6 +27,7 @@ export class ApprovalTaskInitationComponent implements OnInit {
   appeInitForm: FormGroup | any;
 
   createdOrUpdatedUserName: any
+  isFieldDisabled = true; 
 
   updatedDetails: boolean = false;
 
@@ -68,7 +69,7 @@ export class ApprovalTaskInitationComponent implements OnInit {
     private formBuilder: FormBuilder,
     private credentialService: CredentialService,
     private router: Router,
-    private tostar:ToastrService
+    private tostar: ToastrService
   ) {
 
 
@@ -110,12 +111,12 @@ export class ApprovalTaskInitationComponent implements OnInit {
     this.activeIndices = this.accordionItems.map((_, index) => index); // Set all indices to open
     this.initilizeApprInitiationForm();
 
-   
+
 
     this.fetchProjectData();
 
 
-    
+
   }
 
   receiveLoggedInUser(user: any): void {
@@ -125,7 +126,7 @@ export class ApprovalTaskInitationComponent implements OnInit {
   toggle(index: number): void {
     const idx = this.activeIndices.indexOf(index);
     if (idx === -1) {
-      this.activeIndices.push(index); 
+      this.activeIndices.push(index);
     } else {
       this.activeIndices.splice(idx, 1);
     }
@@ -137,9 +138,9 @@ export class ApprovalTaskInitationComponent implements OnInit {
       // property: ['', Validators.required],
       // buiildingClass:['', Validators.required],
       // buildingStandard:['', Validators.required],
-      property:[''],
-      building:[''],
-      projectManager:['', Validators.required],
+      property: [''],
+      building: [''],
+      projectManager: ['', Validators.required],
       abbrivation: ['', Validators.required],
       sanctioningAuth: ['', Validators.required],
       shortDescription: ['', Validators.required],
@@ -149,86 +150,95 @@ export class ApprovalTaskInitationComponent implements OnInit {
       jobRole: ['', Validators.required],
       daysRequired: [''],
       complitionDate: ['', Validators.required],
-      ProjectApprovalSrNo: ['', ],
+      ProjectApprovalSrNo: ['',],
       editRow: this.formBuilder.array([])
     })
   }
 
 
 
- addApprovalInitiation() {
+  addApprovalInitiation() {
 
-  console.log(this.project)
-  console.log(this.sub_proj)
+    console.log(this.project)
+    console.log(this.sub_proj)
 
-  const PROJECT = this.appeInitForm.get('property')?.value || (this.appeInitForm.get('property')?.value === '' ? this.taskData?.PROPERTY : this.appeInitForm.get('property')?.value);
-  const matchedProject = this.project.find((project: any) => project.TYPE_DESC === PROJECT);
-
-  const SUB_PROJ = this.appeInitForm.get('building')?.value || (this.appeInitForm.get('building')?.value === '' ? this.taskData?.BUILDING_MKEY : this.appeInitForm.get('building')?.value);
-  const SELECTED_PROJ = this.sub_proj.find((sub_proj: any) => sub_proj.TYPE_DESC === SUB_PROJ);
-
-  console.log('property', PROJECT);
-  console.log('building', SUB_PROJ);
-
-  const assignedToValue = this.appeInitForm.get('responsiblePerson')?.value.trim();
-  const assignedEmployee = this.employees.find(employee => employee.Assign_to === assignedToValue);
-
-  const USER_CRED = this.credentialService.getUser();
-
-  // Checking the taskData for PROPERTY and BUILDING_MKEY, if not available fallback to form values
-  const property = this.appeInitForm.get('property')?.value;
-  const building = this.appeInitForm.get('building')?.value;
+    this.recursiveLogginUser = this.apiService.getRecursiveUser();
 
 
+    const PROJECT = this.appeInitForm.get('property')?.value || (this.appeInitForm.get('property')?.value === '' ? this.taskData?.PROPERTY : this.appeInitForm.get('property')?.value);
+    const matchedProject = this.project.find((project: any) => project.TYPE_DESC === PROJECT);
+
+    const SUB_PROJ = this.appeInitForm.get('building')?.value || (this.appeInitForm.get('building')?.value === '' ? this.taskData?.BUILDING_MKEY : this.appeInitForm.get('building')?.value);
+    const SELECTED_PROJ = this.sub_proj.find((sub_proj: any) => sub_proj.TYPE_DESC === SUB_PROJ);
+
+    console.log('property', PROJECT);
+    console.log('building', SUB_PROJ);
+
+    const assignedToValue = this.appeInitForm.get('responsiblePerson')?.value.trim();
+    const assignedEmployee = this.employees.find(employee => employee.Assign_to === assignedToValue);
+
+    const USER_CRED = this.credentialService.getUser();
+
+    // Checking the taskData for PROPERTY and BUILDING_MKEY, if not available fallback to form values
+    const property = this.appeInitForm.get('property')?.value;
+    const building = this.appeInitForm.get('building')?.value;
 
 
-  
-  console.log('this.taskData?.PROPERTY', this.taskData?.PROPERTY);
-  console.log('this.taskData?.BUILDING_MKEY', this.taskData?.BUILDING_MKEY);
-  
-  let PROPERTY, BUILDING;
-  
-  if (this.taskData?.PROPERTY === property?.MASTER_MKEY || this.taskData?.BUILDING_MKEY === building?.MASTER_MKEY) {
-    
-    // Use task data if available
-    PROPERTY = { MASTER_MKEY: this.taskData.PROPERTY };
-    BUILDING = { MASTER_MKEY: this.taskData.BUILDING_MKEY };
-} else {
- 
-    // Otherwise, use the form values, falling back to task data if the value is null or undefined (but not 0)
-    PROPERTY = (property?.MASTER_MKEY === null || property?.MASTER_MKEY === undefined) ? this.taskData?.PROPERTY : property?.MASTER_MKEY;
-    BUILDING = (building?.MASTER_MKEY === null || building?.MASTER_MKEY === undefined) ? this.taskData?.BUILDING_MKEY : building?.MASTER_MKEY;
-}
 
-  
-  console.log('PROPERTY',PROPERTY);
-  console.log('BUILDING',BUILDING);
 
-  const addApprovalInitiation = {
-    CAREGORY: 64,
-    TAGS: null,
-    MAIN_ABBR: this.appeInitForm.get('abbrivation')?.value,
-    SHORT_DESCRIPTION: this.appeInitForm.get('shortDescription')?.value,
-    LONG_DESCRIPTION: this.appeInitForm.get('longDescriotion')?.value,
-    AUTHORITY_DEPARTMENT: this.appeInitForm.get('sanctioningAuth')?.value,
-    RESPOSIBLE_EMP_MKEY: assignedEmployee?.MKEY,
-    JOB_ROLE: this.appeInitForm.get('jobRole')?.value,
-    SANCTION_AUTHORITY: this.appeInitForm.get('jobRole')?.value,
-    SANCTION_DEPARTMENT: this.appeInitForm.get('sanctioningDepartment')?.value,
-    COMPLITION_DATE: this.appeInitForm.get('complitionDate')?.value,
-    PROPERTY:PROJECT,
-    BUILDING_MKEY:SUB_PROJ,
-    CREATED_BY: USER_CRED[0].MKEY,
-    STATUS: 'Ready to Initiated',
-    TENTATIVE_START_DATE: '2024-12-25',
-    TENTATIVE_END_DATE: '2024-12-25',
-    SUBTASK_LIST: this.breakToLinear(this.subTasks)
-  };
 
-  console.log('addApprovalInitiation: ', addApprovalInitiation);
+    console.log('this.taskData?.PROPERTY', this.taskData?.PROPERTY);
+    console.log('this.taskData?.BUILDING_MKEY', this.taskData?.BUILDING_MKEY);
 
-  
-}
+    let PROPERTY, BUILDING;
+
+    if (this.taskData?.PROPERTY === property?.MASTER_MKEY || this.taskData?.BUILDING_MKEY === building?.MASTER_MKEY) {
+
+      // Use task data if available
+      PROPERTY = { MASTER_MKEY: this.taskData.PROPERTY };
+      BUILDING = { MASTER_MKEY: this.taskData.BUILDING_MKEY };
+    } else {
+
+      // Otherwise, use the form values, falling back to task data if the value is null or undefined (but not 0)
+      PROPERTY = (property?.MASTER_MKEY === null || property?.MASTER_MKEY === undefined) ? this.taskData?.PROPERTY : property?.MASTER_MKEY;
+      BUILDING = (building?.MASTER_MKEY === null || building?.MASTER_MKEY === undefined) ? this.taskData?.BUILDING_MKEY : building?.MASTER_MKEY;
+    }
+
+
+    console.log('PROPERTY', PROPERTY);
+    console.log('BUILDING', BUILDING);
+
+    const addApprovalInitiation:any = {
+      CAREGORY: 64,
+      TAGS: null,
+      MAIN_ABBR: this.appeInitForm.get('abbrivation')?.value,
+      SHORT_DESCRIPTION: this.appeInitForm.get('shortDescription')?.value,
+      LONG_DESCRIPTION: this.appeInitForm.get('longDescriotion')?.value,
+      AUTHORITY_DEPARTMENT: this.appeInitForm.get('sanctioningAuth')?.value,
+      RESPOSIBLE_EMP_MKEY: assignedEmployee?.MKEY,
+      JOB_ROLE: this.appeInitForm.get('jobRole')?.value,
+      SANCTION_AUTHORITY: this.appeInitForm.get('jobRole')?.value,
+      SANCTION_DEPARTMENT: this.appeInitForm.get('sanctioningDepartment')?.value,
+      COMPLITION_DATE: this.appeInitForm.get('complitionDate')?.value,
+      PROPERTY: PROJECT,
+      BUILDING_MKEY: SUB_PROJ,
+      CREATED_BY: USER_CRED[0].MKEY,
+      STATUS: 'Ready to Initiated',
+      TENTATIVE_START_DATE: '2024-12-25',
+      TENTATIVE_END_DATE: '2024-12-25',
+      SUBTASK_LIST: this.breakToLinear(this.subTasks)
+    };
+
+    console.log('addApprovalInitiation: ', addApprovalInitiation);
+
+    this.apiService.postApprovalInitiation(this.recursiveLogginUser, addApprovalInitiation ).subscribe({
+      next:(response)=>{
+        console.log('Project task initiation',response)
+      },error:(error)=>{
+        console.error('Login failed:', error);
+      }
+    })
+  }
 
 
 
@@ -267,7 +277,7 @@ export class ApprovalTaskInitationComponent implements OnInit {
 
     this.apiService.getBuildingClassificationDP(this.recursiveLogginUser).subscribe({
       next: (list: any) => {
-        this.buildingList = list;       
+        this.buildingList = list;
         // console.log('Building Classification List:', this.buildingList);       
       },
       error: (error: any) => {
@@ -413,7 +423,7 @@ export class ApprovalTaskInitationComponent implements OnInit {
 
       const matchedSubProject = this.sub_proj.find((building: any) => building.MASTER_MKEY === Number(this.taskData.BUILDING_MKEY));
 
-      const matchedEmployee = this.employees.find((emp: any)=> emp.MKEY === Number(this.taskData.RESPOSIBLE_EMP_MKEY))
+      const matchedEmployee = this.employees.find((emp: any) => emp.MKEY === Number(this.taskData.RESPOSIBLE_EMP_MKEY))
 
       // console.log(this.employees)
 
@@ -421,20 +431,20 @@ export class ApprovalTaskInitationComponent implements OnInit {
       // console.log('this.taskData.RESPOSIBLE_EMP_MKEY', this.taskData.RESPOSIBLE_EMP_MKEY)
       if (matchedProject) {
         this.taskData.project_Name = matchedProject.TYPE_DESC;
-      } 
+      }
 
       if (matchedSubProject) {
         this.taskData.sub_proj_name = matchedSubProject.TYPE_DESC;
       }
 
 
-      if(matchedEmployee){
+      if (matchedEmployee) {
         this.taskData.employee_name = matchedEmployee.Assign_to
       }
     }
   }
 
-  
+
 
   setSenctoningAuthorityName(): void {
     if (this.taskData && this.taskData.MKEY) {
@@ -554,29 +564,25 @@ export class ApprovalTaskInitationComponent implements OnInit {
   }
 
   toggleFormVisibility_main(index: number) {
-    // Check if the clicked task form is already visible
     if (this.formVisibleMap[index]) {
-      // If it is, close it (set to false)
       this.formVisibleMap[index] = false;
     } else {
-      // Otherwise, close all forms first
       for (let key in this.formVisibleMap) {
         this.formVisibleMap[key] = false;
       }
-  
-      // Open the clicked form
+
       this.formVisibleMap[index] = true;
     }
   }
-  
-  
-  
+
+
+
 
 
   breakToLinear(selectedSeq: any) {
 
 
-    // console.log('breakToLinear selectedSeq',selectedSeq)
+    console.log('breakToLinear selectedSeq',selectedSeq)
 
     const result: any[] = [];
     const USER_CRED = this.credentialService.getUser();
@@ -587,18 +593,18 @@ export class ApprovalTaskInitationComponent implements OnInit {
       // console.log('task from breakToLinear',task)
 
       result.push({
-        tasK_NO: task.TASK_NO.TASK_NO.trim(),        
-        dayS_REQUIRED: Number(task.TASK_NO.dayS_REQUIERD),
-        approvaL_ABBRIVATION: task.TASK_NO.maiN_ABBR,
-        approvaL_DESCRIPTION: task.TASK_NO.abbR_SHORT_DESC,
-        resposiblE_EMP_MKEY: Number(task.TASK_NO.resposiblE_EMP_MKEY),
+        TASK_NO: task.TASK_NO.TASK_NO.trim(),
+        DAYS_REQUIRED: Number(task.TASK_NO.dayS_REQUIERD),
+        APPROVAL_ABBRIVATION: task.TASK_NO.maiN_ABBR,
+        LONG_DESCRIPTION: task.TASK_NO.abbR_SHORT_DESC,
+        RESPOSIBLE_EMP_MKEY: Number(task.TASK_NO.resposiblE_EMP_MKEY),
         tentativE_START_DATE: task.TASK_NO.start_date,
         tentativE_END_DATE: task.TASK_NO.end_date,
         department: task.TASK_NO.department_mkey,
-        joB_ROLE: task.TASK_NO.joB_ROLE_mkey,
-        approvaL_MKEY:task.TASK_NO.approvaL_MKEY,
-        outpuT_DOCUMENT: task.TASK_NO.enD_RESULT_DOC,
-        status: 'Created',
+        JOB_ROLE: task.TASK_NO.joB_ROLE_mkey,
+        // approvaL_MKEY: task.TASK_NO.approvaL_MKEY,
+        OUTPUT_DOCUMENT: task.TASK_NO.enD_RESULT_DOC,
+        STATUS: 'Created',
       });
 
       if (task.subtask && task.subtask.length > 0) {
@@ -621,23 +627,23 @@ export class ApprovalTaskInitationComponent implements OnInit {
     try {
       department_new = await this.apiService.getDepartmentDP(this.recursiveLogginUser).toPromise();
       jobRole_new = await this.apiService.getJobRoleDP(this.recursiveLogginUser).toPromise();
-     
-  } catch (error) {
+
+    } catch (error) {
       console.error('Error fetching data:', error);
-  } 
+    }
 
     const jobRoleList = this.jobRoleList;
     const departmentList = this.departmentList;
     console.log('this.taskData.SUBTASK_LIST', this.taskData.SUBTASK_LIST)
 
-    
+
     const optionListArr = this.taskData.SUBTASK_LIST
       .filter((item: any) => item.TASK_NO !== null)
       .map((item: any) => {
 
 
-        const jobRole = jobRoleList.find((role:any) => role.mkey === item.JOB_ROLE);
-        const departmentRole = departmentList.find((department:any) => department.mkey === item.DEPARTMENT);
+        const jobRole = jobRoleList.find((role: any) => role.mkey === item.JOB_ROLE);
+        const departmentRole = departmentList.find((department: any) => department.mkey === item.DEPARTMENT);
 
         return {
           TASK_NO: item.TASK_NO,
@@ -645,8 +651,8 @@ export class ApprovalTaskInitationComponent implements OnInit {
           abbR_SHORT_DESC: item.LONG_DESCRIPTION,
           dayS_REQUIERD: item.DAYS_REQUIRED,
           enD_RESULT_DOC: item.OUTPUT_DOCUMENT,
-          approvaL_MKEY:item.approvaL_MKEY,
-          joB_ROLE: jobRole ? jobRole.typE_DESC  : "Not found",
+          approvaL_MKEY: item.approvaL_MKEY,
+          joB_ROLE: jobRole ? jobRole.typE_DESC : "Not found",
           joB_ROLE_mkey: jobRole ? jobRole.mkey : 0,
           department: departmentRole ? departmentRole.typE_DESC : "Not found",
           department_mkey: departmentRole ? departmentRole.mkey : 0,
@@ -664,7 +670,7 @@ export class ApprovalTaskInitationComponent implements OnInit {
     console.log('optionListArr', optionListArr)
 
 
-    const same_data = optionListArr; 
+    const same_data = optionListArr;
 
     const buildHierarchy = (tasks: any, rootTaskNo: any) => {
       const rootTask = tasks.find((task: any) => task.TASK_NO === rootTaskNo);
@@ -675,7 +681,7 @@ export class ApprovalTaskInitationComponent implements OnInit {
           const taskDepth = task.TASK_NO.split('.').length - 1;
           return task.TASK_NO.startsWith(taskNo + '.') && taskDepth === depth + 1;
         });
-        if (subtasks.length === 0) return []; 
+        if (subtasks.length === 0) return [];
 
         return subtasks.map((subtask: any) => {
           const subtaskWithNestedTaskNo: any = {
@@ -818,8 +824,8 @@ export class ApprovalTaskInitationComponent implements OnInit {
     if (requiredControls.length > 0) {
       const errorMessage = `${requiredControls.join(' , ')}`;
       this.tostar.error(errorMessage);
-      return; 
-    } 
+      return;
+    }
 
 
     // return true;
@@ -836,12 +842,12 @@ export class ApprovalTaskInitationComponent implements OnInit {
 
   formatDate(date: Date): string {
     console.log('date', date);
-    const dateObj = new Date(date); 
+    const dateObj = new Date(date);
     const day = String(dateObj.getDate()).padStart(2, '0');  // Ensure the day is two digits
     const month = String(dateObj.getMonth() + 1).padStart(2, '0');  // Ensure the month is two digits
     const year = dateObj.getFullYear();  // Get the full year
     return `${year}-${month}-${day}`;  // Return in YYYY-MM-DD format
   }
- 
+
 
 }

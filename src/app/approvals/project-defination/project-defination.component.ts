@@ -252,12 +252,16 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
 
     const selectedTasksArray = [...this.tableData];
 
-
+    // console.log('selectedTasksArray', selectedTasksArray)
     if (selectedTasksArray.length > 0) {
       const lastTask = selectedTasksArray[selectedTasksArray.length - 1];
 
+
+
       // console.log('lastTask',lastTask)
+      
       if (lastTask.TASK_NO.start_date && lastTask.TASK_NO.end_date) {
+        // console.log('this.ValueList',this.ValueList)
 
         const taskExists = this.ValueList.some(task => task.TASK_NO === lastTask.TASK_NO && task.maiN_ABBR === lastTask.maiN_ABBR);
 
@@ -345,17 +349,17 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
     }
 
     console.log(addProjectDefination)
-    this.apiService.postProjectDefination(addProjectDefination, this.recursiveLogginUser).subscribe({
-      next: (addData: any) => {
+    // this.apiService.postProjectDefination(addProjectDefination, this.recursiveLogginUser).subscribe({
+    //   next: (addData: any) => {
 
-        // this.tostar.error(addData)
+    //     // this.tostar.error(addData)
 
-        console.log('Data added successfully', addData)
-      }, error: (error: ErrorHandler) => {
+    //     console.log('Data added successfully', addData)
+    //   }, error: (error: ErrorHandler) => {
 
-        // console.log('Unable to get data', error)
-      }
-    })
+    //     // console.log('Unable to get data', error)
+    //   }
+    // })
   }
 
 
@@ -1270,7 +1274,7 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
 
     this.selectedSeqArr = [...filteredTasks, ...this.subTasks];
 
-
+    console.log('selectedSeqArr noParentTree_new', this.selectedSeqArr)
     // this.selectedSeqArr = [...this.subTasks]
 
     this.new_list_of_selectedSeqArr = this.selectedSeqArr
@@ -1282,15 +1286,8 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
   
 
 
-  formatDate(date: Date): string {
-
-    console.log('date',date)
-    const dateObj = new Date(date); 
-    const day = String(dateObj.getDate()).padStart(2, '0');  
-    const month = String(dateObj.getMonth() + 1).padStart(2, '0'); 
-    const year = dateObj.getFullYear();  
-    return `${month}-${day}-${year}`;  
-  }
+ 
+  
 
   ngOnDestroy(): void {
     sessionStorage.removeItem('task');
