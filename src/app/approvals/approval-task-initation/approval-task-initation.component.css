@@ -264,22 +264,38 @@ td:hover{
   position: relative;
 }
 
-.input-container input {
+.input-container .select {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
-  display: none; /* Make the first input visible by default */
+  display: none; /* Initially hide the select */
+}
+
+.input-container .input {
+  width: 100%;
+  display: block; /* Show the input initially */
 }
 
 .input-container:hover .select {
-  display: none; /* Show the text input on hover */
+  display: block; /* Show the select on hover */
 }
 
-.input-container:hover input[type="date"] {
-  display: block; /* Hide the date input on hover */
+.input-container:hover .input {
+  display: none; /* Hide the input on hover */
 }
 
-.input-container .select {
-  display: block; /* Initially hide the text input */
+
+.highlight {
+  background-color: #f1f1f1;  /* Light gray background for selected row */
+  border-left: 5px solid #007bff;  /* Optional left border to indicate selection */
 }
+
+.highlight td {
+  font-weight: bold;  /* Optional: Make the text bold in the selected row */
+}
+
+
 
 
 .fa-solid {
@@ -669,6 +685,21 @@ margin: 0;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Optional, for subtle shadow */
   
 }
+
+/* Initially, hide the second container and show the first container */
+.hover-container .container2 {
+  display: none; /* Hide the second container by default */
+}
+
+.hover-container:hover .container1 {
+  display: none; /* Hide the first container when hovering */
+}
+
+.hover-container:hover .container2 {
+  display: block; /* Show the second container when hovering */
+}
+
+
 
 /* Styling for the classification section */
 .classification-border {
