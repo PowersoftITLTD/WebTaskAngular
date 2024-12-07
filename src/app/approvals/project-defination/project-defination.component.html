@@ -445,22 +445,22 @@
                                       <td class="truncate-text">{{ task.TASK_NO?.enD_RESULT_DOC }}</td>
                                       <td>
                                         <ng-container *ngIf="taskData?.mkey">
-                                          <input type="date" class="form-control" (ngModelChange)="task.TASK_NO.start_date = $event" [ngModel]="task.TASK_NO.start_date | date: 'yyyy-MM-dd'"
+                                          <input type="date" [min]="currentDate" class="form-control" (ngModelChange)="task.TASK_NO.start_date = $event" [ngModel]="task.TASK_NO.start_date | date: 'yyyy-MM-dd'"
                                           [ngModelOptions]="{standalone: true}" name="staDate_new_{{task.TASK_NO}}" />
                                         </ng-container>
   
                                         <ng-container *ngIf="!taskData?.mkey">
-                                          <input type="date" class="form-control" [(ngModel)]="task.TASK_NO.start_date"
+                                          <input type="date" [min]="currentDate" class="form-control" [(ngModel)]="task.TASK_NO.start_date"
                                           [ngModelOptions]="{standalone: true}" name="staDate_new_{{task.TASK_NO}}" />
                                         </ng-container>                                                                            
                                       </td>
                                       <td>
                                         <ng-container *ngIf="taskData?.mkey">
-                                          <input type="date" class="form-control" (ngModelChange)="task.TASK_NO.end_date = $event"  [ngModel]="task.TASK_NO.end_date | date: 'yyyy-MM-dd'"
+                                          <input type="date" [min]="currentDate" class="form-control" (ngModelChange)="task.TASK_NO.end_date = $event"  [ngModel]="task.TASK_NO.end_date | date: 'yyyy-MM-dd'"
                                           [ngModelOptions]="{standalone: true}" name="endDate_new" />
                                         </ng-container>
                                         <ng-container *ngIf="!taskData?.mkey">
-                                          <input type="date" class="form-control" [(ngModel)]="task.TASK_NO.end_date"
+                                          <input type="date" [min]="currentDate" class="form-control" [(ngModel)]="task.TASK_NO.end_date"
                                           [ngModelOptions]="{standalone: true}" name="endDate_new" />
                                         </ng-container>
                                       
@@ -510,22 +510,22 @@
                                     <td class="truncate-text">{{ task.TASK_NO?.enD_RESULT_DOC }}</td>
                                     <td>
                                       <ng-container *ngIf="taskData?.mkey">
-                                        <input type="date" class="form-control" (ngModelChange)="task.TASK_NO.start_date = $event"  [ngModel]="task.TASK_NO.start_date | date: 'yyyy-MM-dd'"
+                                        <input type="date" [min]="currentDate" class="form-control" (ngModelChange)="task.TASK_NO.start_date = $event"  [ngModel]="task.TASK_NO.start_date | date: 'yyyy-MM-dd'"
                                         [ngModelOptions]="{standalone: true}" name="staDate_new_{{task.TASK_NO}}" />
                                       </ng-container>
 
                                       <ng-container *ngIf="!taskData?.mkey">
-                                        <input type="date" class="form-control" [(ngModel)]="task.TASK_NO.start_date"
+                                        <input type="date" [min]="currentDate" class="form-control" [(ngModel)]="task.TASK_NO.start_date"
                                         [ngModelOptions]="{standalone: true}" name="staDate_new_{{task.TASK_NO}}" />
                                       </ng-container>                                                                            
                                     </td>
                                     <td>
                                       <ng-container *ngIf="taskData?.mkey">
-                                        <input type="date" class="form-control" (ngModelChange)="task.TASK_NO.end_date = $event" [ngModel]="task.TASK_NO.end_date | date: 'yyyy-MM-dd'"
+                                        <input type="date" [min]="currentDate" class="form-control" (ngModelChange)="task.TASK_NO.end_date = $event" [ngModel]="task.TASK_NO.end_date | date: 'yyyy-MM-dd'"
                                         [ngModelOptions]="{standalone: true}" name="endDate_new" />
                                       </ng-container>
                                       <ng-container *ngIf="!taskData?.mkey">
-                                        <input type="date" class="form-control" [(ngModel)]="task.TASK_NO.end_date"
+                                        <input type="date" [min]="currentDate" class="form-control" [(ngModel)]="task.TASK_NO.end_date"
                                         [ngModelOptions]="{standalone: true}" name="endDate_new" />
                                       </ng-container>
                                     
@@ -536,7 +536,7 @@
                                       </div>
                                       <div *ngIf="taskData?.mkey" >
                                         Created
-                                        <span type="button" class="badge badge-pill badge-info ml-1" (click)="initiateToApprovalInitiation()">Initiation</span>
+                                        <span type="button" class="badge badge-pill badge-info ml-1" (click)="initiateToApprovalInitiation(task.TASK_NO.approvaL_MKEY)">Initiation</span>
                                     </div>
                                     </td>
                                   </tr>                                  

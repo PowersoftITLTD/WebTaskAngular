@@ -20,6 +20,9 @@ export class ApprovalTaskInitationComponent implements OnInit {
 
   taskData: any;
 
+  allTags: any[] = [];
+
+
   taskDetails: any;
   loading: boolean = false;
 
@@ -31,8 +34,10 @@ export class ApprovalTaskInitationComponent implements OnInit {
 
   updatedDetails: boolean = false;
 
-
+  currentDate: string = new Date().toISOString().split('T')[0];
   formVisibleMap: { [key: number]: boolean } = {};
+  @Input() loggedInUser: any;
+
 
   project: any = [];
   sub_proj: any = [];
@@ -149,7 +154,9 @@ export class ApprovalTaskInitationComponent implements OnInit {
       responsiblePerson: ['', Validators.required],
       jobRole: ['', Validators.required],
       daysRequired: [''],
-      complitionDate: ['', Validators.required],
+      tags:[''],
+      startDate:['', Validators.required],
+      endDate: ['', Validators.required],
       ProjectApprovalSrNo: ['',],
       editRow: this.formBuilder.array([])
     })
@@ -241,6 +248,12 @@ export class ApprovalTaskInitationComponent implements OnInit {
   }
 
 
+  getTags() {
+    this.loggedInUser = this.credentialService.getUser();
+    // console.log('this.loggedInUser[0]?.MKEY', this.loggedInUser[0]?.MKEY)
+    this.apiService.getTagDetailss(this.loggedInUser[0]?.MKEY).subscribe((data: any) => { this.allTags = data });
+  }
+
 
 
   onLogin() {
@@ -278,7 +291,7 @@ export class ApprovalTaskInitationComponent implements OnInit {
     this.apiService.getBuildingClassificationDP(this.recursiveLogginUser).subscribe({
       next: (list: any) => {
         this.buildingList = list;
-        // console.log('Building Classification List:', this.buildingList);       
+        console.log('Building Classification List:', this.buildingList);       
       },
       error: (error: any) => {
         console.error('Unable to fetch Building Classification List', error);

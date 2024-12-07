@@ -1,7 +1,7 @@
 <body class="layout layout-left-navigation layout-below-toolbar layout-below-footer">
   <main>
     <div id="wrapper">
-      <div class="content-wrapper">
+      <div class="content-wrapper card">
         <div class="">
           <div id="e-commerce-product" class="simple tabbed">
             <app-header-bar (loggedInUserEmitter)="receiveLoggedInUser($event)"></app-header-bar>
@@ -95,8 +95,9 @@
                     <div class="col-xs-12 col-xl-4 col-md-12">
                       <div class="form-group">
                         <label for="taskName">Initiator&nbsp;<small>*</small></label>
-                        <input type="text" formControlName="projectManager" maxlength="150" [ngStyle]="isFieldDisabled ? { 'background-color': 'rgb(238 236 195)', 'color': '#11111', 'cursor': 'allowed' } : {}" class="form-control"
-                          maxlength="150" />
+                        <input type="text" formControlName="projectManager" maxlength="150"
+                          [ngStyle]="isFieldDisabled ? { 'background-color': 'rgb(238 236 195)', 'color': '#11111', 'cursor': 'allowed' } : {}"
+                          class="form-control" maxlength="150" />
                       </div>
                     </div>
                   </div>
@@ -158,7 +159,7 @@
                   </div>
 
                   <div class="row">
-                    <div class="col-xs-12 col-xl-4 col-md-12 ">
+                    <div class="col-xs-12 col-xl-3 col-md-12 ">
                       <div class="form-group">
                         <label for="category">Sanctioning Authority</label>
 
@@ -182,7 +183,7 @@
                         </ng-container>
                       </div>
                     </div>
-                    <div class="col-xs-12 col-xl-4 col-md-12 ">
+                    <div class="col-xs-12 col-xl-3 col-md-12 ">
 
                       <div class="form-group">
 
@@ -201,11 +202,21 @@
                       </div>
                     </div>
 
-                    <div class="col-xs-12 col-xl-4 col-md-12">
+                    <div class="col-xs-12 col-xl-3 col-md-12">
                       <div class="form-group">
-                        <label for="taskName" >Compliton Date&nbsp;<small>*</small></label>
-                        <input type="date" [ngStyle]="isFieldDisabled ? { 'background-color': 'rgb(238 236 195)', 'color': '#11111', 'cursor': 'allowed' } : {}" formControlName="complitionDate" maxlength="150" class="form-control"
-                          maxlength="150" />
+                        <label for="taskName">Start Date&nbsp;<small>*</small></label>
+                        <input type="date"
+                          [ngStyle]="isFieldDisabled ? { 'background-color': 'rgb(238 236 195)', 'color': '#11111', 'cursor': 'allowed' } : {}"
+                          formControlName="startDate" [min]="currentDate" maxlength="150" class="form-control" maxlength="150" />
+                      </div>
+                    </div>
+
+                    <div class="col-xs-12 col-xl-3 col-md-12">
+                      <div class="form-group">
+                        <label for="taskName">End Date&nbsp;<small>*</small></label>
+                        <input type="date"
+                          [ngStyle]="isFieldDisabled ? { 'background-color': 'rgb(238 236 195)', 'color': '#11111', 'cursor': 'allowed' } : {}"
+                          formControlName="endDate" [min]="currentDate" maxlength="150" class="form-control" maxlength="150" />
                       </div>
                     </div>
                   </div>
@@ -218,7 +229,8 @@
 
                         <ng-container *ngIf="taskData?.MKEY">
                           <input type="text" class="form-control" formControlName="responsiblePerson"
-                            (input)="filterEmployees($event)" appAlphabeticOnly [ngStyle]="isFieldDisabled ? { 'background-color': 'rgb(238 236 195)', 'color': '#11111', 'cursor': 'allowed' } : {}"/>
+                            (input)="filterEmployees($event)" appAlphabeticOnly
+                            [ngStyle]="isFieldDisabled ? { 'background-color': 'rgb(238 236 195)', 'color': '#11111', 'cursor': 'allowed' } : {}" />
                         </ng-container>
 
                         <ng-container *ngIf="!taskData?.MKEY">
@@ -261,6 +273,18 @@
                         </select>
                       </div>
                     </div>
+
+                    <div class="col-xs-12 col-xl-12 col-md-8">
+                      <div class="form-group">
+                          <label for="tags">Tags</label>
+                            <tag-input [addOnBlur]="true"
+                                [formControl]="appeInitForm.get('tags')">
+                                <tag-input-dropdown [autocompleteItems]="allTags"
+                                    [showDropdownIfEmpty]="true"
+                                    [dynamicUpdate]="true"></tag-input-dropdown>
+                            </tag-input>
+                      </div>
+                  </div>
 
 
                   </div>
@@ -357,11 +381,11 @@
                                           <form>
                                             <div class="">
                                               <div class="classification-border" style="margin-right:50rem">
-  
-                                              
-  
+
+
+
                                                 <div class="row pl-3">
-  
+
                                                   <div class="col-xs-12 col-xl-3 col-md-12">
                                                     <div class="form-group d-flex justify-content-between">
                                                       <label class="abbr-label" for="abbreviation">Abbreviation</label>
@@ -369,67 +393,66 @@
                                                         [value]="task.TASK_NO?.maiN_ABBR" [class.disabled]="true"
                                                         [attr.disabled]="true" [disabled]="isFieldDisabled" />
                                                     </div>
-  
+
                                                     <div class="form-group d-flex justify-content-between">
                                                       <label class="abbr-label" for="abbreviation">Start
                                                         Date</label>
                                                       <input type="date" class="form-control"
-                                                        [ngStyle]="isFieldDisabled ? { 'background-color': 'rgb(238 236 195)', 'color': '#11111', 'cursor': 'allowed' } : {}"  
+                                                        [ngStyle]="isFieldDisabled ? { 'background-color': 'rgb(238 236 195)', 'color': '#11111', 'cursor': 'allowed' } : {}"
                                                         (ngModelChange)="task.TASK_NO.start_date = $event"
                                                         [ngModel]="task.TASK_NO.start_date | date: 'yyyy-MM-dd'"
                                                         [ngModelOptions]="{standalone: true}"
                                                         name="staDate_new_{{task.TASK_NO}}" />
-  
+
                                                     </div>
                                                   </div>
-  
+
                                                   <div class="col-xs-12 col-xl-3 col-md-12">
                                                     <div class="form-group d-flex justify-content-between">
                                                       <label class="days-label" for="taskName">Short Description</label>
-                                                      <input [ngStyle]="isFieldDisabled ? { 'background-color': 'rgb(238 236 195)', 'color': '#11111', 'cursor': 'allowed' } : {}" 
-                                                       type="text" class="abbr-input form-control"
-                                                      maxlength="150" />
+                                                      <input
+                                                        [ngStyle]="isFieldDisabled ? { 'background-color': 'rgb(238 236 195)', 'color': '#11111', 'cursor': 'allowed' } : {}"
+                                                        type="text" class="abbr-input form-control" maxlength="150" />
                                                     </div>
-  
-  
+
+
                                                     <div class="form-group d-flex justify-content-between">
-                                                      <label class="abbr-label" for="abbreviation">End 
+                                                      <label class="abbr-label" for="abbreviation">End
                                                         Date</label>
-                                                        <input type="date" class="form-control"
+                                                      <input type="date" class="form-control"
                                                         [ngStyle]="isFieldDisabled ? { 'background-color': 'rgb(238 236 195)', 'color': '#11111', 'cursor': 'allowed' } : {}"
                                                         (ngModelChange)="task.TASK_NO.end_date = $event"
                                                         [ngModel]="task.TASK_NO.end_date | date: 'yyyy-MM-dd'"
                                                         [ngModelOptions]="{standalone: true}" name="endDate_new" />
                                                     </div>
                                                   </div>
-  
+
                                                   <div class="col-xs-12 col-xl-6 col-md-12">
-                                                    
+
                                                     <div class="form-group d-flex justify-content-between">
                                                       <label class="abbr-label" for="abbreviation">Long
                                                         Description</label>
-                                                      <textarea class="form-control" style="height: 2rem;" 
-                                                        [ngStyle]="isFieldDisabled ? { 'background-color': 'rgb(238 236 195)', 'color': '#11111', 'cursor': 'allowed' } : {}" rows="4"
-                                                        [value]="task.TASK_NO?.abbR_SHORT_DESC"></textarea>
+                                                      <textarea class="form-control" style="height: 2rem;"
+                                                        [ngStyle]="isFieldDisabled ? { 'background-color': 'rgb(238 236 195)', 'color': '#11111', 'cursor': 'allowed' } : {}"
+                                                        rows="4" [value]="task.TASK_NO?.abbR_SHORT_DESC"></textarea>
                                                     </div>
                                                   </div>
-  
+
                                                 </div>
-  
+
                                                 <div class="row pl-3">
-  
+
                                                   <div class="col-xs-12 col-xl-3 col-md-12">
-                                                      <div class="form-group d-flex justify-content-between">
-                                                        <label class="abbr-label" for="abbreviation" 
-                                                        >Responsible
-                                                          Person</label>
-                                                        <input type="text" class="abbr-input form-control"
+                                                    <div class="form-group d-flex justify-content-between">
+                                                      <label class="abbr-label" for="abbreviation">Responsible
+                                                        Person</label>
+                                                      <input type="text" class="abbr-input form-control"
                                                         [ngStyle]="isFieldDisabled ? { 'background-color': 'rgb(238 236 195)', 'color': '#11111', 'cursor': 'allowed' } : {}"
-                                                          maxlength="150" />
-                                                      </div>                                                 
+                                                        maxlength="150" />
+                                                    </div>
                                                   </div>
-                                             
-  
+
+
                                                   <div class="col-xs-12 col-xl-3 col-md-12">
                                                     <div class="form-group d-flex justify-content-between">
                                                       <label class="dept-label" for="department">Departrment</label>
@@ -443,21 +466,22 @@
                                                       </select>
                                                     </div>
                                                   </div>
-  
+
                                                   <div class="col-xs-12 col-xl-3 col-md-12">
                                                     <div class="form-group d-flex justify-content-between">
                                                       <label class="jobrole-label" for="jobRole">Job Role</label>
                                                       <select class="dept-select form-control"
                                                         [value]="task.TASK_NO?.joB_ROLE" [class.disabled]="true"
                                                         [attr.disabled]="true" [disabled]="isFieldDisabled">
-                                                        <option *ngFor="let jobRole of jobRoleList" [value]="jobRole.mkey"
+                                                        <option *ngFor="let jobRole of jobRoleList"
+                                                          [value]="jobRole.mkey"
                                                           [selected]="jobRole.typE_DESC === task.TASK_NO?.joB_ROLE">
                                                           {{ jobRole.typE_DESC }}
                                                         </option>
                                                       </select>
                                                     </div>
                                                   </div>
-  
+
                                                   <div class="col-xs-12 col-xl-3 col-md-12">
                                                     <div class="form-group d-flex justify-content-between">
                                                       <label class="days-label" for="taskName">Output Document</label>
@@ -466,11 +490,22 @@
                                                         [disabled]="isFieldDisabled" class="days-input form-control"
                                                         maxlength="150" />
                                                     </div>
-                                                  </div>
-                                                  
+                                                  </div>                                                                                                                                                   
                                                 </div>
+                                                <div class="row mt-2 justify-content-center">
+                                                  <div class="col-xs-2">
+                                                    <div class="btn btn-info d-flex justify-content-center" >Update
+                                                    </div>
+                                                  </div>
+                                                  <div class="col-xs-2">
+                                                    <div class="btn btn-light d-flex justify-content-center" (click)="toggleFormVisibility_main(task.TASK_NO.TASK_NO)">Cancel
+                                                    </div>
+                                                  </div>                                                 
+                                                </div>
+
                                               </div>
                                             </div>
+
                                           </form>
                                         </td>
                                       </tr>
@@ -533,7 +568,7 @@
                                           <div class="">
                                             <div class="classification-border" style="margin-right:50rem">
 
-                                            
+
 
                                               <div class="row pl-3">
 
@@ -549,7 +584,7 @@
                                                     <label class="abbr-label" for="abbreviation">Start
                                                       Date</label>
                                                     <input type="date" class="form-control"
-                                                      [ngStyle]="isFieldDisabled ? { 'background-color': 'rgb(238 236 195)', 'color': '#11111', 'cursor': 'allowed' } : {}"  
+                                                      [ngStyle]="isFieldDisabled ? { 'background-color': 'rgb(238 236 195)', 'color': '#11111', 'cursor': 'allowed' } : {}"
                                                       (ngModelChange)="task.TASK_NO.start_date = $event"
                                                       [ngModel]="task.TASK_NO.start_date | date: 'yyyy-MM-dd'"
                                                       [ngModelOptions]="{standalone: true}"
@@ -561,16 +596,16 @@
                                                 <div class="col-xs-12 col-xl-3 col-md-12">
                                                   <div class="form-group d-flex justify-content-between">
                                                     <label class="days-label" for="taskName">Short Description</label>
-                                                    <input [ngStyle]="isFieldDisabled ? { 'background-color': 'rgb(238 236 195)', 'color': '#11111', 'cursor': 'allowed' } : {}" 
-                                                     type="text" class="abbr-input form-control"
-                                                    maxlength="150" />
+                                                    <input
+                                                      [ngStyle]="isFieldDisabled ? { 'background-color': 'rgb(238 236 195)', 'color': '#11111', 'cursor': 'allowed' } : {}"
+                                                      type="text" class="abbr-input form-control" maxlength="150" />
                                                   </div>
 
 
                                                   <div class="form-group d-flex justify-content-between">
-                                                    <label class="abbr-label" for="abbreviation">End 
+                                                    <label class="abbr-label" for="abbreviation">End
                                                       Date</label>
-                                                      <input type="date" class="form-control"
+                                                    <input type="date" class="form-control"
                                                       [ngStyle]="isFieldDisabled ? { 'background-color': 'rgb(238 236 195)', 'color': '#11111', 'cursor': 'allowed' } : {}"
                                                       (ngModelChange)="task.TASK_NO.end_date = $event"
                                                       [ngModel]="task.TASK_NO.end_date | date: 'yyyy-MM-dd'"
@@ -579,13 +614,13 @@
                                                 </div>
 
                                                 <div class="col-xs-12 col-xl-6 col-md-12">
-                                                  
+
                                                   <div class="form-group d-flex justify-content-between">
                                                     <label class="abbr-label" for="abbreviation">Long
                                                       Description</label>
-                                                    <textarea class="form-control" style="height: 2rem;" 
-                                                      [ngStyle]="isFieldDisabled ? { 'background-color': 'rgb(238 236 195)', 'color': '#11111', 'cursor': 'allowed' } : {}" rows="4"
-                                                      [value]="task.TASK_NO?.abbR_SHORT_DESC"></textarea>
+                                                    <textarea class="form-control" style="height: 2rem;"
+                                                      [ngStyle]="isFieldDisabled ? { 'background-color': 'rgb(238 236 195)', 'color': '#11111', 'cursor': 'allowed' } : {}"
+                                                      rows="4" [value]="task.TASK_NO?.abbR_SHORT_DESC"></textarea>
                                                   </div>
                                                 </div>
 
@@ -594,16 +629,15 @@
                                               <div class="row pl-3">
 
                                                 <div class="col-xs-12 col-xl-3 col-md-12">
-                                                    <div class="form-group d-flex justify-content-between">
-                                                      <label class="abbr-label" for="abbreviation" 
-                                                      >Responsible
-                                                        Person</label>
-                                                      <input type="text" class="abbr-input form-control"
+                                                  <div class="form-group d-flex justify-content-between">
+                                                    <label class="abbr-label" for="abbreviation">Responsible
+                                                      Person</label>
+                                                    <input type="text" class="abbr-input form-control"
                                                       [ngStyle]="isFieldDisabled ? { 'background-color': 'rgb(238 236 195)', 'color': '#11111', 'cursor': 'allowed' } : {}"
-                                                        maxlength="150" />
-                                                    </div>                                                 
+                                                      maxlength="150" />
+                                                  </div>
                                                 </div>
-                                           
+
 
                                                 <div class="col-xs-12 col-xl-3 col-md-12">
                                                   <div class="form-group d-flex justify-content-between">
@@ -642,8 +676,20 @@
                                                       maxlength="150" />
                                                   </div>
                                                 </div>
-                                                
+
                                               </div>
+
+                                              <div class="row mt-2 justify-content-center">
+                                                <div class="col-xs-2">
+                                                  <div class="btn btn-info d-flex justify-content-center">Update
+                                                  </div>
+                                                </div>
+                                                <div class="col-xs-2">
+                                                  <div class="btn btn-light d-flex justify-content-center" (click)="toggleFormVisibility_main(task.TASK_NO.TASK_NO)">Cancel
+                                                  </div>
+                                                </div>                                                 
+                                              </div>
+
                                             </div>
                                           </div>
                                         </form>

@@ -309,6 +309,9 @@ input.form-control[disabled] {
   cursor: not-allowed !important; /* Indicate it's disabled */
 }
 
+.cate{
+ color:hsl(54, 53%, 76%)
+}
 small{
   color: red;
 }

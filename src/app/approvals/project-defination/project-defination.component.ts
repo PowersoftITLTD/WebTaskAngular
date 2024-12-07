@@ -59,11 +59,15 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
   new_list_of_selectedSeqArr: any[] = [];
   projDefinationTable: any[] = []
   uniqList: any[] = [];
+  
 
   end_list: object = {};
   check_list: object = {};
 
   taskData: any;
+
+  currentDate: string = new Date().toISOString().split('T')[0];
+
 
   updatedDetails: boolean = false;
 
@@ -71,6 +75,7 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
   loginName: string = '';
   loginPassword: string = '';
   ValueList: any[] = [];
+  validValueList: any[]=[];
 
   public activeIndices: number[] = []; // Change here
   subTasks: any[] = [];
@@ -215,7 +220,7 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
     this.selectedSeqArr = this.sortTasksBySequence(updatedTasksArray);
     const flattenedTasks = this.breakToLinear(this.selectedSeqArr);
 
-    // console.log('flattenedTasks',flattenedTasks)
+    console.log('flattenedTasks',flattenedTasks)
 
     const seen = new Set();
 
@@ -252,14 +257,10 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
 
     const selectedTasksArray = [...this.tableData];
 
-    // console.log('selectedTasksArray', selectedTasksArray)
     if (selectedTasksArray.length > 0) {
+
       const lastTask = selectedTasksArray[selectedTasksArray.length - 1];
 
-
-
-      // console.log('lastTask',lastTask)
-      
       if (lastTask.TASK_NO.start_date && lastTask.TASK_NO.end_date) {
         // console.log('this.ValueList',this.ValueList)
 
@@ -274,6 +275,8 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
     const flatternDataTable = this.breakToLinear(this.ValueList)
 
     this.uniqList = flatternDataTable;
+
+    // console.log(this.uniqList)
 
   }
 
@@ -351,9 +354,6 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
     console.log(addProjectDefination)
     // this.apiService.postProjectDefination(addProjectDefination, this.recursiveLogginUser).subscribe({
     //   next: (addData: any) => {
-
-    //     // this.tostar.error(addData)
-
     //     console.log('Data added successfully', addData)
     //   }, error: (error: ErrorHandler) => {
 
@@ -401,14 +401,15 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
     // })
   }
 
-  initiateToApprovalInitiation() {
+  initiateToApprovalInitiation(approvalKey:any) {
+    console.log('taskData Check', this.taskData)
     this.recursiveLogginUser = this.apiService.getRecursiveUser();
     const project_mkey = this.taskData.mkey
     const approval_mkey = this.taskData.approvalS_ABBR_LIST[0].approvaL_MKEY
 
-    console.log(`project_mkey: ${project_mkey}, approval_mkey ${approval_mkey}`)
+    console.log(`project_mkey: ${project_mkey}, approval_mkey ${approvalKey}`)
 
-    this.apiService.getApprovalInitiation(this.recursiveLogginUser,project_mkey, approval_mkey).subscribe({
+    this.apiService.getApprovalInitiation(this.recursiveLogginUser,project_mkey, approvalKey).subscribe({
       next:(response)=>{
         if(response){
           console.log('initiateToApprovalInitiation',response.data)
@@ -1015,6 +1016,18 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
       }
     }
 
+    console.log(this.uniqList)
+    console.log(this.selectedSeqArr)
+
+    const uniqList = this.uniqList
+    const selectedSeqArr = this.selectedSeqArr
+
+    const flatList = this.breakToLinear(selectedSeqArr);
+
+    console.log('uniqList', this.uniqList)
+    console.log('flatList', flatList)
+    // if(this.ValueList.length>0 && this.ValueList)
+
     // If all checks pass, return true to indicate successful validation
     return true;
   }
@@ -1095,7 +1108,7 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
         const jobRole = jobRoleList.find((role:any) => role.mkey === parseInt(item.joB_ROLE));
         const departmentRole = departmentList.find((department:any) => department.mkey === parseInt(item.department));
 
-                  
+        console.log('Item', item)
         return {
           TASK_NO: item.tasK_NO,
           maiN_ABBR: item.approvaL_ABBRIVATION,
@@ -1108,6 +1121,7 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
           department_mkey: departmentRole.mkey,
           start_date:item.tentativE_START_DATE,
           end_date:item.tentativE_END_DATE,
+          approvaL_MKEY:item.approvaL_MKEY,
           // resposiblE_EMP: assignedEmployee.Assign_to,
           resposiblE_EMP_MKEY: item.resposiblE_EMP_MKEY
         }
