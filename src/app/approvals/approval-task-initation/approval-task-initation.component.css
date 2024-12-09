@@ -33,6 +33,12 @@
 } */
 
 
+.mat-icon.matPrefix {
+  position: absolute;
+  left: 10px;  /* Adjust as necessary */
+  pointer-events: none; /* To prevent icon from interfering with user input */
+}
+
 
 .progress-container {
   width: 100%;
@@ -732,7 +738,7 @@ margin: 0;
 }
 
 /* Label styling for individual fields */
-.seq-no-label, .days-label, .abbr-label, .dept-label, .jobrole-label {
+.seq-no-label, .days-label, .abbr-label, .dept-label, .jobrole-label, .tags-label {
   font-size: 14px;
   color: #333;
 }

@@ -28,6 +28,7 @@ export class ApprovalTaskInitationComponent implements OnInit {
 
   employees: any[] = [];
   appeInitForm: FormGroup | any;
+  subTaskForm: FormGroup | any;
 
   createdOrUpdatedUserName: any
   isFieldDisabled = true; 
@@ -42,10 +43,14 @@ export class ApprovalTaskInitationComponent implements OnInit {
   project: any = [];
   sub_proj: any = [];
 
+  selectedAssignTo: string = ''; 
+
   public activeIndices: number[] = []; // Change here
   subTasks: any[] = [];
   noSubParentTasks: any[] = [];
   filteredEmployees: any[] = [];
+  filteredInitiator: any[] = [];
+  subListFilteredEmp: any[] = [];
   inputHasValue: boolean = false;
 
 
@@ -59,6 +64,17 @@ export class ApprovalTaskInitationComponent implements OnInit {
   SanctoningAuthList: any[] = [];
   SanctoningDeptList: any[] = [];
 
+  abbreviation: string = '';
+  startDate: string = '';
+  shortDescription: string = '';
+  endDate: string = '';
+  longDescription: string = '';
+  responsiblePerson: string = '';
+  department: string = '';
+  jobRole: string = '';
+  outputDocument: string = '';
+  tags: string[] = [];
+  completionDate: string = '';
 
   loginName: string = '';
   loginPassword: string = '';
@@ -115,12 +131,33 @@ export class ApprovalTaskInitationComponent implements OnInit {
     this.fetchEmployeeName();
     this.activeIndices = this.accordionItems.map((_, index) => index); // Set all indices to open
     this.initilizeApprInitiationForm();
+    this.subListForm();
 
 
 
     this.fetchProjectData();
 
 
+
+  }
+
+
+  onSubmitSubListchek() {
+    const formData = {
+      abbreviation: this.abbreviation,
+      startDate: this.startDate,
+      shortDescription: this.shortDescription,
+      endDate: this.endDate,
+      longDescription: this.longDescription,
+      responsiblePerson: this.responsiblePerson,
+      department: this.department,
+      jobRole: this.jobRole,
+      outputDocument: this.outputDocument,
+      tags: this.tags,
+      completionDate: this.completionDate
+    };
+
+    console.log('formData', formData)
 
   }
 
@@ -140,25 +177,40 @@ export class ApprovalTaskInitationComponent implements OnInit {
 
   initilizeApprInitiationForm() {
     this.appeInitForm = this.formBuilder.group({
-      // property: ['', Validators.required],
-      // buiildingClass:['', Validators.required],
-      // buildingStandard:['', Validators.required],
       property: [''],
       building: [''],
-      projectManager: ['', Validators.required],
-      abbrivation: ['', Validators.required],
-      sanctioningAuth: ['', Validators.required],
+      initiator: ['', Validators.required],
+      abbrivation: ['', ],
+      sanctioningAuth: ['', ],
       shortDescription: ['', Validators.required],
       longDescriotion: ['', Validators.required],
-      sanctioningDepartment: ['', Validators.required],
+      sanctioningDepartment: ['', ],
       responsiblePerson: ['', Validators.required],
-      jobRole: ['', Validators.required],
+      jobRole: ['', ],
       daysRequired: [''],
       tags:[''],
       startDate:['', Validators.required],
       endDate: ['', Validators.required],
-      ProjectApprovalSrNo: ['',],
+      complitionDate:['',Validators.required],
+      ProjectApprovalSrNo: [''],
       editRow: this.formBuilder.array([])
+    })
+  }
+
+
+  subListForm(){
+    this.subTaskForm = this.formBuilder.group({ 
+      SubListAbbrivation: [''],
+      SubListShortDescription: [''],
+      SubListlongDescriotion: [''],
+      SubListDepartment: [''],
+      SubListresponsiblePerson: [''],
+      SubListJobRole: [''],
+      SubListTags:[''],
+      SubListStartDate:[''],
+      SubListEndDate: [''],
+      SubListComplitionDatee:[''],
+      subListDoc: [''],   
     })
   }
 
@@ -166,8 +218,8 @@ export class ApprovalTaskInitationComponent implements OnInit {
 
   addApprovalInitiation() {
 
-    console.log(this.project)
-    console.log(this.sub_proj)
+    // console.log(this.project)
+    // console.log(this.sub_proj)
 
     this.recursiveLogginUser = this.apiService.getRecursiveUser();
 
@@ -178,68 +230,87 @@ export class ApprovalTaskInitationComponent implements OnInit {
     const SUB_PROJ = this.appeInitForm.get('building')?.value || (this.appeInitForm.get('building')?.value === '' ? this.taskData?.BUILDING_MKEY : this.appeInitForm.get('building')?.value);
     const SELECTED_PROJ = this.sub_proj.find((sub_proj: any) => sub_proj.TYPE_DESC === SUB_PROJ);
 
-    console.log('property', PROJECT);
-    console.log('building', SUB_PROJ);
+    // console.log('property', PROJECT);
+    // console.log('building', SUB_PROJ);
 
     const assignedToValue = this.appeInitForm.get('responsiblePerson')?.value.trim();
     const assignedEmployee = this.employees.find(employee => employee.Assign_to === assignedToValue);
 
+    const assignedToValueIni = this.appeInitForm.get('initiator')?.value.trim();
+    const assignedInitiator = this.employees.find(employee => employee.Assign_to === assignedToValueIni);
+
     const USER_CRED = this.credentialService.getUser();
 
-    // Checking the taskData for PROPERTY and BUILDING_MKEY, if not available fallback to form values
     const property = this.appeInitForm.get('property')?.value;
     const building = this.appeInitForm.get('building')?.value;
 
 
-
-
-
-    console.log('this.taskData?.PROPERTY', this.taskData?.PROPERTY);
-    console.log('this.taskData?.BUILDING_MKEY', this.taskData?.BUILDING_MKEY);
+    // console.log('this.taskData?.PROPERTY', this.taskData?.PROPERTY);
+    // console.log('this.taskData?.BUILDING_MKEY', this.taskData?.BUILDING_MKEY);
 
     let PROPERTY, BUILDING;
 
     if (this.taskData?.PROPERTY === property?.MASTER_MKEY || this.taskData?.BUILDING_MKEY === building?.MASTER_MKEY) {
 
-      // Use task data if available
       PROPERTY = { MASTER_MKEY: this.taskData.PROPERTY };
       BUILDING = { MASTER_MKEY: this.taskData.BUILDING_MKEY };
     } else {
 
-      // Otherwise, use the form values, falling back to task data if the value is null or undefined (but not 0)
       PROPERTY = (property?.MASTER_MKEY === null || property?.MASTER_MKEY === undefined) ? this.taskData?.PROPERTY : property?.MASTER_MKEY;
       BUILDING = (building?.MASTER_MKEY === null || building?.MASTER_MKEY === undefined) ? this.taskData?.BUILDING_MKEY : building?.MASTER_MKEY;
     }
 
 
-    console.log('PROPERTY', PROPERTY);
-    console.log('BUILDING', BUILDING);
+    // console.log('PROPERTY', PROPERTY);
+    // console.log('BUILDING', BUILDING);
+
+    const tagsValue = this.appeInitForm.get('tags')?.value;
+
+    let tagsString = '';
+
+    if (Array.isArray(tagsValue)) {
+      tagsString = tagsValue.map(tag => {
+        if (typeof tag === 'string') {
+          return tag;
+        } else if (tag.display) {
+          return tag.display;
+        } else {
+          return '';
+        }
+      }).join(',');
+    }
+
+    console.log('tagsString', tagsString)
 
     const addApprovalInitiation:any = {
       CAREGORY: 64,
-      TAGS: null,
-      MAIN_ABBR: this.appeInitForm.get('abbrivation')?.value,
+      TAGS: tagsString,
+      // INITIATOR: assignedInitiator?.MKEY,
+      TASK_NO:this.taskData.TASK_NO,
+      MAIN_ABBR: `${this.appeInitForm.get('abbrivation')?.value} / ${this.taskData.TASK_NO}`,
       SHORT_DESCRIPTION: this.appeInitForm.get('shortDescription')?.value,
       LONG_DESCRIPTION: this.appeInitForm.get('longDescriotion')?.value,
-      AUTHORITY_DEPARTMENT: this.appeInitForm.get('sanctioningAuth')?.value,
+      AUTHORITY_DEPARTMENT: this.taskData.AUTHORITY_DEPARTMENT,
       RESPOSIBLE_EMP_MKEY: assignedEmployee?.MKEY,
-      JOB_ROLE: this.appeInitForm.get('jobRole')?.value,
-      SANCTION_AUTHORITY: this.appeInitForm.get('jobRole')?.value,
-      SANCTION_DEPARTMENT: this.appeInitForm.get('sanctioningDepartment')?.value,
+      JOB_ROLE: this.taskData.JOB_ROLE,
+      SANCTION_AUTHORITY: this.taskData.SANCTION_AUTHORITY,
+      SANCTION_DEPARTMENT: this.taskData.SANCTION_DEPARTMENT,
+      TENTATIVE_START_DATE: this.appeInitForm.get('startDate')?.value,
+      TENTATIVE_END_DATE: this.appeInitForm.get('endDate')?.value,
       COMPLITION_DATE: this.appeInitForm.get('complitionDate')?.value,
       PROPERTY: PROJECT,
       BUILDING_MKEY: SUB_PROJ,
       CREATED_BY: USER_CRED[0].MKEY,
       STATUS: 'Ready to Initiated',
-      TENTATIVE_START_DATE: '2024-12-25',
-      TENTATIVE_END_DATE: '2024-12-25',
-      SUBTASK_LIST: this.breakToLinear(this.subTasks)
+      SUBTASK_LIST: this.breakToLinear(this.subTasks)    
     };
 
     console.log('addApprovalInitiation: ', addApprovalInitiation);
+    console.log('recursiveLogginUser', this.recursiveLogginUser)
 
-    this.apiService.postApprovalInitiation(this.recursiveLogginUser, addApprovalInitiation ).subscribe({
+    this.apiService.postApprovalInitiation(addApprovalInitiation, this.recursiveLogginUser ).subscribe({
       next:(response)=>{
+        console.log(response.message)
         console.log('Project task initiation',response)
       },error:(error)=>{
         console.error('Login failed:', error);
@@ -560,6 +631,46 @@ export class ApprovalTaskInitationComponent implements OnInit {
 
   }
 
+
+  filterEmployeesInitiator(event: Event): void {
+    const value = (event.target as HTMLInputElement).value.trim();
+
+    if (!value) {
+      this.filteredInitiator = [];
+      return;
+    }
+
+    const filterValue = value.toLowerCase();
+
+    this.filteredInitiator = this.employees.filter(emp => {
+      const fullName = emp.Assign_to.toLowerCase();
+      return fullName.includes(filterValue);
+    });
+
+    this.inputHasValue = value.trim().length > 0;
+
+  }
+
+  SubfilterEmployeesInitiator(event: Event): void {
+    const value = (event.target as HTMLInputElement).value.trim();
+
+    if (!value) {
+      this.subListFilteredEmp = [];
+      return;
+    }
+
+    const filterValue = value.toLowerCase();
+
+    this.subListFilteredEmp = this.employees.filter(emp => {
+      const fullName = emp.Assign_to.toLowerCase();
+      return fullName.includes(filterValue);
+    });
+
+    this.inputHasValue = value.trim().length > 0;
+
+  }
+
+
   selectEmployee(employee: any): void {
 
     const assignedTo = employee.Assign_to;
@@ -572,11 +683,51 @@ export class ApprovalTaskInitationComponent implements OnInit {
     }
   }
 
+  selectInitiatoe(employee: any): void {
+
+    const assignedTo = employee.Assign_to;
+
+    this.appeInitForm.get('initiator').setValue(assignedTo);
+
+    if (assignedTo) {
+      this.filteredInitiator = [];
+      return
+    }
+  }
+
+  selectEmpSubList(employee: any): void {
+
+    const assignedTo = employee.Assign_to;
+
+    this.selectedAssignTo = assignedTo; // This will set the value to the input field
+
+    if (assignedTo) {
+      this.subListFilteredEmp = []; // Clear the list (or do any other actions you need)
+    }
+  }
+
+
+  selectEmployeeSubList(employee: any): void {
+
+    const assignedTo = employee.Assign_to;
+
+    this.appeInitForm.get('responsiblePerson').setValue(assignedTo);
+
+    if (assignedTo) {
+      this.subListFilteredEmp = [];
+      return
+    }
+  }
+
+
   toggleFormVisibility(index: number) {
     this.formVisibleMap[index] = !this.formVisibleMap[index];
   }
 
-  toggleFormVisibility_main(index: number) {
+  toggleFormVisibility_main(index: number, task:any) {
+    this.onSubmitSubList(task.TASK_NO)
+
+    console.log('task', task.TASK_NO);
     if (this.formVisibleMap[index]) {
       this.formVisibleMap[index] = false;
     } else {
@@ -586,8 +737,14 @@ export class ApprovalTaskInitationComponent implements OnInit {
 
       this.formVisibleMap[index] = true;
     }
+
   }
 
+
+  updatedTaskCheck(task:any, assignTo:any){
+    console.log('assignTo', assignTo)
+    console.log('task',task)
+  }
 
 
 
@@ -610,11 +767,15 @@ export class ApprovalTaskInitationComponent implements OnInit {
         DAYS_REQUIRED: Number(task.TASK_NO.dayS_REQUIERD),
         APPROVAL_ABBRIVATION: task.TASK_NO.maiN_ABBR,
         LONG_DESCRIPTION: task.TASK_NO.abbR_SHORT_DESC,
+        SHORT_DESCRIPTION:task.TASK_NO.abbr_short_DESC, 
         RESPOSIBLE_EMP_MKEY: Number(task.TASK_NO.resposiblE_EMP_MKEY),
-        tentativE_START_DATE: task.TASK_NO.start_date,
-        tentativE_END_DATE: task.TASK_NO.end_date,
-        department: task.TASK_NO.department_mkey,
+        TENTATIVE_START_DATE: task.TASK_NO.start_date,
+        TENTATIVE_END_DATE: task.TASK_NO.end_date,
+        DEPARTMENT: task.TASK_NO.department_mkey,
         JOB_ROLE: task.TASK_NO.joB_ROLE_mkey,
+        COMPLITION_DATE:this.taskData.COMPLITION_DATE,
+        approvaL_MKEY:task.TASK_NO.approvaL_MKEY,
+        TAGS:'asjas,sakjld',
         // approvaL_MKEY: task.TASK_NO.approvaL_MKEY,
         OUTPUT_DOCUMENT: task.TASK_NO.enD_RESULT_DOC,
         STATUS: 'Created',
@@ -662,6 +823,7 @@ export class ApprovalTaskInitationComponent implements OnInit {
           TASK_NO: item.TASK_NO,
           maiN_ABBR: item.APPROVAL_ABBRIVATION,
           abbR_SHORT_DESC: item.LONG_DESCRIPTION,
+          abbr_short_DESC: item.SHORT_DESCRIPTION,
           dayS_REQUIERD: item.DAYS_REQUIRED,
           enD_RESULT_DOC: item.OUTPUT_DOCUMENT,
           approvaL_MKEY: item.approvaL_MKEY,
@@ -818,37 +980,48 @@ export class ApprovalTaskInitationComponent implements OnInit {
     const requiredControls: string[] = [];
     const requiredFields: string[] = [];
     const valid = this.appeInitForm.valid;
-
+  
     const addControlError = (message: string) => requiredControls.push(message);
-
+  
     const convertToTitleCase = (input: string) => {
       return input.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase()).trim() + ' is required';
     };
-
+  
     Object.keys(this.appeInitForm.controls).forEach(controlName => {
       const control = this.appeInitForm.get(controlName);
-
+  
       if (control?.errors?.required) {
         const formattedControlName = convertToTitleCase(controlName);
         addControlError(formattedControlName);
       }
     });
-
+  
     if (requiredControls.length > 0) {
       const errorMessage = `${requiredControls.join(' , ')}`;
       this.tostar.error(errorMessage);
-      return;
+      return false; // Return false when there are validation errors
     }
+  
+    return valid; // Return the actual validity of the form
+  }
+  
 
+  onAddInitiation(){
+    const isValid =  this.onSubmit();
 
-    // return true;
-
-    if (this.appeInitForm.valid) {
-      console.log('Form is valid. Proceeding to submit.');
+    if(isValid){
       this.addApprovalInitiation();
-    } else {
-      console.log('Form is invalid. Cannot submit.');
+      this.tostar.success('Success', 'Template added successfuly');
+    }else {
+      console.log('Form is invalid, cannot add template');
     }
+  }
+
+
+
+  onSubmitSubList(form:any, task:any = []){
+    console.log('Coming to sublist submit form',form.value)
+    console.log('Coming to form', task)
 
 
   }
