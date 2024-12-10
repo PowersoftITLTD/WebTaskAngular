@@ -1,4 +1,4 @@
-import { Component, ErrorHandler, Input, OnInit } from '@angular/core';
+import { Component, ErrorHandler, Input, OnDestroy, OnInit } from '@angular/core';
 import { CITIES, ICity } from './../add-approval-tempelate/cities';
 import { ApiService } from 'src/app/services/api/api.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -12,7 +12,7 @@ import { ToastrService } from 'ngx-toastr';
   templateUrl: './approval-task-initation.component.html',
   styleUrls: ['./approval-task-initation.component.css']
 })
-export class ApprovalTaskInitationComponent implements OnInit {
+export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
 
   @Input() recursiveLogginUser: any = {};
 
@@ -283,9 +283,12 @@ export class ApprovalTaskInitationComponent implements OnInit {
     console.log('tagsString', tagsString)
 
     const addApprovalInitiation:any = {
+
+      MKEY:this.taskData.MKEY,
+      HEADER_MKEY:this.taskData.HEADER_MKEY,
       CAREGORY: 64,
       TAGS: tagsString,
-      // INITIATOR: assignedInitiator?.MKEY,
+      INITIATOR: assignedInitiator?.MKEY,
       TASK_NO:this.taskData.TASK_NO,
       MAIN_ABBR: `${this.appeInitForm.get('abbrivation')?.value} / ${this.taskData.TASK_NO}`,
       SHORT_DESCRIPTION: this.appeInitForm.get('shortDescription')?.value,
@@ -1035,5 +1038,10 @@ export class ApprovalTaskInitationComponent implements OnInit {
     return `${year}-${month}-${day}`;  // Return in YYYY-MM-DD format
   }
 
+  ngOnDestroy(): void {
+    console.log('Component is being destroyed');
+
+    sessionStorage.removeItem('task');
+  }
 
 }
