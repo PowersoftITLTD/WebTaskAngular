@@ -84,13 +84,16 @@ export class ApprovalScreenComponent implements OnInit {
       console.log('check source',source)
       if (source === 'document-tempelate') {
         console.log('In document template')
-        this.getApprovalTempList();
         this.buttonText = 'ADD Template';
+        this.getDocumentTempList();
       } else if (source === 'authority-tempelate') {
-        this.buttonText = 'ADD Abbrivation';
+        this.buttonText = 'ADD Abbrevation';
+        this.getApprovalTempList();
       } else if (source === 'project-defination') {
         this.getProjDefinationList();
         this.buttonText = 'ADD Project';
+      } else if(source === 'project-document-depository'){
+        this.buttonText = 'ADD Depository'
       }
     })
 
@@ -224,16 +227,13 @@ openSelectedTask(data: any) {
   
   const button = this.buttonText;
   if (button === 'ADD Template') {
-    console.log('Button type',button)
-    this.router.navigate(['approvals', 'document-tempelate', { Task_Num: data.mkey }], {
-      state: { taskData: data }
-    });
-  } else if (button === 'ADD Project') {
-    this.router.navigate(['approvals', 'project-defination', { Task_Num: data.mkey }], {
-      state: { taskData: data }
-    });
-    console.log('Button type',button)
-   
+    this.router.navigate(['approvals', 'document-tempelate', { Temp_Id: data.mkey }], {state: { taskData: data }});
+  }else if(button === 'ADD Abbrevation'){
+    this.router.navigate(['approvals', 'approved-tempelate', { Temp_Id: data.mkey }], {state: { taskData: data }});
+  }else if (button === 'ADD Project') {
+    this.router.navigate(['approvals', 'project-defination', { Temp_Id: data.mkey }], {state: { taskData: data }});
+  }else if(button === 'ADD Depository'){
+    this.router.navigate(['approvals', 'project-document-depository', { Temp_Id: data.mkey }], {state: { taskData: data }});
   }
 }
 
@@ -241,13 +241,16 @@ openSelectedTask(data: any) {
 addApprovalTemp(add_new_data:any){
 
   const button = this.buttonText
-  if(button === 'ADD Abbrivation'){
-    this.router.navigate(['approvals', 'approved-tempelate', { Task_Num: add_new_data }]);
+  if(button === 'ADD Abbrevation'){
+    this.router.navigate(['approvals', 'approved-tempelate', { Temp_Id: add_new_data }]);
   }else if(button === 'ADD Template'){
-    this.router.navigate(['approvals', 'document-tempelate', { Task_Num: add_new_data }]);
+    this.router.navigate(['approvals', 'document-tempelate', { Temp_Id: add_new_data }]);
   }else if(button === 'ADD Project'){
-    this.router.navigate(['approvals', 'project-defination', { Task_Num: add_new_data }]);
+    this.router.navigate(['approvals', 'project-defination', { Temp_Id: add_new_data }]);
+  }else if(button === 'ADD Depository'){
+    this.router.navigate(['approvals', 'project-document-depository', { Temp_Id: add_new_data }]);
   }
+
 }
 
 toggleSortOrder(): void {
@@ -263,7 +266,7 @@ getApprovalTempList(){
     next:(approval_temp_data) =>{
       
       this.taskList = approval_temp_data;
-      console.log('approval_temp_data', approval_temp_data)
+      console.log('approval_temp_data', approval_temp_data.data)
 
     },error:(error) =>{
       console.log('Error occured', error)
@@ -271,33 +274,61 @@ getApprovalTempList(){
   })
 }
 
-getProjDefinationList(){
+  getProjDefinationList(){
+    const data = this.dataService.getUser();
+      console.log('onLogin data')
 
-  const data = this.dataService.getUser();
+      const USER_CRED = {    
+        MKEY:data[0]?.MKEY,
+        EMAIL_ID_OFFICIAL: data[0]?.EMAIL_ID_OFFICIAL, 
+        PASSWORD:atob(data[0]?.LOGIN_PASSWORD)
+      }; 
 
-  // console.log('data',data)
-    // this.createdOrUpdatedUserName = data[0]?.FIRST_NAME,    
+    this.recursiveLogginUser = this.apiService.getRecursiveUser();
 
+    console.log('USER_CRED.MKEY', USER_CRED.MKEY)
+
+    this.apiService.getProjectDefination(this.recursiveLogginUser, USER_CRED.MKEY).subscribe({
+      next:(proj_def) => {
+        this.taskList = proj_def;
+        console.log('proj_def',proj_def)
+      },error:(error)=>{
+        if(error){
+          console.log('error', error)
+        }
+      }
+    })
+  }
+
+
+  getDocumentTempList() {
+    const data = this.dataService.getUser();
     console.log('onLogin data')
 
-    const USER_CRED = {    
-      MKEY:data[0]?.MKEY,
-      EMAIL_ID_OFFICIAL: data[0]?.EMAIL_ID_OFFICIAL, 
-      PASSWORD:atob(data[0]?.LOGIN_PASSWORD)
-    }; 
+    const USER_CRED = {
+      MKEY: data[0]?.MKEY,
+      EMAIL_ID_OFFICIAL: data[0]?.EMAIL_ID_OFFICIAL,
+      PASSWORD: atob(data[0]?.LOGIN_PASSWORD)
+    };
 
-  this.recursiveLogginUser = this.apiService.getRecursiveUser();
+    this.recursiveLogginUser = this.apiService.getRecursiveUser();
 
-  this.apiService.getProjectDefination(this.recursiveLogginUser, USER_CRED.MKEY).subscribe({
-    next:(proj_def) => {
-      console.log('proj_def', proj_def)
-      this.taskList = proj_def;
+    console.log('USER_CRED.MKEY',USER_CRED.MKEY)
+    console.log('recursiveLogginUser', this.recursiveLogginUser)
 
-    },error:(error)=>{
+    this.apiService.getDocumentTempelate( USER_CRED.MKEY, this.recursiveLogginUser).subscribe({
+      next: (doc_temp_list) => {
+        console.log('doc_temp_list', doc_temp_list)
 
-    }
-  })
-}
+        this.taskList = doc_temp_list;
+      }, error: (error) => {
+        if (error) {
+          console.log('error', error)
+        }
+      }
+    })
+  }
+  
 
 
 }

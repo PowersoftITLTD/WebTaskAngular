@@ -1,9 +1,6 @@
 import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-<<<<<<< HEAD
 import { filter } from 'rxjs';
-=======
->>>>>>> parent of cb45e19 (Adding Updated Packages 27-11-2024)
 import { CredentialService } from 'src/app/services/credential/credential.service';
 import { SideBarService } from 'src/app/services/side-panel/side-bar.service';
 
@@ -50,14 +47,10 @@ export class SidePanelComponent implements OnInit {
   isApprovalDropdown:boolean = false;
 
   //selectedTab
-<<<<<<< HEAD
   selectedTab: string | any;
 
   //selectedUsers
   selectedUser:string | any;
-=======
-  selectedTab: string = '';
->>>>>>> parent of cb45e19 (Adding Updated Packages 27-11-2024)
 
   showDashboard: boolean = false;
   showTaskManagement: boolean = false;
@@ -81,7 +74,6 @@ export class SidePanelComponent implements OnInit {
     this.selectedTab = 'dashboard';
 
     this.loggedInUser = this.dataService.getUser();
-<<<<<<< HEAD
    
     // this.router.events.pipe(
     //   filter(event => event instanceof NavigationEnd)
@@ -116,17 +108,6 @@ selectedUserAccess(): boolean{
   return selectedUser[0].EMP_CODE === "9211" || selectedUser[0].EMP_CODE === "9201" || selectedUser[0].EMP_CODE === "9222" || selectedUser[0].EMP_CODE === "9222" || selectedUser[0].EMP_CODE === "9002"  
 }
 
-=======
-    // console.log('this.loggedInUser from panel', this.loggedInUser)
-    this.router.events.subscribe(event => {
-      if (event instanceof NavigationEnd) {
-        this.setActiveTab();
-      }
-    });
-  }
-
-
->>>>>>> parent of cb45e19 (Adding Updated Packages 27-11-2024)
   navigateToDashboardProject() {
     this.router.navigate(['dashboard/dashboard-page']);
     this.selectedTab = 'dashboard';
@@ -146,6 +127,7 @@ selectedUserAccess(): boolean{
   toggleApprovalDropdown() {
     this.isApprovalDropdown = !this.isApprovalDropdown;
   }
+
   navigateToTask() {
     this.router.navigate(['task/task-management']);
     this.selectedTab = 'task-management'
@@ -157,7 +139,6 @@ selectedUserAccess(): boolean{
   }
 
   navigateToApprovlTempelate() {
-<<<<<<< HEAD
     this.selectedTab = 'authority-tempelate'
     this.router.navigate(['task/approval-screen'], {queryParams:{ source: 'authority-tempelate' }});
   }
@@ -173,6 +154,12 @@ selectedUserAccess(): boolean{
   }
 
 
+  navigateToProjectDocDepository() {
+    this.selectedTab = 'project-document-depository'
+    this.router.navigate(['task/approval-screen'], {queryParams:{ source: 'project-document-depository' }});
+  }
+
+
  // this.router.navigate(['approvals/project-defination']);
  // this.router.navigate(['approvals/document-tempelate']);
 
@@ -183,26 +170,6 @@ selectedUserAccess(): boolean{
   }
 
 
-=======
-    this.router.navigate(['approval-tempelate/add-approval-tempelate']);
-    this.selectedTab = 'approval-tempelate'
-  }
-
-  navigateToDocumentTempelate() {
-    this.router.navigate(['approvals/document-tempelate']);
-    this.selectedTab = 'document-tempelate'
-  }
-
-  navigateToApprovedTempelate() {
-    this.router.navigate(['approvals/approved-tempelate']);
-    this.selectedTab = 'approved-tempelate'
-  }
-
-  navigateToProjectDefination() {
-    this.router.navigate(['approvals/project-defination']);
-    this.selectedTab = 'project-defination'
-  }
->>>>>>> parent of cb45e19 (Adding Updated Packages 27-11-2024)
 
   navigateToProjectDD() {
     this.router.navigate(['approvals/project-document-depository']);
@@ -221,7 +188,6 @@ selectedUserAccess(): boolean{
 
   setActiveTab() {
     const currentRoute = this.router.url;
-<<<<<<< HEAD
   
     // Explicit route matching order (more specific routes first)
     const tabMapping = {
@@ -244,19 +210,6 @@ selectedUserAccess(): boolean{
   }
   
   
-=======
-
-    if (currentRoute.includes('dashboard')) {
-      this.selectedTab = 'dashboard';
-    } else if (currentRoute.includes('task-management') || currentRoute.includes('add-task') || currentRoute.includes('selected-task-info')) {
-      this.selectedTab = 'task-management';
-    } else if(currentRoute.includes('project-uploader')){
-      this.selectedTab = 'project-uploader';
-    } else if(currentRoute.includes('recursive-task')){
-      this.selectedTab = 'recursive-task';
-    }
-  }
->>>>>>> parent of cb45e19 (Adding Updated Packages 27-11-2024)
 
 
 }
