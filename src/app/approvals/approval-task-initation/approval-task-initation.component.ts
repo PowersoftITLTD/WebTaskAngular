@@ -309,7 +309,7 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
     };
 
     console.log('addApprovalInitiation: ', addApprovalInitiation);
-    console.log('recursiveLogginUser', this.recursiveLogginUser)
+    // console.log('recursiveLogginUser', this.recursiveLogginUser)
 
     this.apiService.postApprovalInitiation(addApprovalInitiation, this.recursiveLogginUser ).subscribe({
       next:(response)=>{
@@ -745,6 +745,21 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
 
 
   updatedTaskCheck(task:any, assignTo:any){
+
+    // const updateInitiationSubTask = {
+    //   mkey:
+    //   maiN_ABB:
+    //   shorT_DESCRIPTION:
+    //   lonG_DESCRIPTION:
+    //   authoritY_DEPARTMENT:
+    //   resposiblE_EMP_MKEY:
+    //   joB_ROLE:
+    //   dayS_REQUIERD:
+    //   createD_BY:
+    //   lasT_UPDATED_BY:
+    //   sanctioN_AUTHORITY:
+    //   sanctioN_DEPARTMENT:
+    // }
     console.log('assignTo', assignTo)
     console.log('task',task)
   }
@@ -767,6 +782,7 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
 
       result.push({
         TASK_NO: task.TASK_NO.TASK_NO.trim(),
+        MKEY:this.taskData.HEADER_MKEY,
         DAYS_REQUIRED: Number(task.TASK_NO.dayS_REQUIERD),
         APPROVAL_ABBRIVATION: task.TASK_NO.maiN_ABBR,
         LONG_DESCRIPTION: task.TASK_NO.abbR_SHORT_DESC,

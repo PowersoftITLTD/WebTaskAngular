@@ -5,6 +5,7 @@ import { ApiService } from 'src/app/services/api/api.service';
 import { AbstractControl, FormArray, FormBuilder, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { CredentialService } from 'src/app/services/credential/credential.service';
 import { ToastrService } from 'ngx-toastr';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-add-approval-tempelate',
@@ -21,12 +22,20 @@ export class AddApprovalTempelateComponent implements OnInit {
   selectedDocsChecklist: any[] = [];
   selectedDocsEndResult: any[] = [];
 
+  allTags: any[] = [];
+  taskData: any;
+
+
+
   selectedAbbr: string = '';
 
   end_list:object = {};
   check_list:object = {};
 
   subTask:any[]=[];
+
+  private isCheckValueCalled: boolean = false;
+
 
   selectedDocsMap: { [key: string]: any[] } = { endResult: [], checklist: [] };
 
@@ -46,6 +55,8 @@ export class AddApprovalTempelateComponent implements OnInit {
   getRelAbbr:any[]=[];
 
   rows: any[] = [];
+  updatedDetails: boolean = false;
+
 
   abbrivationError = '';
 
@@ -67,6 +78,9 @@ export class AddApprovalTempelateComponent implements OnInit {
 
   inputHasValue: boolean = false;
 
+  @Input() loggedInUser: any;
+
+
   @Input() recursiveLogginUser: any = {};
 
   @ViewChild('noValueKey', { read: IgxComboComponent })
@@ -85,15 +99,48 @@ export class AddApprovalTempelateComponent implements OnInit {
     { title: 'End Result', content: 'And lastly, the placeholder content for the third and final accordion panel.' },
     { title: 'Checklist', content: 'And lastly, the placeholder content for the third and final accordion panel.' },
     { title: 'Subtask', content: 'And lastly, the placeholder content for the third and final accordion panel.' }
-
   ];
 
   constructor(
     private formBuilder: FormBuilder,
     private apiService: ApiService,
     private tostar:ToastrService,
+    private router: Router,
     private credentialService:CredentialService
-    ) { }
+    ) { 
+      const navigation: any = this.router.getCurrentNavigation();
+      const isNewTemp = sessionStorage.getItem('isNewTemp') === 'true';
+  
+      if (navigation?.extras.state) {
+        const RecursiveTaskData: any = navigation.extras.state.taskData;
+        this.taskData = RecursiveTaskData;
+        console.log('RecursiveTaskData', RecursiveTaskData)
+  
+        if (RecursiveTaskData.mkey) {
+          this.updatedDetails = !isNewTemp; // Don't update if adding a new task
+        } else {
+          this.updatedDetails = false;
+        }
+  
+        sessionStorage.setItem('task', JSON.stringify(RecursiveTaskData));
+        sessionStorage.removeItem('add_new_task'); // Clear the marker after using it
+      } else {
+        const RecursiveTaskData = sessionStorage.getItem('task');
+        if (RecursiveTaskData) {
+          try {
+            this.taskData = JSON.parse(RecursiveTaskData);
+            console.log('Check task data', this.taskData)
+            if (!isNewTemp) {
+              this.updatedDetails = this.taskData.mkey ? true : false;
+            }
+          } catch (error) {
+            console.error('Failed to parse task data', error);
+          }
+        }
+      }
+
+      
+    }
   
 
   ngOnInit(): void {
@@ -101,13 +148,25 @@ export class AddApprovalTempelateComponent implements OnInit {
     this.activeIndices = this.accordionItems.map((_, index) => index); // Set all indices to open
     this.onLogin();  
     this.InitilizeApprlTempForm();
-    // this.getApprovalTempTable();
     this.fetchEmployeeName();
-    // this.GetAbbrDropdownList();
- 
+    if (this.taskData && this.taskData.mkey) {
+      // this.end_list = this.taskData.enD_RESULT_DOC_LST
+      console.log('checklisT_DOC_LST', this.taskData.checklisT_DOC_LST)
+      console.log('enD_RESULT_DOC_LST', this.taskData.enD_RESULT_DOC_LST)
+
+      console.log('getRelAbbr', this.getRelAbbr)
+      
+
+    }
+
+    // this.populateFormWithSavedData(this.taskData.subtasK_LIST)
+
+
+  }
+
+
 
  
-  }
 
   receiveLoggedInUser(user: any): void {
     this.receivedUser = user;
@@ -129,6 +188,7 @@ export class AddApprovalTempelateComponent implements OnInit {
       sanctioningAuth:['',Validators.required],
       sanctioningDept:['',Validators.required],      
       endResult:['dummy_1, dummy_2'],
+      tags:[''],
       rows: this.formBuilder.array([],[this.duplicateAbbrivationValidator()]) 
     })
   }
@@ -159,6 +219,8 @@ export class AddApprovalTempelateComponent implements OnInit {
         console.error('Login failed:', error);
       }
     });
+
+
   }
 
   private fetchData(): void {
@@ -190,7 +252,6 @@ export class AddApprovalTempelateComponent implements OnInit {
     this.apiService.getStatutoryAuthorityDP(this.recursiveLogginUser).subscribe({
       next: (list: any) => {
         this.statutoryAuthList = list;
-        // console.log('Statutory Authority List:', this.statutoryAuthList);      
       },
       error: (error: any) => {
         console.error('Unable to fetch Statutory Authority List', error);
@@ -212,6 +273,14 @@ export class AddApprovalTempelateComponent implements OnInit {
     this.apiService.getDocTypeDP(this.recursiveLogginUser).subscribe({
       next: (list: any) => {
         this.docTypeList = list
+
+        if(this.taskData && this.taskData.mkey){
+          this.mappedSelectedEndList();
+          this.mappedSelectedCheckList();
+
+
+        }
+     
         // console.log('Document Type List:', this.docTypeList);
       },
       error: (error: any) => {
@@ -223,6 +292,7 @@ export class AddApprovalTempelateComponent implements OnInit {
     this.apiService.getDepartmentDP(this.recursiveLogginUser).subscribe({
       next:(list:any) => {
         this.departmentList = list
+      //  console.log('Department List:', this.departmentList);       
       },error:(error:ErrorHandler) =>{
 
       }
@@ -232,13 +302,29 @@ export class AddApprovalTempelateComponent implements OnInit {
     this.apiService.getSanctoningAuthDP(this.recursiveLogginUser).subscribe({
         next:(list:any)=>{
           this.SanctoningAuthList = list
+          // console.log('SanctoningAuthList :', this.SanctoningAuthList);      
         }, error:(error:any)=> {
           console.error('Unable to fetch Document Type List', error);
 
         }
     })
 
+  if(this.taskData && this.taskData.mkey){
+    this.addRow()
+    this.check
+    this.end_list = this.taskData.enD_RESULT_DOC_LST;
+    this.check_list = this.taskData.checklisT_DOC_LST;
+    
+    
   }
+
+
+  }
+
+
+
+
+
 
 
   async addApprovalTempelate() {
@@ -275,25 +361,49 @@ export class AddApprovalTempelateComponent implements OnInit {
   }
 
   const formArrayVal: FormArray = (this.approvalTempForm.get('rows') as FormArray);
-    const val_of_formArr = formArrayVal.value;
-
-    console.log('val_of_formArr', val_of_formArr);
-
-    const subTasks = val_of_formArr.map((row: any, index: number) => {
-
-      console.log('val_of_formArr',row)
-        return {
-            subtasK_MKEY: row.subtasK_MKEY,  
-            seQ_NO: row.sequentialNo.toString(),  
-            subtasK_ABBR: row.abbrivation,  
-        };
+  const val_of_formArr = formArrayVal.value;
+  
+  console.log('val_of_formArr', val_of_formArr);
+  
+  const subTasks = val_of_formArr
+    .filter((row: any) => {
+      // Check if any field is empty. You can adjust this check based on the specific fields you want to validate.
+      return row.subtasK_MKEY && row.sequentialNo && row.abbrivation;
+    })
+    .map((row: any, index: number) => {
+      return {
+        subtasK_MKEY: row.subtasK_MKEY,  
+        seQ_NO: row.sequentialNo.toString(),  
+        subtasK_ABBR: row.abbrivation,  
+        // SUBTASK_TAGS: sub_tags || null
+      };
     });
+  
+  
 
     console.log('subTasks', subTasks);
 
+    const tagsValue = this.approvalTempForm.get('tags')?.value;
+
+    let tagsString = '';
+    // console.log('tagsValue', tagsValue)
+
+    if (Array.isArray(tagsValue)) {
+      tagsString = tagsValue.map(tag => {
+        if (typeof tag === 'string') {
+          return tag;
+        } else if (tag.display) {
+          return tag.display;
+        } else {
+          return '';
+        }
+      }).join(',');
+    }
+
+    console.log('tagsString', tagsString)
 
   
-    const addApprovalTemplate = this.createApprovalTemplate(abbrivation, assignedEmployee.MKEY, USER_CRED[0].MKEY, subTasks);
+    const addApprovalTemplate = this.createApprovalTemplate(abbrivation, assignedEmployee.MKEY, USER_CRED[0].MKEY, subTasks, tagsString);
 
     console.log('addApprovalTemplate', addApprovalTemplate);
 
@@ -319,11 +429,16 @@ export class AddApprovalTempelateComponent implements OnInit {
 
 }
 
+getTags() {
+  this.loggedInUser = this.credentialService.getUser();
+  // console.log('this.loggedInUser[0]?.MKEY', this.loggedInUser[0]?.MKEY)
+  this.apiService.getTagDetailss(this.loggedInUser[0]?.MKEY).subscribe((data: any) => { this.allTags = data });
+}
 
 
 
 
-private createApprovalTemplate(MAIN_ABBR: string, employeeMKey: number, userMKey: number, Subtask:[]) {
+private createApprovalTemplate(MAIN_ABBR: string, employeeMKey: number, userMKey: number, Subtask:[], tagsString:string) {
     return {
         abbR_SHORT_DESC:this.approvalTempForm.get('shortDescription')?.value,
         buildinG_TYPE: Number(this.approvalTempForm.get('building')?.value),        
@@ -350,8 +465,72 @@ private createApprovalTemplate(MAIN_ABBR: string, employeeMKey: number, userMKey
         deletE_FLAG: "N", 
         enD_RESULT_DOC_LST:this.end_list,
         checklisT_DOC_LST:this.check_list,
+        TAGS:tagsString,
         subtasK_LIST:Subtask || []
     };
+}
+
+
+updateApprovalTemplate(){
+
+
+  const formArrayVal: FormArray = (this.approvalTempForm.get('rows') as FormArray);
+  const val_of_formArr = formArrayVal.value;
+  
+  console.log('val_of_formArr', val_of_formArr);
+  
+  const subTasks = val_of_formArr
+    .filter((row: any) => {
+      // Check if any field is empty. You can adjust this check based on the specific fields you want to validate.
+      return row.subtasK_MKEY && row.sequentialNo && row.abbrivation;
+    })
+    .map((row: any, index: number) => {
+      return {
+        subtasK_MKEY: row.subtasK_MKEY,  
+        seQ_NO: row.sequentialNo.toString(),  
+        subtasK_ABBR: row.abbrivation,  
+        // SUBTASK_TAGS: sub_tags || null
+      };
+    });
+  
+  
+
+    console.log('subTasks', subTasks);
+  
+  console.log('checklisT_DOC_LST', this.taskData.checklisT_DOC_LST)
+  console.log('enD_RESULT_DOC_LST', this.taskData.enD_RESULT_DOC_LST)
+
+  const updateApprlTemp = {
+    abbR_SHORT_DESC:this.approvalTempForm.get('shortDescription')?.value,
+    buildinG_TYPE: Number(this.approvalTempForm.get('building')?.value),        
+    buildinG_STANDARD: Number(this.approvalTempForm.get('standard')?.value),
+    statutorY_AUTHORITY: Number(this.approvalTempForm.get('statutoryAuth')?.value),
+    shorT_DESCRIPTION: this.approvalTempForm.get('shortDescription')?.value,
+    lonG_DESCRIPTION: this.approvalTempForm.get('longDescrition')?.value,
+    // MAIN_ABBR,
+    authoritY_DEPARTMENT: this.approvalTempForm.get('department')?.value,
+    // resposiblE_EMP_MKEY: employeeMKey,
+    joB_ROLE: Number(this.approvalTempForm.get('jobRole')?.value),
+    dayS_REQUIERD: Number(this.approvalTempForm.get('noOfDays')?.value),
+    // attributE1: userMKey.toString(),
+    attributE2: "ADD FORM",
+    attributE3: "SAVE BUTTON",
+    attributE4: "",
+    attributE5: "",
+    // createD_BY: userMKey || 0,
+    // lasT_UPDATED_BY: userMKey || 0,  
+    sanctioN_AUTHORITY: Number(this.approvalTempForm.get('sanctioningAuth')?.value),
+    sanctioN_DEPARTMENT: this.approvalTempForm.get('sanctioningDept')?.value,
+    enD_RESULT_DOC: "",
+    checklisT_DOC: "",
+    deletE_FLAG: "N", 
+    enD_RESULT_DOC_LST:this.end_list,
+    checklisT_DOC_LST:this.check_list,
+    // TAGS:tagsString,
+    subtasK_LIST:subTasks || []
+  }
+
+  console.log('updateApprlTemp', updateApprlTemp)
 }
 
 
@@ -439,6 +618,69 @@ selectEmployee(employee: any): void {
 
   }
 
+
+  mappedSelectedEndList() {
+
+    let mappedSelectedArray: any[] = [];
+
+    let allSelectedMkeys: number[] = [];
+
+    for (let key in this.taskData.enD_RESULT_DOC_LST) {
+        if (this.taskData.enD_RESULT_DOC_LST.hasOwnProperty(key)) {
+            const selectedMkeysString = this.taskData.enD_RESULT_DOC_LST[key];
+
+            const selectedMkeys = selectedMkeysString.split(',')
+                .map((mkey: string) => parseInt(mkey.trim(), 10))
+                .filter((mkey: number) => !isNaN(mkey));  // Ensure no NaN values
+
+            allSelectedMkeys = [...allSelectedMkeys, ...selectedMkeys];
+        }
+    }
+
+    let selectedItems = this.docTypeList.filter(doc => allSelectedMkeys.includes(doc.mkey));
+
+
+    selectedItems.forEach(item => {
+        mappedSelectedArray.push(item);  
+    });
+
+    this.selectedDocsMap['endResult'] = mappedSelectedArray;
+
+}
+
+
+mappedSelectedCheckList() {
+  let mappedSelectedArray: any[] = [];
+
+  let allSelectedMkeys: number[] = [];
+
+  for (let key in this.taskData.checklisT_DOC_LST) {
+      if (this.taskData.checklisT_DOC_LST.hasOwnProperty(key)) {
+          const selectedMkeysString = this.taskData.checklisT_DOC_LST[key];
+
+          const selectedMkeys = selectedMkeysString.split(',')
+              .map((mkey: string) => parseInt(mkey.trim(), 10))
+              .filter((mkey: number) => !isNaN(mkey));  // Ensure no NaN values
+
+          allSelectedMkeys = [...allSelectedMkeys, ...selectedMkeys];
+      }
+  }
+
+  let selectedItems = this.docTypeList.filter(doc => allSelectedMkeys.includes(doc.mkey));
+
+
+  selectedItems.forEach(item => {
+      mappedSelectedArray.push(item);  
+  });
+
+  this.selectedDocsMap['checklist'] = mappedSelectedArray;
+
+}
+
+
+
+
+
     toggleSelection(listType: 'endResult' | 'checklist', doc: any) {
       console.log('listType', listType);
    
@@ -447,6 +689,7 @@ selectEmployee(employee: any): void {
       const index = selectedDocs.findIndex((selected: any) => selected.mkey === doc.mkey);
       if (index === -1) {
         selectedDocs.push(doc);  
+        console.log('selectedDocs', selectedDocs)
       } else {
         selectedDocs.splice(index, 1); 
       }
@@ -520,53 +763,192 @@ selectEmployee(employee: any): void {
       }
    
 
-    addRow() {
-      const buildingType = this.approvalTempForm.get('building')?.value;
-      const buildingStandard = this.approvalTempForm.get('standard')?.value;
-      const statutoryAuthority = this.approvalTempForm.get('statutoryAuth')?.value;
-    
-      if (buildingType && buildingStandard && statutoryAuthority) {
-        this.recursiveLogginUser = this.apiService.getRecursiveUser();
+   // Declare a flag to track if checkValue has already been called
 
-        console.log(`buildingType ${buildingType} buildingStandard ${buildingStandard} statutoryAuthority ${statutoryAuthority}`)
-        this.apiService.GetAbbrAndShortAbbr(buildingType, buildingStandard, statutoryAuthority, this.recursiveLogginUser).subscribe({
-          next: (gerAbbrRelData) => {
-            this.getRelAbbr = Array.isArray(gerAbbrRelData) ? gerAbbrRelData : [gerAbbrRelData];
-            console.log('this.getRelAbbr', this.getRelAbbr);
-            
-            const rows:any = this.approvalTempForm.get('rows') as FormArray;
+addRow(savedData?: any) {
+  const buildingType = this.approvalTempForm.get('building')?.value;
+  const buildingStandard = this.approvalTempForm.get('standard')?.value;
+  const statutoryAuthority = this.approvalTempForm.get('statutoryAuth')?.value;
 
-            console.log('Rows check',rows)
+  if (buildingType && buildingStandard && statutoryAuthority) {
+    this.recursiveLogginUser = this.apiService.getRecursiveUser();
+
+    console.log(`buildingType ${buildingType} buildingStandard ${buildingStandard} statutoryAuthority ${statutoryAuthority}`);
     
-            const newRow = this.formBuilder.group({
-              abbrivation: ['' ,Validators.required],  
-              shorT_DESCRIPTION: [''],
-              sanctioN_DEPARTMENT: [''],
-              nO_DAYS_REQUIRED: [''],
-              authoritY_DEPARTMENT: [''],
-              enD_RESULT_DOC: [''],
-              subtasK_MKEY:[''],
-              sequentialNo: [rows.length + 1],
+    // API call to fetch abbreviation and other data
+    this.apiService.GetAbbrAndShortAbbr(buildingType, buildingStandard, statutoryAuthority, this.recursiveLogginUser).subscribe({
+      next: (gerAbbrRelData) => {
+        this.checkValue(gerAbbrRelData); // Call checkValue to process the first time
+
+        // console.log(gerAbbrRelData);
+        this.getRelAbbr = Array.isArray(gerAbbrRelData) ? gerAbbrRelData : [gerAbbrRelData];
+
+        // console.log(getRelAbbr)
+        
+        const rows: FormArray = this.approvalTempForm.get('rows') as FormArray;
+        console.log('Rows check', rows);
+
+        const tagsValue = rows.get('subTaskTags')?.value || [];
+        let tagsString: string = '';
+
+        if (Array.isArray(tagsValue)) {
+          tagsString = tagsValue.map(tag => {
+            if (typeof tag === 'string') {
+              return tag;
+            } else if (tag.display) {
+              return tag.display;
+            } else {
+              return '';
+            }
+          }).join(',');
+        }
+
+        console.log('tagsString from row', tagsString);
+
+        // Create a new row with the necessary controls
+        const newRow = this.formBuilder.group({
+          abbrivation: ['', Validators.required],
+          shorT_DESCRIPTION: [''],
+          sanctioN_DEPARTMENT: [''],
+          nO_DAYS_REQUIRED: [''],
+          authoritY_DEPARTMENT: [''],
+          enD_RESULT_DOC: [''],
+          subtasK_MKEY: [''],
+          subTaskTags: [tagsString],
+          sequentialNo: [rows.length + 1],
+        });
+
+        // Push the new row into the rows FormArray
+        rows.push(newRow);
+
+        // If checkValue has not been called yet, call it for the first time
+        if (!this.isCheckValueCalled) {
+          this.isCheckValueCalled = true;
+        } else {
+          // Call checkValue only for the new row when adding more rows
+          this.checkValueForNewRow(newRow);
+        }
+      },
+      error: (err) => {
+        this.tostar.error('Unable to fetch data, please check internet connection');
+      }
+    });
+  } else {
+    this.tostar.error('Please select all classification');
+    return;
+  }
+}
+
+// Modify checkValue to handle only new rows after the first call
+checkValue(values?: any) {
+  const formArray = this.approvalTempForm.get('rows') as FormArray;
+  // console.log('this.getRelAbbr from checkValue', values);
+
+  if (!this.isCheckValueCalled) {
+    // Process all the rows for the first time if checkValue is not yet called
+    values.forEach((value: any) => {
+      if (this.taskData && this.taskData.subtasK_LIST) {
+        this.taskData.subtasK_LIST.forEach((subtask: any) => {
+          const departmentList = this.departmentList;
+          const matchedDepartment = departmentList.find(department => department.mkey === value.authoritY_DEPARTMENT);
+
+          // console.log('matchedDepartment', matchedDepartment);
+
+          if (matchedDepartment) {
+            value.sanctioN_DEPARTMENT = matchedDepartment.typE_DESC;
+          } else {
+            console.log("Department not found");
+          }
+
+          if (value.maiN_ABBR && value.maiN_ABBR === subtask.subtasK_ABBR) {
+            const rowForm = this.formBuilder.group({
+              sequentialNo: [subtask.seQ_NO],
+              abbrivation: [subtask.subtasK_ABBR],
+              shorT_DESCRIPTION: [value.abbR_SHORT_DESC],
+              sanctioN_DEPARTMENT: [value.sanctioN_DEPARTMENT || ''],
+              nO_DAYS_REQUIRED: [value.dayS_REQUIERD || ''],
+              authoritY_DEPARTMENT: [value.authoritY_DEPARTMENT || ''],
+              enD_RESULT_DOC: [value.enD_RESULT_DOC || ''],
+              subtasK_MKEY: [subtask.subtasK_MKEY],
+              subTaskTags: [''],
             });
 
-            if(buildingType && buildingStandard && statutoryAuthority){
-              rows.push(newRow);
-            }
-
-          },
-          error: (err) => {
-            // console.error('API Error:', err);
-            this.tostar.error('Unable to fetch data please check internet connection');
-
+            formArray.push(rowForm);
           }
         });
-      } else {
-        this.tostar.error('Please select all classification');
-        return; 
       }
+    });
+  }
+}
+
+// Method to process only the newly added row
+checkValueForNewRow(newRow: AbstractControl) {
+  const formArray = this.approvalTempForm.get('rows') as FormArray;
+  // Process the new row only
+  const newRowData = newRow.value; // Get the data for the new row
+  const values = [newRowData]; // Treat the new row as the only value
+
+  values.forEach((value: any) => {
+    if (this.taskData && this.taskData.subtasK_LIST) {
+      this.taskData.subtasK_LIST.forEach((subtask: any) => {
+        const departmentList = this.departmentList;
+        const matchedDepartment = departmentList.find(department => department.mkey === value.authoritY_DEPARTMENT);
+
+        if (matchedDepartment) {
+          value.sanctioN_DEPARTMENT = matchedDepartment.typE_DESC;
+        } else {
+          console.log("Department not found");
+        }
+
+        if (value.maiN_ABBR && value.maiN_ABBR === subtask.subtasK_ABBR) {
+          const rowForm = this.formBuilder.group({
+            sequentialNo: [subtask.seQ_NO],
+            abbrivation: [subtask.subtasK_ABBR],
+            shorT_DESCRIPTION: [value.abbR_SHORT_DESC],
+            sanctioN_DEPARTMENT: [value.sanctioN_DEPARTMENT || ''],
+            nO_DAYS_REQUIRED: [value.dayS_REQUIERD || ''],
+            authoritY_DEPARTMENT: [value.authoritY_DEPARTMENT || ''],
+            enD_RESULT_DOC: [value.enD_RESULT_DOC || ''],
+            subtasK_MKEY: [subtask.subtasK_MKEY],
+            subTaskTags: [''],
+          });
+
+          formArray.push(rowForm);
+        }
+      });
     }
+  });
+}
+
     
-              
+    
+    
+
+
+    populateFormWithSavedData(savedData: any[]) {
+      const rows = this.approvalTempForm.get('rows') as FormArray;
+  
+    
+      savedData.forEach(data => {
+        const rowFormGroup = this.formBuilder.group({
+          sequentialNo: [data.seQ_NO],
+          abbrivation: [data.subtasK_ABBR],
+          shorT_DESCRIPTION: [data.attributE1 || ''],  // Ensure these match your field names
+          sanctioN_DEPARTMENT: [data.attributE2 || ''],
+          nO_DAYS_REQUIRED: [data.attributE3 || ''],
+          enD_RESULT_DOC: [data.attributE4 || ''],
+          selectedAbbr: [data.subtasK_ABBR],  // Store selected abbreviation
+          subtasK_MKEY: [data.subtasK_MKEY],
+          SUBTASK_TAGS: [data.subTaskTags || []],  // Adjust according to your data structure
+          authoritY_DEPARTMENT: [data.attributE5 || '']
+        });
+    
+        // Add the FormGroup to the FormArray
+        rows.push(rowFormGroup);
+      });
+    }
+
+                
 
       onAbbrChange(event: Event, rowForm: FormGroup) {
         const selectElement = event.target as HTMLSelectElement; // Cast to HTMLSelectElement
@@ -591,6 +973,8 @@ selectEmployee(employee: any): void {
           } else {
               console.log("Department not found");
           }
+
+          console.log('SELECTED ROEW',selectedRow)
    
         console.log('Selected Row onAbbrChange', selectedRow.mkey)
         if (selectedRow) {            
@@ -601,6 +985,7 @@ selectEmployee(employee: any): void {
             rowForm.get('enD_RESULT_DOC')?.setValue(selectedRow.enD_RESULT_DOC)
             rowForm.get('authoritY_DEPARTMENT')?.setValue(selectedRow.abbR_SHORT_DESC);
             rowForm.get('subtasK_MKEY')?.setValue(selectedRow.mkey)
+            rowForm.get('SUBTASK_TAGS')?.setValue(selectedRow.subTaskTags)
         } else {
             rowForm.get('selectedAbbr')?.setValue('');
             rowForm.get('shorT_DESCRIPTION')?.setValue('');
@@ -608,7 +993,9 @@ selectEmployee(employee: any): void {
             rowForm.get('nO_DAYS_REQUIRED')?.setValue('');
             rowForm.get('enD_RESULT_DOC')?.setValue('');
             rowForm.get('authoritY_DEPARTMENT')?.setValue('');
-            rowForm.get('subtasK_MKEY')?.setValue('')
+            rowForm.get('subtasK_MKEY')?.setValue('');
+            rowForm.get('SUBTASK_TAGS')?.setValue('');
+
 
         }
     }
@@ -634,9 +1021,6 @@ selectEmployee(employee: any): void {
         row.isSaved = !row.isSaved;
       }
       
-
-
-
 
       removeRow(index: number) {
         const rows = this.approvalTempForm.get('rows') as FormArray;
@@ -745,6 +1129,12 @@ selectEmployee(employee: any): void {
     }
   }
   
+
+  ngOnDestroy(): void {
+    console.log('Component is being destroyed');
+
+    sessionStorage.removeItem('task');
+  }
 
 }
 
