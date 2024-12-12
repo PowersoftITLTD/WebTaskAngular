@@ -29,7 +29,7 @@
                                 </ng-container>
 
                                 <ng-container *ngIf="taskData?.mkey">
-                                     <button type="submit" class="btn btn-light mr-2" (click)="updateApprovalTemplate()" id="btnSaveTask">
+                                     <button type="submit" class="btn btn-light mr-2" (click)="onUpdateTempDoc()" id="btnSaveTask">
                                         SAVE
                                     </button>
                                 </ng-container>
@@ -220,11 +220,18 @@
                                                 <div class="col-xs-12 col-xl-4 col-md-12">
                                                     <div class="form-group">
                                                         <label for="category">Responsible Person</label>
-                                                        <!-- <ng-container *ngIf="!taskData?.mkey"> -->
+                                                        <ng-container *ngIf="taskData?.mkey">
                                                         <input type="text" class="form-control"
+                                                            [(ngModel)]="taskData.emp_name"   
                                                             formControlName="assignedTo"
                                                             (input)="filterEmployees($event)" appAlphabeticOnly />
-                                                        <!-- </ng-container> -->
+                                                        </ng-container>
+
+                                                        <ng-container *ngIf="!taskData?.mkey">
+                                                            <input type="text" class="form-control"
+                                                                formControlName="assignedTo"
+                                                                (input)="filterEmployees($event)" appAlphabeticOnly />
+                                                            </ng-container>
 
                                                         <div style="width: 100%;" class="pr-10 mt-1">
                                                             <ul>

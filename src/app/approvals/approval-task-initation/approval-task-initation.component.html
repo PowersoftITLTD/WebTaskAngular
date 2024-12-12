@@ -236,7 +236,7 @@
                         <label for="category">Responsible Person&nbsp;<small>*</small></label>
 
                         <ng-container *ngIf="taskData?.MKEY">
-                          <input type="text" class="form-control" formControlName="responsiblePerson"
+                          <input type="text" class="form-control" [(ngModel)]="taskData.emp_name" formControlName="responsiblePerson"
                             (input)="filterEmployees($event)" appAlphabeticOnly
                             [ngStyle]="isFieldDisabled ? { 'background-color': 'rgb(238 236 195)', 'color': '#11111', 'cursor': 'allowed' } : {}" />
                         </ng-container>
@@ -427,7 +427,7 @@
                                                     <div class="form-group d-flex justify-content-between">
                                                       <label class="days-label" for="taskName">Short Description</label>
                                                       <input
-                                                      [ngModelOptions]="{standalone: true}" (ngModelChange)="task.TASK_NO.abbr_short_DESC = $event" [ngModel]="task.TASK_NO?.abbr_short_DESC"
+                                                      [ngModelOptions]="{standalone: true}" (ngModelChange)="task.TASK_NO.abbr_short_DESC = $event" [ngModel]="task.TASK_NO?.abbr_short_DESC" 
                                                         [ngStyle]="isFieldDisabled ? { 'background-color': 'rgb(238 236 195)', 'color': '#11111', 'cursor': 'allowed' } : {}"
                                                         type="text" class="abbr-input form-control" maxlength="150" />
                                                     </div>
@@ -645,7 +645,7 @@
                                                   <div class="form-group d-flex justify-content-between">
                                                     <label class="days-label" for="taskName">Short Description</label>
                                                     <input
-                                                    [ngModelOptions]="{standalone: true}" (ngModelChange)="task.TASK_NO.abbr_short_DESC = $event" [ngModel]="task.TASK_NO?.abbr_short_DESC"
+                                                    [ngModelOptions]="{standalone: true}" (ngModelChange)="task.TASK_NO.abbr_short_DESC = $event" [ngModel]="task.TASK_NO?.abbr_short_DESC" 
                                                       [ngStyle]="isFieldDisabled ? { 'background-color': 'rgb(238 236 195)', 'color': '#11111', 'cursor': 'allowed' } : {}"
                                                       type="text" class="abbr-input form-control" maxlength="150" />
                                                   </div>
@@ -685,7 +685,7 @@
                                                     <input type="text" class="abbr-input form-control"
                                                      
                                                       [ngStyle]="isFieldDisabled ? { 'background-color': 'rgb(238 236 195)', 'color': '#11111', 'cursor': 'allowed' } : {}"
-                                                      maxlength="150" (input)="SubfilterEmployeesInitiator($event)" />
+                                                      maxlength="150" [(ngModel)]="selectedAssignTo" [ngModelOptions]="{standalone: true}"  (input)="SubfilterEmployeesInitiator($event)" />
                                                       <div style="width: 100%;" class="pr-10 mt-1">
                                                         <ul>
                                                           <li *ngFor="let event of subListFilteredEmp; let i = index;" class="active" type="button"

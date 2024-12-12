@@ -144,6 +144,7 @@ export class AddApprovalTempelateComponent implements OnInit {
   
 
   ngOnInit(): void {
+
     this.filteredDocs = this.cities;
     this.activeIndices = this.accordionItems.map((_, index) => index); // Set all indices to open
     this.onLogin();  
@@ -151,8 +152,8 @@ export class AddApprovalTempelateComponent implements OnInit {
     this.fetchEmployeeName();
     if (this.taskData && this.taskData.mkey) {
       // this.end_list = this.taskData.enD_RESULT_DOC_LST
-      console.log('checklisT_DOC_LST', this.taskData.checklisT_DOC_LST)
-      console.log('enD_RESULT_DOC_LST', this.taskData.enD_RESULT_DOC_LST)
+      // console.log('checklisT_DOC_LST', this.taskData.checklisT_DOC_LST)
+      // console.log('enD_RESULT_DOC_LST', this.taskData.enD_RESULT_DOC_LST)
 
       console.log('getRelAbbr', this.getRelAbbr)
       
@@ -311,20 +312,12 @@ export class AddApprovalTempelateComponent implements OnInit {
 
   if(this.taskData && this.taskData.mkey){
     this.addRow()
-    this.check
+
+    // this.check
     this.end_list = this.taskData.enD_RESULT_DOC_LST;
-    this.check_list = this.taskData.checklisT_DOC_LST;
-    
-    
+    this.check_list = this.taskData.checklisT_DOC_LST;      
+    }
   }
-
-
-  }
-
-
-
-
-
 
 
   async addApprovalTempelate() {
@@ -473,6 +466,15 @@ private createApprovalTemplate(MAIN_ABBR: string, employeeMKey: number, userMKey
 
 updateApprovalTemplate(){
 
+  const fieldErrors: string[] = [];
+  const addFieldError = (message: string) => fieldErrors.push(message);
+
+  const assignedToValue = this.approvalTempForm.get('assignedTo')?.value.trim();
+  const assignedEmployee = this.employees.find(employee => employee.Assign_to === assignedToValue);
+
+  if (!assignedEmployee || !assignedEmployee.MKEY) {
+      addFieldError('Please select valid Responsible Person');
+  }
 
   const formArrayVal: FormArray = (this.approvalTempForm.get('rows') as FormArray);
   const val_of_formArr = formArrayVal.value;
@@ -497,8 +499,8 @@ updateApprovalTemplate(){
 
     console.log('subTasks', subTasks);
   
-  console.log('checklisT_DOC_LST', this.taskData.checklisT_DOC_LST)
-  console.log('enD_RESULT_DOC_LST', this.taskData.enD_RESULT_DOC_LST)
+  // console.log('checklisT_DOC_LST', this.taskData.checklisT_DOC_LST)
+  // console.log('enD_RESULT_DOC_LST', this.taskData.enD_RESULT_DOC_LST)
 
   const updateApprlTemp = {
     abbR_SHORT_DESC:this.approvalTempForm.get('shortDescription')?.value,
@@ -509,7 +511,7 @@ updateApprovalTemplate(){
     lonG_DESCRIPTION: this.approvalTempForm.get('longDescrition')?.value,
     // MAIN_ABBR,
     authoritY_DEPARTMENT: this.approvalTempForm.get('department')?.value,
-    // resposiblE_EMP_MKEY: employeeMKey,
+    resposiblE_EMP_MKEY: assignedEmployee.MKEY,
     joB_ROLE: Number(this.approvalTempForm.get('jobRole')?.value),
     dayS_REQUIERD: Number(this.approvalTempForm.get('noOfDays')?.value),
     // attributE1: userMKey.toString(),
@@ -535,6 +537,9 @@ updateApprovalTemplate(){
 
 
 
+
+
+
  fetchEmployeeName(): void {
     this.apiService.getEmpDetails().subscribe(
       (data: any) => {
@@ -557,14 +562,37 @@ updateApprovalTemplate(){
           }
 
           this.employees.push({ Assign_to: capitalizedFullName, MKEY: MKEY });
+
         });
+        this.setEmpName();
+
         
       },
       (error: ErrorHandler) => {
         console.error('Error fetching employee details:', error);
       }
     );
+
+
  }
+
+
+ setEmpName(): void {
+  if (this.taskData && this.taskData.mkey) {
+
+    console.log('setEmpName',this.employees)
+    // console.log('this.departmentList', this.departmentList)
+    const matchedEmp = this.employees.find((employee: any) =>
+      employee.MKEY === Number(this.taskData.resposiblE_EMP_MKEY)
+    );
+
+    console.log('matchedEmp', matchedEmp)
+
+    if (matchedEmp) {
+      this.taskData.emp_name = matchedEmp.Assign_to;
+    }
+  }
+}
 
 filterEmployees(event: Event): void {
   const value = (event.target as HTMLInputElement).value.trim();
@@ -818,14 +846,11 @@ addRow(savedData?: any) {
           sequentialNo: [rows.length + 1],
         });
 
-        // Push the new row into the rows FormArray
         rows.push(newRow);
 
-        // If checkValue has not been called yet, call it for the first time
         if (!this.isCheckValueCalled) {
           this.isCheckValueCalled = true;
         } else {
-          // Call checkValue only for the new row when adding more rows
           this.checkValueForNewRow(newRow);
         }
       },
@@ -1125,6 +1150,18 @@ checkValueForNewRow(newRow: AbstractControl) {
       
       this.addApprovalTempelate();
     } else {
+      console.log('Form is invalid, cannot add template');
+    }
+  }
+
+  onUpdateTempDoc(){
+    const isValid = this.onSubmit();
+
+    if(isValid){
+      this.updateApprovalTemplate();
+    }else{
+      this.updateApprovalTemplate();
+
       console.log('Form is invalid, cannot add template');
     }
   }

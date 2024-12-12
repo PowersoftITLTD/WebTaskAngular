@@ -605,6 +605,7 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
           this.employees.push({ Assign_to: capitalizedFullName, MKEY: MKEY });
 
         });
+        this.setEmpName();
 
       },
       (error: ErrorHandler) => {
@@ -700,6 +701,7 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
 
   selectEmpSubList(employee: any): void {
 
+
     const assignedTo = employee.Assign_to;
 
     this.selectedAssignTo = assignedTo; // This will set the value to the input field
@@ -744,25 +746,108 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
   }
 
 
-  updatedTaskCheck(task:any, assignTo:any){
-
-    // const updateInitiationSubTask = {
-    //   mkey:
-    //   maiN_ABB:
-    //   shorT_DESCRIPTION:
-    //   lonG_DESCRIPTION:
-    //   authoritY_DEPARTMENT:
-    //   resposiblE_EMP_MKEY:
-    //   joB_ROLE:
-    //   dayS_REQUIERD:
-    //   createD_BY:
-    //   lasT_UPDATED_BY:
-    //   sanctioN_AUTHORITY:
-    //   sanctioN_DEPARTMENT:
-    // }
-    console.log('assignTo', assignTo)
-    console.log('task',task)
+  setEmpName(): void {
+    if (this.taskData && this.taskData.MKEY) {
+  
+      // console.log('setEmpName',this.employees)
+      // console.log('this.departmentList', this.departmentList)
+      const matchedEmp = this.employees.find((employee: any) =>
+        employee.MKEY === Number(this.taskData.RESPOSIBLE_EMP_MKEY)
+      );
+  
+      console.log('matchedEmp', matchedEmp)
+  
+      if (matchedEmp) {
+        this.taskData.emp_name = matchedEmp.Assign_to;
+      }
+    }
   }
+
+
+  updatedTaskCheck(task: any, assignTo: any) {
+    console.log('assignTo', assignTo);
+  
+    const matchedEmp = this.employees.find((employee: any) =>
+      employee.Assign_to === assignTo
+    );
+  
+    console.log('matchedEmp from update subtask', matchedEmp?.MKEY);
+  
+    const data = this.credentialService.getUser();
+    const headerMkey = this.taskData.HEADER_MKEY;
+    const token = this.apiService.getRecursiveUser();
+  
+    const tagsValue = task.tags;
+    let tagsString = '';
+  
+    if (Array.isArray(tagsValue)) {
+      tagsString = tagsValue.map(tag => {
+        if (typeof tag === 'string') {
+          return tag;
+        } else if (tag.display) {
+          return tag.display;
+        } else {
+          return '';
+        }
+      }).join(',');
+    }
+  
+    const responsibleEmpMKey = (assignTo === null || assignTo === undefined || assignTo === '' || !matchedEmp) 
+      ? task.resposiblE_EMP_MKEY
+      : matchedEmp.MKEY;
+  
+    const updateInitiationSubTask = {
+      MKEY: this.taskData.HEADER_MKEY,
+      approvaL_MKEY: task.approvaL_MKEY,
+      maiN_ABB: task.maiN_ABBR,
+      SHORT_DESCRIPTION: task.abbr_short_DESC,
+      LONG_DESCRIPTION: task.abbR_SHORT_DESC,
+      TAGS: tagsString,
+      resposiblE_EMP_MKEY: responsibleEmpMKey,
+      createD_BY: data[0].MKEY,
+      lasT_UPDATED_BY: data[0].MKEY,
+      TENTATIVE_START_DATE: task.start_date,
+      TENTATIVE_END_DATE: task.end_date,
+      DELETE_FLAG: 'N'
+    };
+
+    
+  
+    console.log('updateInitiationSubTask', updateInitiationSubTask);
+  
+    this.apiService.subTaskPutApprovalInitiation(headerMkey, updateInitiationSubTask, token).subscribe({
+      next: (responseData) => {
+        console.log('API Response:', responseData);
+  
+        // Update the local subtask list
+        const subTaskIndex = this.taskData.SUBTASK_LIST.findIndex(
+          (subtask: any) => subtask.approvaL_MKEY === task.approvaL_MKEY
+        );
+  
+        if (subTaskIndex > -1) {
+          // Merge updated data into the local subtask
+          this.taskData.SUBTASK_LIST[subTaskIndex] = {
+            ...this.taskData.SUBTASK_LIST[subTaskIndex],
+            ...updateInitiationSubTask
+          };
+  
+          console.log('Updated subtask list:', this.taskData.SUBTASK_LIST);
+  
+          // Update session storage
+          sessionStorage.setItem('task', JSON.stringify(this.taskData));
+          console.log('Session storage updated');
+
+          console.log(responseData)
+        } else {
+          console.warn('Subtask not found for update!');
+        }
+      },
+      error: (error) => {
+        console.error('Error updating subtask:', error);
+      }
+    });
+  }
+  
 
 
 

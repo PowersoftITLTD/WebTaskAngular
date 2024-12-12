@@ -148,7 +148,9 @@
                   <div class="classification-border px-2 py-2 mt-2">
 
                     <div class="d-flex justify-content-end mt-2 mr-3">
-                      <i class="fa-solid plus btn" type="button" (click)="getOptionList()"><small>Get List</small></i>
+                      <i class="fa-solid plus btn mr-2" type="button" (click)="getOptionList()"><small>Get List</small></i>
+                      <i class="fa-solid plus btn" type="button" (click)="clear()"><small>Clear</small></i>
+
                     </div>
 
                     <div class="row pl-3">
@@ -428,7 +430,7 @@
                                           <span
                                             [style.marginLeft.px]="calculateIndentation(task.TASK_NO.TASK_NO, task.subtask && task.subtask.length > 0 ? 15 : 30, task.TASK_NO.start_date, task.TASK_NO.end_date)">
                                             <mat-icon 
-                                              (click)="toggleVisibility(task)" style="cursor: pointer;">
+                                              (click)="toggleVisibility(task)" style="cursor: pointer;" *ngIf="task.subtask && task.subtask.length > 0">
                                               <img *ngIf="task.subtask && task.subtask.length > 0"
                                                 src="../../../../assets/Content/images/{{ task.visible ? 'collapse.png' : 'expand.png' }}">
                                             </mat-icon>
@@ -466,10 +468,20 @@
                                       
                                       </td>
                                       <td class="truncate-text">
-                                      
-                                        Created
-
-                                      </td>
+                                        <div *ngIf="task.TASK_NO?.status !== 'Ready to Initiate'">
+                                          Created
+                                        </div>
+                                      <div *ngIf="taskData?.mkey">
+                                          {{task.TASK_NO?.status}}
+                                          <!-- <span 
+                                              *ngIf="task.TASK_NO?.status === 'Ready to Initiate'" 
+                                              type="button" 
+                                              class="badge badge-pill badge-info ml-1" 
+                                              (click)="initiateToApprovalInitiation(task.TASK_NO.approvaL_MKEY)">
+                                              Initiation
+                                          </span> -->
+                                      </div>
+                                  </td>
                                     </tr>
                                 
                                     <ng-container *ngIf="task.visible && task.subtask && task.subtask.length > 0">
@@ -531,14 +543,21 @@
                                     
                                     </td>
                                     <td class="truncate-text">
-                                      <div *ngIf="!taskData?.mkey">
+                                        <div *ngIf="task.TASK_NO?.status !== 'Ready to Initiate'">
                                           Created
+                                        </div>
+                                      <div *ngIf="taskData?.mkey">
+                                          {{task.TASK_NO?.status}}
+                                          <span 
+                                              *ngIf="task.TASK_NO?.status === 'Ready to Initiate'" 
+                                              type="button" 
+                                              class="badge badge-pill badge-info ml-1" 
+                                              (click)="initiateToApprovalInitiation(task.TASK_NO.approvaL_MKEY)">
+                                              Initiation
+                                          </span>
                                       </div>
-                                      <div *ngIf="taskData?.mkey" >
-                                        Created
-                                        <span type="button" class="badge badge-pill badge-info ml-1" (click)="initiateToApprovalInitiation(task.TASK_NO.approvaL_MKEY)">Initiation</span>
-                                    </div>
-                                    </td>
+                                  </td>
+                                  
                                   </tr>                                  
 
                                   <ng-container *ngIf="task.visible && task.subtask && task.subtask.length > 0">

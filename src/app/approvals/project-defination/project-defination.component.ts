@@ -33,7 +33,9 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
   projectDefForm: FormGroup | any;
 
   selectedDocsMap: { [key: string]: any[] } = { endResult: [], checklist: [] };
+  private hasDataBeenPassed = false; 
 
+  isCleared = false;
   selectedTasksId: Set<any> = new Set();
   selectedTasksId_new: Set<any> = new Set();
   selectedTasks: Set<any> = new Set();
@@ -83,7 +85,6 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
 
   public accordionItems = [
     { title: 'Applicable approvals', content: 'Some placeholder content for the first accordion panel.' },
-
   ];
 
 
@@ -101,6 +102,8 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
     if (navigation?.extras.state) {
       const RecursiveTaskData: any = navigation.extras.state.taskData;
       this.taskData = RecursiveTaskData;
+      console.log('RecursiveTaskData', RecursiveTaskData)
+
       if (RecursiveTaskData.mkey) {
         this.updatedDetails = !isNewTemp;
       } else {
@@ -133,8 +136,7 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
       this.selectedOptionList();
       
       this.getTree_new();
-      this.getSubProj();    
-        
+      this.getSubProj();           
     }
     this.initilizeProjDefForm();
     this.fetchEmployeeName();
@@ -166,7 +168,7 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
 
   toggleSelection(task: any = []): void {
 
-    console.log('check the approval mkey',task)
+    // console.log('check the approval mkey',task)
     const taskId = task.TASK_NO.TASK_NO;
    
     if (this.selectedTasksId.has(taskId)) {
@@ -181,6 +183,9 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
     console.log('new_list_of_selectedSeqArr: ',this.new_list_of_selectedSeqArr)
 
     // console.log('taskId check', )
+
+
+    console.log('selectedSeqArr: ',this.selectedSeqArr)
 
     const selectedTasksArray = [...this.selectedTasks, ...this.new_list_of_selectedSeqArr];
 
@@ -207,7 +212,7 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
   const removeParentTaskIfInSubtasks = (tasks: any[]) => {
       return tasks.filter((task: any) => {
           const isSubtask = hasMatchingSubtask(task, tasks);
-          console.log('isSubtask:', isSubtask);
+          // console.log('isSubtask:', isSubtask);
           return !isSubtask;
       });
   };
@@ -215,12 +220,12 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
   
   const updatedTasksArray = removeParentTaskIfInSubtasks(selectedTasksArray);
 
-  console.log('updatedTasksArray', updatedTasksArray)
+  // console.log('updatedTasksArray', updatedTasksArray)
   
     this.selectedSeqArr = this.sortTasksBySequence(updatedTasksArray);
     const flattenedTasks = this.breakToLinear(this.selectedSeqArr);
 
-    console.log('flattenedTasks',flattenedTasks)
+    // console.log('flattenedTasks',flattenedTasks)
 
     const seen = new Set();
 
@@ -231,9 +236,9 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
       seen.add(task.TASK_NO);
       return true;
     });
-    console.log('unFlatternArr', this.unFlatternArr);
+    // console.log('unFlatternArr', this.unFlatternArr);
 
-    console.log('uniqueTasks', uniqueTasks);
+    // console.log('uniqueTasks', uniqueTasks);
 
     this.uniqueSubTask = uniqueTasks
 
@@ -255,7 +260,8 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
       this.tableData.add(taskArray);
     }
 
-    const selectedTasksArray = [...this.tableData];
+    // console.log('selectedSeqArr newToggltSel',this.selectedSeqArr)
+    const selectedTasksArray = [...this.tableData, ...this.selectedSeqArr];
 
     if (selectedTasksArray.length > 0) {
 
@@ -307,7 +313,7 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
         joB_ROLE: task.TASK_NO.joB_ROLE_mkey,
         approvaL_MKEY:task.TASK_NO.approvaL_MKEY,
         outpuT_DOCUMENT: task.TASK_NO.enD_RESULT_DOC,
-        status: 'Created',
+        status: task.TASK_NO.status,
       });
 
       if (task.subtask && task.subtask.length > 0) {
@@ -352,14 +358,14 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
     }
 
     console.log(addProjectDefination)
-    // this.apiService.postProjectDefination(addProjectDefination, this.recursiveLogginUser).subscribe({
-    //   next: (addData: any) => {
-    //     console.log('Data added successfully', addData)
-    //   }, error: (error: ErrorHandler) => {
+    this.apiService.postProjectDefination(addProjectDefination, this.recursiveLogginUser).subscribe({
+      next: (addData: any) => {
+        console.log('Data added successfully', addData)
+      }, error: (error: ErrorHandler) => {
 
-    //     // console.log('Unable to get data', error)
-    //   }
-    // })
+        console.log('Unable to get data', error)
+      }
+    })
   }
 
 
@@ -597,6 +603,10 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
 
 
   getOptionList() {
+
+    // if (this.hasDataBeenPassed) {
+    //   return; 
+    // }
     const token = this.apiService.getRecursiveUser();
     const USER_CRED = this.credentialService.getUser();
 
@@ -608,6 +618,7 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
 
   
       console.log(`buildingCla: ${buildingCla} buildingStd: ${buildingStd} statutoryAuth: ${statutoryAuth}`)
+      // this.hasDataBeenPassed = true; 
   
       if (buildingCla && buildingStd && statutoryAuth) {
         this.recursiveLogginUser = this.apiService.getRecursiveUser();
@@ -628,6 +639,8 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
       }       
   }
 
+
+
   selectedOptionList(){
 
       console.log('selectedOptionList come here')
@@ -643,7 +656,13 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
         this.apiService.projectDefinationOption(USER_CRED[0]?.MKEY, token, buildingCla, buildingStd, statutoryAuth).subscribe({
           next: (gerAbbrRelData) => {
             this.projDefinationTable = gerAbbrRelData
+
+            console.log('this.taskData.buildinG_CLASSIFICATION', this.taskData.buildinG_CLASSIFICATION)
+            
+
             this.getTree(gerAbbrRelData);
+
+          
           },
           error: (err) => {
             console.error('API Error:', err);
@@ -654,6 +673,19 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
         return;
       }    
   }
+
+  clear() {
+    this.taskData = {
+      buildinG_CLASSIFICATION: null,
+      buildinG_STANDARD: null,
+      statutorY_AUTHORITY: null
+    };
+    this.projDefinationTable = [];
+    this.isCleared = true; // Set clear flag
+    console.log('Clear action executed.');
+    this.tostar.success('Cleared successfully');
+  }
+  
   
 
   sortTasksBySequence(tasks: any[]): any[] {
@@ -688,10 +720,8 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
 
     const task = this.selectedSeqArr.find(task => task.TASK_NO.TASK_NO === taskNo);
 
-    // console.log('task', task)
-
     if (task && Object.values(task).every(value => value !== undefined)) {
-      this.unFlatternArr = [task]; // Assign to the class property only if no undefined values
+      this.unFlatternArr = [task]; 
       this.newToggltSel(task)
 
     }
@@ -970,68 +1000,135 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
     task.visible = !task.visible;
   }
 
+  
+
   onSubmit() {
     const requiredControls: string[] = [];
     const requiredFields: string[] = [];
     const valid = this.projectDefForm.valid;
-
+  
     const addControlError = (message: string) => requiredControls.push(message);
-
+  
     const convertToTitleCase = (input: string) => {
       return input.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase()).trim() + ' is required';
     };
-
+  
     // Check for required form controls
     Object.keys(this.projectDefForm.controls).forEach(controlName => {
       const control = this.projectDefForm.get(controlName);
-
+  
       if (control?.errors?.required) {
         // Convert camelCase to Title Case
         const formattedControlName = convertToTitleCase(controlName);
         addControlError(formattedControlName);
       }
     });
-
+  
     // If there are any required fields missing, show the error message
     if (requiredControls.length > 0) {
       const errorMessage = `${requiredControls.join(' , ')}`;
       this.tostar.error(errorMessage);
       return;  // Stop further processing
     }
-
+  
     // Check subtask list for missing dates
     const subTaskList = this.uniqList;
-
-    console.log('subTaskList', subTaskList)
-
+  
     if (subTaskList && subTaskList.length > 0) {
+      // Check for missing dates in subtasks
       const invalidSubTask = subTaskList.find((subTask) => {
         return !subTask.tentativE_START_DATE || !subTask.tentativE_END_DATE;
       });
-
+  
       if (invalidSubTask) {
-        // If any subtask is missing dates, show an error
         this.tostar.error('Missing tentative start or end date for a subtask');
-        return;  // Stop further processing
+        return;
+      }
+  
+      // Validate the dates and parent-child relationships
+      const invalidDateSubTask = this.validateTaskDates(subTaskList);
+  
+      if (invalidDateSubTask) {
+        return;  // If an invalid date is found, stop further processing
       }
     }
-
-    console.log(this.uniqList)
-    console.log(this.selectedSeqArr)
-
-    const uniqList = this.uniqList
-    const selectedSeqArr = this.selectedSeqArr
-
+  
+    // Continue with your other logic after the date validation
+    console.log('subTaskList', subTaskList)
+  
+    const selectedSeqArr = this.selectedSeqArr;
+    const uniqList = this.uniqList;
     const flatList = this.breakToLinear(selectedSeqArr);
+  
+    console.log('uniqList', uniqList);
+    console.log('flatList', flatList);
+  
+    if (uniqList.length === 0 && flatList.length > 0) {
+      this.tostar.error('Missing tentative start or end date for a subtask');
+      return;
+    }
 
-    console.log('uniqList', this.uniqList)
-    console.log('flatList', flatList)
-    // if(this.ValueList.length>0 && this.ValueList)
+    const invalidDateSubTask = subTaskList.some((task) => {
+      const startDate = new Date(task.tentativE_START_DATE);
+      const endDate = new Date(task.tentativE_END_DATE);
 
-    // If all checks pass, return true to indicate successful validation
+      if (startDate > endDate) {
+        this.tostar.error(`Task ${task.tasK_NO}: Start date cannot be greater than end date.`);
+        return true;
+      }
+      return false;
+    });
+
+    if (invalidDateSubTask) {
+      return;  
+    }
+  
     return true;
   }
-
+  
+  // New function to validate task dates and parent-child relationships
+  validateTaskDates(subTaskList: any[]): boolean {
+    // Sort tasks by task number to ensure the parent-child order
+    subTaskList.sort((a, b) => a.tasK_NO.localeCompare(b.tasK_NO));
+  
+    // Loop through all tasks and validate parent-child relationships
+    for (let i = 0; i < subTaskList.length; i++) {
+      const task = subTaskList[i];
+      const startDate = new Date(task.tentativE_START_DATE);
+      const endDate = new Date(task.tentativE_END_DATE);
+  
+      // Validate the end date of parent tasks against child tasks
+      const isParent = !task.tasK_NO.includes('.');
+      if (isParent) {
+        // Check if this parent task's end date is greater than any child task
+        const childTask = subTaskList.find(child => child.tasK_NO.startsWith(task.tasK_NO + '.') && new Date(child.tentativE_END_DATE) > endDate);
+  
+        if (childTask) {
+          this.tostar.error(`End date of parent task (${task.tasK_NO}) should be greater than child task (${childTask.tasK_NO})`);
+          return true;  // Exit on first error
+        }
+      }
+      
+      // Check for the "Position 1" task, i.e., the first parent task without dots
+      if (i === 0) {
+        const position1EndDate = new Date(task.tentativE_END_DATE);
+  
+        // Ensure Position 1's end date is greater than all other tasks
+        for (let j = 1; j < subTaskList.length; j++) {
+          const otherTask = subTaskList[j];
+          const otherEndDate = new Date(otherTask.tentativE_END_DATE);
+          if (otherEndDate > position1EndDate) {
+            this.tostar.error(`End date of task (${task.tasK_NO}) should be greater than ${otherTask.tasK_NO}`);
+            return true; // Exit on first error
+          }
+        }
+      }
+    }
+  
+    return false;  // All checks passed
+  }
+  
+  
 
   onAddProjDef() {
     const isValid = this.onSubmit();
@@ -1104,11 +1201,11 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
       .filter((item: any) => item.tasK_NO !== null)
       .map((item: any) => {
 
-        console.log("item.resposiblE_EMP_MKEY:", item.resposiblE_EMP_MKEY);
+        // console.log("item.resposiblE_EMP_MKEY:", item.resposiblE_EMP_MKEY);
         const jobRole = jobRoleList.find((role:any) => role.mkey === parseInt(item.joB_ROLE));
         const departmentRole = departmentList.find((department:any) => department.mkey === parseInt(item.department));
 
-        console.log('Item', item)
+        // console.log('Item', item)
         return {
           TASK_NO: item.tasK_NO,
           maiN_ABBR: item.approvaL_ABBRIVATION,
@@ -1122,6 +1219,7 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
           start_date:item.tentativE_START_DATE,
           end_date:item.tentativE_END_DATE,
           approvaL_MKEY:item.approvaL_MKEY,
+          status:item.status,
           // resposiblE_EMP: assignedEmployee.Assign_to,
           resposiblE_EMP_MKEY: item.resposiblE_EMP_MKEY
         }
@@ -1288,7 +1386,7 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
 
     this.selectedSeqArr = [...filteredTasks, ...this.subTasks];
 
-    console.log('selectedSeqArr noParentTree_new', this.selectedSeqArr)
+    // console.log('selectedSeqArr noParentTree_new', this.selectedSeqArr)
     // this.selectedSeqArr = [...this.subTasks]
 
     this.new_list_of_selectedSeqArr = this.selectedSeqArr
@@ -1304,6 +1402,8 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
   
 
   ngOnDestroy(): void {
+    console.log('Component is being destroyed');
+
     sessionStorage.removeItem('task');
   }
 }
