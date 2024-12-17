@@ -1,13 +1,9 @@
-<<<<<<< HEAD
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { ApiService } from 'src/app/services/api/api.service';
 import { CredentialService } from 'src/app/services/credential/credential.service';
-=======
-import { Component, OnInit } from '@angular/core';
->>>>>>> parent of cb45e19 (Adding Updated Packages 27-11-2024)
 
 @Component({
   selector: 'app-document-tempelate',
@@ -16,7 +12,6 @@ import { Component, OnInit } from '@angular/core';
 })
 export class DocumentTempelateComponent implements OnInit {
 
-<<<<<<< HEAD
   @Input() recursiveLogginUser: any = {};
 
   public activeIndices: number[] = []; // Change here
@@ -97,18 +92,12 @@ export class DocumentTempelateComponent implements OnInit {
   loginName: string = '';
   loginPassword: string = '';
 
-=======
-  public activeIndices: number[] = []; // Change here
-  receivedUser: string | any;
-
->>>>>>> parent of cb45e19 (Adding Updated Packages 27-11-2024)
 
   public accordionItems = [
     { title: 'Meta data fields as per ISO', content: 'Some placeholder content for the first accordion panel.' },
     { title: 'Location fields as per ACC', content: 'Some placeholder content for the second accordion panel.' },
   ];
 
-<<<<<<< HEAD
   constructor(private formBuilder: FormBuilder,
     private tostar: ToastrService,
     private credentialService: CredentialService,
@@ -213,18 +202,13 @@ export class DocumentTempelateComponent implements OnInit {
     this.apiService.getDocCategory(this.recursiveLogginUser).subscribe({
       next: (list: any) => {
         this.docCatList = list
+        this.setCategoryData();
         console.log('Document Type List:', this.docCatList);
       },
       error: (error: any) => {
         console.error('Unable to fetch Document Type List', error);
       }
     });
-=======
-  constructor() { }
-
-  ngOnInit(): void {
-    this.activeIndices = this.accordionItems.map((_, index) => index);
->>>>>>> parent of cb45e19 (Adding Updated Packages 27-11-2024)
   }
 
 
@@ -235,7 +219,6 @@ export class DocumentTempelateComponent implements OnInit {
   toggle(index: number): void {
     const idx = this.activeIndices.indexOf(index);
     if (idx === -1) {
-<<<<<<< HEAD
       this.activeIndices.push(index);
     } else {
       this.activeIndices.splice(idx, 1);
@@ -267,17 +250,18 @@ export class DocumentTempelateComponent implements OnInit {
       doC_NUM_DATE_APP_FLAG: this.docTempForm.get('documentDateApplicable')?.value,
       doC_ATTACH_APP_FLAG: this.docTempForm.get('attachmentApplicable')?.value,
       doC_CATEGORY: Number(this.docTempForm.get('category')?.value),
-      doc_NAME: this.docTempForm.get('documentName')?.value,
+      doC_NAME: this.docTempForm.get('documentName')?.value,
       attributE1: "",
       attributE2: "",
       attributE3: "",
       attributE4: "",
-      createD_BY: data[0]?.MKEY.toString(),
-      creatioN_DATE: this.formatDateForInput(today),
-      lasT_UPDATED_BY: data[0]?.MKEY.toString(),
-      lasT_UPDATE_DATE: this.formatDateForInput(today),
+      createD_BY: data[0]?.MKEY,
+      // creatioN_DATE: this.formatDateForInput(today),
+      lasT_UPDATED_BY: data[0]?.MKEY,
+      // lasT_UPDATE_DATE: this.formatDateForInput(today),
       deletE_FLAG: "N"
     }
+
 
     console.log('addTmpDoc', addTmpDoc)
 
@@ -292,6 +276,67 @@ export class DocumentTempelateComponent implements OnInit {
       }
     })
     
+  }
+
+
+
+  updateDocTemplate(){
+
+    const data = this.credentialService.getUser();
+    const token = this.apiService.getRecursiveUser();
+    const doc_temp_key = this.taskData.mkey
+
+
+    const updateDocTemp = {
+      mkey: this.taskData.mkey,
+      doC_CATEGORY: Number(this.docTempForm.get('category')?.value),
+      doC_NAME: this.docTempForm.get('documentName')?.value,
+      doC_ABBR: this.docTempForm.get('documentAbbrivation')?.value,
+      doC_NUM_FIELD_NAME: this.docTempForm.get('documentNumberFieldName')?.value,
+      doC_NUM_DATE_NAME: this.docTempForm.get('documentDateFieldName')?.value,
+      doC_NUM_APP_FLAG: this.docTempForm.get('documentNotApplied')?.value,
+      doC_NUM_VALID_FLAG: this.docTempForm.get('validityApplied')?.value,
+      doC_NUM_DATE_APP_FLAG: this.docTempForm.get('documentDateApplicable')?.value,
+      doC_ATTACH_APP_FLAG: this.docTempForm.get('attachmentApplicable')?.value,
+      attributE1: "string",
+      attributE2: "string",
+      attributE3: "string",
+      attributE4: "string",
+      attributE5: "string",
+      createD_BY: data[0]?.MKEY,
+      lasT_UPDATED_BY: data[0]?.MKEY,
+      // status": "string",
+      // message": "string"
+    }
+
+    console.log(updateDocTemp)
+
+    this.apiService.putDocumentTempelate(updateDocTemp, doc_temp_key,token).subscribe({
+      next:(update_doc)=>{
+        console.log('Doc updated successfully',update_doc )
+      },error:(error)=>{
+        console.log('Error occured',error)
+      }
+    })
+  }
+
+
+  setCategoryData(): void {
+
+    if (this.taskData && this.taskData.mkey) {
+      // Find the project in the project array
+
+      console.log('docCatList', this.docCatList)
+      const matchedCategory = this.docCatList.find((doc_type: any) => doc_type.mkey === this.taskData.doC_CATEGORY);
+
+      console.log('matchedCategory', matchedCategory)
+
+      if (matchedCategory) {
+        this.taskData.category_Name = matchedCategory.typE_DESC;
+      } else {
+        console.log('No matching project found for MASTER_MKEY:', this.taskData.property);
+      }
+    }
   }
 
 
@@ -343,31 +388,38 @@ export class DocumentTempelateComponent implements OnInit {
   }
 
   onAddDocTemp() {
-    const isValid = this.onSubmit();  
-  
+    const isValid = this.onSubmit();
+
     if (isValid) {
       const sendSuccessMessage = {
         'message': 'Template added successfully'
       };
-  
+
       if (sendSuccessMessage) {
         this.tostar.success('Successfully!!', sendSuccessMessage['message']);
         this.addDocumentTemplate();
       }
     }
-  }  
+  }
+
+
+  onUpdateDOcTemp() {
+    const isValid = this.onSubmit();
+
+    if (isValid) {
+      const sendSuccessMessage = {
+        'message': 'Template updated successfully'
+      }
+
+      if (sendSuccessMessage) {
+        this.tostar.success('Successfully!!', sendSuccessMessage['message']);
+        this.updateDocTemplate();
+      }
+    }
+  }
 
 
   ngOnDestroy(): void {
     sessionStorage.removeItem('task');
   }
-=======
-      this.activeIndices.push(index); // Add index if not present
-    } else {
-      this.activeIndices.splice(idx, 1); // Remove index if present
-    }
-  }
- 
-
->>>>>>> parent of cb45e19 (Adding Updated Packages 27-11-2024)
 }

@@ -464,7 +464,14 @@ private createApprovalTemplate(MAIN_ABBR: string, employeeMKey: number, userMKey
 }
 
 
+
+
+
 updateApprovalTemplate(){
+
+  const USER_CRED = this.credentialService.getUser();
+
+  const token = this.apiService.getRecursiveUser();
 
   const fieldErrors: string[] = [];
   const addFieldError = (message: string) => fieldErrors.push(message);
@@ -495,32 +502,51 @@ updateApprovalTemplate(){
       };
     });
   
+
+    const tagsValue = this.approvalTempForm.get('tags')?.value;
+
+    let tagsString = '';
+    // console.log('tagsValue', tagsValue)
+
+    if (Array.isArray(tagsValue)) {
+      tagsString = tagsValue.map(tag => {
+        if (typeof tag === 'string') {
+          return tag;
+        } else if (tag.display) {
+          return tag.display;
+        } else {
+          return '';
+        }
+      }).join(',');
+    }
   
 
     console.log('subTasks', subTasks);
-  
+    const doc_temp_key = this.taskData.mkey
+
   // console.log('checklisT_DOC_LST', this.taskData.checklisT_DOC_LST)
   // console.log('enD_RESULT_DOC_LST', this.taskData.enD_RESULT_DOC_LST)
 
   const updateApprlTemp = {
+    mkey:this.taskData.mkey,
     abbR_SHORT_DESC:this.approvalTempForm.get('shortDescription')?.value,
     buildinG_TYPE: Number(this.approvalTempForm.get('building')?.value),        
     buildinG_STANDARD: Number(this.approvalTempForm.get('standard')?.value),
     statutorY_AUTHORITY: Number(this.approvalTempForm.get('statutoryAuth')?.value),
     shorT_DESCRIPTION: this.approvalTempForm.get('shortDescription')?.value,
     lonG_DESCRIPTION: this.approvalTempForm.get('longDescrition')?.value,
-    // MAIN_ABBR,
+    maiN_ABBR:this.approvalTempForm.get('abbr')?.value,
     authoritY_DEPARTMENT: this.approvalTempForm.get('department')?.value,
     resposiblE_EMP_MKEY: assignedEmployee.MKEY,
     joB_ROLE: Number(this.approvalTempForm.get('jobRole')?.value),
     dayS_REQUIERD: Number(this.approvalTempForm.get('noOfDays')?.value),
-    // attributE1: userMKey.toString(),
-    attributE2: "ADD FORM",
+    attributE1: null,
+    attributE2: "SAVE FORM",
     attributE3: "SAVE BUTTON",
-    attributE4: "",
-    attributE5: "",
-    // createD_BY: userMKey || 0,
-    // lasT_UPDATED_BY: userMKey || 0,  
+    attributE4: null,
+    attributE5: null,
+    createD_BY: USER_CRED[0].MKEY,
+    lasT_UPDATED_BY: USER_CRED[0].MKEY,  
     sanctioN_AUTHORITY: Number(this.approvalTempForm.get('sanctioningAuth')?.value),
     sanctioN_DEPARTMENT: this.approvalTempForm.get('sanctioningDept')?.value,
     enD_RESULT_DOC: "",
@@ -528,11 +554,19 @@ updateApprovalTemplate(){
     deletE_FLAG: "N", 
     enD_RESULT_DOC_LST:this.end_list,
     checklisT_DOC_LST:this.check_list,
-    // TAGS:tagsString,
+    tags:tagsString,
     subtasK_LIST:subTasks || []
   }
 
   console.log('updateApprlTemp', updateApprlTemp)
+
+  this.apiService.putApprovalTemp(updateApprlTemp,doc_temp_key, token).subscribe({
+    next:(data)=>{
+      console.log('data successfully updated', data)
+    },error:()=>{
+
+    }
+  })
 }
 
 

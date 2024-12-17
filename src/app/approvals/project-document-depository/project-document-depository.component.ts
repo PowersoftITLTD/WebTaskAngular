@@ -1,13 +1,9 @@
-<<<<<<< HEAD
 import { Component, ErrorHandler, Input, OnInit } from '@angular/core';
 import { ApiService } from 'src/app/services/api/api.service';
 import { CITIES, ICity } from '../add-approval-tempelate/cities';
 import { CredentialService } from 'src/app/services/credential/credential.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
-=======
-import { Component, OnInit } from '@angular/core';
->>>>>>> parent of cb45e19 (Adding Updated Packages 27-11-2024)
 
 @Component({
   selector: 'app-project-document-depository',
@@ -16,7 +12,6 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ProjectDocumentDepositoryComponent implements OnInit {
 
-<<<<<<< HEAD
   receivedUser: string | any;
   disablePrivate: boolean = false;
 
@@ -300,17 +295,11 @@ export class ProjectDocumentDepositoryComponent implements OnInit {
     return groupedDocs;
   }
 
-  filterCities() {
-    // const term = this.searchTerm.toLowerCase();
-    // this.filteredDocs = this.cities.filter(city =>
-    //   city.name.toLowerCase().includes(term)      
-    // );
 
-  }
 
 
   toggleSelection(listType: 'endResult' | 'checklist', doc: any) {
-    console.log('listType', listType);
+    // console.log('listType', listType);
   
     const selectedDocs: any = this.selectedDocsMap[listType];    
 
@@ -361,24 +350,15 @@ export class ProjectDocumentDepositoryComponent implements OnInit {
 
 
 getProjDocumentDepository(data:any){
+
   this.recursiveLogginUser = this.apiService.getRecursiveUser();
   const USER_CRED = this.credentialService.getUser();
-
-  // Log the entire data object to ensure it's being passed correctly
-  console.log('data object:', data);
-
-  // Log the mkey value
-  console.log('check_list_mkey', data[0]?.mkey);
-
   const doc_mkey =  data[0]?.mkey
 
-    // console.log('recursiveLogginUser',this.recursiveLogginUser)
-    console.log('doc_mkey', doc_mkey)
-    // console.log(' USER_CRED[0].MKEY.toString()', typeof USER_CRED[0].MKEY.toString())
     this.apiService.getProjDocDepositoryFeilds(this.recursiveLogginUser, doc_mkey, USER_CRED[0].MKEY).subscribe({
       next: (list: any) => {
         this.docType = list
-        console.log('Document Type List:', this.docType);
+        // console.log('Document Type List:', this.docType);
       },
       error: (error: any) => {
         this.docType = []
@@ -459,11 +439,4 @@ getProjDocumentDepository(data:any){
    
   }
   
-=======
-  constructor() { }
-
-  ngOnInit(): void {
-  }
-
->>>>>>> parent of cb45e19 (Adding Updated Packages 27-11-2024)
 }

@@ -523,6 +523,8 @@
                                                     <div class="form-group">
                                                         <label class="tags-label" for="tags">Tags</label>
                                                           <tag-input [addOnBlur]="true"
+                                                          [(ngModel)]="selectedTags" 
+                                                          [ngModelOptions]="{standalone: true}"
                                                               >
                                                               <tag-input-dropdown [autocompleteItems]="allTags"
                                                                   [showDropdownIfEmpty]="true"
@@ -741,6 +743,8 @@
                                                   <div class="form-group">
                                                       <label class="tags-label" for="tags">Tags</label>
                                                         <tag-input [addOnBlur]="true"
+                                                          [(ngModel)]="selectedTags" 
+                                                          [ngModelOptions]="{standalone: true}"
                                                             >
                                                             <tag-input-dropdown [autocompleteItems]="allTags"
                                                                 [showDropdownIfEmpty]="true"

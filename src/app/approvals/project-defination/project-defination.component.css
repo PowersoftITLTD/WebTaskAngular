@@ -32,7 +32,11 @@
     background-color: #f1f1f1;
   } */
   
-  
+  .task-item.disabled {
+    pointer-events: none; /* Disable interaction */
+    opacity: 0.5; /* Dim appearance */
+    cursor: not-allowed; /* Change cursor */
+  }
 
   .progress-container {
     width: 100%;
@@ -137,10 +141,7 @@
   
   
   
-  .table-scroll-container {
-    max-height: 400px; /* Adjust to the desired height */
-    overflow-y: auto;
-  }
+
   
   .table-header th {
     position: sticky;
@@ -160,14 +161,14 @@
   .table-scroll-container::-webkit-scrollbar {
     margin-top: 200px;
 
-    width: 8px;  /* Vertical scrollbar width */
-    height: 8px; /* Horizontal scrollbar height */
+    width: 14px;  /* Vertical scrollbar width */
+    height: 14px; /* Horizontal scrollbar height */
   }
   
   .table-scroll-container::-webkit-scrollbar-thumb {
 
     background: #888;
-    border-radius: 10px;
+    border-radius: 15px;
   }
   
   .table-scroll-container::-webkit-scrollbar-thumb:hover {
@@ -187,7 +188,19 @@
     max-width: 150px; /* Adjust if necessary */
   }
   
+  .disabled-row {
+    background-color: #f0f0f0; /* Light grey background for the row */
+    opacity: 0.6; /* Reduce visibility to indicate it's disabled */
+    pointer-events: none; /* Prevent interactions */
+  }
   
+  /* For Disabled Fields */
+  .disabled-field {
+    background-color: #e9ecef; /* Light grey background */
+    color: #6c757d; /* Grey text color */
+    border: 1px solid #ced4da; /* Keep the border subtle */
+    cursor: not-allowed; /* Show not-allowed cursor */
+  }
  
   
   .accordion-body {

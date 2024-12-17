@@ -9,13 +9,11 @@ import { ProjectDocumentSearchComponent } from './project-document-search/projec
 import { ApprovalTaskInitationComponent } from './approval-task-initation/approval-task-initation.component';
 import { ApprovedTempelateComponent } from './approved-tempelate/approved-tempelate.component';
 import { HeaderBarModule } from '../header-bar/header-bar.module';
-<<<<<<< HEAD
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { AddApprovalTempelateComponent } from './add-approval-tempelate/add-approval-tempelate.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-=======
->>>>>>> parent of cb45e19 (Adding Updated Packages 27-11-2024)
+import { TagInputModule } from 'ngx-chips';
 
 
 @NgModule({
@@ -25,24 +23,18 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     ProjectDocumentDepositoryComponent,
     ProjectDocumentSearchComponent,
     ApprovalTaskInitationComponent,
-<<<<<<< HEAD
     AddApprovalTempelateComponent,
-=======
->>>>>>> parent of cb45e19 (Adding Updated Packages 27-11-2024)
     ApprovedTempelateComponent
   ],
   imports: [
     CommonModule,
     ApprovalsRoutingModule,
-<<<<<<< HEAD
     HeaderBarModule,
     MatInputModule,
     MatIconModule,
     FormsModule,
+    TagInputModule,
     ReactiveFormsModule
-=======
-    HeaderBarModule
->>>>>>> parent of cb45e19 (Adding Updated Packages 27-11-2024)
   ]
 })
 export class ApprovalsModule { }

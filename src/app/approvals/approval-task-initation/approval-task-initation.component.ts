@@ -21,6 +21,7 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
   taskData: any;
 
   allTags: any[] = [];
+  selectedTags: string[] = []; 
 
 
   taskDetails: any;
@@ -777,7 +778,8 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
     const headerMkey = this.taskData.HEADER_MKEY;
     const token = this.apiService.getRecursiveUser();
   
-    const tagsValue = task.tags;
+    const tagsValue:any = this.selectedTags;
+    console.log('tagsValue',tagsValue)
     let tagsString = '';
   
     if (Array.isArray(tagsValue)) {
@@ -838,6 +840,7 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
           console.log('Session storage updated');
 
           console.log(responseData)
+          // window.location.reload();
         } else {
           console.warn('Subtask not found for update!');
         }

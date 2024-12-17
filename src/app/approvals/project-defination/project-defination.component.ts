@@ -133,8 +133,11 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
     this.onLogin();
     this.fetchProjectData();
     if (this.taskData && this.taskData.mkey) {
+      console.log('Saved Tasks:', this.taskData?.approvalS_ABBR_LIST[0].tasK_NO);
+      console.log('Task Data:', this.subTasks);
+
+
       this.selectedOptionList();
-      
       this.getTree_new();
       this.getSubProj();           
     }
@@ -187,7 +190,49 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
 
     console.log('selectedSeqArr: ',this.selectedSeqArr)
 
-    const selectedTasksArray = [...this.selectedTasks, ...this.new_list_of_selectedSeqArr];
+    
+
+    const buildingCla = this.taskData?.buildinG_CLASSIFICATION;
+    const buildingSta = this.taskData?.buildinG_STANDARD;
+    const statutoryAuth = this.taskData?.statutorY_AUTHORITY;
+    
+    const buildingClaS = this.projectDefForm.get('bldCla')?.value;
+    const buildingStdS = this.projectDefForm.get('blsStandard')?.value;
+    const statutoryAuthS = this.projectDefForm.get('statutoryAuth')?.value;
+
+    // console.log('status check', this.taskData.approvalS_ABBR_LIST[0].status)
+
+// console.log('TaskData - Building Classification:', buildingCla, ', Building Standard:', buildingSta, ', Statutory Authority:', statutoryAuth);
+// console.log('FormData - Building Classification:', buildingClaS, ', Building Standard:', buildingStdS, ', Statutory Authority:', statutoryAuthS);
+// console.log('Comparison Results:', {
+//   isBuildingClassificationEqual: buildingCla === buildingClaS,
+//   isBuildingStandardEqual: buildingSta === buildingStdS,
+//   isStatutoryAuthorityEqual: statutoryAuth === statutoryAuthS
+// });
+    
+    let selectedTasksArray;
+
+    console.log(this.selectedTasks)
+    console.log(this.new_list_of_selectedSeqArr)
+
+    console.log('selectedSeqArr',this.selectedSeqArr)
+    if (this.taskData && this.taskData.mkey) {
+      // Check if the combinations are equal
+      if (this.taskData.approvalS_ABBR_LIST[0].status === 'Initiated' || this.taskData.approvalS_ABBR_LIST[0].status === 'Ready to Initiate') {
+        // Combine both arrays
+        console.log('coming to combine data', this.new_list_of_selectedSeqArr)
+        selectedTasksArray = [...this.selectedTasks, ...this.new_list_of_selectedSeqArr];
+      } else {
+
+
+        // Pass only the existing selected tasks
+        selectedTasksArray = [...this.selectedTasks];
+      }
+    } else {
+      // If taskData or mkey is not present, pass only the existing selected tasks
+      selectedTasksArray = [...this.selectedTasks];
+    }
+    // selectedTasksArray = [...this.selectedTasks, ...this.new_list_of_selectedSeqArr];
 
     console.log('selectedTasksArray', selectedTasksArray)
 
@@ -217,12 +262,56 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
       });
   };
 
-  
+
   const updatedTasksArray = removeParentTaskIfInSubtasks(selectedTasksArray);
 
-  // console.log('updatedTasksArray', updatedTasksArray)
+
+
+//   const updateTaskDatesRecursively = (taskToMatch:any, tasks:any) => {
+//     for (let task of tasks) {
+//         // Match TASK_NO and update dates if task matches
+//         if (task.TASK_NO.TASK_NO.trim() === taskToMatch.TASK_NO.TASK_NO.trim()) {
+//             if (taskToMatch.TASK_NO.start_date) {
+//                 task.TASK_NO.start_date = taskToMatch.TASK_NO.start_date;
+//             }
+//             if (taskToMatch.TASK_NO.end_date) {
+//                 task.TASK_NO.end_date = taskToMatch.TASK_NO.end_date;
+//             }
+//         }
+
+//         // Recursively update subtasks if any
+//         if (task.subtask && task.subtask.length > 0) {
+//             updateTaskDatesRecursively(taskToMatch, task.subtask);  // Recursively go deeper into subtasks
+//         }
+//     }
+// };
+
+// const updateAllTaskDates = (selectedSeqArr:any, tasks:any) => {
+//     for (let selectedTask of selectedSeqArr) {
+//         updateTaskDatesRecursively(selectedTask, tasks);
+//     }
+//     return tasks;
+// };
+
+
+
+// // Example usage
+// const updatedTasksWithDates = updateAllTaskDates(this.new_list_of_selectedSeqArr, updatedTasksArray);
+
+
+
+// console.log('Updated tasks with dates:', updatedTasksWithDates);
+
+
+  // console.log('check dates 1', this.new_list_of_selectedSeqArr)
+
+  // console.log('check dates 2', updatedTasksArray)
+
+
   
     this.selectedSeqArr = this.sortTasksBySequence(updatedTasksArray);
+
+    console.log('Selected Array', this.selectedSeqArr)
     const flattenedTasks = this.breakToLinear(this.selectedSeqArr);
 
     // console.log('flattenedTasks',flattenedTasks)
@@ -238,16 +327,118 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
     });
     // console.log('unFlatternArr', this.unFlatternArr);
 
-    // console.log('uniqueTasks', uniqueTasks);
+    console.log('uniqueSubTask', this.uniqueSubTask);
 
     this.uniqueSubTask = uniqueTasks
 
   }
 
 
+
+
+  // isTaskDisabled(task: any): boolean {
+  //   // Check if the status is 'Initiated' before applying the disabling logic
+  //   if (this.taskData?.approvalS_ABBR_LIST[0].status === 'Initiated') {
+  //     // Get the selected task numbers from approvalS_ABBR_LIST
+  //     const savedTaskNos = this.taskData?.approvalS_ABBR_LIST.map((item: any) => item.tasK_NO.trim());
+  //     console.log("Saved Task Numbers (Trimmed):", savedTaskNos); // Log the saved task numbers to verify
+  
+  //     // Check if the current task number matches one of the selected task numbers
+  //     if (savedTaskNos.includes(task.TASK_NO?.TASK_NO.trim())) {
+  //       console.log("Disabling Task:", task.TASK_NO?.TASK_NO.trim()); // Debugging task disable
+  //       return true; // Disable this task if it matches any selected task number
+  //     }
+  
+  //     // Function to check if any subtask or nested subtask matches the selected task numbers
+  //     const checkSubtask = (parentTask: any): boolean => {
+  //       if (parentTask.subtask && parentTask.subtask.length > 0) {
+  //         for (let subtask of parentTask.subtask) {
+  //           console.log("Checking Subtask:", subtask.TASK_NO?.TASK_NO.trim()); // Log the subtask being checked
+  //           if (savedTaskNos.includes(subtask.TASK_NO?.TASK_NO.trim())) {
+  //             console.log("Disabling Subtask:", subtask.TASK_NO?.TASK_NO.trim()); // Debugging subtask disable
+  //             return true; // Match found in subtask, disable it
+  //           }
+  
+  //           // If the subtask has further nested subtasks, recursively check them
+  //           if (subtask.subtask && subtask.subtask.length > 0) {
+  //             if (checkSubtask(subtask)) {
+  //               return true; // Recursively check nested subtasks
+  //             }
+  //           }
+  //         }
+  //       }
+  //       return false; // No match found in subtasks
+  //     };
+  
+  //     // Only disable if any subtask matches a selected task number, but don't disable the parent
+  //     if (checkSubtask(task)) {
+  //       console.log("Disabling Task because of Subtask Match:", task.TASK_NO?.TASK_NO.trim()); // Debugging
+  //       return true; // Disable the task if any of its subtasks match a selected task number
+  //     }
+  
+  //     return false; // No match found, task is not disabled
+  //   }
+  
+  //   // If the status is not 'Initiated', don't apply any disabling logic
+  //   return false;
+  // }
   
 
+//  isTaskDisabled(task: any): boolean {
+//   const savedTaskNos = this.taskData?.approvalS_ABBR_LIST.map((item: any) => item.tasK_NO.trim());
+//   // console.log("Saved Task Numbers (Trimmed):", savedTaskNos); // Log the saved task numbers to verify
 
+//   if (savedTaskNos.includes(task.TASK_NO?.TASK_NO.trim())) {
+//     // console.log("Disabling Task:", task.TASK_NO?.TASK_NO.trim()); // Debugging task disable
+//     return true;
+//   }
+
+//   const checkSubtask = (parentTask: any): boolean => {
+//     if (parentTask.subtask && parentTask.subtask.length > 0) {
+//       for (let subtask of parentTask.subtask) {
+//         // console.log("Checking Subtask:", subtask.TASK_NO?.TASK_NO.trim()); 
+//         if (savedTaskNos.includes(subtask.TASK_NO?.TASK_NO.trim())) {
+//           // console.log("Disabling Subtask:", subtask.TASK_NO?.TASK_NO.trim()); 
+//           return true; 
+//         }
+
+//         if (subtask.subtask && subtask.subtask.length > 0) {
+//           if (checkSubtask(subtask)) {
+//             return true; 
+//           }
+//         }
+//       }
+//     }
+//     return false; 
+//   };
+
+//   if (checkSubtask(task)) {
+//     return true;
+//   }
+
+//   return false; 
+// }
+
+  
+  
+  isTaskDisabled(task: any): boolean {
+    if (this.taskData?.approvalS_ABBR_LIST[0].status === 'Initiated' || this.taskData?.approvalS_ABBR_LIST[0].status === 'Ready to Initiate') {
+      const savedTaskNos = this.taskData?.approvalS_ABBR_LIST.map((item: any) => item.approvaL_ABBRIVATION.trim());
+      // console.log("Saved Task Numbers (Trimmed):", savedTaskNos);
+    
+      if (savedTaskNos.includes(task.TASK_NO?.maiN_ABBR.trim())) {
+        // console.log("Disabling Task:", task.TASK_NO?.TASK_NO.trim());
+        return true; 
+      }
+    
+      return false; 
+    }
+    
+    return false;
+  }
+  
+  
+  
   newToggltSel(taskArray: any) {
 
     const input_table_id = taskArray.TASK_NO.TASK_NO;
@@ -261,9 +452,12 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
     }
 
     // console.log('selectedSeqArr newToggltSel',this.selectedSeqArr)
-    const selectedTasksArray = [...this.tableData, ...this.selectedSeqArr];
+    const selectedTasksArray = [...this.tableData ]; //...this.selectedSeqArr
 
     if (selectedTasksArray.length > 0) {
+
+      // console.log('selectedTasksArray',selectedTasksArray)
+
 
       const lastTask = selectedTasksArray[selectedTasksArray.length - 1];
 
@@ -284,8 +478,25 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
 
     // console.log(this.uniqList)
 
+
   }
 
+
+  disableInitiatedTask(task: any): boolean {
+    console.log('Task:', task);
+    console.log('Approval List:', this.taskData.approvalS_ABBR_LIST);
+      return (
+      this.taskData.approvalS_ABBR_LIST.some(
+        (item:any) =>
+          item.approvaL_ABBRIVATION === task.TASK_NO?.approvaL_ABBRIVATION &&
+          item.status === 'Initiated'
+          
+      )
+    );
+  }
+
+
+  
 
 
   breakToLinear(selectedSeq: any) {
@@ -302,6 +513,7 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
       // console.log('task from breakToLinear',task)
 
       result.push({
+        headeR_MKEY:this.taskData.mkey,
         tasK_NO: task.TASK_NO.TASK_NO.trim(),        
         dayS_REQUIRED: Number(task.TASK_NO.dayS_REQUIERD),
         approvaL_ABBRIVATION: task.TASK_NO.maiN_ABBR,
@@ -313,7 +525,7 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
         joB_ROLE: task.TASK_NO.joB_ROLE_mkey,
         approvaL_MKEY:task.TASK_NO.approvaL_MKEY,
         outpuT_DOCUMENT: task.TASK_NO.enD_RESULT_DOC,
-        status: task.TASK_NO.status,
+        status: task.TASK_NO.status || 'created',
       });
 
       if (task.subtask && task.subtask.length > 0) {
@@ -372,18 +584,47 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
   updateProjectDef() {
     const USER_CRED = this.credentialService.getUser();
     this.recursiveLogginUser = this.apiService.getRecursiveUser();
+    const headerMkey = this.taskData.mkey
 
+    console.log('from update',this.sub_proj)
+  
     const PROJECT = this.projectDefForm.get('property')?.value;
+    console.log(PROJECT)
+    const matchedProject = this.project.find((project: any) => project.TYPE_DESC === PROJECT);
+    console.log('matchedProject',matchedProject)
+
     const SUB_PROJECT = this.projectDefForm.get('subProject')?.value;
+    console.log(SUB_PROJECT)
 
-    const subTaskList = this.uniqList
+    const SELECTED_PROJ = this.sub_proj.find((sub_proj: any) => sub_proj.TYPE_DESC === SUB_PROJECT);
+    console.log('SELECTED_PROJ', SELECTED_PROJ.MKEY)
+  
+    let subTaskList = this.uniqList;
+  
+    // Remove duplicates and tasks with "Ready to Initiate" status
+    // Check if 'this.isCleared' is false, if so filter with the original logic
+      if (!this.isCleared) {
+        subTaskList = subTaskList.filter((task, index, self) => {
+            // Check if task is not "Ready to Initiate" and is not a duplicate task with status "created"
+            const isDuplicate = self.findIndex(t => t.tasK_NO === task.tasK_NO) !== index;
 
-    console.log('PROJECT', PROJECT)
-    console.log('SUB_PROJECT', SUB_PROJECT)
+            // Keep tasks that are either "Ready to Initiate" or "created" and if it is the first occurrence (or not a duplicate with status "created")
+            return (task.status === "Ready to Initiate" || task.status === "created") &&
+                  (!isDuplicate || task.status === "Ready to Initiate");
+        });
+    } else {
+        // Otherwise, remove "Ready to Initiate" tasks
+        subTaskList = subTaskList.filter(task => task.status !== "Ready to Initiate");
+    }
+  
+  
+    console.log('Filtered Sub Task List:', subTaskList);
+  
     const addProjectDefination = {
-      projecT_NAME: SUB_PROJECT.MASTER_MKEY,
+      mkey:this.taskData.mkey,
+      projecT_NAME: 210,
       projecT_ABBR: this.projectDefForm.get('projectAbbr')?.value,
-      property: PROJECT.MASTER_MKEY,
+      property: SELECTED_PROJ.MKEY,
       legaL_ENTITY: this.projectDefForm.get('legalEntity')?.value,
       projecT_ADDRESS: this.projectDefForm.get('projAddress')?.value,
       buildinG_CLASSIFICATION: Number(this.projectDefForm.get('bldCla')?.value),
@@ -395,17 +636,20 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
       createD_BY: USER_CRED[0].MKEY,
       lasT_UPDATED_BY: USER_CRED[0].MKEY,
       approvalS_ABBR_LIST: subTaskList
-    }
-
-    console.log(addProjectDefination)
-    // this.apiService.postProjectDefination(addProjectDefination, this.recursiveLogginUser).subscribe({
-    //   next: (addData: any) => {
-    //     console.log('Data added successfully', addData)
-    //   }, error: (error: ErrorHandler) => {
-    //     console.log('Unable to get data', error)
-    //   }
-    // })
+    };
+  
+    console.log(addProjectDefination);
+    this.apiService.putProjectDefination(addProjectDefination, headerMkey, this.recursiveLogginUser).subscribe({
+      next: (addData: any) => {
+        console.log('Data added successfully', addData)
+      }, error: (error: ErrorHandler) => {
+        console.log('Unable to get data', error)
+      }
+    });
   }
+  
+
+  
 
   initiateToApprovalInitiation(approvalKey:any) {
     console.log('taskData Check', this.taskData)
@@ -609,6 +853,7 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
     // }
     const token = this.apiService.getRecursiveUser();
     const USER_CRED = this.credentialService.getUser();
+    let gerAbbrRelDataArr = []
 
       const buildingCla = this.projectDefForm.get('bldCla')?.value;
       const buildingStd = this.projectDefForm.get('blsStandard')?.value;
@@ -627,10 +872,17 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
             console.log('Get list: ', gerAbbrRelData)
             // this.projDefinationTable = gerAbbrRelData
             console.log('gerAbbrRelData', gerAbbrRelData)
+
+            const check = gerAbbrRelDataArr.push(gerAbbrRelData)
+            console.log('check', gerAbbrRelDataArr.push(gerAbbrRelData))
             this.getTree(gerAbbrRelData);
           },
-          error: (err) => {
-            console.error('API Error:', err);
+          error: (error) => {
+            // console.log('error.status',error.error.status)
+            if(error.error && error.error.status === 404){
+              this.tostar.error('Classification of this combo is not available')
+            }
+            console.error('API Error:', error);
           }
         });
       } else {
@@ -655,17 +907,23 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
         this.recursiveLogginUser = this.apiService.getRecursiveUser();
         this.apiService.projectDefinationOption(USER_CRED[0]?.MKEY, token, buildingCla, buildingStd, statutoryAuth).subscribe({
           next: (gerAbbrRelData) => {
-            this.projDefinationTable = gerAbbrRelData
 
             console.log('this.taskData.buildinG_CLASSIFICATION', this.taskData.buildinG_CLASSIFICATION)
             
 
-            this.getTree(gerAbbrRelData);
+            if (!this.isCleared) { // Only call getTree if not cleared
+              this.projDefinationTable = gerAbbrRelData
 
+              this.getTree(gerAbbrRelData);
+            }
           
           },
-          error: (err) => {
-            console.error('API Error:', err);
+          error: (error:any) => {
+            console.log('error.status',error.error.status)
+            if(error.status === 404){
+              error.tostar('Classification of this combo is not available')
+            }
+            console.error('API Error:', error);
           }
         });
       } else {
@@ -675,12 +933,14 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
   }
 
   clear() {
-    this.taskData = {
-      buildinG_CLASSIFICATION: null,
-      buildinG_STANDARD: null,
-      statutorY_AUTHORITY: null
-    };
-    this.projDefinationTable = [];
+  
+      this.taskData.buildinG_CLASSIFICATION =  null,
+      this.taskData.buildinG_STANDARD = null,
+      this.taskData.statutorY_AUTHORITY = null
+    
+    this.subTasks = [];
+    this.ValueList = [];
+    this.selectedSeqArr = [];
     this.isCleared = true; // Set clear flag
     console.log('Clear action executed.');
     this.tostar.success('Cleared successfully');
@@ -729,13 +989,36 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
   }
 
 
-
-
-
-
-  isSelected(task: any): any {
-    return this.selectedTasksId.has(task.TASK_NO.TASK_NO);     
+  isSelectedNew(task:any):boolean{
+    return this.selectedTasksId.has(task.TASK_NO.TASK_NO);
   }
+
+
+
+  isSelected(task: any): boolean {
+    return this.selectedTasksId.has(task.TASK_NO.TASK_NO);
+  }
+
+  isTaskInSavedList(task: any): boolean {
+    // Check if the status is 'Initiated' before applying the logic
+    if (this.taskData?.approvalS_ABBR_LIST[0].status === 'Initiated' || this.taskData?.approvalS_ABBR_LIST[0].status === 'Ready to Initiate') {
+      // Get the selected task numbers from approvalS_ABBR_LIST
+      const savedTaskNos = this.taskData?.approvalS_ABBR_LIST.map((item: any) => item.tasK_NO.trim());
+      // console.log("Saved Task Numbers (Trimmed):", savedTaskNos); // Log the saved task numbers to verify
+  
+      // Check if the current task number matches one of the saved task numbers
+      return savedTaskNos.includes(task.TASK_NO?.TASK_NO.trim());
+    }
+  
+    // Return false if status is not 'Initiated' or other cases
+    return false;
+  }
+  
+  
+
+  // isSelected(task: any): any {
+  //   return this.selectedTasksId.has(task.TASK_NO.TASK_NO);     
+  // }
 
 
   filterCities() {
@@ -809,6 +1092,11 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
   }
 
 
+  removeDuplicates(array: any[]): any[] {
+    // Remove duplicates using a Set or custom logic
+    return Array.from(new Set(array.map(item => JSON.stringify(item)))).map(item => JSON.parse(item));
+}
+
  async getTree(optionList: any[] = [], _jobRoleList: any[] = [], _departmentList: any[] = []) {
     
    
@@ -831,6 +1119,14 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
 
     const jobRoleList = jobRole_new;
     const departmentList = department_new
+
+    // const combinedList = [...optionList];
+
+
+    optionList;
+
+    // console.log('uniqueList', uniqueList)
+
 
     // this.taskData.approvalS_ABBR_LIST
        const optionListArr = optionList
@@ -991,6 +1287,8 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
 
     this.subTasks = [...this.subTasks, ...filteredTasks];
 
+    
+
     // this.selectedSeqArr = [...this.subTasks]
 
   }
@@ -1143,6 +1441,19 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
   }
 
 
+  onUpdateProjDef() {
+    const isValid = this.onSubmit();
+
+    if (isValid) {
+
+      this.updateProjectDef();
+      this.tostar.success('Success', 'Template added successfuly')
+    } else {
+      console.log('Form is invalid, cannot add template');
+    }
+  }
+
+
 
   newEmps(){
     let employeesList:any
@@ -1182,7 +1493,7 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
 
 
     let department_new: any;
-    let jobRole_new: any;
+    let jobRole_new: any; 
 
     try {
         department_new = await this.apiService.getDepartmentDP(this.recursiveLogginUser).toPromise();
