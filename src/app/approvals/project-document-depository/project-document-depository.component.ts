@@ -4,6 +4,7 @@ import { CITIES, ICity } from '../add-approval-tempelate/cities';
 import { CredentialService } from 'src/app/services/credential/credential.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-project-document-depository',
@@ -31,8 +32,11 @@ export class ProjectDocumentDepositoryComponent implements OnInit {
 
   public activeIndices: number[] = []; // Change here
 
+  taskData: any;
 
   createdOrUpdatedUserName:any
+  updatedDetails: boolean = false;
+
 
 
   selectedDocsMap: { [key: string]: any[] } = { endResult: [], checklist: [] };
@@ -53,8 +57,40 @@ export class ProjectDocumentDepositoryComponent implements OnInit {
   constructor(private apiService: ApiService,
               private credentialService:CredentialService,
               private formBuilder:FormBuilder,
+              private router: Router,
               private tostar: ToastrService
-             ) {}
+             ) {
+
+              const navigation: any = this.router.getCurrentNavigation();
+              const isNewTemp = sessionStorage.getItem('isNewTemp') === 'true';
+          
+              if (navigation?.extras.state) {
+                const RecursiveTaskData: any = navigation.extras.state.taskData;
+                this.taskData = RecursiveTaskData;
+                console.log('RecursiveTaskData', RecursiveTaskData)
+          
+                if (RecursiveTaskData.mkey) {
+                  this.updatedDetails = !isNewTemp;
+                } else {
+                  this.updatedDetails = false;
+                }
+          
+                sessionStorage.setItem('task', JSON.stringify(RecursiveTaskData));
+                sessionStorage.removeItem('add_new_task');
+              } else {
+                const RecursiveTaskData = sessionStorage.getItem('task');
+                if (RecursiveTaskData) {
+                  try {
+                    this.taskData = JSON.parse(RecursiveTaskData);
+                    if (!isNewTemp) {
+                      this.updatedDetails = this.taskData.mkey ? true : false;
+                    }
+                  } catch (error) {
+                    console.error('Failed to parse task data', error);
+                  }
+                }
+              }  
+             }
 
   ngOnInit(): void {
     this.filteredDocs = this.cities;
@@ -170,7 +206,6 @@ export class ProjectDocumentDepositoryComponent implements OnInit {
     } else {
       console.warn('No file selected');
     }
-
   }
 
   onFileSelected(event: Event) {
@@ -221,6 +256,9 @@ export class ProjectDocumentDepositoryComponent implements OnInit {
     this.apiService.getDocTypeDP(this.recursiveLogginUser).subscribe({
       next: (list: any) => {
         this.docTypeList = list
+        console.log('docTypeList',this.docTypeList)
+        this.mappedSelectedCheckList();
+
         // console.log('Document Type List:', this.docTypeList);
       },
       error: (error: any) => {
@@ -232,6 +270,7 @@ export class ProjectDocumentDepositoryComponent implements OnInit {
     this.apiService.getDocCategory(this.recursiveLogginUser).subscribe({
       next: (list: any) => {
         this.docCatList = list
+
         // console.log('Document Type List:', this.docCatList);
       },
       error: (error: any) => {
@@ -348,6 +387,35 @@ export class ProjectDocumentDepositoryComponent implements OnInit {
 }
 
 
+mappedSelectedCheckList() {
+  let mappedSelectedArray: any[] = [];
+
+  let allSelectedMkeys: number[] = [];
+
+  for (let key in this.taskData.checklisT_DOC_LST) {
+      if (this.taskData.checklisT_DOC_LST.hasOwnProperty(key)) {
+          const selectedMkeysString = this.taskData.checklisT_DOC_LST[key];
+
+          const selectedMkeys = selectedMkeysString.split(',')
+              .map((mkey: string) => parseInt(mkey.trim(), 10))
+              .filter((mkey: number) => !isNaN(mkey));  // Ensure no NaN values
+
+          allSelectedMkeys = [...allSelectedMkeys, ...selectedMkeys];
+      }
+  }
+
+  let selectedItems = this.docTypeList.filter(doc => allSelectedMkeys.includes(doc.mkey));
+
+
+  selectedItems.forEach(item => {
+      mappedSelectedArray.push(item);  
+  });
+
+  this.selectedDocsMap['checklist'] = mappedSelectedArray;
+
+}
+
+
 
 getProjDocumentDepository(data:any){
 
@@ -437,6 +505,13 @@ getProjDocumentDepository(data:any){
 
     this.onSubmit();
    
+  }
+
+
+  ngOnDestroy(): void {
+    console.log('Component is being destroyed');
+
+    sessionStorage.removeItem('task');
   }
   
 }

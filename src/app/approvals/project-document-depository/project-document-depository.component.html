@@ -23,9 +23,18 @@
                                     
                                 </div>
                                 <div class="mr-8 ">
-                                    <button type="submit" class="btn btn-light mr-2" id="btnSaveTask" (click)="onDocDepository()">
-                                      ADD
-                                    </button>
+                                    <div *ngIf="!taskData?.MKEY">
+                                        <button type="submit" class="btn btn-light mr-2" (click)="onDocDepository()" id="btnSaveTask">
+                                          ADD
+                                        </button>
+                                      </div>
+
+                                      <div *ngIf="taskData?.MKEY">
+                                        <button type="submit" class="btn btn-light mr-2" (click)="onDocDepository()" id="btnSaveTask">
+                                          SAVE
+                                        </button>
+                                      </div>
+                                   
                                   </div>
 
                             </div>

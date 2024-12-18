@@ -182,7 +182,7 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
       building: [''],
       initiator: ['', Validators.required],
       abbrivation: ['', ],
-      sanctioningAuth: ['', ],
+      sanctioningAuth: [this.taskData.SANCTION_AUTHORITY_NAME, ],
       shortDescription: ['', Validators.required],
       longDescriotion: ['', Validators.required],
       sanctioningDepartment: ['', ],
@@ -435,7 +435,7 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
         this.SanctoningAuthList = list
         this.setSenctoningAuthorityName();
 
-        //  console.log('Document Type List SanctoningAuthList:', this.SanctoningAuthList);
+         console.log('Document Type List SanctoningAuthList:', this.SanctoningAuthList);
       }, error: (error: any) => {
         console.error('Unable to fetch Document Type List', error);
 

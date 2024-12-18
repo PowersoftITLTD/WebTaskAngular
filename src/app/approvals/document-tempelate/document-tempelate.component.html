@@ -19,13 +19,13 @@
                             <div class="flex-grow-1"></div>
                             <div class="mr-8">
 
-                                <ng-container *ngIf="!taskData.mkey">
+                                <ng-container *ngIf="!taskData?.mkey">
                                     <button type="button"  class="btn btn-light mr-2" id="btnSaveTask" (click)="onAddDocTemp()">
                                         ADD
                                     </button>
                                 </ng-container>
 
-                                <ng-container *ngIf="taskData.mkey">
+                                <ng-container *ngIf="taskData?.mkey">
                                     <button type="button" *ngIf="updatedDetails" class="btn btn-light" (click)="onUpdateDOcTemp()" id="btnSaveTask">
                                         SAVE
                                     </button>

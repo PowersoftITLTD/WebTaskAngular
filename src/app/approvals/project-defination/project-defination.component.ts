@@ -27,6 +27,8 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
   unFlatternArr: any[] = [];
   existingTaskA: any;
 
+  flatList:any
+
   formVisibleMap: boolean[] = [];
 
   @Input() recursiveLogginUser: any = {};
@@ -132,6 +134,7 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
     this.activeIndices = this.accordionItems.map((_, index) => index);
     this.onLogin();
     this.fetchProjectData();
+    console.log('this.taskData.approvalS_ABBR_LIST[0].status', this.taskData.approvalS_ABBR_LIST[0].status)
     if (this.taskData && this.taskData.mkey) {
       console.log('Saved Tasks:', this.taskData?.approvalS_ABBR_LIST[0].tasK_NO);
       console.log('Task Data:', this.subTasks);
@@ -169,169 +172,147 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
     this.formVisibleMap[index] = !this.formVisibleMap[index];
   }
 
-  toggleSelection(task: any = []): void {
+  // toggleSelection(task: any = []): void {
 
-    // console.log('check the approval mkey',task)
-    const taskId = task.TASK_NO.TASK_NO;
+  //   // console.log('check the approval mkey',task)
+  //   const taskId = task.TASK_NO.TASK_NO;
    
-    if (this.selectedTasksId.has(taskId)) {
-      this.selectedTasksId.delete(taskId);
-      this.selectedTasks.delete(task);
-    } else {
-      this.selectedTasksId.add(taskId);
-      this.selectedTasks.add(task);
-    }
+  //   if (this.selectedTasksId.has(taskId)) {
+  //     this.selectedTasksId.delete(taskId);
+  //     this.selectedTasks.delete(task);
+  //   } else {
+  //     this.selectedTasksId.add(taskId);
+  //     this.selectedTasks.add(task);
+  //   }
 
-    // console.log('selectedTasks: ',[task])
-    console.log('new_list_of_selectedSeqArr: ',this.new_list_of_selectedSeqArr)
+  //   // console.log('selectedTasks: ',[task])
+  //   console.log('new_list_of_selectedSeqArr: ',this.new_list_of_selectedSeqArr)
 
-    // console.log('taskId check', )
-
-
-    console.log('selectedSeqArr: ',this.selectedSeqArr)
-
-    
-
-    const buildingCla = this.taskData?.buildinG_CLASSIFICATION;
-    const buildingSta = this.taskData?.buildinG_STANDARD;
-    const statutoryAuth = this.taskData?.statutorY_AUTHORITY;
-    
-    const buildingClaS = this.projectDefForm.get('bldCla')?.value;
-    const buildingStdS = this.projectDefForm.get('blsStandard')?.value;
-    const statutoryAuthS = this.projectDefForm.get('statutoryAuth')?.value;
-
-    // console.log('status check', this.taskData.approvalS_ABBR_LIST[0].status)
-
-// console.log('TaskData - Building Classification:', buildingCla, ', Building Standard:', buildingSta, ', Statutory Authority:', statutoryAuth);
-// console.log('FormData - Building Classification:', buildingClaS, ', Building Standard:', buildingStdS, ', Statutory Authority:', statutoryAuthS);
-// console.log('Comparison Results:', {
-//   isBuildingClassificationEqual: buildingCla === buildingClaS,
-//   isBuildingStandardEqual: buildingSta === buildingStdS,
-//   isStatutoryAuthorityEqual: statutoryAuth === statutoryAuthS
-// });
-    
-    let selectedTasksArray;
-
-    console.log(this.selectedTasks)
-    console.log(this.new_list_of_selectedSeqArr)
-
-    console.log('selectedSeqArr',this.selectedSeqArr)
-    if (this.taskData && this.taskData.mkey) {
-      // Check if the combinations are equal
-      if (this.taskData.approvalS_ABBR_LIST[0].status === 'Initiated' || this.taskData.approvalS_ABBR_LIST[0].status === 'Ready to Initiate') {
-        // Combine both arrays
-        console.log('coming to combine data', this.new_list_of_selectedSeqArr)
-        selectedTasksArray = [...this.selectedTasks, ...this.new_list_of_selectedSeqArr];
-      } else {
+  //   // console.log('taskId check', )
 
 
-        // Pass only the existing selected tasks
-        selectedTasksArray = [...this.selectedTasks];
-      }
-    } else {
-      // If taskData or mkey is not present, pass only the existing selected tasks
-      selectedTasksArray = [...this.selectedTasks];
-    }
-    // selectedTasksArray = [...this.selectedTasks, ...this.new_list_of_selectedSeqArr];
-
-    console.log('selectedTasksArray', selectedTasksArray)
-
-    console.log('this.new_list_of_selectedSeqArr',this.new_list_of_selectedSeqArr)
-
-    const hasMatchingSubtask = (task: any, tasks: any[]): boolean => {
-      for (let parentTask of tasks) {
-          for (let subtask of parentTask.subtask) {
-              if (subtask.TASK_NO.TASK_NO.trim() === task.TASK_NO.TASK_NO.trim()) {
-                  return true;
-              }
-              if (subtask.subtask && subtask.subtask.length > 0) {
-                  if (hasMatchingSubtask(task, [subtask])) {
-                      return true;
-                  }
-              }
-          }
-      }
-      return false;
-  };
-  
-  const removeParentTaskIfInSubtasks = (tasks: any[]) => {
-      return tasks.filter((task: any) => {
-          const isSubtask = hasMatchingSubtask(task, tasks);
-          // console.log('isSubtask:', isSubtask);
-          return !isSubtask;
-      });
-  };
-
-
-  const updatedTasksArray = removeParentTaskIfInSubtasks(selectedTasksArray);
-
-
-
-//   const updateTaskDatesRecursively = (taskToMatch:any, tasks:any) => {
-//     for (let task of tasks) {
-//         // Match TASK_NO and update dates if task matches
-//         if (task.TASK_NO.TASK_NO.trim() === taskToMatch.TASK_NO.TASK_NO.trim()) {
-//             if (taskToMatch.TASK_NO.start_date) {
-//                 task.TASK_NO.start_date = taskToMatch.TASK_NO.start_date;
-//             }
-//             if (taskToMatch.TASK_NO.end_date) {
-//                 task.TASK_NO.end_date = taskToMatch.TASK_NO.end_date;
-//             }
-//         }
-
-//         // Recursively update subtasks if any
-//         if (task.subtask && task.subtask.length > 0) {
-//             updateTaskDatesRecursively(taskToMatch, task.subtask);  // Recursively go deeper into subtasks
-//         }
-//     }
-// };
-
-// const updateAllTaskDates = (selectedSeqArr:any, tasks:any) => {
-//     for (let selectedTask of selectedSeqArr) {
-//         updateTaskDatesRecursively(selectedTask, tasks);
-//     }
-//     return tasks;
-// };
-
-
-
-// // Example usage
-// const updatedTasksWithDates = updateAllTaskDates(this.new_list_of_selectedSeqArr, updatedTasksArray);
-
-
-
-// console.log('Updated tasks with dates:', updatedTasksWithDates);
-
-
-  // console.log('check dates 1', this.new_list_of_selectedSeqArr)
-
-  // console.log('check dates 2', updatedTasksArray)
-
+  //   console.log('selectedSeqArr: ',this.selectedSeqArr)
 
   
-    this.selectedSeqArr = this.sortTasksBySequence(updatedTasksArray);
+    
+  //   let selectedTasksArray;
 
-    console.log('Selected Array', this.selectedSeqArr)
-    const flattenedTasks = this.breakToLinear(this.selectedSeqArr);
+  //   console.log(this.selectedTasks)
+  //   console.log(this.selectedSeqArr)
+  //   const getUniqueTasks = (tasksArray:any) => {
+  //     const abbrCount = new Map();
+    
+  //     // Function to traverse tasks and count maiN_ABBR occurrences
+  //     const countAbbr = (tasks:any) => {
+  //       console.log('countAbbr', tasks)
+  //       tasks.forEach((task:any) => {
+  //         const abbr = task.TASK_NO.maiN_ABBR;
+  //         abbrCount.set(abbr, (abbrCount.get(abbr) || 0) + 1);
+    
+  //         if (task.subtask && task.subtask.length > 0) {
+  //           countAbbr(task.subtask); // Recursive call for subtasks
+  //         }
+  //       });
+  //     };
+    
+  //     // Function to filter tasks with unique maiN_ABBR
+  //     const filterUniqueTasks = (tasks:any) => {
+  //       return tasks
+  //         .filter((task:any) => abbrCount.get(task.TASK_NO.maiN_ABBR) === 1) // Keep unique tasks
+  //         .map((task:any) => ({
+  //           ...task,
+  //           subtask: filterUniqueTasks(task.subtask || []), // Recursive filtering for subtasks
+  //         }));
+  //     };
+    
+  //     // Step 1: Count maiN_ABBR occurrences
+  //     countAbbr(tasksArray);
+    
+  //     // Step 2: Filter tasks with unique maiN_ABBR
+  //     return filterUniqueTasks(tasksArray);
+  //   };
 
-    // console.log('flattenedTasks',flattenedTasks)
+  //   console.log('selectedSeqArr',this.selectedSeqArr)
+  //   if (this.taskData && this.taskData.mkey) {
+  //     // Check if the combinations are equal
+  //     if (this.taskData.approvalS_ABBR_LIST[0].status === 'Initiated' || this.taskData.approvalS_ABBR_LIST[0].status === 'Ready to Initiate') {
+  //       console.log('coming to combine data', this.new_list_of_selectedSeqArr)
+    
+  //       // }
+  //       selectedTasksArray = [...this.selectedTasks, ...this.new_list_of_selectedSeqArr];
+  //       const uniqueTasksArray = getUniqueTasks(selectedTasksArray);
 
-    const seen = new Set();
+  //       console.log('uniqueTasksArray', uniqueTasksArray)
+  //       selectedTasksArray = [...uniqueTasksArray, ...this.new_list_of_selectedSeqArr ];
+  //     } else {
 
-    const uniqueTasks = flattenedTasks.filter(task => {
-      if (seen.has(task.TASK_NO)) {
-        return false;
-      }
-      seen.add(task.TASK_NO);
-      return true;
-    });
-    // console.log('unFlatternArr', this.unFlatternArr);
 
-    console.log('uniqueSubTask', this.uniqueSubTask);
+  //       // Pass only the existing selected tasks
+  //       selectedTasksArray = [...this.selectedTasks];
+  //     }
+  //   } else {
+  //     // If taskData or mkey is not present, pass only the existing selected tasks
+  //     selectedTasksArray = [...this.selectedTasks];
+  //   }
+  //   // selectedTasksArray = [...this.selectedTasks, ...this.new_list_of_selectedSeqArr];
 
-    this.uniqueSubTask = uniqueTasks
+  //   console.log('selectedTasksArray', selectedTasksArray)
 
-  }
+  //   console.log('this.new_list_of_selectedSeqArr',this.new_list_of_selectedSeqArr)
+
+  //   const hasMatchingSubtask = (task: any, tasks: any[]): boolean => {
+  //     for (let parentTask of tasks) {
+  //         for (let subtask of parentTask.subtask) {
+  //             if (subtask.TASK_NO.TASK_NO.trim() === task.TASK_NO.TASK_NO.trim()) {
+  //                 return true;
+  //             }
+  //             if (subtask.subtask && subtask.subtask.length > 0) {
+  //                 if (hasMatchingSubtask(task, [subtask])) {
+  //                     return true;
+  //                 }
+  //             }
+  //         }
+  //     }
+  //     return false;
+  // };
+  
+  // const removeParentTaskIfInSubtasks = (tasks: any[]) => {
+  //     return tasks.filter((task: any) => {
+  //         const isSubtask = hasMatchingSubtask(task, tasks);
+  //         // console.log('isSubtask:', isSubtask);
+  //         return !isSubtask;
+  //     });
+  // };
+
+
+  // const updatedTasksArray = removeParentTaskIfInSubtasks(selectedTasksArray);
+
+
+
+
+  //   this.selectedSeqArr = this.sortTasksBySequence(updatedTasksArray);
+
+  //   console.log('Selected Array', this.selectedSeqArr)
+  //   const flattenedTasks = this.breakToLinear(this.selectedSeqArr);
+
+  //   // console.log('flattenedTasks',flattenedTasks)
+
+  //   const seen = new Set();
+
+  //   const uniqueTasks = flattenedTasks.filter(task => {
+  //     if (seen.has(task.TASK_NO)) {
+  //       return false;
+  //     }
+  //     seen.add(task.TASK_NO);
+  //     return true;
+  //   });
+  //   // console.log('unFlatternArr', this.unFlatternArr);
+
+  //   console.log('uniqueSubTask', this.uniqueSubTask);
+
+  //   this.uniqueSubTask = uniqueTasks
+
+  // }
 
 
 
@@ -419,9 +400,130 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
 //   return false; 
 // }
 
+toggleSelection(task: any = []): void {
+  const taskId = task?.TASK_NO?.TASK_NO;
+
+  // Safely check and toggle selection state
+  if (this.selectedTasksId.has(taskId)) {
+    this.selectedTasksId.delete(taskId);
+    this.selectedTasks.delete(task);
+  } else {
+    this.selectedTasksId.add(taskId);
+    this.selectedTasks.add(task);
+  }
+
+  console.log('new_list_of_selectedSeqArr: ', this.new_list_of_selectedSeqArr);
+  console.log('selectedSeqArr before updates: ', this.selectedSeqArr);
+
+  // Combine and deduplicate tasks
+  let selectedTasksArray: any[];
+
+  // Utility function to count maiN_ABBR occurrences
+  const getUniqueTasks = (tasksArray: any[]): any[] => {
+    const abbrCount = new Map();
+
+    const countAbbr = (tasks: any[]) => {
+      tasks.forEach((task: any) => {
+        const abbr = task?.TASK_NO?.maiN_ABBR;
+        if (abbr) abbrCount.set(abbr, (abbrCount.get(abbr) || 0) + 1);
+
+        if (task.subtask?.length) countAbbr(task.subtask); // Recursive call
+      });
+    };
+
+    const filterUniqueTasks = (tasks: any[]): any[] => {
+      return tasks
+        .filter((task: any) => abbrCount.get(task?.TASK_NO?.maiN_ABBR) === 1)
+        .map((task: any) => ({
+          ...task,
+          subtask: filterUniqueTasks(task.subtask || []), // Recursive filtering
+        }));
+    };
+
+    countAbbr(tasksArray); // Step 1: Count
+    return filterUniqueTasks(tasksArray); // Step 2: Filter
+  };
+
+  if (this.taskData?.mkey && !this.isCleared) {
+    const status = this.taskData.approvalS_ABBR_LIST?.[0]?.status;
+
+    if (status === 'Initiated' || status === 'Ready to Initiate') {
+      console.log('Combining data', this.new_list_of_selectedSeqArr);
+
+      // Merge, deduplicate, and filter for unique tasks
+      selectedTasksArray = [...this.selectedTasks, ...this.new_list_of_selectedSeqArr];
+      const uniqueTasksArray = getUniqueTasks(selectedTasksArray);
+
+      console.log('uniqueTasksArray', uniqueTasksArray);
+      selectedTasksArray = [...uniqueTasksArray,...this.new_list_of_selectedSeqArr];
+    } else {
+      // Only existing tasks
+      selectedTasksArray = [...this.selectedTasks];
+    }
+  } else {
+    selectedTasksArray = [...this.selectedTasks];
+  }
+
+  console.log('selectedTasksArray before subtask check:', selectedTasksArray);
+
+  console.log(this.selectedSeqArr)
+
+  // Function to check if task exists as a subtask
+  const hasMatchingSubtask = (task: any, tasks: any[]): boolean => {
+    return tasks.some((parentTask) =>
+      parentTask.subtask?.some((subtask: any) => {
+        if (subtask?.TASK_NO?.TASK_NO.trim() === task?.TASK_NO?.TASK_NO.trim()) {
+          return true;
+        }
+        return subtask.subtask?.length > 0 && hasMatchingSubtask(task, [subtask]);
+      })
+    );
+  };
+
+  // Remove parent tasks that exist in subtasks
+  const removeParentTaskIfInSubtasks = (tasks: any[]): any[] => {
+    return tasks.filter((task: any) => !hasMatchingSubtask(task, tasks));
+  };
+
+  // Filter tasks to exclude duplicates in subtasks
+  const updatedTasksArray = removeParentTaskIfInSubtasks(selectedTasksArray);
+
+  // Sort tasks by sequence
+  this.selectedSeqArr = this.sortTasksBySequence(updatedTasksArray);
+  console.log('Selected Array after sorting:', this.selectedSeqArr);
+
+
+
+  // Flatten tasks into a linear structure
+  const flattenedTasks = this.breakToLinear(this.selectedSeqArr);
+
+  const removeDup = this.removeDuplicates(this.selectedSeqArr)
+  console.log('removeDup', removeDup)
+
+  this.selectedSeqArr = removeDup;
+
+  // Ensure uniqueness in the flattened tasks
+  const seen = new Set();
+  const uniqueTasks = flattenedTasks.filter((task) => {
+    const taskNo = task?.TASK_NO?.TASK_NO;
+    if (seen.has(taskNo)) return false;
+    seen.add(taskNo);
+    return true;
+  });
+
+  // Update the uniqueSubTask property
+  this.uniqueSubTask = uniqueTasks;
+  console.log('uniqueSubTask:', this.uniqueSubTask);
+}
+
   
   
   isTaskDisabled(task: any): boolean {
+
+    if (this.isCleared) {
+      return false;
+    }
+
     if (this.taskData?.approvalS_ABBR_LIST[0].status === 'Initiated' || this.taskData?.approvalS_ABBR_LIST[0].status === 'Ready to Initiate') {
       const savedTaskNos = this.taskData?.approvalS_ABBR_LIST.map((item: any) => item.approvaL_ABBRIVATION.trim());
       // console.log("Saved Task Numbers (Trimmed):", savedTaskNos);
@@ -483,8 +585,8 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
 
 
   disableInitiatedTask(task: any): boolean {
-    console.log('Task:', task);
-    console.log('Approval List:', this.taskData.approvalS_ABBR_LIST);
+    // console.log('Task:', task);
+    // console.log('Approval List:', this.taskData.approvalS_ABBR_LIST);
       return (
       this.taskData.approvalS_ABBR_LIST.some(
         (item:any) =>
@@ -512,21 +614,55 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
 
       // console.log('task from breakToLinear',task)
 
-      result.push({
-        headeR_MKEY:this.taskData.mkey,
-        tasK_NO: task.TASK_NO.TASK_NO.trim(),        
-        dayS_REQUIRED: Number(task.TASK_NO.dayS_REQUIERD),
-        approvaL_ABBRIVATION: task.TASK_NO.maiN_ABBR,
-        approvaL_DESCRIPTION: task.TASK_NO.abbR_SHORT_DESC,
-        resposiblE_EMP_MKEY: Number(task.TASK_NO.resposiblE_EMP_MKEY),
-        tentativE_START_DATE: task.TASK_NO.start_date,
-        tentativE_END_DATE: task.TASK_NO.end_date,
-        department: task.TASK_NO.department_mkey,
-        joB_ROLE: task.TASK_NO.joB_ROLE_mkey,
-        approvaL_MKEY:task.TASK_NO.approvaL_MKEY,
-        outpuT_DOCUMENT: task.TASK_NO.enD_RESULT_DOC,
-        status: task.TASK_NO.status || 'created',
-      });
+      if(this.taskData && this.taskData.mkey){
+        result.push({
+          headeR_MKEY:this.taskData.mkey,
+          tasK_NO: task.TASK_NO.TASK_NO.trim(),        
+          dayS_REQUIRED: Number(task.TASK_NO.dayS_REQUIERD),
+          approvaL_ABBRIVATION: task.TASK_NO.maiN_ABBR,
+          approvaL_DESCRIPTION: task.TASK_NO.abbR_SHORT_DESC,
+          resposiblE_EMP_MKEY: Number(task.TASK_NO.resposiblE_EMP_MKEY),
+          tentativE_START_DATE: task.TASK_NO.start_date,
+          tentativE_END_DATE: task.TASK_NO.end_date,
+          department: task.TASK_NO.department_mkey,
+          joB_ROLE: task.TASK_NO.joB_ROLE_mkey,
+          approvaL_MKEY:task.TASK_NO.approvaL_MKEY,
+          outpuT_DOCUMENT: task.TASK_NO.enD_RESULT_DOC,
+          status: task.TASK_NO.status || 'created',
+        });
+      }else{
+        result.push({
+          // headeR_MKEY:this.taskData.mkey,
+          tasK_NO: task.TASK_NO.TASK_NO.trim(),        
+          dayS_REQUIRED: Number(task.TASK_NO.dayS_REQUIERD),
+          approvaL_ABBRIVATION: task.TASK_NO.maiN_ABBR,
+          approvaL_DESCRIPTION: task.TASK_NO.abbR_SHORT_DESC,
+          resposiblE_EMP_MKEY: Number(task.TASK_NO.resposiblE_EMP_MKEY),
+          tentativE_START_DATE: task.TASK_NO.start_date,
+          tentativE_END_DATE: task.TASK_NO.end_date,
+          department: task.TASK_NO.department_mkey,
+          joB_ROLE: task.TASK_NO.joB_ROLE_mkey,
+          approvaL_MKEY:task.TASK_NO.approvaL_MKEY,
+          outpuT_DOCUMENT: task.TASK_NO.enD_RESULT_DOC,
+          status: task.TASK_NO.status || 'created',
+        });
+      }
+
+      // result.push({
+      //   headeR_MKEY:this.taskData.mkey,
+      //   tasK_NO: task.TASK_NO.TASK_NO.trim(),        
+      //   dayS_REQUIRED: Number(task.TASK_NO.dayS_REQUIERD),
+      //   approvaL_ABBRIVATION: task.TASK_NO.maiN_ABBR,
+      //   approvaL_DESCRIPTION: task.TASK_NO.abbR_SHORT_DESC,
+      //   resposiblE_EMP_MKEY: Number(task.TASK_NO.resposiblE_EMP_MKEY),
+      //   tentativE_START_DATE: task.TASK_NO.start_date,
+      //   tentativE_END_DATE: task.TASK_NO.end_date,
+      //   department: task.TASK_NO.department_mkey,
+      //   joB_ROLE: task.TASK_NO.joB_ROLE_mkey,
+      //   approvaL_MKEY:task.TASK_NO.approvaL_MKEY,
+      //   outpuT_DOCUMENT: task.TASK_NO.enD_RESULT_DOC,
+      //   status: task.TASK_NO.status || 'created',
+      // });
 
       if (task.subtask && task.subtask.length > 0) {
         task.subtask.forEach(flatten);
@@ -542,6 +678,7 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
 
 
   addProjectDef() {
+    console.log()
     const USER_CRED = this.credentialService.getUser();
     this.recursiveLogginUser = this.apiService.getRecursiveUser();
 
@@ -588,33 +725,43 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
 
     console.log('from update',this.sub_proj)
   
+    console.log('sub_project',this.taskData.projecT_NAME)
+    console.log('Project', this.taskData.property)
+
     const PROJECT = this.projectDefForm.get('property')?.value;
-    console.log(PROJECT)
+    console.log('PROJECT.MASTER_MKEY', PROJECT.MASTER_MKEY)
     const matchedProject = this.project.find((project: any) => project.TYPE_DESC === PROJECT);
-    console.log('matchedProject',matchedProject)
+    // console.log('matchedProject',matchedProject)
 
     const SUB_PROJECT = this.projectDefForm.get('subProject')?.value;
     console.log(SUB_PROJECT)
 
     const SELECTED_PROJ = this.sub_proj.find((sub_proj: any) => sub_proj.TYPE_DESC === SUB_PROJECT);
-    console.log('SELECTED_PROJ', SELECTED_PROJ.MKEY)
+    // console.log('SUB_PROJECT.MASTER_MKEY', SELECTED_PROJ.MASTER_MKEY)
+
+    const projectName = PROJECT?.MASTER_MKEY ? PROJECT.MASTER_MKEY : this.taskData?.property;
+    const subProjectName = SELECTED_PROJ?.MASTER_MKEY ? SELECTED_PROJ.MASTER_MKEY : this.taskData?.projecT_NAME;
+
   
     let subTaskList = this.uniqList;
   
-    // Remove duplicates and tasks with "Ready to Initiate" status
-    // Check if 'this.isCleared' is false, if so filter with the original logic
+   
       if (!this.isCleared) {
         subTaskList = subTaskList.filter((task, index, self) => {
             // Check if task is not "Ready to Initiate" and is not a duplicate task with status "created"
             const isDuplicate = self.findIndex(t => t.tasK_NO === task.tasK_NO) !== index;
 
             // Keep tasks that are either "Ready to Initiate" or "created" and if it is the first occurrence (or not a duplicate with status "created")
-            return (task.status === "Ready to Initiate" || task.status === "created") &&
-                  (!isDuplicate || task.status === "Ready to Initiate");
+            return (task.status === "Ready to Initiate" || task.status === "created" || task.status === "Initiated") &&
+                  (!isDuplicate || task.status === "Ready to Initiate") || (!isDuplicate || task.status === "Initiated");                                
         });
     } else {
+
+      subTaskList = this.flatList
+      console.log('subTaskList', subTaskList )
         // Otherwise, remove "Ready to Initiate" tasks
-        subTaskList = subTaskList.filter(task => task.status !== "Ready to Initiate");
+        // subTaskList = subTaskList.filter(task => task.status !== "Ready to Initiate");
+        
     }
   
   
@@ -622,9 +769,9 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
   
     const addProjectDefination = {
       mkey:this.taskData.mkey,
-      projecT_NAME: 210,
+      projecT_NAME: projectName,
       projecT_ABBR: this.projectDefForm.get('projectAbbr')?.value,
-      property: SELECTED_PROJ.MKEY,
+      property: subProjectName,
       legaL_ENTITY: this.projectDefForm.get('legalEntity')?.value,
       projecT_ADDRESS: this.projectDefForm.get('projAddress')?.value,
       buildinG_CLASSIFICATION: Number(this.projectDefForm.get('bldCla')?.value),
@@ -635,7 +782,7 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
       attributE3: "",
       createD_BY: USER_CRED[0].MKEY,
       lasT_UPDATED_BY: USER_CRED[0].MKEY,
-      approvalS_ABBR_LIST: subTaskList
+      approvalS_ABBR_LIST: this.removeDuplicates(subTaskList)
     };
   
     console.log(addProjectDefination);
@@ -932,6 +1079,17 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
       }    
   }
 
+
+  confirmClear() {
+    const confirmAction = window.confirm("Are you sure you want to clear all data?");
+    if (confirmAction) {
+      // window.location.reload();
+      this.clear();
+    } else {
+      console.log('Clear action was canceled.');
+    }
+  }
+
   clear() {
   
       this.taskData.buildinG_CLASSIFICATION =  null,
@@ -941,9 +1099,15 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
     this.subTasks = [];
     this.ValueList = [];
     this.selectedSeqArr = [];
+    this.flatList = [];
+    this.selectedTasksId = new Set();
     this.isCleared = true; // Set clear flag
     console.log('Clear action executed.');
     this.tostar.success('Cleared successfully');
+  }
+
+  reset(){
+    window.location.reload();
   }
   
   
@@ -1000,19 +1164,25 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
   }
 
   isTaskInSavedList(task: any): boolean {
+    // Return false immediately if the data is cleared
+    if (this.isCleared) {
+      return false;
+    }
+  
     // Check if the status is 'Initiated' before applying the logic
     if (this.taskData?.approvalS_ABBR_LIST[0].status === 'Initiated' || this.taskData?.approvalS_ABBR_LIST[0].status === 'Ready to Initiate') {
       // Get the selected task numbers from approvalS_ABBR_LIST
-      const savedTaskNos = this.taskData?.approvalS_ABBR_LIST.map((item: any) => item.tasK_NO.trim());
+      const savedTaskNos = this.taskData?.approvalS_ABBR_LIST.map((item: any) => item.maiN_ABBR);
       // console.log("Saved Task Numbers (Trimmed):", savedTaskNos); // Log the saved task numbers to verify
   
       // Check if the current task number matches one of the saved task numbers
-      return savedTaskNos.includes(task.TASK_NO?.TASK_NO.trim());
+      return savedTaskNos.includes(task.TASK_NO?.maiN_ABBR);
     }
   
     // Return false if status is not 'Initiated' or other cases
     return false;
   }
+  
   
   
 
@@ -1028,6 +1198,8 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
     );
 
   }
+
+
 
 
   fetchEmployeeName(): void {
@@ -1314,10 +1486,13 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
     // Check for required form controls
     Object.keys(this.projectDefForm.controls).forEach(controlName => {
       const control = this.projectDefForm.get(controlName);
+
   
       if (control?.errors?.required) {
         // Convert camelCase to Title Case
         const formattedControlName = convertToTitleCase(controlName);
+
+        console.log('formattedControlName', formattedControlName)
         addControlError(formattedControlName);
       }
     });
@@ -1337,6 +1512,11 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
       const invalidSubTask = subTaskList.find((subTask) => {
         return !subTask.tentativE_START_DATE || !subTask.tentativE_END_DATE;
       });
+
+  
+
+
+      console.log('subTaskList', subTaskList)
   
       if (invalidSubTask) {
         this.tostar.error('Missing tentative start or end date for a subtask');
@@ -1358,6 +1538,7 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
     const uniqList = this.uniqList;
     const flatList = this.breakToLinear(selectedSeqArr);
   
+    this.flatList = flatList
     console.log('uniqList', uniqList);
     console.log('flatList', flatList);
   
@@ -1451,6 +1632,26 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
     } else {
       console.log('Form is invalid, cannot add template');
     }
+  }
+
+
+  deleteTask() {
+    const lastUpdatedBy = this.taskData.lasT_UPDATED_BY;
+    const headerMkey = this.taskData.mkey;    
+    const jwtToken = 'your_jwt_token_here';
+  
+    this.apiService.deleteProjectDefinationTask(lastUpdatedBy, headerMkey, jwtToken)
+      .subscribe({
+        next: (response) => {
+          console.log('Task deleted successfully:', response);
+        },
+        error: (error) => {
+          console.error('Error occurred while deleting task:', error);
+        },
+        complete: () => {
+          console.log('Delete task request completed.');
+        }
+      });
   }
 
 

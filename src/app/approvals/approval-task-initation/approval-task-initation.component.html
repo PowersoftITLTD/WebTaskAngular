@@ -171,24 +171,27 @@
                       <div class="form-group">
                         <label for="category">Sanctioning Authority</label>
 
-                        <ng-container *ngIf="taskData?.MKEY">
-                          <select class="form-control" formControlName="sanctioningAuth" [class.disabled]="true"
-                            [attr.disabled]="true" [disabled]="isFieldDisabled">
-                            <option value=""> --SELECT--</option>
-                            <option *ngFor="let sanctioningAuth of SanctoningAuthList" [value]="sanctioningAuth.mkey"
-                              [selected]="sanctioningAuth.typE_DESC === taskData.SANCTION_AUTHORITY_NAME">
-                              {{sanctioningAuth.typE_DESC}} </option>
+                        <!-- <ng-container *ngIf="taskData?.MKEY"> -->
+                          <select class="form-control" [class.disabled]="true"
+                          [attr.disabled]="true" [disabled]="isFieldDisabled">
+                            <option value="">--SELECT--</option>
+                            <option *ngFor="let sanctioningAuth of SanctoningAuthList" 
+                                    [value]="sanctioningAuth.mkey" 
+                                    [selected]="sanctioningAuth.typE_DESC === taskData.SANCTION_AUTHORITY_NAME">
+                              {{ sanctioningAuth.typE_DESC }}
+                            </option>
                           </select>
-                        </ng-container>
+                          
+                        <!-- </ng-container> -->
 
-                        <ng-container *ngIf="!taskData?.MKEY">
+                        <!-- <ng-container *ngIf="!taskData?.MKEY">
                           <select class="form-control" formControlName="sanctioningAuth">
                             <option value=""> --SELECT--</option>
                             <option *ngFor="let sanctioningAuth of SanctoningAuthList" [value]="sanctioningAuth.mkey"
                               [selected]="sanctioningAuth.typE_DESC === taskData.SANCTION_AUTHORITY_NAME">
                               {{sanctioningAuth.typE_DESC}} </option>
                           </select>
-                        </ng-container>
+                        </ng-container> -->
                       </div>
                     </div>
                     <div class="col-xs-12 col-xl-3 col-md-12 ">
