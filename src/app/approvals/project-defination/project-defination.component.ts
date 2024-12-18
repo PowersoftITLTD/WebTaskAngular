@@ -37,6 +37,8 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
   selectedDocsMap: { [key: string]: any[] } = { endResult: [], checklist: [] };
   private hasDataBeenPassed = false; 
 
+  disableClear = false
+
   isCleared = false;
   selectedTasksId: Set<any> = new Set();
   selectedTasksId_new: Set<any> = new Set();
@@ -134,10 +136,10 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
     this.activeIndices = this.accordionItems.map((_, index) => index);
     this.onLogin();
     this.fetchProjectData();
-    console.log('this.taskData.approvalS_ABBR_LIST[0].status', this.taskData.approvalS_ABBR_LIST[0].status)
+    // console.log('this.taskData.approvalS_ABBR_LIST[0].status', this.taskData.approvalS_ABBR_LIST[0].status)
     if (this.taskData && this.taskData.mkey) {
-      console.log('Saved Tasks:', this.taskData?.approvalS_ABBR_LIST[0].tasK_NO);
-      console.log('Task Data:', this.subTasks);
+      // console.log('Saved Tasks:', this.taskData?.approvalS_ABBR_LIST[0].tasK_NO);
+      // console.log('Task Data:', this.subTasks);    
 
 
       this.selectedOptionList();
@@ -163,6 +165,15 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
     })
   }
 
+
+  disableInitiatedCombo(): boolean {
+    if (this.taskData.approvalS_ABBR_LIST[0].status === 'Initiated') {
+      this.disableClear = true;
+      return true;
+    }
+    this.disableClear = false;
+    return false;
+  }
   
   toggleFormVisibility(index: number) {
     this.formVisibleMap[index] = !this.formVisibleMap[index];
@@ -1497,7 +1508,6 @@ toggleSelection(task: any = []): void {
       }
     });
   
-    // If there are any required fields missing, show the error message
     if (requiredControls.length > 0) {
       const errorMessage = `${requiredControls.join(' , ')}`;
       this.tostar.error(errorMessage);
@@ -1508,14 +1518,11 @@ toggleSelection(task: any = []): void {
     const subTaskList = this.uniqList;
   
     if (subTaskList && subTaskList.length > 0) {
-      // Check for missing dates in subtasks
       const invalidSubTask = subTaskList.find((subTask) => {
         return !subTask.tentativE_START_DATE || !subTask.tentativE_END_DATE;
       });
 
   
-
-
       console.log('subTaskList', subTaskList)
   
       if (invalidSubTask) {
@@ -1523,15 +1530,13 @@ toggleSelection(task: any = []): void {
         return;
       }
   
-      // Validate the dates and parent-child relationships
       const invalidDateSubTask = this.validateTaskDates(subTaskList);
   
       if (invalidDateSubTask) {
-        return;  // If an invalid date is found, stop further processing
+        return;  
       }
     }
   
-    // Continue with your other logic after the date validation
     console.log('subTaskList', subTaskList)
   
     const selectedSeqArr = this.selectedSeqArr;
@@ -1561,7 +1566,6 @@ toggleSelection(task: any = []): void {
     if (invalidDateSubTask) {
       return;  
     }
-  
     return true;
   }
   
@@ -1588,11 +1592,9 @@ toggleSelection(task: any = []): void {
         }
       }
       
-      // Check for the "Position 1" task, i.e., the first parent task without dots
       if (i === 0) {
         const position1EndDate = new Date(task.tentativE_END_DATE);
   
-        // Ensure Position 1's end date is greater than all other tasks
         for (let j = 1; j < subTaskList.length; j++) {
           const otherTask = subTaskList[j];
           const otherEndDate = new Date(otherTask.tentativE_END_DATE);

@@ -25,7 +25,7 @@
                   </button>
                 </div>
 
-                <div *ngIf="taskData?.mkey && taskData.approvalS_ABBR_LIST[0].status !== '' || isCleared">
+                <div *ngIf="taskData?.mkey">
                   <button type="submit" class="btn btn-light mr-2" (click)="onUpdateProjDef()" id="btnSaveTask">
                     SAVE
                   </button>
@@ -156,10 +156,10 @@
                       <i class="fa-solid plus btn mr-2" type="button" (click)="getOptionList()"><small>Get
                           List</small></i>
 
-                     <div *ngIf="this.taskData.approvalS_ABBR_LIST[0].status !== 'Initiated'">
-                        <i *ngIf="!isCleared" class="fa-solid plus btn mr-2" type="button" (click)="confirmClear()">
+                     <div >
+                        <button *ngIf="!isCleared" class="fa-solid plus btn mr-2" type="button" [disabled]="disableClear" (click)="confirmClear()">
                           <small>Clear</small>
-                        </i>
+                        </button>
                       
                         <!-- Reset Button -->
                         <i *ngIf="isCleared" class="fa-solid plus btn" type="button" (click)="reset()">
@@ -176,15 +176,22 @@
                           <label for="category">Building Classification</label>
 
                           <ng-container *ngIf="taskData?.mkey">
-                            <select class="h6 form-control" formControlName="bldCla"
-                              [(ngModel)]="taskData.buildinG_CLASSIFICATION">
-                              <option value=""> --SELECT--</option>
-                              <option *ngFor="let building of buildingList"
-                                [selected]="building.typE_DESC === taskData.buildingName" [value]="building.mkey">
+                            <select 
+                              class="h6 form-control" 
+                              formControlName="bldCla" 
+                              [(ngModel)]="taskData.buildinG_CLASSIFICATION" 
+                              [attr.disabled]="disableInitiatedCombo() ? true : null"
+                              >
+                              <option value="">--SELECT--</option>
+                              <option 
+                                *ngFor="let building of buildingList" 
+                                [selected]="building.typE_DESC === taskData.buildingName" 
+                                [value]="building.mkey">
                                 {{building.typE_DESC}}
                               </option>
                             </select>
                           </ng-container>
+                          
 
                           <ng-container *ngIf="!taskData?.mkey">
                             <!-- <label for="category">Building Classification</label> -->
@@ -205,7 +212,8 @@
                           <ng-container *ngIf="taskData?.mkey">
                             <label for="category">Building Standard</label>
                             <select class="h6 form-control" formControlName="blsStandard"
-                              [(ngModel)]="taskData.buildinG_STANDARD">
+                              [(ngModel)]="taskData.buildinG_STANDARD"
+                              [attr.disabled]="disableInitiatedCombo() ? true : null">
                               <option value=""> --SELECT--</option>
                               <option *ngFor="let standard of standardList"
                                 [selected]="standard.typE_DESC === taskData.standardName" [value]="standard.mkey">
@@ -233,7 +241,8 @@
                           <ng-container *ngIf="taskData?.mkey">
                             <label for="category">Statutory Authority</label>
                             <select class="h6 form-control" formControlName="statutoryAuth"
-                              [(ngModel)]="taskData.statutorY_AUTHORITY">
+                              [(ngModel)]="taskData.statutorY_AUTHORITY"
+                              [attr.disabled]="disableInitiatedCombo() ? true : null">
                               <option value=""> --SELECT--</option>
                               <option *ngFor="let statutoryAuth of statutoryAuthList"
                                 [selected]="statutoryAuth.typE_DESC === taskData.authorityName"

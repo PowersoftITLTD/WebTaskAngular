@@ -20,23 +20,23 @@
                                 </div>
 
                                 <div class="flex-grow-1 ">
-                                    
+
                                 </div>
                                 <div class="mr-8 ">
                                     <div *ngIf="!taskData?.MKEY">
-                                        <button type="submit" class="btn btn-light mr-2" (click)="onDocDepository()" id="btnSaveTask">
-                                          ADD
+                                        <button type="submit" class="btn btn-light mr-2" (click)="onDocDepository()"
+                                            id="btnSaveTask">
+                                            ADD
                                         </button>
-                                      </div>
+                                    </div>
 
-                                      <div *ngIf="taskData?.MKEY">
-                                        <button type="submit" class="btn btn-light mr-2" (click)="onDocDepository()" id="btnSaveTask">
-                                          SAVE
+                                    <div *ngIf="taskData?.MKEY">
+                                        <button type="submit" class="btn btn-light mr-2" (click)="updateDepository()"
+                                            id="btnSaveTask">
+                                            SAVE
                                         </button>
-                                      </div>
-                                   
-                                  </div>
-
+                                    </div>
+                                </div>
                             </div>
                             <form [formGroup]="docDepositoryForm" (ngSubmit)="onSubmit()">
                                 <div class="tab-content">
@@ -46,98 +46,161 @@
                                             <div class="col-xs-12 col-xl-6 col-md-12">
                                                 <div class="form-group">
                                                     <label for="taskName">Property</label>
-                                                    <select class="form-control " #projectSelect
-                                                        (change)="onProjectSelect(projectSelect)" formControlName="propertyType">
-                                                        <option value="" selected>Select</option>
-                                                        <option *ngFor="let p of project" [ngValue]="p">{{ p.TYPE_DESC }}
-                                                        </option>
-                                                    </select>
+
+                                                    <ng-container *ngIf="taskData?.MKEY">
+                                                        <select class="form-control" formControlName="propertyType"
+                                                            [(ngModel)]="taskData.property" #projectSelect
+                                                            (change)="onProjectSelect(projectSelect)">
+                                                            <!-- <option value="0">Select</option> -->
+                                                            <option *ngFor="let p of project" [ngValue]="p"
+                                                                [selected]="p.TYPE_DESC === taskData.project_Name">
+                                                                {{ p.TYPE_DESC }}
+                                                            </option>
+                                                        </select>
+                                                    </ng-container>
+
+                                                    <ng-container *ngIf="!taskData?.MKEY">
+                                                        <select class="form-control " formControlName="propertyType"
+                                                            #projectSelect (change)="onProjectSelect(projectSelect)">
+                                                            <option value="" selected>Select</option>
+                                                            <option *ngFor="let p of project" [ngValue]="p">{{
+                                                                p.TYPE_DESC }}</option>
+                                                        </select>
+                                                    </ng-container>
+
                                                 </div>
                                             </div>
 
                                             <div class="col-xs-12 col-xl-6 col-md-12">
                                                 <div class="form-group">
                                                     <label for="category">Building</label>
-                                                    <select class="form-control" formControlName="buildingType">
-                                                        <option value="0">Select
-                                                        </option>
-                                                        <option *ngFor="let s of sub_proj" [ngValue]="s">{{ s.TYPE_DESC }}
-                                                        </option>
-                                                    </select>
+
+                                                    <ng-container *ngIf="taskData?.MKEY">
+                                                        <select class="form-control" formControlName="buildingType"
+                                                            name="buildingType" [(ngModel)]="taskData.projecT_NAME">
+                                                            <option value="0">Select</option>
+                                                            <option *ngFor="let s of sub_proj"
+                                                                [selected]="s.TYPE_DESC === taskData.sub_proj_name">
+                                                                {{ s.TYPE_DESC }}
+                                                            </option>
+                                                        </select>
+                                                    </ng-container>
+
+                                                    <ng-container *ngIf="!taskData?.MKEY">
+                                                        <select class="form-control" formControlName="buildingType">
+                                                            <option value="0">Select
+                                                            </option>
+                                                            <option *ngFor="let s of sub_proj" [ngValue]="s">{{
+                                                                s.TYPE_DESC }}
+                                                            </option>
+                                                        </select>
+                                                    </ng-container>
+
                                                 </div>
                                             </div>
                                         </div>
 
                                         <div class="row justify-content-center">
                                             <div class="col-xs-12 col-xl-4 col-md-12 mx-4">
-                                                <div class="row" >
+                                                <div class="row">
                                                     <div class="form-group sample-wrapper">
                                                         <!-- <h6>Details:</h6> -->
                                                         <div class="sample-wrapper ml-8">
-                                                            <div *ngFor="let city of selectedDocsMap['checklist']; let i = index">
-                                                                <span>Document Name:-</span>&nbsp; <span>{{city.typE_DESC}}</span>
-                                                            </div>                                                        
-                                                        </div>                                                    
+                                                            <div
+                                                                *ngFor="let doc of selectedDocsMap['checklist']; let i = index">
+                                                                <span>Document Name:-</span>&nbsp;
+                                                                <span>{{doc.typE_DESC}}</span>
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            
-                                                    <div class="">  
-                                                        <!-- <div class="row" > -->
-                                                            <div *ngIf="docType[0]?.DOC_NUM_APP_FLAG === 'Y'" class="col-xs-12 col-xl-12 col-md-12 mb-6 " >
-                                                                <div class="form-group" >
-                                                                    <label for="documentAbbrivation">{{docType[0]?.DOC_NUM_FIELD_NAME}}</label>
-                                                                    <input type="text" maxlength="150" class="form-control" formControlName="documentNumberFieldName" />
-                                                                </div>
-                                                            </div>                                                                  
-                                                        <!-- </div>Document Number Field Name. -->
-        
-                                                        <!-- <div class="row"> -->
-                                                            <div *ngIf="docType[0]?.DOC_NUM_DATE_APP_FLAG === 'Y'" class="col-xs-12 col-xl-12 col-md-12 mb-6">
-                                                                <div class="form-group">
-                                                                    <label for="documentAbbrivation">{{docType[0]?.DOC_NUM_DATE_NAME}}</label>
-                                                                    <input type="date" maxlength="150" class="form-control" formControlName="documentDateFieldName" />
-                                                                </div>
-                                                            </div>
-        
-                                                            <div *ngIf="docType[0]?.DOC_NUM_VALID_FLAG === 'Y'" class="col-xs-12 col-xl-12 col-md-12 mb-6">
-                                                                <div class="form-group">
-                                                                    <label for="documentAbbrivation">validity Date</label>
-                                                                    <input type="date" maxlength="150" class="form-control" formControlName="validityDate"/>
-                                                                </div>
-                                                            </div>
-                                                        <!-- </div> -->
-        
-                                                        <!-- <div class="row"> -->
-                                                            <div  class="col-xs-12 col-xl-12 col-md-12 mb-6">
-                                                                <div class="preview">
-                                                                    <div class="preview-elements">
-                                                                      <div class="custom-file" id="TaskInfocustom_file">
-                                          
-                                          
-                                                                        <input type="file" class="custom-file-input" id="customFile" formControlName="documentAttachment"
-                                                                          (change)="onFileSelected($event)">
-                                                                        <label class="custom-file-label" for="customFile" id="AttachmentDetails">Attachment if
-                                                                          any add:</label>
-                                                                      </div>
-                                                                      <div id="dvAtchment" style="display:none">
-                                                                        <a href="" target="_blank" id="DownAttchment">
-                                                                          <i class="fa fa-download" aria-hidden="true"></i><span>DownFileName</span>
-                                                                        </a>
-                                                                        <button type="button" style="background-color:transparent !important" aria-label="Close">
-                                                                          <img src="../../../../assets/Content/icons/Del.png" style="width:32px;" />
-                                                                        </button>
-                                                                      </div>
-                                                                    </div>
-                                                                  </div>
-                                                            </div>
-                                                        <!-- </div> -->
-        
-                                                        <!-- <div class="row"> -->
-                                                        
-                                                        <!-- </div> -->
+
+                                                <div class="">
+
+                                                    <div *ngIf="docType[0]?.DOC_NUM_APP_FLAG === 'Y'"
+                                                        class="col-xs-12 col-xl-12 col-md-12 mb-6 ">
+                                                        <div class="form-group">
+                                                            <label
+                                                                for="documentAbbrivation">{{docType[0]?.DOC_NUM_FIELD_NAME}}</label>
+
+                                                            <ng-container *ngIf="taskData?.MKEY">
+                                                                <input type="text" maxlength="150" class="form-control"
+                                                                formControlName="documentNumberFieldName" [(ngModel)]="taskData.DOC_NUMBER" />
+                                                            </ng-container>
+
+                                                            <ng-container *ngIf="!taskData?.MKEY">
+                                                                <input type="text" maxlength="150" class="form-control"
+                                                                formControlName="documentNumberFieldName"  />
+                                                            </ng-container>
+                                                            
+                                                        </div>
                                                     </div>
-                                            
-                                            
+
+                                                    <div *ngIf="docType[0]?.DOC_NUM_DATE_APP_FLAG === 'Y'"
+                                                        class="col-xs-12 col-xl-12 col-md-12 mb-6">
+                                                        <div class="form-group">
+                                                            <label
+                                                                for="documentAbbrivation">{{docType[0]?.DOC_NUM_DATE_NAME}}</label>
+                                                            <ng-container *ngIf="taskData?.MKEY">
+                                                                <input type="date" maxlength="150" class="form-control"
+                                                                (ngModelChange)="taskData.CREATION_DATE = $event"
+                                                                [ngModel]="taskData.CREATION_DATE | date: 'yyyy-MM-dd'"                                                                
+                                                                formControlName="documentDateFieldName" />
+                                                            </ng-container>
+                                                            <ng-container *ngIf="!taskData?.MKEY">
+                                                                <input type="date" maxlength="150" class="form-control"                                                                                                                               
+                                                                formControlName="documentDateFieldName" />
+                                                            </ng-container>                                                       
+                                                        </div>
+                                                    </div>
+
+                                                    <div *ngIf="docType[0]?.DOC_NUM_VALID_FLAG === 'Y'"
+                                                        class="col-xs-12 col-xl-12 col-md-12 mb-6">
+                                                        <div class="form-group">
+                                                            <label for="documentAbbrivation">validity Date</label>
+                                                            <ng-container *ngIf="taskData?.MKEY">
+                                                                <input type="date" maxlength="150" class="form-control"
+                                                                (ngModelChange)="taskData.VALIDITY_DATE = $event"
+                                                                [ngModel]="taskData.VALIDITY_DATE | date: 'yyyy-MM-dd'"
+                                                                formControlName="validityDate" />
+                                                            </ng-container>
+                                                            <ng-container *ngIf="!taskData?.MKEY">
+                                                                <input type="date" maxlength="150" class="form-control"                                                               
+                                                                formControlName="validityDate" />
+                                                            </ng-container>                                                          
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-xs-12 col-xl-12 col-md-12 mb-6">
+                                                        <div class="preview">
+                                                            <div class="preview-elements">
+                                                                <div class="custom-file" id="TaskInfocustom_file">
+
+
+                                                                    <input type="file" class="custom-file-input"
+                                                                        id="customFile"
+                                                                        formControlName="documentAttachment"
+                                                                        (change)="onFileSelected($event)">
+                                                                    <label class="custom-file-label" for="customFile"
+                                                                        id="AttachmentDetails">Attachment if
+                                                                        any add:</label>
+                                                                </div>
+                                                                <div id="dvAtchment" style="display:none">
+                                                                    <a href="" target="_blank" id="DownAttchment">
+                                                                        <i class="fa fa-download"
+                                                                            aria-hidden="true"></i><span>DownFileName</span>
+                                                                    </a>
+                                                                    <button type="button"
+                                                                        style="background-color:transparent !important"
+                                                                        aria-label="Close">
+                                                                        <img src="../../../../assets/Content/icons/Del.png"
+                                                                            style="width:32px;" />
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
 
                                             <div class="col-xs-12 col-xl-6 col-md-12">
@@ -145,8 +208,8 @@
                                                     <label for="category">Document Abbr / Document name</label>
                                                     <div class="sample-wrapper">
                                                         <div class="pl-4 combo-section">
-                                                            <input type="text"
-                                                                placeholder="Search Documents" class="search-input" />
+                                                            <input type="text" placeholder="Search Documents"
+                                                                class="search-input" />
                                                             <div *ngIf="filteredDocs.length > 0" class="">
                                                                 <ul class="dropdown-list" style="height: 40rem;">
                                                                     <ng-container
@@ -159,7 +222,7 @@
                                                                             *ngFor="let sortedDoc of getGroupedAndSortedDocs('checklist')[country]">
                                                                             <li (click)="toggleSelection('checklist', sortedDoc)"
                                                                                 [class.selected]="isSelected('checklist', sortedDoc)">
-                                                                                {{ sortedDoc.typE_DESC }}   
+                                                                                {{ sortedDoc.typE_DESC }}
                                                                             </li>
                                                                         </ng-container>
                                                                     </ng-container>
@@ -169,46 +232,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-
-                                        <!-- <div class="pl-3">
-                                            <div class="row">
-                                                <div class="col-xs-12 col-xl-4 col-md-12 mb-6">
-                                                    <div class="form-group">
-                                                        <label for="documentAbbrivation">LR No.</label>
-                                                        <input type="text" maxlength="150" class="form-control" />
-                                                    </div>
-                                                </div>                                                                  
-                                            </div>
-            
-                                            <div class="row">
-                                                <div class="col-xs-12 col-xl-4 col-md-12 mb-6">
-                                                    <div class="form-group">
-                                                        <label for="documentAbbrivation">LR Date</label>
-                                                        <input type="text" maxlength="150" class="form-control" />
-                                                    </div>
-                                                </div>
-                                            </div>
-            
-                                            <div class="row">
-                                                <div class="col-xs-12 col-xl-4 col-md-12 mb-6">
-                                                    <div class="form-group">
-                                                        <label for="documentAbbrivation">Attachment</label>
-                                                        <input type="file" maxlength="150" class="form-control" />
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div class="row">
-                                                <div class="col-xs-12 col-xl-4 col-md-12 mb-6">
-                                                    <div class="form-group">
-                                                        <label for="documentAbbrivation">Validity Date</label>
-                                                        <input type="date" maxlength="150" class="form-control" />
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>  -->
-
+                                        </div>                                     
                                     </div>
                                 </div>
                             </form>

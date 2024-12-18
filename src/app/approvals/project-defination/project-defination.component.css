@@ -145,6 +145,7 @@
   
   .table-header th {
     position: sticky;
+    font-weight: bold;
     top: 0;
     background-color: #fff; /* Ensure header is visible on top */
     z-index: 1; /* Ensure header is above the table body */
