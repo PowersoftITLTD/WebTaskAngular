@@ -25,25 +25,26 @@ export class ProgressDetailsComponent implements OnInit {
     this.route.params.subscribe(params => {
       if (params['Task_Num']) {
         this.task = JSON.parse(params['Task_Num']);
-        this.getSelectedTaskDetails(this.task).subscribe((taskDetails: any) => {
-          this.taskDetails = taskDetails;
-<<<<<<< HEAD
+        const token = this.apiService.getRecursiveUser();
 
-=======
->>>>>>> parent of cb45e19 (Adding Updated Packages 27-11-2024)
-          this.getTree(taskDetails);
+        this.getSelectedTaskDetails(this.task.toString(), token).subscribe((response: any) => {
+          this.taskDetails = response[0]?.data;
+
+
+          this.getTree(response[0]?.data);
         });
       }
     });
   }
 
-  getSelectedTaskDetails(mkey: string) {
-    return this.apiService.getSelectedTaskDetails(mkey.toString());
+  getSelectedTaskDetails(mkey: string, tokecn:string) {
+    const token = this.apiService.getRecursiveUser();
+
+    return this.apiService.getSelectedTaskDetailsNew(mkey, token);
   }
 
 
   getTree(taskDetails: any) {
-<<<<<<< HEAD
     console.log('taskDetails getTree', taskDetails)
 
     console.log('this.task', this.task)
@@ -52,18 +53,11 @@ export class ProgressDetailsComponent implements OnInit {
     this.apiService.getTreeList(this.task).subscribe((same_data) => {
 
       console.log('same_data',same_data)
-=======
-    this.loading = true;
-    this.apiService.getTreeList(this.task).subscribe((same_data) => {
->>>>>>> parent of cb45e19 (Adding Updated Packages 27-11-2024)
       const selectedData = taskDetails.filter((item: any) => {
         return same_data.some((task: any) => task.TASK_NO === item.TASK_NO);
       });
 
-<<<<<<< HEAD
       console.log('selectedData', selectedData)
-=======
->>>>>>> parent of cb45e19 (Adding Updated Packages 27-11-2024)
       const buildHierarchy = (tasks: any, rootTaskNo: any) => {
         const rootTask = tasks.find((task: any) => task.TASK_NO === rootTaskNo);
         if (!rootTask) return null;
@@ -119,18 +113,10 @@ export class ProgressDetailsComponent implements OnInit {
         const taskNo = selectedTask.TASK_NO;
         const hierarchy = buildHierarchy(same_data, taskNo);
 
-<<<<<<< HEAD
-=======
-        // console.log(hierarchy);
->>>>>>> parent of cb45e19 (Adding Updated Packages 27-11-2024)
 
         if (hierarchy) {
           this.subTasks.push(hierarchy);
           this.loading = false;
-<<<<<<< HEAD
-=======
-          // console.log(this.subTasks)
->>>>>>> parent of cb45e19 (Adding Updated Packages 27-11-2024)
         }
       });
     });

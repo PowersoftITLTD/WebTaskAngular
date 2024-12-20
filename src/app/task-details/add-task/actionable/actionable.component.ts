@@ -46,11 +46,17 @@ export class ActionableComponent implements OnInit {
       if (params['Task_Num']) {
 
         this.task = JSON.parse(params['Task_Num']);
-        this.getSelectedTaskDetails(this.task).subscribe((taskDetails: any) => {
+        const token = this.apiService.getRecursiveUser();
 
-          this.details = taskDetails;
-          this.taskDetails = taskDetails[0].STATUS;
+
+        this.getSelectedTaskDetails(this.task.toString(), token).subscribe((response: any) => {
+          this.taskDetails = response[0]?.data;
+          console.log('getSelectedTaskDetails',this.taskDetails)
+          this.details = response[0]?.data;
+          this.taskDetails = response[0]?.data[0].STATUS;
           this.getActionableDetails();
+          this.checkTheStatus();
+
 
         });
       }
@@ -75,6 +81,7 @@ export class ActionableComponent implements OnInit {
     this.loading = true;
     if (this.task && this.loggedInUser && this.taskDetails) {
       this.apiService.getActionableDetails(this.task, this.loggedInUser[0]?.MKEY, this.taskDetails).subscribe((data: any) => {
+        console.log('from old',this.taskDetails)
         this.status = data.Table;
         this.currentStatus = data.Table1;
         this.loading = false;
@@ -109,6 +116,29 @@ export class ActionableComponent implements OnInit {
     } else {
       console.error('Cannot fetch actionable details: Missing required parameters');
     }
+  }
+
+
+  checkTheStatus(){
+    // this.loading = true;
+    // if (this.task && this.loggedInUser && this.taskDetails) {
+      const token = this.apiService.getRecursiveUser();
+      console.log('checknthe ',this.task.toString());
+      console.log('checknthe ',this.loggedInUser[0]?.MKEY);
+      console.log('checknthe ',this.taskDetails);
+      console.log('checknthe ',token);
+
+      this.apiService.getActionableDetailsNew(this.task.toString(), this.loggedInUser[0]?.MKEY.toString(), this.taskDetails, token).subscribe((response: any) => {
+
+        console.log('Response checkTheStatus', response[0]?.data)
+        // this.status = data.Table;
+        // this.currentStatus = data.Table1;
+        // this.loading = false;
+        
+      });
+    // } else {
+    //   console.error('Cannot fetch actionable details: Missing required parameters');
+    // }
   }
 
   onStatusChange(event: any) {
@@ -146,10 +176,11 @@ export class ActionableComponent implements OnInit {
       this.details && this.details.length > 0 &&
       this.status && this.status.length > 0) {
 
-      const logged_user = this.loggedInUser[0]?.MKEY;
+      const logged_user = this.loggedInUser[0]?.MKEY.toString();
       const task_user = this.details[0]?.RESPOSIBLE_EMP_MKEY;
       const status = this.status[0]?.TYPE_DESC;
       const currentStatus = this.currentStatus[0]?.STATUS;
+
 
       return logged_user === task_user || status === 'WORK IN PROGRESS' && currentStatus !== 'Re-Work';
     } else {
@@ -158,8 +189,11 @@ export class ActionableComponent implements OnInit {
   }
 
 
-  getSelectedTaskDetails(task: any) {
-    return this.apiService.getSelectedTaskDetails(task);
+  getSelectedTaskDetails(task: any, tokecn:string) {
+
+    const token = this.apiService.getRecursiveUser();
+
+    return this.apiService.getSelectedTaskDetailsNew(task, token);
   }
 
 

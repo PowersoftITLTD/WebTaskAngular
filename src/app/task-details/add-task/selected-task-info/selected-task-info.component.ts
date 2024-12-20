@@ -73,6 +73,8 @@ export class SelectedTaskInfoComponent implements OnInit {
 
   ngOnInit(): void {
 
+    
+
     this.fetchProjectData();
     this.fetchEmployeeName();
     this.initializeForm();
@@ -96,18 +98,18 @@ export class SelectedTaskInfoComponent implements OnInit {
     this.route.params.subscribe(params => {
       if (params['Task_Num']) {
         this.task = JSON.parse(params['Task_Num']);
+        const token = this.apiService.getRecursiveUser();
+        this.getSelectedTaskDetails(this.task.toString(), token).subscribe((response: any) => {
 
-        this.getSelectedTaskDetails(this.task).subscribe((taskDetails: any) => {
+          this.taskDetails = response[0]?.data;
 
-          this.taskDetails = taskDetails
-
-          console.log('taskDetails', taskDetails)
+          // console.log('taskDetails', response[0]?.data)
 
           // console.log('this.taskDetails[0]?.PROJECT_MKEY', this.taskDetails[0])
 
-          this.apiService.getSubProjectDetails(this.taskDetails[0]?.PROJECT_MKEY).subscribe(
-            (data: any) => {
-              this.sub_proj = data;
+          this.apiService.getSubProjectDetailsNew(this.taskDetails[0]?.PROJECT_MKEY.toString(), token).subscribe(
+            (response: any) => {
+              this.sub_proj = response[0].data;
               // console.log('this.sub_proj',this.sub_proj)                                  
             },
             (error: ErrorHandler) => {
@@ -119,8 +121,8 @@ export class SelectedTaskInfoComponent implements OnInit {
             completionDate: this.taskDetails[0].COMPLETION_DATE
           });
 
-          if (taskDetails.length > 0 && taskDetails[0].TAGS !== null) {
-            const tagsArray = taskDetails[0].TAGS.split(',');
+          if (response[0]?.data.length > 0 && response[0].data[0]?.TAGS !== null) {
+            const tagsArray = response[0]?.data[0].TAGS.split(',');
             this.selectedTags = tagsArray;
           } else {
             this.selectedTags = [];
@@ -131,6 +133,7 @@ export class SelectedTaskInfoComponent implements OnInit {
     });
   }
 
+ 
 
   canEditTaskDescription(): boolean {
     if (this.loggedInUser && this.taskDetails[0]) {
@@ -177,8 +180,10 @@ export class SelectedTaskInfoComponent implements OnInit {
 
 
 
-  getSelectedTaskDetails(mkey: string) {
-    return this.apiService.getSelectedTaskDetails(mkey.toString());
+  getSelectedTaskDetails(mkey: string, tokecn:string) {
+    const token = this.apiService.getRecursiveUser();
+
+    return this.apiService.getSelectedTaskDetailsNew(mkey, token);
   }
 
 
@@ -196,7 +201,9 @@ export class SelectedTaskInfoComponent implements OnInit {
   }
 
   fetchEmpID() {
-    this.apiService.getEmpDetails().subscribe(
+    const token = this.apiService.getRecursiveUser();;
+
+    this.apiService.getEmpDetailsNew(token).subscribe(
       (data: any) => {
         this.emp_ID = data;
         const empObj = this.emp_ID.find((e: any) => e.MKEY == this.task.RESPOSIBLE_EMP_MKEY);
@@ -214,10 +221,12 @@ export class SelectedTaskInfoComponent implements OnInit {
 
 
   fetchEmployeeName(): void {
-    this.apiService.getEmpDetails().subscribe(
-      (data: any) => {
+    const token = this.apiService.getRecursiveUser();;
 
-        data.forEach((emp: any) => {
+    this.apiService.getEmpDetailsNew(token).subscribe(
+      (response: any) => {
+
+        response[0]?.data.forEach((emp: any) => {
           const fullName = emp.EMP_FULL_NAME;
           const MKEY = emp.MKEY;
           let capitalizedFullName = '';
@@ -296,10 +305,11 @@ export class SelectedTaskInfoComponent implements OnInit {
   }
 
   fetchCategoryData(): void {
-    this.apiService.getCategory().subscribe(
-      (data: any) => {
-        this.category = data;
-        // console.log('category', this.category)
+      const token = this.apiService.getRecursiveUser();;
+    this.apiService.getCategorynew(token).subscribe(
+      (response: any) => {
+        this.category = response[0].data;
+        this.taskForm.patchValue({ category: 'PUBLIC' });
       },
       (error: ErrorHandler) => {
         console.log(error, 'Error Occurred while fetching categories');
@@ -309,11 +319,12 @@ export class SelectedTaskInfoComponent implements OnInit {
 
 
   fetchProjectData(): void {
-    this.apiService.getProjectDetails().subscribe(
-      (data: any) => {
-        this.project = data;
-        // console.log("Project", this.project);
+    const token = this.apiService.getRecursiveUser();
 
+    this.apiService.getProjectDetailsNew(token).subscribe(
+      (response: any) => {
+        this.project = response[0].data;
+        // console.log("Project", this.project);
       },
       (error: ErrorHandler) => {
         console.log(error, 'Error Occurred while fetching projects');
@@ -343,14 +354,16 @@ export class SelectedTaskInfoComponent implements OnInit {
     const selectedOption: any = this.project[selectedIndex] || 0;
     console.log('selectedOption', selectedOption)
     const selectedProjectMkey = selectedOption ? selectedOption.MASTER_MKEY : 0;
+    const token = this.apiService.getRecursiveUser();
+
 
     console.log('selectedProjectMkey', selectedProjectMkey)
 
     if (selectedProjectMkey) {
-      this.apiService.getSubProjectDetails(selectedProjectMkey).subscribe(
-        (data: any) => {
+      this.apiService.getSubProjectDetailsNew(selectedProjectMkey.toString(), token).subscribe(
+        (response: any) => {
 
-          this.sub_proj = data;
+          this.sub_proj = response[0]?.data;
 
           // console.log("Sub-Project", this.sub_proj);
 
