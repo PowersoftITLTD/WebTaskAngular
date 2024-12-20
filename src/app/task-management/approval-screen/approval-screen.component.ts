@@ -93,6 +93,7 @@ export class ApprovalScreenComponent implements OnInit {
         this.getProjDefinationList();
         this.buttonText = 'ADD Project';
       } else if(source === 'project-document-depository'){
+        this.getDocumentDepository();
         this.buttonText = 'ADD Depository'
       }
     })
@@ -194,6 +195,7 @@ export class ApprovalScreenComponent implements OnInit {
 onFilterTypeChange(event: Event) {
   const value = (event.target as HTMLInputElement).value.trim();
 
+  console.log('onFilterTypeChange: ',value)
   
 
   // this.filterType = value;
@@ -233,7 +235,7 @@ openSelectedTask(data: any) {
   }else if (button === 'ADD Project') {
     this.router.navigate(['approvals', 'project-defination', { Temp_Id: data.mkey }], {state: { taskData: data }});
   }else if(button === 'ADD Depository'){
-    this.router.navigate(['approvals', 'project-document-depository', { Temp_Id: data.mkey }], {state: { taskData: data }});
+    this.router.navigate(['approvals', 'project-document-depository', { Temp_Id: data.MKEY }], {state: { taskData: data }});
   }
 }
 
@@ -254,8 +256,18 @@ addApprovalTemp(add_new_data:any){
 }
 
 toggleSortOrder(): void {
-  this.isAscending = !this.isAscending;
+  this.isAscending = !this.isAscending; // Toggle the sort order
+  
+  // Sort the array based on 'mkey'
+  this.taskList.sort((a, b) => {
+    if (this.isAscending) {
+      return a.mkey - b.mkey; // Ascending order
+    } else {
+      return b.mkey - a.mkey; // Descending order
+    }
+  });
 }
+
 
 
 
@@ -286,12 +298,10 @@ getApprovalTempList(){
 
     this.recursiveLogginUser = this.apiService.getRecursiveUser();
 
-    console.log('USER_CRED.MKEY', USER_CRED.MKEY)
-
     this.apiService.getProjectDefination(this.recursiveLogginUser, USER_CRED.MKEY).subscribe({
       next:(proj_def) => {
         this.taskList = proj_def;
-        console.log('proj_def',proj_def)
+        // console.log('proj_def',proj_def)
       },error:(error)=>{
         if(error){
           console.log('error', error)
@@ -311,16 +321,40 @@ getApprovalTempList(){
       PASSWORD: atob(data[0]?.LOGIN_PASSWORD)
     };
 
-    this.recursiveLogginUser = this.apiService.getRecursiveUser();
-
-    console.log('USER_CRED.MKEY',USER_CRED.MKEY)
-    console.log('recursiveLogginUser', this.recursiveLogginUser)
+    this.recursiveLogginUser = this.apiService.getRecursiveUser(); 
 
     this.apiService.getDocumentTempelate( USER_CRED.MKEY, this.recursiveLogginUser).subscribe({
       next: (doc_temp_list) => {
         console.log('doc_temp_list', doc_temp_list)
 
         this.taskList = doc_temp_list;
+      }, error: (error) => {
+        if (error) {
+          console.log('error', error)
+        }
+      }
+    })
+  }
+
+
+  getDocumentDepository(){
+    const data = this.dataService.getUser();
+    console.log('onLogin data')
+
+    const USER_CRED = {
+      MKEY: data[0]?.MKEY,
+      EMAIL_ID_OFFICIAL: data[0]?.EMAIL_ID_OFFICIAL,
+      PASSWORD: atob(data[0]?.LOGIN_PASSWORD)
+    };
+
+    this.recursiveLogginUser = this.apiService.getRecursiveUser();
+
+
+    this.apiService.getDocumentryList( this.recursiveLogginUser, USER_CRED.MKEY).subscribe({
+      next: (depositoryList) => {
+        console.log('depositoryList', depositoryList)
+
+        this.taskList = depositoryList;
       }, error: (error) => {
         if (error) {
           console.log('error', error)

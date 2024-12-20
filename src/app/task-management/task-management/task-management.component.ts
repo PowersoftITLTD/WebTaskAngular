@@ -12,6 +12,8 @@ import { CredentialService } from 'src/app/services/credential/credential.servic
 export class TaskManagementComponent implements OnInit {
 
   @Input() taskData: any;
+  @Input() recursiveLogginUser: any = {};
+
 
 
   task: any[] = [];
@@ -135,11 +137,13 @@ export class TaskManagementComponent implements OnInit {
 
   _getCount() {
     this.loggedInUser = this.dataService.getUser();
-    const option = 'DEFAULT';
-    this.apiService.getTaskManagementDetails(this.loggedInUser[0]?.MKEY, option).subscribe(
-      (data: any) => {
+    const token = this.apiService.getRecursiveUser();
 
-        this.count = data.Table1;
+    const option = 'DEFAULT';
+    this.apiService.getTaskManagementDetailsNew(this.loggedInUser[0]?.MKEY.toString(), option, token).subscribe(
+      (response: any) => {
+
+        this.count = response[0].data1;
 
       },
       (error: ErrorHandler) => {
@@ -149,15 +153,16 @@ export class TaskManagementComponent implements OnInit {
   }
 
 
-
   fetchTaskDetails(mkey: string, option: string) {
 
     this.loggedInUser = this.dataService.getUser();
+    const token = this.apiService.getRecursiveUser();
 
-    this.apiService.getTaskManagementDetails(mkey, option).subscribe(
-      (data: any) => {
-        this.taskList = data.Table;
-        this.count = data.Table1;
+    this.apiService.getTaskManagementDetailsNew(mkey.toString(), option, token).subscribe(
+      (response: any) => {
+
+        console.log(response)
+        this.taskList = response[0]?.data;        
       },
       (error: ErrorHandler) => {
         console.error('Error fetching task details:', error);

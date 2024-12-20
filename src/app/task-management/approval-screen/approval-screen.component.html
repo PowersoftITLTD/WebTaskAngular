@@ -39,10 +39,7 @@
                                     <div class="page-content-card" style="height:100%;" >
                                  
                                         <div class="toolbar d-flex align-items-center justify-content-between p-3 p-sm-6" >
-                                              <select class="custom-select department mb-2 mr-sm-2 mb-sm-0" placeholder="Due Date" >
-                                                <option>option</option>
-                                              </select>                                                                              
-                                            <div>
+                                            
                                                 <select class="custom-select mb-2 mr-sm-2 mb-sm-0" placeholder="Order" (change)="onFilterTypeChange($event)" ng-model="selected">
                                                     <option [value]="'creationDate'" [selected]="filterType === 'creationDate'">Creation Date</option>
                                                     <option [value]="'completionDate'" [selected]="filterType === 'completionDate'">Completion Date</option>
@@ -51,7 +48,6 @@
                                                     <i class="fas fa-sort-amount-up-alt" [hidden]="!isAscending" [class.active]="isAscending"></i>
                                                     <i class="fas fa-sort-amount-down-alt" [hidden]="isAscending" [class.active]="!isAscending"></i>
                                                 </button>
-                                            </div>
                                         </div>
                                          <div class="card">
                                             <div class="side-bar-scroll">
@@ -72,6 +68,8 @@
                                                                     <span style="color:#328da8;">{{i+1}}</span>
                                                                     {{t.shorT_DESCRIPTION}} <span style="float:right;color:#328da8;margin-left:154px;"></span>
                                                                     {{t.legaL_ENTITY}} <span style="float:right;color:#328da8;margin-left:154px;"></span>
+                                                                    {{t.DOC_NUMBER}} <span style="float:right;color:#328da8;margin-left:154px;"></span>
+
                                                                 </div>
                                                               </ng-container>  
                                                                  
@@ -81,6 +79,7 @@
                                                                     <span style="color:#328da8;">{{i+1}}</span>
 
                                                                     {{t.doC_NAME}}
+                                                                    {{t.DOC_NUMBER}}
                                                                 </div>
                                                                 <!-- <div *ngIf="buttonText === 'ADD Template'" class="notes mt-1" >                                                
                                                                     {{t.doC_NAME}}

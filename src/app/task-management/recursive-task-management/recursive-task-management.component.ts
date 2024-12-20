@@ -55,11 +55,8 @@ export class RecursiveTaskManagementComponent implements OnInit {
   filteredTasks: any[] = [];
 
   @Input() recursiveLogginUser: any = {};
-<<<<<<< HEAD
   @Input() loggedInUser: any;
 
-=======
->>>>>>> parent of cb45e19 (Adding Updated Packages 27-11-2024)
 
   NewTaskOrSubTask: string = '';
 
@@ -74,10 +71,6 @@ export class RecursiveTaskManagementComponent implements OnInit {
   isAscending: boolean = true;
 
   source:any;
-<<<<<<< HEAD
-=======
-  loggedInUser:any;
->>>>>>> parent of cb45e19 (Adding Updated Packages 27-11-2024)
 
   createdOrUpdatedUserName:any
 
@@ -123,14 +116,12 @@ export class RecursiveTaskManagementComponent implements OnInit {
 
 
   fetchProjectData(): void {
-    this.apiService.getProjectDetails().subscribe(
-      (data: any) => {
-        this.project = data;
-<<<<<<< HEAD
+    const token = this.apiService.getRecursiveUser();
+
+    this.apiService.getProjectDetailsNew(token).subscribe(
+      (response: any) => {
+        this.project = response[0].data;
         // console.log("Project", this.project);
-=======
-        console.log("Project", this.project);
->>>>>>> parent of cb45e19 (Adding Updated Packages 27-11-2024)
       },
       (error: ErrorHandler) => {
         console.log(error, 'Error Occurred while fetching projects');
@@ -179,11 +170,15 @@ export class RecursiveTaskManagementComponent implements OnInit {
     });
   }
 
+  
+
  
   fetchEmployeeName(): void {
-    this.apiService.getEmpDetails().subscribe(
-      (data: any) => {
-        data.forEach((emp: any) => {
+    const token = this.apiService.getRecursiveUser();;
+
+    this.apiService.getEmpDetailsNew(token).subscribe(
+      (response: any) => {
+        response[0].data.forEach((emp: any) => {
           const fullName = emp.EMP_FULL_NAME;
           const MKEY = emp.MKEY;
           let capitalizedFullName = '';
@@ -216,7 +211,6 @@ export class RecursiveTaskManagementComponent implements OnInit {
 
 fetchTaskDetails() {
     this.recursiveLogginUser = this.apiService.getRecursiveUser();
-<<<<<<< HEAD
     this.loggedInUser = this.dataService.getUser();
 
     this.apiService.getRecursiveTaskManagement(this.recursiveLogginUser).subscribe(response => {
@@ -233,10 +227,6 @@ fetchTaskDetails() {
         // console.log('Filtered Dashboard response:', filteredData);
       }
       // this.taskList = response;
-=======
-    this.apiService.getRecursiveTaskManagement(this.recursiveLogginUser).subscribe(response => {
-      this.taskList = response;
->>>>>>> parent of cb45e19 (Adding Updated Packages 27-11-2024)
       this.mergeEmployeeNamesWithTasks();
       this.mergingProjAndSubProjName();
     }, error => {
@@ -254,8 +244,11 @@ mergingProjAndSubProjName() {
 
   const projectMap = new Map(this.project.map((proj: any) => [proj.MASTER_MKEY, proj.TYPE_DESC]));
 
+  const token = this.apiService.getRecursiveUser();
+
+
   this.project.forEach((proj: any) => {
-    this.apiService.getSubProjectDetails(proj.MASTER_MKEY).subscribe(
+    this.apiService.getSubProjectDetailsNew(proj.MASTER_MKEY.toString(), token).subscribe(
       (data: any) => {
         this.sub_proj = data;
 
@@ -280,12 +273,6 @@ mergingProjAndSubProjName() {
 }
 
 
-<<<<<<< HEAD
-=======
-
-
-
->>>>>>> parent of cb45e19 (Adding Updated Packages 27-11-2024)
 mergeEmployeeNamesWithTasks() {
     const employeeMap = new Map(this.employees.map(emp => [emp.MKEY, emp.Assign_to]));
 
