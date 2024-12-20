@@ -17,19 +17,41 @@ export class ApiService {
 
   /**LOGIN**/
 
-  //Login user
-  getEmpDetails(): Observable<any[]> {
-    return this.http.get<any[]>(this._apiUrl + 'CommonApi/Task-Management/Get-Emp?CURRENT_EMP_MKEY=0&FILTER=DEFAULT').pipe(
-      map(employees => {
-        return employees.map(employee => {
-          return {
-            ...employee,
-            LOGIN_PASSWORD: atob(employee.LOGIN_PASSWORD)
-          };
-        });
-      })
-    );
+
+  //http://192.168.19.188:8045/api/CommonApi/Task-Management/Get-Emp
+
+  getEmpDetailsNew(jwtToken: string): Observable<any[]>{
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${jwtToken}`,
+      'Content-Type': 'application/json',
+    });
+
+    const emp_body = {
+      CURRENT_EMP_MKEY: "0",
+      FILTER: "DEFAULT"
+    }
+
+    return this.http.post<any>(`${this._apiUrl_1}api/CommonApi/Task-Management/Get-Emp`, emp_body, {headers});
+
   }
+
+  //Login user
+  // getEmpDetails(): Observable<any[]> {
+  //   return this.http.get<any[]>(this._apiUrl + 'CommonApi/Task-Management/Get-Emp?CURRENT_EMP_MKEY=0&FILTER=DEFAULT').pipe(
+  //     map(employees => {
+  //       return employees.map(employee => {
+  //         return {
+  //           ...employee,
+  //           // LOGIN_PASSWORD: atob(employee.LOGIN_PASSWORD)
+  //         };
+  //       });
+  //     })
+  //   );
+  // }
+
+
+
+  
 
   getLoginDetails(user_id: string, password: string): Observable<any[]> {
     return this.http.get<any[]>(this._apiUrl + `CommonApi/Task-Management/Login?Login_ID=${user_id}&Login_Password=${password}`)
@@ -43,39 +65,132 @@ export class ApiService {
   /**TASK MANAGEMENT INTEGRATION**/
 
   // Option
-  getCategory(): Observable<any> {
-    return this.http.get<any[]>(`${this._apiUrl}CommonApi/Task-Management/Get-Option?Type_Code=Category&Master_mkey=0`);
+  // getCategory(): Observable<any> {
+  //   return this.http.get<any[]>(`${this._apiUrl}CommonApi/Task-Management/Get-Option?Type_Code=Category&Master_mkey=0`);
+  // }
+
+  getCategorynew(jwtToken: string): Observable<any> {
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${jwtToken}`,
+      'Content-Type': 'application/json',
+    });
+  
+    const category_body = {
+      Type_Code: 'Category',
+      Master_mkey: '0',
+    };
+  
+    return this.http.post<any>(`${this._apiUrl_1}api/CommonApi/Task-Management/Get-Option`, category_body, {headers});
   }
+    
 
   // Project
-  getProjectDetails(): Observable<any> {
-    return this.http.get<any[]>(`${this._apiUrl}CommonApi/Task-Management/Get-Option?Type_Code=PROJECT&Master_mkey=0`);
+
+  getProjectDetailsNew(jwtToken: string): Observable<any> {
+    
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${jwtToken}`,
+      'Content-Type': 'application/json',
+    });
+
+    const property_body = {
+      type_Code: "PROJECT",
+      master_mkey: "0"
+    }
+    return this.http.post<any[]>(`${this._apiUrl_1}api/CommonApi/Task-Management/Get-Option`, property_body, {headers});
   }
 
-  //Sub-project
-  getSubProjectDetails(mkey: string): Observable<any> {
-    return this.http.get<any[]>(`${this._apiUrl}CommonApi/Task-Management/Get-Sub_Project?Project_Mkey=${mkey}`);
-  }
 
+  getSubProjectDetailsNew(mkey:string,jwtToken: string): Observable<any>{
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${jwtToken}`,
+      'Content-Type': 'application/json',
+    });
+
+    const building_body = {
+      Project_Mkey: mkey,
+    };
+
+    return this.http.post<any[]>(`${this._apiUrl_1}api/CommonApi/Task-Management/Get-Sub_Project`, building_body , {headers})
+  }
+  
   // Tags
   getTagDetailss(mkey: string): Observable<any> {
     return this.http.get<any[]>(`${this._apiUrl}CommonApi/Task-Management/EMP_TAGS?EMP_TAGS=${mkey}`);
   }
 
+
+  getTagDetailss1(mkey: string, jwtToken:string): Observable<any> {
+    const headers = new HttpHeaders({ Authorization: `Bearer ${jwtToken}` });
+    return this.http.post<any[]>(`${this._apiUrl_1}CommonApi/Task-Management/EMP_TAGS?EMP_TAGS=${mkey}`, {headers});
+  }
+
+
+
   //Task Management
-  getTaskManagementDetails(mkey: string, option: string): Observable<any> {
+  getTaskManagementDetails(mkey: string, option: string): Observable<any> { //Pending count
     return this.http.get<any[]>(`${this._apiUrl}CommonApi/Task-Management/TASK-DASHBOARD?CURRENT_EMP_MKEY=${mkey}&FILTER=${option}`);
   }
 
-  //Selected task details
-  getSelectedTaskDetails(mkey: string): Observable<any> {
-    return this.http.get<any[]>(`${this._apiUrl}CommonApi/Task-Management/TASK-DETAILS_BY_MKEY?Mkey=${mkey}`);
+  getTaskManagementDetailsNew(mkey: string, option:string, jwtToken: string): Observable<any> {
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${jwtToken}`,
+      'Content-Type': 'application/json',
+    });
+
+    const dashoard_body = {
+      CURRENT_EMP_MKEY: mkey,
+      FILTER: option
+    };
+
+    return this.http.post<any[]>(`${this._apiUrl_1}api/CommonApi/Task-Management/TASK-DASHBOARD`, dashoard_body , {headers});
   }
+
+
+ // http://192.168.19.188:8045/api/CommonApi/Task-Management/TASK-DETAILS_BY_MKEY
+
+
+ getSelectedTaskDetailsNew(mkey: string, jwtToken: string): Observable<any> {
+  const headers = new HttpHeaders({
+    'Authorization': `Bearer ${jwtToken}`,
+    'Content-Type': 'application/json',
+  });
+
+  const task_details_body = {
+    Mkey: mkey
+  }
+  return this.http.post<any[]>(`${this._apiUrl_1}api/CommonApi/Task-Management/TASK-DETAILS_BY_MKEY`, task_details_body, {headers});
+}
+
+  //Selected task details
+  // getSelectedTaskDetails(mkey: string): Observable<any> {
+  //   return this.http.get<any[]>(`${this._apiUrl}CommonApi/Task-Management/TASK-DETAILS_BY_MKEY?Mkey=${mkey}`);
+  // }
 
   // actionable
   getActionableDetails(mkey: string, emp_mkey: string, status: string): Observable<any> {
     return this.http.get<any[]>(`${this._apiUrl}CommonApi/Task-Management/GET-ACTIONS?TASK_MKEY=${mkey}&CURRENT_EMP_MKEY=${emp_mkey}&CURR_ACTION=${status}`);
   }
+
+  getActionableDetailsNew(mkey: string, emp_mkey: string, status: string, jwtToken:string): Observable<any> {
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${jwtToken}`,
+      'Content-Type': 'application/json',
+    });
+
+    const actionable_body = {
+      TASK_MKEY: mkey,
+      CURRENT_EMP_MKEY: emp_mkey,
+      CURR_ACTION: status
+    }
+
+
+    return this.http.post<any[]>(`${this._apiUrl_1}api/CommonApi/Task-Management/GET-ACTIONS`, actionable_body, {headers});
+
+  }
+
+
+  //http://192.168.19.188:8045/api/CommonApi/Task-Management/GET-ACTIONS
 
   //tree-list
   getTreeList(mkey: string): Observable<any> {
@@ -148,7 +263,6 @@ export class ApiService {
     const headers = new HttpHeaders({
       'accept': 'text/plain'
     });
-<<<<<<< HEAD
 
     const params: any = {
       LOGIN_NAME: loginName,
@@ -158,17 +272,6 @@ export class ApiService {
       name: 'res'
     };
 
-=======
-    
-    const params:any = {
-      LOGIN_NAME: loginName,
-      LOGIN_PASSWORD: loginPassword,   
-      ClientId:'099153c2625149bc8ecb3e85e03f0022',
-      Base64Secret:'IxrAjDoa2FqElO7IhrSrUJELhUckePEPVpaePlS_Xaw',
-      name:'res'
-    };
- 
->>>>>>> parent of cb45e19 (Adding Updated Packages 27-11-2024)
 
     localStorage.setItem('recursiveLogin', JSON.stringify([params]));
 
@@ -190,7 +293,6 @@ export class ApiService {
     return this.http.get<any>(`${this._apiUrl_1}api/TaskManagement`, { headers });
   }
 
-<<<<<<< HEAD
 
   addRecursiveTask(task: any, jwtToken: string): Observable<any> {
     const headers = new HttpHeaders({ Authorization: `Bearer ${jwtToken}` });
@@ -201,24 +303,11 @@ export class ApiService {
   updateRecursiveTask(mkey: number, task: any, jwtToken: string): Observable<any> {
     const headers = new HttpHeaders({ Authorization: `Bearer ${jwtToken}` });
     return this.http.put<any>(`${this._apiUrl_1}api/TaskManagement/${mkey}`, task, { headers })
-=======
-  
-  addRecursiveTask(task:any, jwtToken: string): Observable<any>{
-    const headers = new HttpHeaders({ Authorization: `Bearer ${jwtToken}` });
-    return this.http.post<any>(`${this._apiUrl_1}api/TaskManagement`, task , {headers})
-  }
-
-
-  updateRecursiveTask(mkey:number, task:any, jwtToken: string): Observable<any>{
-    const headers = new HttpHeaders({ Authorization: `Bearer ${jwtToken}` });
-    return this.http.put<any>(`${this._apiUrl_1}api/TaskManagement/${mkey}`, task , {headers})
->>>>>>> parent of cb45e19 (Adding Updated Packages 27-11-2024)
   }
 
 
   getRecursiveUser(): any {
     const storedUser = localStorage.getItem('jwtToken'); // Retrieve the token
-<<<<<<< HEAD
     return storedUser
   }
 
@@ -241,7 +330,7 @@ export class ApiService {
   //Document Tempelate
   getDocumentTempelate(loggedInMkey: number, jwtToken: string): Observable<any> {
     const headers = new HttpHeaders({ Authorization: `Bearer ${jwtToken}` });
-    return this.http.get<any>(`${this._apiUrl_1}api/DocumentTemplate?${loggedInMkey}`, { headers });
+    return this.http.get<any>(`${this._apiUrl_1}api/DocumentTemplate?LoggedIN=${loggedInMkey}`, { headers });
   }
 
   postDocumentTempelate(tempDocData: any, jwtToken: string): Observable<any> {
@@ -250,8 +339,15 @@ export class ApiService {
   }
 
 
-  //Approval Tempelate
+  putDocumentTempelate(tempDocData:any, docMkey:number ,jwtToken:string): Observable<any>{
+    const headers = new HttpHeaders({ Authorization: `Bearer ${jwtToken}` })
+    return this.http.put<any>(`${this._apiUrl_1}api/DocumentTemplate/${docMkey}`,tempDocData, {headers})
+  }
 
+//  http://192.168.19.188:8045/api/DocumentTemplate/12
+
+
+  //Approval Tempelate
   getApprovalTemp(jwtToken: string): Observable<any> {
     const headers = new HttpHeaders({ Authorization: `Bearer ${jwtToken}` }); // Ensure there's a space after 'Bearer'
     
@@ -271,7 +367,21 @@ export class ApiService {
   }
 
 
+  putApprovalTemp(apprlTempData:any, docMkey:number, jwtToken: string): Observable<any>{
+    const headers = new HttpHeaders({ Authorization: `Bearer ${jwtToken}` });
+    return this.http.put<any>(`${this._apiUrl_1}api/ApprovalTemplate/ApprovalTemplate/Update-ApprovalTemplate?MKEY=${docMkey}`, apprlTempData ,{headers})
+
+  }
+
+//http://192.168.19.188:8045/api/ApprovalTemplate/ApprovalTemplate/Update-ApprovalTemplate?MKEY=2693
+
   //Project Defination
+
+  putProjectDefination(projDef: any, headerMkey:number, jwtToken: string): Observable<any>{
+    const headers = new HttpHeaders({ Authorization: `Bearer ${jwtToken}` });
+    return this.http.put<any>(`${this._apiUrl_1}api/ProjectDefination/ProjectDefination/Update-Project-Defination?MKEY=${headerMkey}`, projDef, { headers });
+  }
+
   postProjectDefination(projDef: any, jwtToken: string): Observable<any>{
     const headers = new HttpHeaders({ Authorization: `Bearer ${jwtToken}` });
     return this.http.post<any>(`${this._apiUrl_1}api/ProjectDefination`, projDef, { headers });
@@ -281,6 +391,17 @@ export class ApiService {
     const headers = new HttpHeaders({ Authorization: `Bearer ${jwtToken}` });
     return this.http.get<any>(`${this._apiUrl_1}api/ProjectDefination?LoggedIN=${user_mkey}&FormName=asdkj&MethodName=aaskjd`, {headers})
   }
+
+  //Document Depository
+
+  getDocumentryList(jwtToken: string, user_mkey:number): Observable<any>{
+    const headers = new HttpHeaders({ Authorization: `Bearer ${jwtToken}` });
+    return this.http.get<any>(`${this._apiUrl_1}api/ProjectDocumentDepository/Get-Project-Document-Depsitory?ATTRIBUTE1=${user_mkey}`, {headers})
+
+  }
+
+  //http://192.168.19.188:8045/api/ProjectDocumentDepository/Get-Project-Document-Depsitory?ATTRIBUTE1=2693
+
 
 
   
@@ -364,29 +485,46 @@ postProjectDocument(jwtToken:string, data: any): Observable<any> {
 
 
   
+//Approval Initiation
+getApprovalInitiation(jwtToken: string, mkey: string, approval_mkey: string): Observable<any> {
+  const headers = new HttpHeaders({ 
+    Authorization: `Bearer ${jwtToken}` 
+  });
+
+  return this.http.get<any>(`${this._apiUrl_1}api/ApprovalTaskInitiation/GetApprovalTemplate?MKEY=${mkey}&APPROVAL_MKEY=${approval_mkey}`, { headers });
+}
+
+
+  postApprovalInitiation(apprlInitionData:any, jwtToken: string): Observable<any>{
+  const headers = new HttpHeaders({
+    Authorization: `Bearer ${jwtToken}` 
+  })
+
+  return this.http.post<any>(`${this._apiUrl_1}api/ApprovalTaskInitiation`,apprlInitionData,{headers})
+}
+
+
+
+subTaskPutApprovalInitiation(headerMkey:number, subTaskData:any ,jwtToken:string): Observable<any>{
+  const headers = new HttpHeaders({
+    Authorization: `Bearer ${jwtToken}` 
+  })
+  return this.http.put<any>(`${this._apiUrl_1}api/ApprovalTaskInitiation/Put-Approval-Template-Subtask?HEADER_MKEY=${headerMkey}`,subTaskData,{headers})
+}
+
+
+deleteProjectDefinationTask(lastUpdatedBy:number,headerMkey:number,jwtToken:string){
+  const headers = new HttpHeaders({
+    Authorization: `Bearer ${jwtToken}` 
+  });
+  return this.http.delete<any>(`${this._apiUrl_1}api/ProjectDefination/ProjectDefination/Delete-TASK?id=${headerMkey}&LastUpatedBy=${lastUpdatedBy}`,{headers})
+}
+
+//http://192.168.19.188:8045/api/ApprovalTaskInitiation/Put-Approval-Template-Subtask
+
+
+
 //Token service
-=======
-    return storedUser 
-  }
-  
-  recursiveFileUploader(file: File, additionalAttributes: any, token: string): Observable<any> {
-    const formData = new FormData();
-    
-    formData.append('file', file, file.name);
-    
-    Object.keys(additionalAttributes).forEach(key => {
-      formData.append(key, additionalAttributes[key]);
-    });
-  
-    const headers = new HttpHeaders({
-      Authorization: `Bearer ${token}`
-    });
-  
-    return this.http.post(`${this._apiUrl_1}api/RecursiveUploader`, formData, { headers });
-  }
-
-
->>>>>>> parent of cb45e19 (Adding Updated Packages 27-11-2024)
   getToken(): string | null {
     return localStorage.getItem('jwtToken');
   }
@@ -394,17 +532,8 @@ postProjectDocument(jwtToken:string, data: any): Observable<any> {
   recursiveTasklogout() {
     localStorage.removeItem('jwtToken');
   }
-<<<<<<< HEAD
 
   isLoggedIn(): boolean {
     return this.getToken() !== null;
   }
-=======
- 
-
-  isLoggedIn(): boolean {
-    return this.getToken() !== null;
-  } 
-
->>>>>>> parent of cb45e19 (Adding Updated Packages 27-11-2024)
 }

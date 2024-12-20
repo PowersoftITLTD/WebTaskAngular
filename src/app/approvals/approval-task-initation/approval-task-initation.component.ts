@@ -454,15 +454,26 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
 
 
   onProjectSelect(selectElement: HTMLSelectElement) {
-    const selectedIndex = selectElement.selectedIndex - 1;
-    const selectedOption: any = this.project[selectedIndex] || 0;
 
+    const selectedIndex = selectElement.selectedIndex - 1;
+
+    console.log('selectElement', selectElement.selectedIndex)
+    const selectedOption: any = this.project[selectedIndex] || 0;
+    console.log('selectedOption', selectedOption)
     const selectedProjectMkey = selectedOption ? selectedOption.MASTER_MKEY : 0;
+    const token = this.apiService.getRecursiveUser();
+
+
+    console.log('selectedProjectMkey', selectedProjectMkey)
 
     if (selectedProjectMkey) {
-      this.apiService.getSubProjectDetails(selectedProjectMkey).subscribe(
-        (data: any) => {
-          this.sub_proj = data;
+      this.apiService.getSubProjectDetailsNew(selectedProjectMkey.toString(), token).subscribe(
+        (response: any) => {
+
+          this.sub_proj = response[0]?.data;
+
+          // console.log("Sub-Project", this.sub_proj);
+
         },
         (error: ErrorHandler) => {
           console.log(error, 'Error Occurred while fetching sub-projects');
@@ -472,15 +483,17 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
   }
 
 
+ 
+
 
 
   fetchProjectData(): void {
-    this.apiService.getProjectDetails().subscribe(
-      (data: any) => {
-        this.project = data;
-        // console.log(this.project)
-        this.setProjectNameToTaskData();
+    const token = this.apiService.getRecursiveUser();
 
+    this.apiService.getProjectDetailsNew(token).subscribe(
+      (response: any) => {
+        this.project = response[0].data;
+        // console.log("Project", this.project);
       },
       (error: ErrorHandler) => {
         console.log(error, 'Error Occurred while fetching projects');
@@ -490,9 +503,12 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
 
 
   getSubProj() {
-    this.apiService.getSubProjectDetails(this.taskData.PROPERTY).subscribe(
-      (data: any) => {
-        this.sub_proj = data;
+
+    const token = this.apiService.getRecursiveUser();
+
+    this.apiService.getSubProjectDetailsNew(this.taskData.PROPERTY.toString(), token).subscribe(
+      (response: any) => {
+        this.sub_proj = response[0].data;
         this.setProjectNameToTaskData();
 
       },
@@ -584,13 +600,20 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
 
 
   fetchEmployeeName(): void {
-    this.apiService.getEmpDetails().subscribe(
-      (data: any) => {
-        data.forEach((emp: any) => {
+    const token = this.apiService.getRecursiveUser();;
+
+    this.apiService.getEmpDetailsNew(token).subscribe(
+      (response: any) => {
+        // console.log("Employee data:", data);
+        // const _data = data;
+
+        response[0]?.data.forEach((emp: any) => {
           const fullName = emp.EMP_FULL_NAME;
           const MKEY = emp.MKEY;
           let capitalizedFullName = '';
           const nameParts = fullName.split(' ');
+
+          // console.log('nameParts', nameParts)
 
           for (let i = 0; i < nameParts.length; i++) {
             if (nameParts[i].length === 1 && i < nameParts.length - 1) {
@@ -603,11 +626,10 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
               capitalizedFullName += ' ';
             }
           }
+
           this.employees.push({ Assign_to: capitalizedFullName, MKEY: MKEY });
-
         });
-        this.setEmpName();
-
+        // console.log('this.employees', this.employees);    
       },
       (error: ErrorHandler) => {
         console.error('Error fetching employee details:', error);

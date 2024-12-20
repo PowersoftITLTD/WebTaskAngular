@@ -391,9 +391,12 @@ export class ProjectDocumentDepositoryComponent implements OnInit {
 
 
   fetchProjectData(): void {
-    this.apiService.getProjectDetails().subscribe(
-      (data: any) => {
-        this.project = data;
+    const token = this.apiService.getRecursiveUser();
+
+    this.apiService.getProjectDetailsNew(token).subscribe(
+      (response: any) => {
+        this.project = response[0].data;
+        // console.log("Project", this.project);
       },
       (error: ErrorHandler) => {
         console.log(error, 'Error Occurred while fetching projects');
@@ -407,9 +410,13 @@ export class ProjectDocumentDepositoryComponent implements OnInit {
     const selectedIndex = selectElement.selectedIndex - 1;
     const selectedOption: any = this.project[selectedIndex] || 0;
     const selectedProjectMkey = selectedOption ? selectedOption.MASTER_MKEY : 0;
+    const token = this.apiService.getRecursiveUser();
+
 
     if (selectedProjectMkey) {
-      this.apiService.getSubProjectDetails(selectedProjectMkey).subscribe((data: any) => { this.sub_proj = data },
+      this.apiService.getSubProjectDetailsNew(selectedProjectMkey.toString(), token).subscribe((response: any) => { 
+        this.sub_proj = response[0].data
+       },
         (error: ErrorHandler) => {
           console.log(error, 'Error Occurred while fetching sub-projects');
         }
@@ -419,9 +426,11 @@ export class ProjectDocumentDepositoryComponent implements OnInit {
 
 
   getSubProj() {
-    this.apiService.getSubProjectDetails(this.taskData.PROPERTY_TYPE).subscribe(
-      (data: any) => {
-        this.sub_proj = data;
+    const token = this.apiService.getRecursiveUser();
+
+    this.apiService.getSubProjectDetailsNew(this.taskData.PROPERTY_TYPE.toString(), token).subscribe(
+      (response: any) => {
+        this.sub_proj = response[0].data
         this.setProjectNameToTaskData();
       },
       (error: ErrorHandler) => {

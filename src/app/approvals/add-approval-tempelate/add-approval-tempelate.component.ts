@@ -574,41 +574,43 @@ updateApprovalTemplate(){
 
 
 
- fetchEmployeeName(): void {
-    this.apiService.getEmpDetails().subscribe(
-      (data: any) => {
-        data.forEach((emp: any) => {
-          const fullName = emp.EMP_FULL_NAME;
-          const MKEY = emp.MKEY;
-          let capitalizedFullName = '';
-          const nameParts = fullName.split(' ');
+fetchEmployeeName(): void {
+  const token = this.apiService.getRecursiveUser();;
 
-          for (let i = 0; i < nameParts.length; i++) {
-            if (nameParts[i].length === 1 && i < nameParts.length - 1) {
-              capitalizedFullName += nameParts[i].toUpperCase() + '.' + nameParts[i + 1].charAt(0).toUpperCase() + nameParts[i + 1].slice(1).toLowerCase();
-              i++;
-            } else {
-              capitalizedFullName += nameParts[i].charAt(0).toUpperCase() + nameParts[i].slice(1).toLowerCase();
-            }
-            if (i !== nameParts.length - 1) {
-              capitalizedFullName += ' ';
-            }
+  this.apiService.getEmpDetailsNew(token).subscribe(
+    (response: any) => {
+      // console.log("Employee data:", data);
+      // const _data = data;
+
+      response[0]?.data.forEach((emp: any) => {
+        const fullName = emp.EMP_FULL_NAME;
+        const MKEY = emp.MKEY;
+        let capitalizedFullName = '';
+        const nameParts = fullName.split(' ');
+
+        // console.log('nameParts', nameParts)
+
+        for (let i = 0; i < nameParts.length; i++) {
+          if (nameParts[i].length === 1 && i < nameParts.length - 1) {
+            capitalizedFullName += nameParts[i].toUpperCase() + '.' + nameParts[i + 1].charAt(0).toUpperCase() + nameParts[i + 1].slice(1).toLowerCase();
+            i++;
+          } else {
+            capitalizedFullName += nameParts[i].charAt(0).toUpperCase() + nameParts[i].slice(1).toLowerCase();
           }
+          if (i !== nameParts.length - 1) {
+            capitalizedFullName += ' ';
+          }
+        }
 
-          this.employees.push({ Assign_to: capitalizedFullName, MKEY: MKEY });
-
-        });
-        this.setEmpName();
-
-        
-      },
-      (error: ErrorHandler) => {
-        console.error('Error fetching employee details:', error);
-      }
-    );
-
-
- }
+        this.employees.push({ Assign_to: capitalizedFullName, MKEY: MKEY });
+      });
+      // console.log('this.employees', this.employees);    
+    },
+    (error: ErrorHandler) => {
+      console.error('Error fetching employee details:', error);
+    }
+  );
+}
 
 
  setEmpName(): void {

@@ -920,11 +920,13 @@ toggleSelection(task: any = []): void {
     const selectedOption: any = this.project[selectedIndex] || 0;
 
     const selectedProjectMkey = selectedOption ? selectedOption.MASTER_MKEY : 0;
+    const token = this.apiService.getRecursiveUser();
+
 
     if (selectedProjectMkey) {
-      this.apiService.getSubProjectDetails(selectedProjectMkey).subscribe(
-        (data: any) => {
-          this.sub_proj = data;
+      this.apiService.getSubProjectDetailsNew(selectedProjectMkey.toString(), token).subscribe(
+        (response: any) => {
+          this.sub_proj = response[0].data;
 
         },
         (error: ErrorHandler) => {
@@ -936,11 +938,12 @@ toggleSelection(task: any = []): void {
 
 
   fetchProjectData(): void {
-    this.apiService.getProjectDetails().subscribe(
-      (data: any) => {
-        this.project = data;
-        this.setProjectNameToTaskData();
+    const token = this.apiService.getRecursiveUser();
 
+    this.apiService.getProjectDetailsNew(token).subscribe(
+      (response: any) => {
+        this.project = response[0].data;
+        // console.log("Project", this.project);
       },
       (error: ErrorHandler) => {
         console.log(error, 'Error Occurred while fetching projects');
@@ -953,9 +956,11 @@ toggleSelection(task: any = []): void {
 
 
   getSubProj() {
-    this.apiService.getSubProjectDetails(this.taskData.property).subscribe(
-      (data: any) => {
-        this.sub_proj = data;
+    const token = this.apiService.getRecursiveUser();
+
+    this.apiService.getSubProjectDetailsNew(this.taskData.property.toString(), token).subscribe(
+      (response: any) => {
+        this.sub_proj = response[0]?.data;
         this.setProjectNameToTaskData();
 
       },
@@ -1214,13 +1219,20 @@ toggleSelection(task: any = []): void {
 
 
   fetchEmployeeName(): void {
-    this.apiService.getEmpDetails().subscribe(
-      (data: any) => {
-        data.forEach((emp: any) => {
+    const token = this.apiService.getRecursiveUser();;
+
+    this.apiService.getEmpDetailsNew(token).subscribe(
+      (response: any) => {
+        // console.log("Employee data:", data);
+        // const _data = data;
+
+        response[0]?.data.forEach((emp: any) => {
           const fullName = emp.EMP_FULL_NAME;
           const MKEY = emp.MKEY;
           let capitalizedFullName = '';
           const nameParts = fullName.split(' ');
+
+          // console.log('nameParts', nameParts)
 
           for (let i = 0; i < nameParts.length; i++) {
             if (nameParts[i].length === 1 && i < nameParts.length - 1) {
@@ -1236,7 +1248,7 @@ toggleSelection(task: any = []): void {
 
           this.employees.push({ Assign_to: capitalizedFullName, MKEY: MKEY });
         });
-
+        // console.log('this.employees', this.employees);    
       },
       (error: ErrorHandler) => {
         console.error('Error fetching employee details:', error);
@@ -1660,9 +1672,11 @@ toggleSelection(task: any = []): void {
 
   newEmps(){
     let employeesList:any
+    const token = this.apiService.getRecursiveUser();;
 
+    employeesList =  this.apiService.getEmpDetailsNew(token).toPromise();
 
-    employeesList =  this.apiService.getEmpDetails().toPromise();
+    console.log('employeesList', employeesList)
 
         employeesList.forEach((emp: any) => {
             const fullName = emp.EMP_FULL_NAME;

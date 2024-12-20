@@ -26,8 +26,10 @@ export class CredentialService {
 
 
   getUsers(): Observable<void> {
-    return this.apiService.getEmpDetails().pipe(
-      tap((data: any) => this.users = data.users),
+    const token = this.apiService.getRecursiveUser();;
+
+    return this.apiService.getEmpDetailsNew(token).pipe(
+      tap((response: any) => this.users = response[0]?.data.users),
       catchError((error: any) => {
         console.error('Error fetching users:', error);
         return of();
