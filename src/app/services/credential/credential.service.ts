@@ -49,10 +49,13 @@ export class CredentialService {
   
   validateUser(email: string, password: string): Observable<boolean> {
 
+    const token = this.apiService.getRecursiveUser();;
 
-    return this.apiService.getLoginDetails(email, password).pipe(
+    return this.apiService.getLoginDetailsNew(email, password).pipe(
       map(response => {
-        const user = response;
+        const user = response[0].data;
+
+        console.log('user', user)
 
         if (user && user.length > 0) {
           this.loggedInUser = user;

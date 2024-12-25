@@ -1,6 +1,7 @@
 import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { filter } from 'rxjs';
+import { ApiService } from 'src/app/services/api/api.service';
 import { CredentialService } from 'src/app/services/credential/credential.service';
 import { SideBarService } from 'src/app/services/side-panel/side-bar.service';
 
@@ -24,6 +25,9 @@ export class SidePanelComponent implements OnInit {
 
   @Input() loggedInUser: any = {};
 
+  loginName: string = '';
+  loginPassword: string = '';
+
 
   //Construction
   boqDrop: boolean = true;
@@ -41,6 +45,7 @@ export class SidePanelComponent implements OnInit {
 
   //Task Management
   taskManagementDrop: boolean = true;
+  createdOrUpdatedUserName:any
 
 
   isTaskDropdownOpen: boolean = false;
@@ -62,6 +67,7 @@ export class SidePanelComponent implements OnInit {
     private router: Router,
     private sidebarService: SideBarService,
     private dataService: CredentialService,
+    private apiService: ApiService
   ) {
 
 
@@ -83,10 +89,41 @@ export class SidePanelComponent implements OnInit {
 
     // // Initialize active tab on component load
     // this.updateActiveTab();
-
+    this.onLogin()
     this.setActiveTab();
 
 
+  }
+
+  onLogin() {   
+
+    this.dataService.validateUser(this.loginName, this.loginPassword);
+
+    const data = this.dataService.getUser();
+
+    this.createdOrUpdatedUserName = data[0]?.FIRST_NAME,    
+
+    console.log('onLogin data')
+
+    const USER_CRED = {    
+      EMAIL_ID_OFFICIAL: data[0]?.EMAIL_ID_OFFICIAL, 
+      PASSWORD:atob(data[0]?.LOGIN_PASSWORD)
+    }; 
+
+
+    this.apiService.login(USER_CRED.EMAIL_ID_OFFICIAL, USER_CRED.PASSWORD).subscribe({
+      next: (response) => {
+        if(response.jwtToken){
+          // console.log('response.jwtToken', response.jwtToken)
+          // this.selectedOption = 'Over-due';
+          // const option = 'DEFAULT';
+          // this.fetchTaskDetails(this.loggedInUser[0]?.MKEY, option);
+        }
+      },
+      error: (error) => {
+        console.error('Login failed:', error);
+      }
+    });
   }
 
 

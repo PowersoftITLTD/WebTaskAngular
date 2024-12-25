@@ -1,6 +1,7 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, catchError, map, tap, throwError } from 'rxjs';
+import { AnyCatcher } from 'rxjs/internal/AnyCatcher';
 import { environment } from 'src/environments/environment.prod';
 
 @Injectable({
@@ -10,16 +11,12 @@ export class ApiService {
 
   // apiUrl = 'http://127.0.0.1:5500/';
 
-  _apiUrl = environment.apiUrl;
+  // _apiUrl = environment.apiUrl;
   _apiUrl_1 = environment.apiUrl_1;
 
   constructor(private http: HttpClient) { }
 
   /**LOGIN**/
-
-
-  //http://192.168.19.188:8045/api/CommonApi/Task-Management/Get-Emp
-
   getEmpDetailsNew(jwtToken: string): Observable<any[]>{
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${jwtToken}`,
@@ -35,40 +32,50 @@ export class ApiService {
 
   }
 
-  //Login user
-  // getEmpDetails(): Observable<any[]> {
-  //   return this.http.get<any[]>(this._apiUrl + 'CommonApi/Task-Management/Get-Emp?CURRENT_EMP_MKEY=0&FILTER=DEFAULT').pipe(
-  //     map(employees => {
-  //       return employees.map(employee => {
-  //         return {
-  //           ...employee,
-  //           // LOGIN_PASSWORD: atob(employee.LOGIN_PASSWORD)
-  //         };
-  //       });
-  //     })
-  //   );
+
+
+  getLoginDetailsNew(user_id: string, password: string){
+   
+
+    const pre_login_body = {
+      Login_ID: user_id,
+      Login_Password: password
+    }
+
+    return this.http.post<any[]>(`${this._apiUrl_1}api/CommonApi/Task-Management/Login`, pre_login_body )
+
+  }
+
+
+  addTaskManagement(addTaskData:any,jwtToken:string): Observable<any>{
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${jwtToken}`,
+      'Content-Type': 'application/json',
+    });
+    return this.http.post<any[]>(`${this._apiUrl_1}api/CommonApi/Task-Management/Add-Task`, addTaskData , {headers})
+  }
+
+
+  // saveTaskManagement(saveTaskData:any, jwtToken:string){
+
   // }
 
-
-
+  
+  addSubTaskManagement(addSubTaskData:any, jwtToken:string): Observable<any>{
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${jwtToken}`,
+      'Content-Type': 'application/json',
+    });
+    return this.http.post<any[]>(`${this._apiUrl_1}api/CommonApi/Task-Management/Add-Sub-Task`, addSubTaskData , {headers})
+  }
   
 
-  getLoginDetails(user_id: string, password: string): Observable<any[]> {
-    return this.http.get<any[]>(this._apiUrl + `CommonApi/Task-Management/Login?Login_ID=${user_id}&Login_Password=${password}`)
-  }
-
-  getChangePassword(LoginName: any, old_pass: any, new_pass: any): Observable<any> {
-    return this.http.get<any>(`${this._apiUrl}CommonApi/Task-Management/Change_Password?LoginName=${LoginName}&Old_Password=${old_pass}&New_Password=${new_pass}`);
-  }
+  // getChangePassword(LoginName: any, old_pass: any, new_pass: any): Observable<any> {
+  //   return this.http.get<any>(`${this._apiUrl}CommonApi/Task-Management/Change_Password?LoginName=${LoginName}&Old_Password=${old_pass}&New_Password=${new_pass}`);
+  // }
 
 
   /**TASK MANAGEMENT INTEGRATION**/
-
-  // Option
-  // getCategory(): Observable<any> {
-  //   return this.http.get<any[]>(`${this._apiUrl}CommonApi/Task-Management/Get-Option?Type_Code=Category&Master_mkey=0`);
-  // }
-
   getCategorynew(jwtToken: string): Observable<any> {
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${jwtToken}`,
@@ -85,7 +92,6 @@ export class ApiService {
     
 
   // Project
-
   getProjectDetailsNew(jwtToken: string): Observable<any> {
     
     const headers = new HttpHeaders({
@@ -115,23 +121,22 @@ export class ApiService {
   }
   
   // Tags
-  getTagDetailss(mkey: string): Observable<any> {
-    return this.http.get<any[]>(`${this._apiUrl}CommonApi/Task-Management/EMP_TAGS?EMP_TAGS=${mkey}`);
-  }
+  // getTagDetailss(mkey: string): Observable<any> {
+  //   return this.http.get<any[]>(`${this._apiUrl}CommonApi/Task-Management/EMP_TAGS?EMP_TAGS=${mkey}`);
+  // }
 
 
   getTagDetailss1(mkey: string, jwtToken:string): Observable<any> {
     const headers = new HttpHeaders({ Authorization: `Bearer ${jwtToken}` });
-    return this.http.post<any[]>(`${this._apiUrl_1}CommonApi/Task-Management/EMP_TAGS?EMP_TAGS=${mkey}`, {headers});
+    const tag_body = {
+      EMP_TAGS: mkey
+    }
+    return this.http.post<any[]>(`${this._apiUrl_1}api/CommonApi/Task-Management/EMP_TAGS`, tag_body, {headers});
   }
 
 
 
   //Task Management
-  getTaskManagementDetails(mkey: string, option: string): Observable<any> { //Pending count
-    return this.http.get<any[]>(`${this._apiUrl}CommonApi/Task-Management/TASK-DASHBOARD?CURRENT_EMP_MKEY=${mkey}&FILTER=${option}`);
-  }
-
   getTaskManagementDetailsNew(mkey: string, option:string, jwtToken: string): Observable<any> {
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${jwtToken}`,
@@ -147,7 +152,6 @@ export class ApiService {
   }
 
 
- // http://192.168.19.188:8045/api/CommonApi/Task-Management/TASK-DETAILS_BY_MKEY
 
 
  getSelectedTaskDetailsNew(mkey: string, jwtToken: string): Observable<any> {
@@ -162,15 +166,6 @@ export class ApiService {
   return this.http.post<any[]>(`${this._apiUrl_1}api/CommonApi/Task-Management/TASK-DETAILS_BY_MKEY`, task_details_body, {headers});
 }
 
-  //Selected task details
-  // getSelectedTaskDetails(mkey: string): Observable<any> {
-  //   return this.http.get<any[]>(`${this._apiUrl}CommonApi/Task-Management/TASK-DETAILS_BY_MKEY?Mkey=${mkey}`);
-  // }
-
-  // actionable
-  getActionableDetails(mkey: string, emp_mkey: string, status: string): Observable<any> {
-    return this.http.get<any[]>(`${this._apiUrl}CommonApi/Task-Management/GET-ACTIONS?TASK_MKEY=${mkey}&CURRENT_EMP_MKEY=${emp_mkey}&CURR_ACTION=${status}`);
-  }
 
   getActionableDetailsNew(mkey: string, emp_mkey: string, status: string, jwtToken:string): Observable<any> {
     const headers = new HttpHeaders({
@@ -190,66 +185,230 @@ export class ApiService {
   }
 
 
-  //http://192.168.19.188:8045/api/CommonApi/Task-Management/GET-ACTIONS
 
-  //tree-list
-  getTreeList(mkey: string): Observable<any> {
-    return this.http.get<any[]>(`${this._apiUrl}CommonApi/Task-Management/GET-TASK_TREE?TASK_MKEY=${mkey}`)
+  getTreeListNew(mkey:string, jwtToken:string):Observable<any>{
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${jwtToken}`,
+      'Content-Type': 'application/json',
+    });
+
+    const tree_body = {
+      TASK_MKEY: mkey
+    }
+
+    return this.http.post<any[]>(`${this._apiUrl_1}api/CommonApi/Task-Management/GET-TASK_TREE`, tree_body , {headers})
   }
-
 
 
   /**DASHBOARD INTEGRATION**/
+  getHomeDetailsNew(mkey:string, jwtToken:string):Observable<any>{
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${jwtToken}`,
+      'Content-Type': 'application/json',
+    });
 
-  //Home & Graph
-  getHomeDetails(mkey: string): Observable<any> {
-    return this.http.get<any[]>(`${this._apiUrl}CommonApi/Task-Management/TASK-DASHBOARD_DETAILS?CURRENT_EMP_MKEY=${mkey}&CURR_ACTION=%22%22`)
+    const home_body = {
+      CURRENT_EMP_MKEY: mkey,
+      CURR_ACTION: "%22%22"
+    }
+
+    return this.http.post<any[]>(`${this._apiUrl_1}api/CommonApi/Task-Management/TASK-DASHBOARD_DETAILS`, home_body , {headers})
+
   }
+
 
   //Table
-  getTableDetails(mkey: string): Observable<any> {
-    return this.http.get<any[]>(`${this._apiUrl}CommonApi/Task-Management/TeamTask?CURRENT_EMP_MKEY=${mkey}`)
+  getTeamTaskNew(mkey:string, jwtToken:string){
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${jwtToken}`,
+      'Content-Type': 'application/json',
+    });
+
+    const team_task_body = {
+      CURRENT_EMP_MKEY: mkey
+    }
+
+    return this.http.post<any[]>(`${this._apiUrl_1}api/CommonApi/Task-Management/TeamTask`, team_task_body , {headers})
   }
 
 
 
-  //Dashoard department and interdepartment task
-  departmentTodayDetails(current_meky: string, mkey: string): Observable<any> {
-    return this.http.get<any[]>(`${this._apiUrl}CommonApi/Task-Management/Team_Task_Details?CURRENT_EMP_MKEY=${current_meky}&TASKTYPE=DEPERTMENT&TASKTYPE_DESC=DEPT-TODAY&mKEY=${mkey}`)
+  departmentTodayDetailsNew(current_mkey:string, mkey:string, jwtToken:string){
+      const headers = new HttpHeaders({
+      'Authorization': `Bearer ${jwtToken}`,
+      'Content-Type': 'application/json',
+    });
+
+    const body_1 =  {
+      CURRENT_EMP_MKEY:current_mkey,
+      TASKTYPE: "DEPERTMENT",
+      TASKTYPE_DESC: "DEPT-TODAY",
+      mKEY: mkey
+    }
+
+    return this.http.post<any[]>(`${this._apiUrl_1}api/CommonApi/Task-Management/Team_Task_Details`, body_1 , {headers})
+
+    
   }
 
-  departmentOverdueDetails(current_meky: string, mkey: string): Observable<any> {
-    return this.http.get<any[]>(`${this._apiUrl}CommonApi/Task-Management/Team_Task_Details?CURRENT_EMP_MKEY=${current_meky}&TASKTYPE=DEPERTMENT&TASKTYPE_DESC=DEPT-OVERDUE&mKEY=${mkey}`)
+  //http://192.168.19.188:8045/api/CommonApi/Task-Management/Team_Task_Details
+
+
+  departmentOverdueDetailsNew(current_mkey:string, mkey:string, jwtToken:string){
+      const headers = new HttpHeaders({
+      'Authorization': `Bearer ${jwtToken}`,
+      'Content-Type': 'application/json',
+    });
+
+    const body_2 =  {
+      CURRENT_EMP_MKEY:current_mkey,
+      TASKTYPE: "DEPERTMENT",
+      TASKTYPE_DESC: "DEPT-OVERDUE",
+      mKEY: mkey
+    }
+    
+    return this.http.post<any[]>(`${this._apiUrl_1}api/CommonApi/Task-Management/Team_Task_Details`, body_2 , {headers})
+
   }
 
-  departmentFutureDetails(current_meky: string, mkey: string): Observable<any> {
-    return this.http.get<any[]>(`${this._apiUrl}CommonApi/Task-Management/Team_Task_Details?CURRENT_EMP_MKEY=${current_meky}&TASKTYPE=DEPERTMENT&TASKTYPE_DESC=DEPT-FUTURE&mKEY=${mkey}`)
+
+  departmentFutureDetailsNew(current_mkey:string, mkey:string, jwtToken:string){
+      const headers = new HttpHeaders({
+      'Authorization': `Bearer ${jwtToken}`,
+      'Content-Type': 'application/json',
+    });
+
+    const body_3 =  {
+      CURRENT_EMP_MKEY:current_mkey,
+      TASKTYPE: "DEPERTMENT",
+      TASKTYPE_DESC: "DEPT-FUTURE",
+      mKEY: mkey
+    }
+    return this.http.post<any[]>(`${this._apiUrl_1}api/CommonApi/Task-Management/Team_Task_Details`, body_3 , {headers})
+
   }
 
-  interDepartmentTodayDetails(current_meky: string, mkey: string): Observable<any> {
-    return this.http.get<any[]>(`${this._apiUrl}CommonApi/Task-Management/Team_Task_Details?CURRENT_EMP_MKEY=${current_meky}&TASKTYPE=INTER-DEPERTMENT&TASKTYPE_DESC=INTERDEPT-TODAY&mKEY=${mkey}`)
+
+  interDepartmentTodayDetailsNew(current_mkey:string, mkey:string, jwtToken:string){
+      const headers = new HttpHeaders({
+      'Authorization': `Bearer ${jwtToken}`,
+      'Content-Type': 'application/json',
+    });
+
+    const body_4 =  {
+      CURRENT_EMP_MKEY:current_mkey,
+      TASKTYPE: "INTER-DEPERTMENT",
+      TASKTYPE_DESC: "INTERDEPT-TODAY",
+      mKEY: mkey
+    }
+    return this.http.post<any[]>(`${this._apiUrl_1}api/CommonApi/Task-Management/Team_Task_Details`, body_4 , {headers})
+
   }
 
-  interDepartmentOverdueDetails(current_meky: string, mkey: string): Observable<any> {
-    return this.http.get<any[]>(`${this._apiUrl}CommonApi/Task-Management/Team_Task_Details?CURRENT_EMP_MKEY=${current_meky}&TASKTYPE=INTER-DEPERTMENT&TASKTYPE_DESC=INTERDEPT-OVERDUE&mKEY=${mkey}`)
+
+  interDepartmentOverdueDetailsNew(current_mkey:string, mkey:string, jwtToken:string){
+      const headers = new HttpHeaders({
+      'Authorization': `Bearer ${jwtToken}`,
+      'Content-Type': 'application/json',
+    });
+
+    const body_5 =  {
+      CURRENT_EMP_MKEY:current_mkey,
+      TASKTYPE: "INTER-DEPERTMENT",
+      TASKTYPE_DESC: "INTERDEPT-OVERDUE",
+      mKEY: mkey
+    }
+    return this.http.post<any[]>(`${this._apiUrl_1}api/CommonApi/Task-Management/Team_Task_Details`, body_5 , {headers})
+
   }
 
-  interDepartmentFutureDetails(current_meky: string, mkey: string): Observable<any> {
-    return this.http.get<any[]>(`${this._apiUrl}CommonApi/Task-Management/Team_Task_Details?CURRENT_EMP_MKEY=${current_meky}&TASKTYPE=INTER-DEPERTMENT&TASKTYPE_DESC=INTERDEPT-FUTURE&mKEY=${mkey}`)
+
+  interDepartmentFutureDetailsNew(current_mkey:string, mkey:string, jwtToken:string){
+    const headers = new HttpHeaders({
+    'Authorization': `Bearer ${jwtToken}`,
+    'Content-Type': 'application/json',
+  });
+
+ const body_6 =  {
+    CURRENT_EMP_MKEY: current_mkey,
+    TASKTYPE: "INTER-DEPERTMENT",
+    TASKTYPE_DESC: "INTERDEPT-FUTURE",
+    mKEY: mkey
   }
+  return this.http.post<any[]>(`${this._apiUrl_1}api/CommonApi/Task-Management/Team_Task_Details`, body_6 , {headers})
+
+}
 
 
   //Add action details
-  postActionData(data: any): Observable<any> {
-    return this.http.post<any>(this._apiUrl + 'CommonApi/Task-Management/TASK-ACTION-TRL-Insert-Update', data);
+  // postActionData(data: any): Observable<any> {
+  //   return this.http.post<any>(this._apiUrl + 'CommonApi/Task-Management/TASK-ACTION-TRL-Insert-Update', data);
+  // }
+
+
+  // postActionDataNew(data: any, jwtToken:string): Observable<any>{
+  //   const headers = new HttpHeaders({
+  //     'Authorization': `Bearer ${jwtToken}`,
+  //     'Content-Type': 'application/json',
+  //   });
+
+  //   const 
+  // }
+
+
+  postActionDataNew(file: any, additionalAttributes: any, token: string): Observable<any> {
+    const formData = new FormData();
+
+    formData.append('file', file, file.name);
+
+    Object.keys(additionalAttributes).forEach(key => {
+      formData.append(key, additionalAttributes[key]);
+    });
+
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
+
+    return this.http.post(`${this._apiUrl_1}api/CommonApi/Task-Management/TASK-ACTION-TRL-Insert-Update`, formData, { headers });
   }
+
+
+  addRemarkBody(remarkData:any ,token: string){
+
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
+    return this.http.post(`${this._apiUrl_1}api/CommonApi/Task-Management/TASK-ACTION-TRL-Update`, remarkData, {headers})
+  }
+
+  //http://192.168.19.188:8045/api/CommonApi/Task-Management/TASK-ACTION-TRL-Insert-Update
 
 
   //File
-  uploadFile(formData: FormData) {
-    return this.http.post<string[]>(this._apiUrl + 'CommonApi/Task-Management/FileUpload', formData);
-  }
+  // uploadFile(formData: FormData) {
+  //   return this.http.post<string[]>(this._apiUrl + 'CommonApi/Task-Management/FileUpload', formData);
+  // }
 
+
+
+  
+  uploadFileNew(file: File, additionalAttributes: any, token: string): Observable<any> {
+    const formData = new FormData();
+
+    formData.append('file', file, file.name);
+
+    Object.keys(additionalAttributes).forEach(key => {
+      formData.append(key, additionalAttributes[key]);
+    });
+
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
+
+    return this.http.post(`${this._apiUrl_1}api/CommonApi/Task-Management/FileUpload`, formData, { headers });
+  }
+  
+  //http://192.168.19.188:8045/api/CommonApi/Task-Management/FileUpload
 
 
 

@@ -69,13 +69,13 @@
               </ul>
             </li>            
                         
-            <li class="nav-item" role="tab">
+            <!-- <li class="nav-item" role="tab">
               <a class="nav-link ripple with-arrow btn" (click)="navigateToUploadProject()"
                 [ngClass]="{ 'active': selectedTab === 'project-uploader' }">
                 <i class="icon s-4 icon-checkbox-marked"></i>
                 <span>Project Uploader</span>
               </a>
-            </li>
+            </li> -->
 
             <li class="nav-item" role="tab" *ngIf="selectedUserAccess()">
               <a class="nav-link ripple with-arrow btn" (click)="toggleApprovalDropdown()">
