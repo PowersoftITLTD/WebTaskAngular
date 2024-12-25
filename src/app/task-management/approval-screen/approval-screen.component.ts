@@ -11,11 +11,12 @@ import { CredentialService } from 'src/app/services/credential/credential.servic
 })
 export class ApprovalScreenComponent implements OnInit {
 
-  @Input() taskData: any;
+  // @Input() taskData: any;
 
 
   task: any[] = [];
   taskList: any[] = [];
+  docCatList:any[] = [];
 
 
   filterType: string = '';
@@ -100,44 +101,7 @@ export class ApprovalScreenComponent implements OnInit {
 
   }
 
-  private fetchData(): void {
-    this.recursiveLogginUser = this.apiService.getRecursiveUser();
-  
-    // 1. Building Classification DP
-    this.apiService.getBuildingClassificationDP(this.recursiveLogginUser).subscribe({
-      next: (list: any) => {
-        this.buildingList = list;
-        console.log('Building Classification List:', this.buildingList);       
-      },
-      error: (error: ErrorHandler) => {
-        console.error('Unable to fetch Building Classification List', error);
-      }
-    });
-  
-    // 2. Standard DP
-    this.apiService.getStandardDP(this.recursiveLogginUser).subscribe({
-      next: (list: any) => {
-        this.standardList = list;
-        console.log('Standard List:', this.standardList);      
-      },
-      error: (error: ErrorHandler) => {
-        console.error('Unable to fetch Standard List', error);
-      }
-    });
-  
-    // 3. Statutory Authority DP
-    this.apiService.getStatutoryAuthorityDP(this.recursiveLogginUser).subscribe({
-      next: (list: any) => {
-        this.statutoryAuthList = list;
-        console.log('Statutory Authority List:', this.statutoryAuthList);      
-      },
-      error: (error: ErrorHandler) => {
-        console.error('Unable to fetch Statutory Authority List', error);
-      }
-    });
-  
 
-  }
 
 
   onLogin() {   
@@ -268,6 +232,101 @@ toggleSortOrder(): void {
   });
 }
 
+fetchDocCategory(){
+  this.recursiveLogginUser = this.apiService.getRecursiveUser();
+
+  console.log(this.recursiveLogginUser)
+
+  this.apiService.getDocCategory(this.recursiveLogginUser).subscribe({
+    next: (list: any) => {
+      this.docCatList = list
+      this.setCategoryData();
+    },
+    error: (error: any) => {
+      console.error('Unable to fetch Document Type List', error);
+    }
+  });
+}
+
+
+fetchComboDetails(){
+  this.apiService.getBuildingClassificationDP(this.recursiveLogginUser).subscribe({
+    next: (list: any) => {
+      this.buildingList = list;
+      console.log('Building Classification List:', this.buildingList);       
+    },
+    error: (error: any) => {
+      console.error('Unable to fetch Building Classification List', error);
+    }
+  });
+
+  // 2. Standard DP
+  this.apiService.getStandardDP(this.recursiveLogginUser).subscribe({
+    next: (list: any) => {
+      this.standardList = list;
+      console.log('Standard List:', this.standardList);      
+    },
+    error: (error: any) => {
+      console.error('Unable to fetch Standard List', error);
+    }
+  });
+
+  // 3. Statutory Authority DP
+  this.apiService.getStatutoryAuthorityDP(this.recursiveLogginUser).subscribe({
+    next: (list: any) => {
+      this.statutoryAuthList = list;
+      console.log('statutoryAuthList List:', this.statutoryAuthList);      
+
+    },
+    error: (error: any) => {
+      console.error('Unable to fetch Statutory Authority List', error);
+    }
+  });
+  this.setComboData()
+}
+
+setCategoryData(): void {
+  if (this.taskList) {
+ 
+
+    this.taskList.forEach((task: any) => {
+      const matchedCategory = this.docCatList.find((doc_type: any) => doc_type.mkey === task.doC_CATEGORY);
+
+
+      if (matchedCategory) {
+        task.category_Name = matchedCategory.typE_DESC; // Add category name to the task
+      } else {
+        console.log('No matching category found for doC_CATEGORY:', task.doC_CATEGORY);
+      }
+    });
+
+    console.log('Updated taskList with category names:', this.taskList);
+  }
+}
+
+
+setComboData(): void {
+  if (this.taskList) {
+ 
+
+    this.taskList.forEach((task: any) => {
+      const matchedBuilding = this.buildingList.find((building: any) => building.mkey === task.buildinG_TYPE);
+      const matchedStandard = this.standardList.find((standard: any) => standard.mkey === task.buildinG_STANDARD);
+      const matchedAuthority = this.statutoryAuthList.find((authority: any) => authority.mkey === task.statutorY_AUTHORITY);
+
+      if (matchedBuilding && matchedStandard ) {
+        task.building_Name = matchedBuilding.typE_DESC; 
+        task.standard_Name = matchedStandard.typE_DESC
+        task.authority_Name = matchedAuthority.typE_DESC
+      } else {
+        // console.log('No matching category found for doC_CATEGORY:', task.doC_CATEGORY);
+      }
+    });
+
+    // console.log('Updated taskList with category names:', this.taskList);
+  }
+}
+
 
 
 
@@ -278,7 +337,8 @@ getApprovalTempList(){
     next:(approval_temp_data) =>{
       
       this.taskList = approval_temp_data;
-      console.log('approval_temp_data', approval_temp_data.data)
+      this.fetchComboDetails()
+      // console.log('approval_temp_data', approval_temp_data)
 
     },error:(error) =>{
       console.log('Error occured', error)
@@ -325,7 +385,8 @@ getApprovalTempList(){
 
     this.apiService.getDocumentTempelate( USER_CRED.MKEY, this.recursiveLogginUser).subscribe({
       next: (doc_temp_list) => {
-        console.log('doc_temp_list', doc_temp_list)
+        this.fetchDocCategory();
+
 
         this.taskList = doc_temp_list;
       }, error: (error) => {

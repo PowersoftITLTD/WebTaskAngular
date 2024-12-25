@@ -130,19 +130,7 @@ export class RecursiveTaskManagementComponent implements OnInit {
   }
 
 
-  // fetchSubProj(){
-
-  //   this.apiService.getSubProjectDetails(proj.MASTER_MKEY).subscribe(
-  //     (data: any) => {
-  //       this.sub_proj = data;
-  //       // console.log('this.sub_proj',this.sub_proj)                                  
-  //     },
-  //     (error: ErrorHandler) => {
-  //       console.log(error, 'Error Occurred while fetching sub-projects');
-  //     }
-  //   );
-  
-  // }
+ 
   onLogin() {   
 
     this.dataService.validateUser(this.loginName, this.loginPassword);
@@ -243,6 +231,7 @@ mergingProjAndSubProjName() {
   }
 
   const projectMap = new Map(this.project.map((proj: any) => [proj.MASTER_MKEY, proj.TYPE_DESC]));
+  console.log('projectMap', projectMap)
 
   const token = this.apiService.getRecursiveUser();
 
@@ -258,11 +247,9 @@ mergingProjAndSubProjName() {
           this.taskList.forEach((task: any) => {
 
               task.project_Name = projectMap.get(task.projecT_ID) || '0';
-              task.sub_project_Name = subProjectMap.get(task.suB_PROJECT_ID) || '0'; // Adjust key as needed
+              task.sub_project_Name = subProjectMap.get(task.suB_PROJECT_ID) || '0'; 
           });
-        } else {
-            console.error('taskList is undefined or empty');
-        }
+        } 
       },
       (error: ErrorHandler) => {
         console.log(error, 'Error Occurred while fetching sub-projects');

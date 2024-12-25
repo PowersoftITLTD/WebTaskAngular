@@ -79,7 +79,6 @@ export class AddTaskComponent implements OnInit {
     this.fetchCategoryData();
     this.fetchProjectData();
     this.fetchEmployeeName();
-    this.getTags();
     this.getTagsnew();
     // this.fetchEmployeeNameNew()
     // this.getSubProject()
@@ -161,25 +160,27 @@ export class AddTaskComponent implements OnInit {
 
 
 
-  getTags() {
-    this.loggedInUser = this.credentialService.getUser();
-    // console.log('this.loggedInUser[0]?.MKEY', this.loggedInUser[0]?.MKEY)
-    this.apiService.getTagDetailss(this.loggedInUser[0]?.MKEY).subscribe((data: any) => { 
-      // console.log('getTags new', data)
-      this.allTags = data
-     });
-  }
+  // getTags() {
+  //   this.loggedInUser = this.credentialService.getUser();
+  //   // console.log('this.loggedInUser[0]?.MKEY', this.loggedInUser[0]?.MKEY)
+  //   this.apiService.getTagDetailss(this.loggedInUser[0]?.MKEY).subscribe((data: any) => { 
+  //     // console.log('getTags new', data)
+  //     this.allTags = data
+  //    });
+  // }
 
   getTagsnew() {
     this.loggedInUser = this.credentialService.getUser();
     const token = this.apiService.getRecursiveUser();
 
-    // console.log('this.loggedInUser[0]?.MKEY', this.loggedInUser[0]?.MKEY)
-    this.apiService.getTagDetailss1(this.loggedInUser[0]?.MKEY, token).subscribe((data: any) => { 
-      console.log('tag data new', data)
-      this.allTags = data 
+    console.log('getTagDetailss1', token);
+
+    this.apiService.getTagDetailss1(this.loggedInUser[0]?.MKEY.toString(), token).subscribe((response: any) => { 
+        this.allTags = response[0].data.map((item: { name: string }) => item.name);
+    
     });
-  }
+}
+
 
 
 
@@ -207,12 +208,15 @@ export class AddTaskComponent implements OnInit {
   }
 
   fetchEmployeeName(): void {
-    const token = this.apiService.getRecursiveUser();;
+    const token = this.apiService.getRecursiveUser();
+
+    console.log('token',token)
 
     this.apiService.getEmpDetailsNew(token).subscribe(
       (response: any) => {
         // console.log("Employee data:", data);
         // const _data = data;
+        console.log(response)
 
         response[0]?.data.forEach((emp: any) => {
           const fullName = emp.EMP_FULL_NAME;
@@ -293,10 +297,7 @@ export class AddTaskComponent implements OnInit {
     }
   }
 
-  // onInputChange(value: string) {
-  //   this.inputHasValue = value.trim().length > 0;
-  //   // Additional logic if needed
-  // }
+
 
 
 
@@ -325,9 +326,12 @@ export class AddTaskComponent implements OnInit {
 
     const selectedCategoryDesc = this.taskForm.get('category')?.value;
     const selectedCategory = this.category.find((cat: any) => cat.TYPE_DESC === selectedCategoryDesc);
-
     
+    console.log('assignedEmployee.Assign_to', assignedEmployee)
 
+    if(assignedEmployee === undefined || assignedEmployee === null){
+      this.tostar.error('Select Proper assignee name')
+    }
     const taskData = {
       TASK_NO: "0000",
       TASK_NAME: this.taskForm.get('taskName')?.value,
@@ -360,36 +364,24 @@ export class AddTaskComponent implements OnInit {
     };
 
 
-    // console.log(taskData)
+    console.log(taskData)
 
-    let url = 'http://182.78.248.166:8070/CommonApi/Task-Management/Add-Task?';
 
-    Object.entries(taskData).forEach(([key, value]) => {
-      if (value !== undefined) {
-        url += `${key}=${encodeURIComponent(value)}&`;
-      }
-    });
+      const token = this.apiService.getRecursiveUser();;
 
-    url = url.slice(0, -1);
+      this.apiService.addTaskManagement(taskData, token).subscribe((response:any)=>{
+        // console.log('Add task response',response)
+        if (response[0].data && response[0].data.length > 0) {
 
-    this.http.get(url)
-      .subscribe(
-        (response: any) => {
+          // console.log('Add task response',response)
 
-          if (response && response.length > 0) {
-            this.taskParentId = response[0].TASK_PARENT_ID;
-            this.taskMainNodeId = response[0].TASK_MAIN_NODE_ID;
-            this.mkey = response[0].Mkey
-          }
-          this.uploadFile();
-          this.tostar.success('success', `Your Task saved successfully with Task No : ${response[0].TASK_NO}`);
-          this.router.navigate(['/task/task-management'])
-
-        },
-        (error) => {
-          console.error('Error:', error);
+            this.taskParentId = response[0].data[0].TASK_PARENT_ID;
+            this.taskMainNodeId = response[0].data[0].TASK_MAIN_NODE_ID;
         }
-      );
+             this.uploadFile(response[0].data[0].MKEY);
+             this.tostar.success('success', `Your Task saved successfully with Task No : ${response[0].data[0].TASK_NO}`);
+             this.router.navigate(['/task/task-management'])
+      });
   }
 
 
@@ -406,32 +398,45 @@ export class AddTaskComponent implements OnInit {
     }
   }
 
-  uploadFile() {
+
+
+
+  uploadFile(mkey:any): void {
+
 
     if (this.file) {
-      const formData = new FormData();
 
-      formData.append('files', this.file);
-      formData.append('DELETE_FLAG', 'N');
-      formData.append('TASK_PARENT_ID', this.taskParentId);
-      formData.append('TASK_MAIN_NODE_ID', this.taskMainNodeId);
-      formData.append('Mkey', this.mkey);
-      formData.append('CREATED_BY', this.loggedInUser[0]?.MKEY)
+    const token = this.apiService.getRecursiveUser();
+    const USER_MKEY = this.loggedInUser[0]?.MKEY  
 
-      // console.log('formData',formData)
+    if (this.file) {
+      const additionalAttributes = {
 
-      this.apiService.uploadFile(formData)
-        .subscribe(
-          response => {
-            console.log('File uploaded successfully:', response);
-          },
-          error => {
-            console.error('Error uploading file:', error);
-          }
-        );
+        files:this.file,      
+        MKEY:0,
+        TASK_MKEY: mkey,
+        TASK_PARENT_ID:this.taskParentId,
+        TASK_MAIN_NODE_ID:this.taskMainNodeId,
+        DELETE_FLAG: 'Y',
+        CREATED_BY:USER_MKEY   
+      };
+  
+  
+      this.apiService.uploadFileNew(this.file, additionalAttributes, token).subscribe(
+        response => {
+          console.log('Upload successful:', response);
+        },
+        error => {
+          console.error('Upload failed:', error);
+        }
+      );
     } else {
-      console.error('No file selected.');
+      console.warn('No file selected');
     }
+
+  }
+
+
   }
 
   onSubmit() {

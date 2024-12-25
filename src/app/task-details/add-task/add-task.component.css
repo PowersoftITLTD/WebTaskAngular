@@ -46,6 +46,10 @@
     background-color: #f1f1f1;
 }
 
+small{
+  color: red;
+}
+
 body{
     padding-left: 240px;
 }

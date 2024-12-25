@@ -36,6 +36,11 @@
   display: none !important;
 }
 
+small{
+  color: red;
+  margin-left: 2px;
+}
+
 
 .menu ul {
   list-style: none !important;

@@ -41,22 +41,18 @@ export class ActionableComponent implements OnInit {
 
   ngOnInit(): void {
 
-
     this.route.params.subscribe(params => {
       if (params['Task_Num']) {
 
         this.task = JSON.parse(params['Task_Num']);
         const token = this.apiService.getRecursiveUser();
 
-
         this.getSelectedTaskDetails(this.task.toString(), token).subscribe((response: any) => {
           this.taskDetails = response[0]?.data;
-          console.log('getSelectedTaskDetails',this.taskDetails)
+          // console.log('getSelectedTaskDetails',this.taskDetails)
           this.details = response[0]?.data;
           this.taskDetails = response[0]?.data[0].STATUS;
           this.getActionableDetails();
-          this.checkTheStatus();
-
 
         });
       }
@@ -80,12 +76,15 @@ export class ActionableComponent implements OnInit {
   getActionableDetails() {
     this.loading = true;
     if (this.task && this.loggedInUser && this.taskDetails) {
-      this.apiService.getActionableDetails(this.task, this.loggedInUser[0]?.MKEY, this.taskDetails).subscribe((data: any) => {
-        console.log('from old',this.taskDetails)
-        this.status = data.Table;
-        this.currentStatus = data.Table1;
+      const token = this.apiService.getRecursiveUser();
+
+      this.apiService.getActionableDetailsNew(this.task.toString(), this.loggedInUser[0]?.MKEY.toString(), this.taskDetails, token).subscribe((response: any) => {
+
+        // console.log('getActionableDetailsNew',response)
+        this.status = response[0].Data;
+        this.currentStatus = response[0].Data1; 
         this.loading = false;
-        // console.log('this.currentStatus',this.currentStatus)
+        console.log('this.currentStatus',this.currentStatus)
 
         // console.log('status', this.status)
 
@@ -119,27 +118,8 @@ export class ActionableComponent implements OnInit {
   }
 
 
-  checkTheStatus(){
-    // this.loading = true;
-    // if (this.task && this.loggedInUser && this.taskDetails) {
-      const token = this.apiService.getRecursiveUser();
-      console.log('checknthe ',this.task.toString());
-      console.log('checknthe ',this.loggedInUser[0]?.MKEY);
-      console.log('checknthe ',this.taskDetails);
-      console.log('checknthe ',token);
 
-      this.apiService.getActionableDetailsNew(this.task.toString(), this.loggedInUser[0]?.MKEY.toString(), this.taskDetails, token).subscribe((response: any) => {
 
-        console.log('Response checkTheStatus', response[0]?.data)
-        // this.status = data.Table;
-        // this.currentStatus = data.Table1;
-        // this.loading = false;
-        
-      });
-    // } else {
-    //   console.error('Cannot fetch actionable details: Missing required parameters');
-    // }
-  }
 
   onStatusChange(event: any) {
     const status = event.target.value;
@@ -198,38 +178,70 @@ export class ActionableComponent implements OnInit {
 
 
   createData() {
+    const token = this.apiService.getRecursiveUser();
+    const TASK_NUM = this.task;
+    const USER_MKEY = this.loggedInUser[0]?.MKEY;
+  
+    const remark_body = {
+      Mkey: TASK_NUM,
+      TASK_MKEY: TASK_NUM,
+      TASK_PARENT_ID: TASK_NUM,
+      TASK_MAIN_NODE_ID:TASK_NUM,      
+      CREATED_BY: USER_MKEY,
+      ACTION_TYPE: 'Progress',
+      DESCRIPTION_COMMENT: this.progressForm.get('remark').value,
+      PROGRESS_PERC: this.progressForm.get('progress').value.toString(),
+      STATUS: this.progressForm.get('status').value,
+      FILE_NAME: this.file ? this.file.name : null,
+      FILE_PATH: null
+    };
 
-    const USER_MKEY = this.loggedInUser[0]?.MKEY
+    this.apiService.addRemarkBody(remark_body, token).subscribe(
+      response => {
+
+        console.log('response',response)
+        this.tostar.success('success', `Progress updated successfully.`)
+        this.router.navigate(['/task/task-management'])
+      },
+      error => {
+        console.error('Upload failed:', error);
+      }
+    );
+  
+    this.createDataFileUpload()    
+    console.log('remark_body', remark_body);
+  }
+  
+
+
+  createDataFileUpload(): void {
+
+    const token = this.apiService.getRecursiveUser();
+    // const data = this.dataService.getUser();
     const TASK_NUM = this.task
+    const USER_MKEY = this.loggedInUser[0]?.MKEY
 
-    const formData = new FormData();
-
-    formData.append("Mkey", TASK_NUM)
-    formData.append("TASK_MKEY", TASK_NUM)
-    formData.append("TASK_PARENT_ID", TASK_NUM)
-    formData.append("ACTION_TYPE", 'Progress')
-    formData.append("DESCRIPTION_COMMENT", this.progressForm.get('remark').value)
-    formData.append("PROGRESS_PERC", this.progressForm.get('progress').value)
-    formData.append("STATUS", this.progressForm.get('status').value)
-    formData.append("CREATED_BY", USER_MKEY)
-    formData.append("TASK_MAIN_NODE_ID", TASK_NUM)
-    formData.append("FILENAME", this.file)
-
-    const file = this.progressForm.get('file').value
-
-
-    this.apiService.postActionData(formData)
-      .subscribe(
+  
+    if (this.file) {
+      const additionalAttributes = {
+        files:this.file,    
+        FILE_NAME:this.file.name,  
+        TASK_MAIN_NODE_ID:TASK_NUM,      
+      };
+  
+  
+      this.apiService.postActionDataNew(this.file, additionalAttributes, token).subscribe(
         response => {
-          if (response) {
-            this.tostar.success('success', `Progress updated successfully.`)
-            this.router.navigate(['/task/task-management'])
-          }
+
+          console.log('response',response)
+          this.tostar.success('success', `Progress updated successfully.`)
+          this.router.navigate(['/task/task-management'])
         },
         error => {
-          console.error('Error:', error);
+          console.error('Upload failed:', error);
         }
       );
+    } 
   }
 
 
@@ -268,9 +280,7 @@ export class ActionableComponent implements OnInit {
   }
 
   fileUrl(filePath: string) {
-
-    console.log('filePath', filePath)
-    return `http://182.78.248.166:8070/Task/Task/${filePath}`;
+      return `http://192.168.19.188:8087/${filePath}`;
   }
 
 }

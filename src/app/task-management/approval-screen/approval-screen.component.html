@@ -90,13 +90,36 @@
 
                                                                
                                                                 
-                                                                <div class="tags">
-                                                                    <div class="tag badge mt-2 mr-1">
+                                                                <div class="tags" >
+                                                                    <div class="tag badge mt-2 mr-1" *ngIf="t.category_Name">
                                                                         <div class="row no-gutters align-items-center">
-                                                                            <i class="fas fa-building small-icon pt-2 mb-1"></i>                                                 
-                                                                            <div class="tag-label">Building: {{t.createD_BY_Name}}</div>
+                                                                            <i class="fas fa-folder small-icon pt-2 mb-1"></i>                                                 
+                                                                            <div class="tag-label">Category: {{t.category_Name}}</div>
                                                                         </div>
                                                                     </div>
+
+                                                                    <div class="tag badge mt-2 mr-1" *ngIf="!t.category_Name && !t.DOC_NUMBER">
+                                                                        <div class="row no-gutters align-items-center">
+                                                                            <i class="fa fa-building small-icon pt-2 mb-1"></i>                                                 
+                                                                            <div class="tag-label">Building: {{t.building_Name}}</div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div class="tag badge mt-2 mr-1" *ngIf="!t.category_Name && !t.DOC_NUMBER">
+                                                                        <div class="row no-gutters align-items-center">
+                                                                            <i class="fa fa-building small-icon pt-2 mb-1"></i>                                                 
+                                                                            <div class="tag-label">Standard: {{t.standard_Name}}</div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div class="tag badge mt-2 mr-1" *ngIf="!t.category_Name && !t.DOC_NUMBER">
+                                                                        <div class="row no-gutters align-items-center">
+                                                                            <i class="fa fa-building small-icon pt-2 mb-1"></i>                                                 
+                                                                            <div class="tag-label">Authority: {{t.authority_Name}}</div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                    
 
 
                                                                 <div class="tag badge mt-2 mr-1"

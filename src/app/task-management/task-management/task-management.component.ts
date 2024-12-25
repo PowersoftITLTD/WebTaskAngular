@@ -32,6 +32,8 @@ export class TaskManagementComponent implements OnInit {
   ];
 
   filterType: string = '';
+  loginName: string = '';
+  loginPassword: string = '';
 
   selectedOption: any;
 
@@ -65,6 +67,7 @@ export class TaskManagementComponent implements OnInit {
 
   source:any;
 
+  createdOrUpdatedUserName:any
 
   myAction: number | any;
   AllocatedToMee: number | any;
@@ -92,34 +95,36 @@ export class TaskManagementComponent implements OnInit {
     this.source = this.activatedRoute.queryParams.subscribe(params => {
       const source = params['source'];
 
+      // console.log('from ngOnInit',this.loggedInUser[0].MKEY)
+
       if(!source){
         const option = 'DEFAULT';
         this.selectedTab = 'actionable';
-        this.fetchTaskDetails(this.loggedInUser[0]?.MKEY, option);
+        this.fetchTaskDetails(this.loggedInUser[0].MKEY, option);
       }else if (source === 'overdue') {
         this.selectedOption = 'Over-due';
         const option = 'DEFAULT';
-        this.fetchTaskDetails(this.loggedInUser[0]?.MKEY, option);
+        this.fetchTaskDetails(this.loggedInUser[0].MKEY, option);
       } else if (source === 'today') {
         this.selectedOption = 'To-day';
         const option = 'DEFAULT';
-        this.fetchTaskDetails(this.loggedInUser[0]?.MKEY, option);
+        this.fetchTaskDetails(this.loggedInUser[0].MKEY, option);
       } else if (source === 'future') {
         this.selectedOption = 'Future';
         const option = 'DEFAULT';
-        this.fetchTaskDetails(this.loggedInUser[0]?.MKEY, option);
+        this.fetchTaskDetails(this.loggedInUser[0].MKEY, option);
       } else if (source === 'allocatedButNotStarted') {        
         this.selectedTab = 'allocatedToMe';
         const option = 'ALLOCATEDTOME';
-        this.fetchTaskDetails(this.loggedInUser[0]?.MKEY, option);
+        this.fetchTaskDetails(this.loggedInUser[0].MKEY, option);
       } else if (source === 'review') {
         this.selectedOption = 'Review';
         const option = 'DEFAULT';
-        this.fetchTaskDetails(this.loggedInUser[0]?.MKEY, option);
+        this.fetchTaskDetails(this.loggedInUser[0].MKEY, option);
       } else if (source === 'actionable'){
         this.myActionable();
         const option = 'DEFAULT';
-        this.fetchTaskDetails(this.loggedInUser[0]?.MKEY, option);
+        this.fetchTaskDetails(this.loggedInUser[0].MKEY, option);
       } else if (source === 'allocatedByMe'){
         this.AllocatedByMe();
       } else if(source === 'completedByMe'){
@@ -132,14 +137,51 @@ export class TaskManagementComponent implements OnInit {
       
      
     });
-   
+    
+  //  this.onLogin();
   }
+
+
+  onLogin() {   
+
+    this.dataService.validateUser(this.loginName, this.loginPassword);
+
+    const data = this.dataService.getUser();
+
+    this.createdOrUpdatedUserName = data[0]?.FIRST_NAME,    
+
+    console.log('onLogin data')
+
+    const USER_CRED = {    
+      EMAIL_ID_OFFICIAL: data[0]?.EMAIL_ID_OFFICIAL, 
+      PASSWORD:data[0]?.ATTRIBUTE1
+    }; 
+
+
+    console.log('USER_CRED TM', USER_CRED)
+
+    console.log()
+    this.apiService.login(USER_CRED.EMAIL_ID_OFFICIAL, USER_CRED.PASSWORD).subscribe({
+      next: (response) => {
+        if(response.jwtToken){
+          this.selectedOption = 'Over-due';
+          const option = 'DEFAULT';
+          this.fetchTaskDetails(this.loggedInUser[0]?.MKEY, option);
+        }
+      },
+      error: (error) => {
+        console.error('Login failed:', error);
+      }
+    });
+  }
+
 
   _getCount() {
     this.loggedInUser = this.dataService.getUser();
     const token = this.apiService.getRecursiveUser();
-
     const option = 'DEFAULT';
+
+    // console.log('this.loggedInUser[0]?.MKEY.toString()', this.loggedInUser[0]?.MKEY.toString())
     this.apiService.getTaskManagementDetailsNew(this.loggedInUser[0]?.MKEY.toString(), option, token).subscribe(
       (response: any) => {
 
@@ -156,13 +198,16 @@ export class TaskManagementComponent implements OnInit {
   fetchTaskDetails(mkey: string, option: string) {
 
     this.loggedInUser = this.dataService.getUser();
+
+    // console.log(this.loggedInUser)
     const token = this.apiService.getRecursiveUser();
+
 
     this.apiService.getTaskManagementDetailsNew(mkey.toString(), option, token).subscribe(
       (response: any) => {
 
-        console.log(response)
-        this.taskList = response[0]?.data;        
+        this.taskList = response[0]?.data;   
+        // console.log(this.taskList)     
       },
       (error: ErrorHandler) => {
         console.error('Error fetching task details:', error);

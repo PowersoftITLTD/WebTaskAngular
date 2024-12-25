@@ -22,6 +22,9 @@ export class SelectedTaskInfoComponent implements OnInit {
   sub_proj: any = [];
   status: any = [];
   allTags: any[] = [];
+
+
+  compDate:any
   
   taskForm: FormGroup | any;
   ma: boolean = false;
@@ -82,6 +85,15 @@ export class SelectedTaskInfoComponent implements OnInit {
     this.getTags();
     this._getSelectedTaskDetails();
 
+    
+
+  
+  }
+
+
+  onDateChange(event: any): void {
+    const selectedDate = event.target.value;  // Get the selected date from the event
+    this.taskForm.get('completionDate')?.setValue(selectedDate);  // Update the form control with the selected date
   }
 
   shouldDisableSelect(): boolean {
@@ -103,6 +115,10 @@ export class SelectedTaskInfoComponent implements OnInit {
 
           this.taskDetails = response[0]?.data;
 
+
+          // console.log('COMPLETION_DATE:', this.taskDetails[0]?.COMPLETION_DATE);
+
+
           // console.log('taskDetails', response[0]?.data)
 
           // console.log('this.taskDetails[0]?.PROJECT_MKEY', this.taskDetails[0])
@@ -121,20 +137,28 @@ export class SelectedTaskInfoComponent implements OnInit {
             completionDate: this.taskDetails[0].COMPLETION_DATE
           });
 
+          
+
           if (response[0]?.data.length > 0 && response[0].data[0]?.TAGS !== null) {
             const tagsArray = response[0]?.data[0].TAGS.split(',');
             this.selectedTags = tagsArray;
           } else {
             this.selectedTags = [];
           }
-
         });
       }
     });
   }
-
- 
-
+  formatDateForInput(dateString: string): string {
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`; // 'yyyy-MM-dd' format
+  }
+  
+  
+  
   canEditTaskDescription(): boolean {
     if (this.loggedInUser && this.taskDetails[0]) {
       return this.loggedInUser[0]?.MKEY === this.taskDetails[0].TASK_CREATED_BY || this.editMode;
@@ -291,9 +315,15 @@ export class SelectedTaskInfoComponent implements OnInit {
 
 
   getTags() {
+
     this.loggedInUser = this.dataService.getUser();
-    this.apiService.getTagDetailss(this.loggedInUser[0]?.MKEY).subscribe((data: any) => {
-      this.allTags = data
+    const token = this.apiService.getRecursiveUser();
+
+    // console.log('getTagDetailss1', token);
+
+    this.apiService.getTagDetailss1(this.loggedInUser[0]?.MKEY.toString(), token).subscribe((response: any) => { 
+        this.allTags = response[0].data.map((item: { name: string }) => item.name);
+    
     });
   }
 
@@ -397,9 +427,10 @@ export class SelectedTaskInfoComponent implements OnInit {
     const tagsValue = this.taskForm.get('tags')?.value;
     let tagsString = '';
 
-    // if (Array.isArray(tagsValue)) {
-    //   tagsString = tagsValue.map(tag => tag.display).join(',');
-    // }
+    // console.log('assignedEmployee.Assign_to', assignedEmployee.Assign_to)
+    if (assignedEmployee.Assign_to === undefined || assignedEmployee.Assign_to === null) {
+      this.tostar.error('Please provide proper Assignee name')
+    }
 
     if (Array.isArray(tagsValue)) {
       tagsString = tagsValue.map(tag => {
@@ -415,8 +446,15 @@ export class SelectedTaskInfoComponent implements OnInit {
 
     const selectedCategoryDesc = this.taskForm.get('category')?.value;
 
+    if(assignedEmployee === undefined || assignedEmployee === null){
+      this.tostar.error('Select Proper assignee name')
+    }
+
+
+    console.log(Task_Num)
+
     const subTaskData: any = {
-      TASK_NO: Task_Num,
+      TASK_NO: Task_Num.toString(),
       TASK_NAME: this.taskForm.get('taskName')?.value,
       TASK_DESCRIPTION: this.taskForm.get('taskDescription')?.value,
       CATEGORY: selectedCategoryDesc,
@@ -449,58 +487,35 @@ export class SelectedTaskInfoComponent implements OnInit {
       Current_task_mkey: Task_Num
     }
 
-    let url = 'http://182.78.248.166:8070/CommonApi/Task-Management/Add-Sub-Task?';
 
-    // Construct URL with all attributes from taskData
-    Object.entries(subTaskData).forEach(([key, value]) => {
-      if (value !== undefined) {
-        url += `${key}=${encodeURIComponent(String(value))}&`;
-      }
-    });
 
-    // Remove the last '&' character
-    url = url.slice(0, -1);
+    const token = this.apiService.getRecursiveUser();;
 
-    // Making request
-    this.http.get(url)
-      .subscribe(
-        (response: any) => {
-          // console.log('Response:', response);
-          // if(response && this.file)
-          if (this.file) {
-            const formData = new FormData();
-
-            formData.append('files', this.file);
-            formData.append('DELETE_FLAG', 'N');
-            formData.append('TASK_PARENT_ID', response[0].TASK_PARENT_ID);
-            formData.append('TASK_MAIN_NODE_ID', response[0].TASK_MAIN_NODE_ID);
-            formData.append('Mkey', response[0].Mkey);
-            formData.append('CREATED_BY', this.loggedInUser[0]?.MKEY)
-
-            // console.log('formData',formData)
-
-            this.apiService.uploadFile(formData)
-              .subscribe(
-                response => {
-                  // console.log('File uploaded successfully:', response);
-                },
-                error => {
-                  console.error('Error while uploading file:', error);
-                }
-              );
-          }
-
-          this.tostar.success('Successfully !!', `Sub task ${response[0].TASK_NO} created`)
-          this.router.navigate(['/task/task-management'])
-
-          // console.log(url)
-        },
-        (error: ErrorHandler) => {
-
-          this.tostar.error('ERROR', `Internet not working`)
-          console.error('Error:', error);
+    console.log('subTaskData', subTaskData)
+    this.apiService.addSubTaskManagement(subTaskData, token).subscribe({
+      next: (response: any) => {
+        const responseData = response[0]?.data;
+    
+        if (responseData && responseData.length > 0) {
+          const task = responseData[0];
+          this.taskParentId = task.TASK_PARENT_ID;
+          this.taskMainNodeId = task.TASK_MAIN_NODE_ID;
+          this.mkey = task.MKEY;
+    
+          this.removeFile();
+          this.uploadFile(this.mkey);
+          this.tostar.success('Success', `Your Task saved successfully with Task No: ${task.TASK_NO}`);
+          this.router.navigate(['/task/task-management']);
+        } else {
+          this.tostar.error('Error', 'Task creation failed. No data returned.');
         }
-      );
+      },
+      error: (err) => {
+        console.error('Error creating subtask:', err);
+        this.tostar.error('Error', 'Failed to save the task. Please try again later.');
+      },
+    });
+         
   }
 
 
@@ -549,6 +564,9 @@ export class SelectedTaskInfoComponent implements OnInit {
   }
 
 
+  
+
+
   savePreviousTask() {
 
     const Task_Num = this.task
@@ -568,6 +586,13 @@ export class SelectedTaskInfoComponent implements OnInit {
 
     const tagsValue = this.taskForm.get('tags')?.value;
 
+    // console.log('masmalk')
+    const checkDate = this.taskForm.get('completionDate')?.value
+
+    
+
+    // console.log('checkDate', checkDate)
+
     let tagsString = '';
     // console.log('tagsValue', tagsValue)
 
@@ -585,7 +610,7 @@ export class SelectedTaskInfoComponent implements OnInit {
 
     // console.log('tagsString check',tagsString)
     const taskData = {
-      TASK_NO: Task_Num,
+      TASK_NO: Task_Num.toString(),
       TASK_NAME: this.taskForm.get('taskName')?.value,
       TASK_DESCRIPTION: this.taskForm.get('taskDescription')?.value,
       CATEGORY: selectedCategoryDesc,
@@ -617,41 +642,30 @@ export class SelectedTaskInfoComponent implements OnInit {
 
 
 
-    // console.log('Save Task taskData',taskData)
+    console.log('Save Task taskData',taskData)
+  
 
+    const token = this.apiService.getRecursiveUser();;
 
-    let url = 'http://182.78.248.166:8070/CommonApi/Task-Management/Add-Task?';
+    console.log('save task token', token)
 
-    // Construct URL with all attributes from taskData
-    Object.entries(taskData).forEach(([key, value]) => {
-      if (value !== undefined) {
-        url += `${key}=${encodeURIComponent(value)}&`;
+    this.apiService.addTaskManagement(taskData, token).subscribe((response:any)=>{
+      console.log(response[0].data)
+      if (response[0].data && response[0].data.length > 0) {
+          this.taskParentId = response[0].data[0].TASK_PARENT_ID;
+          this.taskMainNodeId = response[0].data[0].TASK_MAIN_NODE_ID;
+          this.mkey = response[0].data[0].MKEY
       }
-    });
-
-    // Remove the last '&' character
-    url = url.slice(0, -1);
-
-    this.http.get(url)
-      .subscribe(
-        (response: any) => {
-          console.log('Response:', response);
           this.removeFile();
-          this.uploadFile();
-          this.tostar.success('Successfully', `task ${response[0].TASK_NO} saved`);
-          this.router.navigate(['/task/task-management'])
-
-          // console.log(url)
-        },
-        (error) => {
-          console.error('Error:', error);
-        }
-      );
+           this.uploadFile(response[0].data[0].MKEY);
+           this.tostar.success('success', `Your Task saved successfully with Task No : ${response[0].data[0].TASK_NO}`);
+           this.router.navigate(['/task/task-management'])
+    })
   }
 
 
   fileUrl() {
-    return `http://182.78.248.166:8070/Task/Task/${this.taskDetails[0].FILE_PATH}`;
+    return `http://192.168.19.188:8087/${this.taskDetails[0].FILE_PATH}`;
   }
 
 
@@ -668,33 +682,49 @@ export class SelectedTaskInfoComponent implements OnInit {
     }
   }
 
-  uploadFile() {
+  uploadFile(mkey:any): void {
 
-    const Task_Num = this.task
 
     if (this.file) {
-      const formData = new FormData();
 
-      formData.append('files', this.file);
-      formData.append('DELETE_FLAG', 'N');
-      formData.append('TASK_PARENT_ID', Task_Num);
-      formData.append('TASK_MAIN_NODE_ID', Task_Num);
-      formData.append('Mkey', Task_Num);
-      formData.append('CREATED_BY', this.loggedInUser[0]?.MKEY)
+    const token = this.apiService.getRecursiveUser();
+    // const data = this.dataService.getUser();
+    const USER_MKEY = this.loggedInUser[0]?.MKEY  
 
-      console.log('formData', formData)
 
-      this.apiService.uploadFile(formData)
-        .subscribe(
-          response => {
-            console.log('File uploaded successfully:', response);
-          },
-          error => {
-            console.error('Error uploading file:', error);
-          }
-        );
+    console.log('token', token)
+    console.log('USER_MKEY', USER_MKEY)
+    console.log('this.mkey', this.mkey)
+    console.log('this.taskParentId', this.taskParentId)
+    console.log('this.taskMainNodeId', this.taskMainNodeId)
+  
+    if (this.file) {
+      const additionalAttributes = {
+
+        files:this.file,      
+        MKEY:0,
+        TASK_MKEY: mkey,
+        TASK_PARENT_ID:this.taskParentId,
+        TASK_MAIN_NODE_ID:this.taskMainNodeId,
+        DELETE_FLAG: 'Y',
+        CREATED_BY:USER_MKEY   
+      };
+  
+  
+      this.apiService.uploadFileNew(this.file, additionalAttributes, token).subscribe(
+        response => {
+          console.log('Upload successful:', response);
+        },
+        error => {
+          console.error('Upload failed:', error);
+        }
+      );
+    } else {
+      console.warn('No file selected');
     }
+
   }
+}
 
 
   removeFile() {

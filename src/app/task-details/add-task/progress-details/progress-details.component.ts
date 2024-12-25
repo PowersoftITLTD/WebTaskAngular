@@ -30,7 +30,6 @@ export class ProgressDetailsComponent implements OnInit {
         this.getSelectedTaskDetails(this.task.toString(), token).subscribe((response: any) => {
           this.taskDetails = response[0]?.data;
 
-
           this.getTree(response[0]?.data);
         });
       }
@@ -45,19 +44,21 @@ export class ProgressDetailsComponent implements OnInit {
 
 
   getTree(taskDetails: any) {
-    console.log('taskDetails getTree', taskDetails)
+    // console.log('taskDetails getTree', taskDetails)
 
-    console.log('this.task', this.task)
+    // console.log('this.task', this.task)
 
     this.loading = true;
-    this.apiService.getTreeList(this.task).subscribe((same_data) => {
+    const token = this.apiService.getRecursiveUser();
 
-      console.log('same_data',same_data)
+    this.apiService.getTreeListNew(this.task.toString(), token).subscribe((response) => {
+
+      // console.log('same_data',response[0].data)
       const selectedData = taskDetails.filter((item: any) => {
-        return same_data.some((task: any) => task.TASK_NO === item.TASK_NO);
+        return response[0]?.data.some((task: any) => task.TASK_NO === item.TASK_NO);
       });
 
-      console.log('selectedData', selectedData)
+      // console.log('selectedData', selectedData)
       const buildHierarchy = (tasks: any, rootTaskNo: any) => {
         const rootTask = tasks.find((task: any) => task.TASK_NO === rootTaskNo);
         if (!rootTask) return null;
@@ -111,7 +112,7 @@ export class ProgressDetailsComponent implements OnInit {
 
       selectedData.forEach((selectedTask: any) => {
         const taskNo = selectedTask.TASK_NO;
-        const hierarchy = buildHierarchy(same_data, taskNo);
+        const hierarchy = buildHierarchy(response[0]?.data, taskNo);
 
 
         if (hierarchy) {
