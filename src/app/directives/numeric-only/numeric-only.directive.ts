@@ -9,7 +9,6 @@ export class NumericOnlyDirective {
 
   @HostListener('keydown', ['$event'])
   onKeyDown(event: KeyboardEvent) {
-<<<<<<< HEAD
     const inputField = event.target as HTMLInputElement;
     const currentValue = inputField?.value || '';
 
@@ -31,15 +30,4 @@ export class NumericOnlyDirective {
     // Prevent the event for invalid inputs (0 at the start, etc.)
     event.preventDefault();
   }
-=======
-    const validKeys = /[1-9\b]|ArrowLeft|ArrowRight|Backspace/;
-
-
-    // console.log('Event check: ',event)
-    if (!event.key.match(validKeys)) {
-      event.preventDefault();
-    }
-  }
-
->>>>>>> parent of cb45e19 (Adding Updated Packages 27-11-2024)
 }
