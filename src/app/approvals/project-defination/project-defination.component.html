@@ -157,12 +157,12 @@
                           List</small></i>
 
                      <div >
-                        <button *ngIf="!isCleared" class="fa-solid plus btn mr-2" type="button" [disabled]="disableClear" (click)="confirmClear()">
+                        <button *ngIf="!isCleared && updatedDetails" class="fa-solid plus btn mr-2" type="button" [disabled]="disableClear" (click)="confirmClear()">
                           <small>Clear</small>
                         </button>
                       
                         <!-- Reset Button -->
-                        <i *ngIf="isCleared" class="fa-solid plus btn" type="button" (click)="reset()">
+                        <i *ngIf="isCleared || !updatedDetails" class="fa-solid plus btn" type="button" (click)="reset()">
                           <small>Reset</small>
                         </i>    
                      </div>
@@ -278,7 +278,7 @@
                     </h2>
                     <div class="accordion-body" [class.show]="activeIndices.includes(i)">
 
-                      <div class="row justify-content-between" style="height: 48rem;">
+                      <div class="row justify-content-between" style="height: 42rem;">
 
 
                         <div class="col-xs-12 col-xl-6 col-md-12">
@@ -286,8 +286,8 @@
                             <div class="sample-wrapper">
                               <div class="combo-section">
                                 <div>
-                                  <input type="text" (input)="filterCities()" placeholder="Search Project"
-                                    class="search-input" />
+                                  <!-- <input type="text" (input)="filterCities()" placeholder="Search Project"
+                                    class="search-input" /> -->
 
                                   <ng-container *ngIf="taskData?.mkey">
                                     <ul class="dropdown-list" style="height:40rem">

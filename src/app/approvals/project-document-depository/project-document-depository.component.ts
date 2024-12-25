@@ -30,6 +30,9 @@ export class ProjectDocumentDepositoryComponent implements OnInit {
   file: File | any;
   baseURL: string | any
 
+  searchQuery: string = '';
+
+
   public activeIndices: number[] = []; // Change here
 
   taskData: any;
@@ -174,17 +177,17 @@ export class ProjectDocumentDepositoryComponent implements OnInit {
           this.tostar.success('Success', 'Template added successfuly')
 
 
-    // this.apiService.postProjectDocument(this.recursiveLogginUser, addDocDepository).subscribe(
-    //   (response) => {
-    //     console.log('API response:', response);
-    //     this.tostar.success('success', `Your request added successfully`);
-    //     this.uploadFile(response.mkey)
+    this.apiService.postProjectDocument(this.recursiveLogginUser, addDocDepository).subscribe(
+      (response) => {
+        console.log('API response:', response);
+        this.tostar.success('success', `Your request added successfully`);
+        this.uploadFile(response.mkey)
 
-    //   },
-    //   (error) => {
-    //     console.error('Error:', error);
-    //   }
-    // );
+      },
+      (error) => {
+        console.error('Error:', error);
+      }
+    );
   }
 
 
@@ -629,6 +632,38 @@ export class ProjectDocumentDepositoryComponent implements OnInit {
   
     return true; // Form is valid
   }
+
+  filterDocs() {
+    const query = this.searchQuery.trim().toUpperCase(); // Ensure the query is trimmed and case-insensitive
+    console.log('Searching for:', query);  // This should show the query in the console
+  
+    // Only proceed with filtering if there's a search query
+    if (!query) {
+      // If there's no query, reset the filteredDocs to show all documents
+      this.filteredDocs = this.getGroupedAndSortedDocs('checklist');
+      return;
+    }
+  
+    const groupedDocs = this.getGroupedAndSortedDocs('checklist');
+    const filteredGroupedDocs: any = {};
+  
+    // Loop through each category and apply the filter
+    for (const category in groupedDocs) {
+      const filteredCategoryDocs = groupedDocs[category].filter((doc: any) =>
+        doc.typE_DESC.toUpperCase().includes(query) || // Match document name
+        category.toUpperCase().includes(query) // Match category name
+      );
+  
+      // Only add categories with matching documents
+      if (filteredCategoryDocs.length > 0) {
+        filteredGroupedDocs[category] = filteredCategoryDocs;
+      }
+    }
+  
+    // Update filteredDocs to trigger the view update
+    this.filteredDocs = filteredGroupedDocs;
+  }
+  
   
 
 

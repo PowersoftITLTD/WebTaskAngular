@@ -48,9 +48,17 @@ export class TeamProgressComponent implements OnInit {
   
   updateTableCount3() {
     this.loggedInUser = this.dataService.getUser();
-  
-    this.apiService.getTableDetails(this.loggedInUser[0]?.MKEY).subscribe((data) => {
-      this.level = data.Table;
+    const token = this.apiService.getRecursiveUser();
+
+
+    //getTeamTaskNew
+    this.apiService.getTeamTaskNew(this.loggedInUser[0]?.MKEY.toString(), token).subscribe((response) => {
+
+      console.log(response)
+      this.level = response[0]?.Data;
+
+      console.log(this.loggedInUser[0]?.MKEY)
+      console.log(this.level)
   
       if (this.filterType === 'directReportee') {
         const directReportees = this.level.filter(item => item.RA1_MKEY === this.loggedInUser[0]?.MKEY);

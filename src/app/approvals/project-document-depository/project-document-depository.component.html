@@ -208,8 +208,7 @@
                                                     <label for="category">Document Abbr / Document name</label>
                                                     <div class="sample-wrapper">
                                                         <div class="pl-4 combo-section">
-                                                            <input type="text" placeholder="Search Documents"
-                                                                class="search-input" />
+                                                            <input type="text" placeholder="Search Documents" [(ngModel)]="searchQuery" class="search-input" (input)="filterDocs()" />
                                                             <div *ngIf="filteredDocs.length > 0" class="">
                                                                 <ul class="dropdown-list" style="height: 40rem;">
                                                                     <ng-container

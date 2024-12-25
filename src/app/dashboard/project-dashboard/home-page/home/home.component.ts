@@ -21,44 +21,113 @@ export class HomeComponent implements OnInit {
   assignByMeButNotCreatedTasksCount: number = 0;
   activeTasksCount: number = 0;
 
+  reloadOnceFlag = false;
+
+  loginName: string = '';
+  loginPassword: string = '';
+
+  createdOrUpdatedUserName:any
+
+
   constructor(
               private router:Router,
               private apiService:ApiService,
               private dataService:CredentialService,
-             ) { }
+             ) { 
+
+              //this.apiService.getRecursiveUser();
+
+
+             }
 
   ngOnInit(): void {
-    this.getTaskStatusDetails();
+
+    this.onLogin()
+
   }
 
 
-  getTaskStatusDetails(){
+  
+  onLogin() {   
 
+    this.dataService.validateUser(this.loginName, this.loginPassword);
+
+    const data = this.dataService.getUser();
+
+    this.createdOrUpdatedUserName = data[0]?.FIRST_NAME,    
+
+    console.log('onLogin data')
+
+    const USER_CRED = {    
+      EMAIL_ID_OFFICIAL: data[0]?.EMAIL_ID_OFFICIAL, 
+      PASSWORD:atob(data[0]?.LOGIN_PASSWORD)
+    }; 
+
+
+
+    // console.log('USER_CRED',USER_CRED)
+
+    this.apiService.login(USER_CRED.EMAIL_ID_OFFICIAL, USER_CRED.PASSWORD).subscribe({
+      next: (response) => {
+        if(response.jwtToken){
+          // console.log('response.jwtToken', response.jwtToken)
+          this.getTaskStatusDetails();
+
+          // this.selectedOption = 'Over-due';
+          // const option = 'DEFAULT';
+          // this.fetchTaskDetails(this.loggedInUser[0]?.MKEY, option);
+        }
+      },
+      error: (error) => {
+        console.error('Login failed:', error);
+      }
+    });
+  }
+
+
+  getTaskStatusDetails() {
     this.loggedInUser = this.dataService.getUser();
-  
-    const MKEY = this.loggedInUser[0]?.MKEY
-  
-    this.apiService.getHomeDetails(MKEY).subscribe((data)=>{
-  
-      const today = data.Table
-      const overdue = data.Table1
-      const review = data.Table2
-      const allocatedButNotStarted = data.Table3
-      const future = data.Table4
-      const assignByMe = data.Table5
-      const assignByMeButNotCreated = data.Table6
-      const active = data.Table7
+    const token = this.apiService.getRecursiveUser();
 
-      this.todayTasksCount = today.length;
-      this.overdueTasksCount = overdue.length;
-      this.reviewTasksCount = review.length;
-      this.allocatedButNotStartedTasksCount = allocatedButNotStarted.length;
-      this.futureTasksCount = future.length;
-      this.assignByMeTasksCount = assignByMe.length;
-      this.assignByMeButNotCreatedTasksCount = assignByMeButNotCreated.length;
-      this.activeTasksCount = active.length;        
-    })
+
+    // console.log('getTaskStatusDetails',this.loggedInUser)
+
+    // console.log('token',token)
+  
+    if (!this.loggedInUser || !this.loggedInUser[0]?.MKEY || !token) {
+      console.warn('User or token not initialized. Retrying later...');
+      return; 
+    }
+  
+    const MKEY = this.loggedInUser[0].MKEY;
+  
+    this.apiService.getHomeDetailsNew(MKEY.toString(), token).subscribe(
+      (response) => {
+        console.log(response);
+        const today = response[0].Table;
+        const overdue = response[0].Table1;
+        const review = response[0].Table2;
+        const allocatedButNotStarted = response[0].Table3;
+        const future = response[0].Table4;
+        const assignByMe = response[0].Table5;
+        const assignByMeButNotCreated = response[0].Table6;
+        const active = response[0].Table7;
+  
+        this.todayTasksCount = today.length;
+        this.overdueTasksCount = overdue.length;
+        this.reviewTasksCount = review.length;
+        this.allocatedButNotStartedTasksCount = allocatedButNotStarted.length;
+        this.futureTasksCount = future.length;
+        this.assignByMeTasksCount = assignByMe.length;
+        this.assignByMeButNotCreatedTasksCount = assignByMeButNotCreated.length;
+        this.activeTasksCount = active.length;
+      },
+      (error) => {
+        console.error('API error:', error);
+      }
+    );
   }
+  
 
   navigateToAllocatedButNotStarted(){
     this.router.navigate(['task/task-management'], { queryParams:{ source: 'allocatedButNotStarted' }});

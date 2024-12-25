@@ -89,11 +89,14 @@ export class TeamStatusComponent implements OnInit {
 
 
   fetchEmployeeName(): void {
-    this.apiService.getEmpDetails().subscribe(
-      (data: any) => {
+    const token = this.apiService.getRecursiveUser();;
 
 
-        data.forEach((emp: any) => {
+    this.apiService.getEmpDetailsNew(token).subscribe(
+      (response: any) => {
+
+
+        response[0]?.data.forEach((emp: any) => {
           const fullName: string = emp.EMP_FULL_NAME.toUpperCase();
           const MKEY: any = emp.MKEY;
           let firstName: string = fullName.split(' ')[0];
@@ -142,7 +145,10 @@ export class TeamStatusComponent implements OnInit {
 
   onFilterSelectionChange(option: string) {
     this.FilterSelection = option; 
-  
+    const token = this.apiService.getRecursiveUser();
+
+    console.log('onFilterSelectionChange', token)
+
     const employee = this.employees.find(emp => emp.Assign_to === this.memberName);
     if (!employee) {
         return;
@@ -159,22 +165,24 @@ export class TeamStatusComponent implements OnInit {
   
     switch (option) {
       case 'Department To-day':
-          this.apiService.departmentTodayDetails(CURRENT_EMP_MKEY, MKEY).subscribe((data) => {this.selectedDetails = this.filterDetails(data, option)});
+          this.apiService.departmentTodayDetailsNew(CURRENT_EMP_MKEY.toString(), MKEY.toString(), token).subscribe((response) => {
+            this.selectedDetails = this.filterDetails(response[0].data1, option)
+          });
           break;
       case 'Department Over-due':
-          this.apiService.departmentOverdueDetails(CURRENT_EMP_MKEY, MKEY).subscribe((data) => {this.selectedDetails = this.filterDetails(data, option)});
+          this.apiService.departmentOverdueDetailsNew(CURRENT_EMP_MKEY.toString(), MKEY.toString(), token).subscribe((response) => {this.selectedDetails = this.filterDetails(response[0].data1, option)});
           break;
       case 'Department Future':
-          this.apiService.departmentFutureDetails(CURRENT_EMP_MKEY, MKEY).subscribe((data) => {this.selectedDetails = this.filterDetails(data, option)});
+          this.apiService.departmentFutureDetailsNew(CURRENT_EMP_MKEY.toString(), MKEY.toString(), token).subscribe((response) => {this.selectedDetails = this.filterDetails(response[0].response[0].data1, option)});
           break;
       case 'Inter-Department To-day':
-          this.apiService.interDepartmentTodayDetails(CURRENT_EMP_MKEY, MKEY).subscribe((data) => {this.selectedDetails = this.filterDetails(data, option)});
+          this.apiService.interDepartmentTodayDetailsNew(CURRENT_EMP_MKEY.toString(), MKEY.toString(), token).subscribe((response) => {this.selectedDetails = this.filterDetails(response[0].data1, option)});
           break;
       case 'Inter-Department Over-due':
-          this.apiService.interDepartmentOverdueDetails(CURRENT_EMP_MKEY, MKEY).subscribe((data) => {this.selectedDetails = this.filterDetails(data, option)});
+          this.apiService.interDepartmentOverdueDetailsNew(CURRENT_EMP_MKEY.toString(), MKEY.toString(), token).subscribe((response) => {this.selectedDetails = this.filterDetails(response[0].data1, option)});
           break;
       case 'Inter-Department Future':
-          this.apiService.interDepartmentFutureDetails(CURRENT_EMP_MKEY, MKEY).subscribe((data) => {this.selectedDetails = this.filterDetails(data, option)});
+          this.apiService.interDepartmentFutureDetailsNew(CURRENT_EMP_MKEY.toString(), MKEY.toString(), token).subscribe((response) => {this.selectedDetails = this.filterDetails(response[0].data1, option)});
           break;
       default:
     }
@@ -183,6 +191,9 @@ export class TeamStatusComponent implements OnInit {
   
   getDeptTypeDetails(memberName: string, filterOption: string): void {
     const employee = this.employees.find(emp => emp.Assign_to === memberName);
+
+    const token = this.apiService.getRecursiveUser();
+
     
     if (!employee) {      
         return;
@@ -203,22 +214,28 @@ export class TeamStatusComponent implements OnInit {
 
         switch (source) {
             case 'todayDepartment':
-                this.apiService.departmentTodayDetails(CURRENT_EMP_MKEY, MKEY).subscribe((data) => {this.selectedDetails = this.filterDetails(data, filterOption)});
+                this.apiService.departmentTodayDetailsNew(CURRENT_EMP_MKEY.toString(), MKEY.toString(), token).subscribe((response) => {
+                  console.log('todayDepartment', response[0].data)
+                  this.selectedDetails = this.filterDetails(response[0].data1, filterOption)
+                });
                 break;
             case 'overdueDepartment':
-                this.apiService.departmentOverdueDetails(CURRENT_EMP_MKEY, MKEY).subscribe((data) => {this.selectedDetails = this.filterDetails(data, filterOption)});
+                this.apiService.departmentOverdueDetailsNew(CURRENT_EMP_MKEY.toString(), MKEY.toString(), token).subscribe((response) => {
+                  console.log('overdueDepartment', response[0].data)
+                  this.selectedDetails = this.filterDetails(response[0].data1, filterOption)
+                });
                 break;
             case 'futureDepartment':
-                this.apiService.departmentFutureDetails(CURRENT_EMP_MKEY, MKEY).subscribe((data) => {this.selectedDetails = this.filterDetails(data, filterOption)});
+                this.apiService.departmentFutureDetailsNew(CURRENT_EMP_MKEY.toString(), MKEY.toString(), token).subscribe((response) => {this.selectedDetails = this.filterDetails(response[0].data1, filterOption)});
                 break;
             case 'todayInterDepartment':
-                this.apiService.interDepartmentTodayDetails(CURRENT_EMP_MKEY, MKEY).subscribe((data) => {this.selectedDetails = this.filterDetails(data, filterOption)});
+                this.apiService.interDepartmentTodayDetailsNew(CURRENT_EMP_MKEY.toString(), MKEY.toString(), token).subscribe((response) => {this.selectedDetails = this.filterDetails(response[0].data1, filterOption)});
                 break;
             case 'overdueInterDepartment':
-                this.apiService.interDepartmentOverdueDetails(CURRENT_EMP_MKEY, MKEY).subscribe((data) => {this.selectedDetails = this.filterDetails(data, filterOption)});
+                this.apiService.interDepartmentOverdueDetailsNew(CURRENT_EMP_MKEY.toString(), MKEY.toString(), token).subscribe((response) => {this.selectedDetails = this.filterDetails(response[0].data1, filterOption)});
                 break;
             case 'futureInterDepartment':
-                this.apiService.interDepartmentFutureDetails(CURRENT_EMP_MKEY, MKEY).subscribe((data) => {this.selectedDetails = this.filterDetails(data, filterOption)});
+                this.apiService.interDepartmentFutureDetailsNew(CURRENT_EMP_MKEY.toString(), MKEY.toString(), token).subscribe((response) => {this.selectedDetails = this.filterDetails(response[0].data1, filterOption)});
                 break;
             default:
                 console.error(`Invalid source: ${source}`);

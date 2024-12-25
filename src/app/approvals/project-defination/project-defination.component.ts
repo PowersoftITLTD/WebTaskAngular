@@ -102,7 +102,7 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
 
     const navigation: any = this.router.getCurrentNavigation();
     const isNewTemp = sessionStorage.getItem('isNewTemp') === 'true';
-
+    console.log(isNewTemp)
     if (navigation?.extras.state) {
       const RecursiveTaskData: any = navigation.extras.state.taskData;
       this.taskData = RecursiveTaskData;
@@ -129,6 +129,7 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
         }
       }
     }  
+    
   }
 
   ngOnInit(): void {
@@ -136,12 +137,7 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
     this.activeIndices = this.accordionItems.map((_, index) => index);
     this.onLogin();
     this.fetchProjectData();
-    // console.log('this.taskData.approvalS_ABBR_LIST[0].status', this.taskData.approvalS_ABBR_LIST[0].status)
     if (this.taskData && this.taskData.mkey) {
-      // console.log('Saved Tasks:', this.taskData?.approvalS_ABBR_LIST[0].tasK_NO);
-      // console.log('Task Data:', this.subTasks);    
-
-
       this.selectedOptionList();
       this.getTree_new();
       this.getSubProj();           
@@ -183,233 +179,7 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
     this.formVisibleMap[index] = !this.formVisibleMap[index];
   }
 
-  // toggleSelection(task: any = []): void {
-
-  //   // console.log('check the approval mkey',task)
-  //   const taskId = task.TASK_NO.TASK_NO;
-   
-  //   if (this.selectedTasksId.has(taskId)) {
-  //     this.selectedTasksId.delete(taskId);
-  //     this.selectedTasks.delete(task);
-  //   } else {
-  //     this.selectedTasksId.add(taskId);
-  //     this.selectedTasks.add(task);
-  //   }
-
-  //   // console.log('selectedTasks: ',[task])
-  //   console.log('new_list_of_selectedSeqArr: ',this.new_list_of_selectedSeqArr)
-
-  //   // console.log('taskId check', )
-
-
-  //   console.log('selectedSeqArr: ',this.selectedSeqArr)
-
   
-    
-  //   let selectedTasksArray;
-
-  //   console.log(this.selectedTasks)
-  //   console.log(this.selectedSeqArr)
-  //   const getUniqueTasks = (tasksArray:any) => {
-  //     const abbrCount = new Map();
-    
-  //     // Function to traverse tasks and count maiN_ABBR occurrences
-  //     const countAbbr = (tasks:any) => {
-  //       console.log('countAbbr', tasks)
-  //       tasks.forEach((task:any) => {
-  //         const abbr = task.TASK_NO.maiN_ABBR;
-  //         abbrCount.set(abbr, (abbrCount.get(abbr) || 0) + 1);
-    
-  //         if (task.subtask && task.subtask.length > 0) {
-  //           countAbbr(task.subtask); // Recursive call for subtasks
-  //         }
-  //       });
-  //     };
-    
-  //     // Function to filter tasks with unique maiN_ABBR
-  //     const filterUniqueTasks = (tasks:any) => {
-  //       return tasks
-  //         .filter((task:any) => abbrCount.get(task.TASK_NO.maiN_ABBR) === 1) // Keep unique tasks
-  //         .map((task:any) => ({
-  //           ...task,
-  //           subtask: filterUniqueTasks(task.subtask || []), // Recursive filtering for subtasks
-  //         }));
-  //     };
-    
-  //     // Step 1: Count maiN_ABBR occurrences
-  //     countAbbr(tasksArray);
-    
-  //     // Step 2: Filter tasks with unique maiN_ABBR
-  //     return filterUniqueTasks(tasksArray);
-  //   };
-
-  //   console.log('selectedSeqArr',this.selectedSeqArr)
-  //   if (this.taskData && this.taskData.mkey) {
-  //     // Check if the combinations are equal
-  //     if (this.taskData.approvalS_ABBR_LIST[0].status === 'Initiated' || this.taskData.approvalS_ABBR_LIST[0].status === 'Ready to Initiate') {
-  //       console.log('coming to combine data', this.new_list_of_selectedSeqArr)
-    
-  //       // }
-  //       selectedTasksArray = [...this.selectedTasks, ...this.new_list_of_selectedSeqArr];
-  //       const uniqueTasksArray = getUniqueTasks(selectedTasksArray);
-
-  //       console.log('uniqueTasksArray', uniqueTasksArray)
-  //       selectedTasksArray = [...uniqueTasksArray, ...this.new_list_of_selectedSeqArr ];
-  //     } else {
-
-
-  //       // Pass only the existing selected tasks
-  //       selectedTasksArray = [...this.selectedTasks];
-  //     }
-  //   } else {
-  //     // If taskData or mkey is not present, pass only the existing selected tasks
-  //     selectedTasksArray = [...this.selectedTasks];
-  //   }
-  //   // selectedTasksArray = [...this.selectedTasks, ...this.new_list_of_selectedSeqArr];
-
-  //   console.log('selectedTasksArray', selectedTasksArray)
-
-  //   console.log('this.new_list_of_selectedSeqArr',this.new_list_of_selectedSeqArr)
-
-  //   const hasMatchingSubtask = (task: any, tasks: any[]): boolean => {
-  //     for (let parentTask of tasks) {
-  //         for (let subtask of parentTask.subtask) {
-  //             if (subtask.TASK_NO.TASK_NO.trim() === task.TASK_NO.TASK_NO.trim()) {
-  //                 return true;
-  //             }
-  //             if (subtask.subtask && subtask.subtask.length > 0) {
-  //                 if (hasMatchingSubtask(task, [subtask])) {
-  //                     return true;
-  //                 }
-  //             }
-  //         }
-  //     }
-  //     return false;
-  // };
-  
-  // const removeParentTaskIfInSubtasks = (tasks: any[]) => {
-  //     return tasks.filter((task: any) => {
-  //         const isSubtask = hasMatchingSubtask(task, tasks);
-  //         // console.log('isSubtask:', isSubtask);
-  //         return !isSubtask;
-  //     });
-  // };
-
-
-  // const updatedTasksArray = removeParentTaskIfInSubtasks(selectedTasksArray);
-
-
-
-
-  //   this.selectedSeqArr = this.sortTasksBySequence(updatedTasksArray);
-
-  //   console.log('Selected Array', this.selectedSeqArr)
-  //   const flattenedTasks = this.breakToLinear(this.selectedSeqArr);
-
-  //   // console.log('flattenedTasks',flattenedTasks)
-
-  //   const seen = new Set();
-
-  //   const uniqueTasks = flattenedTasks.filter(task => {
-  //     if (seen.has(task.TASK_NO)) {
-  //       return false;
-  //     }
-  //     seen.add(task.TASK_NO);
-  //     return true;
-  //   });
-  //   // console.log('unFlatternArr', this.unFlatternArr);
-
-  //   console.log('uniqueSubTask', this.uniqueSubTask);
-
-  //   this.uniqueSubTask = uniqueTasks
-
-  // }
-
-
-
-
-  // isTaskDisabled(task: any): boolean {
-  //   // Check if the status is 'Initiated' before applying the disabling logic
-  //   if (this.taskData?.approvalS_ABBR_LIST[0].status === 'Initiated') {
-  //     // Get the selected task numbers from approvalS_ABBR_LIST
-  //     const savedTaskNos = this.taskData?.approvalS_ABBR_LIST.map((item: any) => item.tasK_NO.trim());
-  //     console.log("Saved Task Numbers (Trimmed):", savedTaskNos); // Log the saved task numbers to verify
-  
-  //     // Check if the current task number matches one of the selected task numbers
-  //     if (savedTaskNos.includes(task.TASK_NO?.TASK_NO.trim())) {
-  //       console.log("Disabling Task:", task.TASK_NO?.TASK_NO.trim()); // Debugging task disable
-  //       return true; // Disable this task if it matches any selected task number
-  //     }
-  
-  //     // Function to check if any subtask or nested subtask matches the selected task numbers
-  //     const checkSubtask = (parentTask: any): boolean => {
-  //       if (parentTask.subtask && parentTask.subtask.length > 0) {
-  //         for (let subtask of parentTask.subtask) {
-  //           console.log("Checking Subtask:", subtask.TASK_NO?.TASK_NO.trim()); // Log the subtask being checked
-  //           if (savedTaskNos.includes(subtask.TASK_NO?.TASK_NO.trim())) {
-  //             console.log("Disabling Subtask:", subtask.TASK_NO?.TASK_NO.trim()); // Debugging subtask disable
-  //             return true; // Match found in subtask, disable it
-  //           }
-  
-  //           // If the subtask has further nested subtasks, recursively check them
-  //           if (subtask.subtask && subtask.subtask.length > 0) {
-  //             if (checkSubtask(subtask)) {
-  //               return true; // Recursively check nested subtasks
-  //             }
-  //           }
-  //         }
-  //       }
-  //       return false; // No match found in subtasks
-  //     };
-  
-  //     // Only disable if any subtask matches a selected task number, but don't disable the parent
-  //     if (checkSubtask(task)) {
-  //       console.log("Disabling Task because of Subtask Match:", task.TASK_NO?.TASK_NO.trim()); // Debugging
-  //       return true; // Disable the task if any of its subtasks match a selected task number
-  //     }
-  
-  //     return false; // No match found, task is not disabled
-  //   }
-  
-  //   // If the status is not 'Initiated', don't apply any disabling logic
-  //   return false;
-  // }
-  
-
-//  isTaskDisabled(task: any): boolean {
-//   const savedTaskNos = this.taskData?.approvalS_ABBR_LIST.map((item: any) => item.tasK_NO.trim());
-//   // console.log("Saved Task Numbers (Trimmed):", savedTaskNos); // Log the saved task numbers to verify
-
-//   if (savedTaskNos.includes(task.TASK_NO?.TASK_NO.trim())) {
-//     // console.log("Disabling Task:", task.TASK_NO?.TASK_NO.trim()); // Debugging task disable
-//     return true;
-//   }
-
-//   const checkSubtask = (parentTask: any): boolean => {
-//     if (parentTask.subtask && parentTask.subtask.length > 0) {
-//       for (let subtask of parentTask.subtask) {
-//         // console.log("Checking Subtask:", subtask.TASK_NO?.TASK_NO.trim()); 
-//         if (savedTaskNos.includes(subtask.TASK_NO?.TASK_NO.trim())) {
-//           // console.log("Disabling Subtask:", subtask.TASK_NO?.TASK_NO.trim()); 
-//           return true; 
-//         }
-
-//         if (subtask.subtask && subtask.subtask.length > 0) {
-//           if (checkSubtask(subtask)) {
-//             return true; 
-//           }
-//         }
-//       }
-//     }
-//     return false; 
-//   };
-
-//   if (checkSubtask(task)) {
-//     return true;
-//   }
-
-//   return false; 
-// }
 
 toggleSelection(task: any = []): void {
   const taskId = task?.TASK_NO?.TASK_NO;
@@ -1180,31 +950,19 @@ toggleSelection(task: any = []): void {
   }
 
   isTaskInSavedList(task: any): boolean {
-    // Return false immediately if the data is cleared
     if (this.isCleared) {
       return false;
     }
   
-    // Check if the status is 'Initiated' before applying the logic
     if (this.taskData?.approvalS_ABBR_LIST[0].status === 'Initiated' || this.taskData?.approvalS_ABBR_LIST[0].status === 'Ready to Initiate') {
-      // Get the selected task numbers from approvalS_ABBR_LIST
       const savedTaskNos = this.taskData?.approvalS_ABBR_LIST.map((item: any) => item.maiN_ABBR);
-      // console.log("Saved Task Numbers (Trimmed):", savedTaskNos); // Log the saved task numbers to verify
-  
-      // Check if the current task number matches one of the saved task numbers
+   
       return savedTaskNos.includes(task.TASK_NO?.maiN_ABBR);
     }
   
-    // Return false if status is not 'Initiated' or other cases
     return false;
   }
   
-  
-  
-
-  // isSelected(task: any): any {
-  //   return this.selectedTasksId.has(task.TASK_NO.TASK_NO);     
-  // }
 
 
   filterCities() {
@@ -1216,23 +974,18 @@ toggleSelection(task: any = []): void {
   }
 
 
-
-
   fetchEmployeeName(): void {
     const token = this.apiService.getRecursiveUser();;
 
     this.apiService.getEmpDetailsNew(token).subscribe(
       (response: any) => {
-        // console.log("Employee data:", data);
-        // const _data = data;
-
+      
         response[0]?.data.forEach((emp: any) => {
           const fullName = emp.EMP_FULL_NAME;
           const MKEY = emp.MKEY;
           let capitalizedFullName = '';
           const nameParts = fullName.split(' ');
 
-          // console.log('nameParts', nameParts)
 
           for (let i = 0; i < nameParts.length; i++) {
             if (nameParts[i].length === 1 && i < nameParts.length - 1) {
@@ -1248,7 +1001,6 @@ toggleSelection(task: any = []): void {
 
           this.employees.push({ Assign_to: capitalizedFullName, MKEY: MKEY });
         });
-        // console.log('this.employees', this.employees);    
       },
       (error: ErrorHandler) => {
         console.error('Error fetching employee details:', error);
@@ -1759,75 +1511,8 @@ toggleSelection(task: any = []): void {
 
     this.loading = true;
 
-   
-    // console.log(same_data_new)  
-    // const same_data_new = this.taskData.approvalS_ABBR_LIST
-    // console.log('same_data_new',same_data_new);
-    // console.log('optionListArr',optionListArr);
 
     const same_data = optionListArr;
-
-    // const buildHierarchy = (tasks: any, rootTaskNo: any) => {
-    //   const rootTask = tasks.find((task: any) => task.TASK_NO === rootTaskNo);
-    //   if (!rootTask) return null;
-
-    //   const buildSubtasks = (taskNo: any, depth: any) => {
-    //     const subtasks = tasks.filter((task: any) => {
-    //       const taskDepth = task.TASK_NO.split('.').length - 1;
-    //       return task.TASK_NO.startsWith(taskNo + '.') && taskDepth === depth + 1;
-    //     });
-    //     if (subtasks.length === 0) return [];
-
-    //     return subtasks.map((subtask: any) => {
-    //       const subtaskWithNestedTaskNo: any = {
-    //         TASK_NO: subtask,
-    //         visible: true,
-    //         subtask: buildSubtasks(subtask.TASK_NO, depth + 1)
-    //       };
-
-    //       // Add spaces based on depth
-    //       const spaces = '  '.repeat(depth + 1);
-
-    //       // Create new object with spaced TASK_NO
-    //       const indentedSubtask = Object.keys(subtaskWithNestedTaskNo).reduce((acc: any, key) => {
-    //         if (key === 'TASK_NO') {
-    //           acc[key] = {
-    //             ...subtaskWithNestedTaskNo[key],
-    //             TASK_NO: spaces + subtaskWithNestedTaskNo[key].TASK_NO
-    //           };
-    //         } else {
-    //           acc[key] = subtaskWithNestedTaskNo[key];
-    //         }
-    //         return acc;
-    //       }, {});
-
-    //       return indentedSubtask;
-    //     });
-    //   };
-
-    //   const rootDepth = rootTask.TASK_NO.split('.').length - 1;
-    //   const rootHierarchy = {
-    //     TASK_NO: {
-    //       ...rootTask,
-    //       TASK_NO: rootTask.TASK_NO,
-    //     },
-    //     visible: true,
-    //     subtask: buildSubtasks(rootTask.TASK_NO, rootDepth)
-    //   };
-
-    //   return rootHierarchy;
-    // };
-
-    // const taskNumbers = [...new Set(same_data.map((task: any) => task.TASK_NO.split('.')[0]))];
-    // taskNumbers.forEach(taskNo => {
-    //   const hierarchy = buildHierarchy(same_data, taskNo);
-    //   // if (hierarchy) {
-    //   //   // this.subTasks.push(hierarchy);
-    //   //   // this.optionSubTASk.push(hierarchy);
-
-    //   // }
-    // });
-
     const noSubParentTasks: any = []
 
     const allRootTaskNumbersInHierarchy = this.subTasks.map((subtask: any) => subtask.TASK_NO.TASK_NO.split('.')[0]);
@@ -1840,11 +1525,8 @@ toggleSelection(task: any = []): void {
       }
     });
 
-    // console.log('check noSubParentTasks', noSubParentTasks)
     this.loading = false;
-    // const filteredTasks = this.removeTasksWithoutDates(this.subTasks);
-
-    // console.log('filteredTasks', filteredTasks)
+  
 
     this.new_list_of_selectedSeqArr = this.subTasks
 

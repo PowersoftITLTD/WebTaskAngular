@@ -325,8 +325,14 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
 
   getTags() {
     this.loggedInUser = this.credentialService.getUser();
-    // console.log('this.loggedInUser[0]?.MKEY', this.loggedInUser[0]?.MKEY)
-    this.apiService.getTagDetailss(this.loggedInUser[0]?.MKEY).subscribe((data: any) => { this.allTags = data });
+    const token = this.apiService.getRecursiveUser();
+
+    console.log('getTagDetailss1', token);
+
+    this.apiService.getTagDetailss1(this.loggedInUser[0]?.MKEY.toString(), token).subscribe((response: any) => { 
+        this.allTags = response[0].data.map((item: { name: string }) => item.name);
+    
+    });
   }
 
 

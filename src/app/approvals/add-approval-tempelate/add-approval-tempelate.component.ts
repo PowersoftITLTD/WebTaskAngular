@@ -415,6 +415,7 @@ export class AddApprovalTempelateComponent implements OnInit {
 
     this.tostar.success('Success','Template added successfuly')
 
+    this.router.navigate(['./'])
     // const formArrayVal:FormArray = (this.approvalTempForm.get('rows') as FormArray).value;
 
     // console.log('formArrayVal from Add Tempelate',formArrayVal)
@@ -424,8 +425,14 @@ export class AddApprovalTempelateComponent implements OnInit {
 
 getTags() {
   this.loggedInUser = this.credentialService.getUser();
-  // console.log('this.loggedInUser[0]?.MKEY', this.loggedInUser[0]?.MKEY)
-  this.apiService.getTagDetailss(this.loggedInUser[0]?.MKEY).subscribe((data: any) => { this.allTags = data });
+  const token = this.apiService.getRecursiveUser();
+
+  console.log('getTagDetailss1', token);
+
+  this.apiService.getTagDetailss1(this.loggedInUser[0]?.MKEY.toString(), token).subscribe((response: any) => { 
+      this.allTags = response[0].data.map((item: { name: string }) => item.name);
+  
+  });
 }
 
 
@@ -562,6 +569,8 @@ updateApprovalTemplate(){
 
   this.apiService.putApprovalTemp(updateApprlTemp,doc_temp_key, token).subscribe({
     next:(data)=>{
+      this.tostar.success('Success','Template updated successfuly')
+      this.router.navigate(['../'])
       console.log('data successfully updated', data)
     },error:()=>{
 
@@ -603,6 +612,7 @@ fetchEmployeeName(): void {
         }
 
         this.employees.push({ Assign_to: capitalizedFullName, MKEY: MKEY });
+        this.setEmpName();
       });
       // console.log('this.employees', this.employees);    
     },
@@ -616,13 +626,13 @@ fetchEmployeeName(): void {
  setEmpName(): void {
   if (this.taskData && this.taskData.mkey) {
 
-    console.log('setEmpName',this.employees)
+    // console.log('setEmpName',this.employees)
     // console.log('this.departmentList', this.departmentList)
     const matchedEmp = this.employees.find((employee: any) =>
       employee.MKEY === Number(this.taskData.resposiblE_EMP_MKEY)
     );
 
-    console.log('matchedEmp', matchedEmp)
+    // console.log('matchedEmp', matchedEmp)
 
     if (matchedEmp) {
       this.taskData.emp_name = matchedEmp.Assign_to;
