@@ -1,0 +1,15 @@
+<div  class="dropdown-container" >
+    <button type="button" class="drop-toggle btn flat" (click)="showDropDown = !showDropDown" >
+        <span *ngIf="checkedList.length > 0">{{checkedList.join(', ')}}</span>
+        <i class="fa fa-angle-down"></i>
+    </button>
+    <div class="drop-show" *ngIf="showDropDown" style="width: 20rem;">
+      
+        
+        <label *ngFor="let a of list">
+            <input type="checkbox" [(ngModel)]="a.checked"  
+                   (change)="toggleMonthDaySelection(a.name, a.checked)"  />
+            <span>{{a.name}}</span>
+        </label>
+    </div>
+</div>

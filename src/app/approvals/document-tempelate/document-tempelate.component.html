@@ -1,0 +1,271 @@
+<body class="layout layout-left-navigation layout-below-toolbar layout-below-footer">
+    <main>
+        <div id="wrapper">
+            <div class="content-wrapper">
+                <div class="">
+                    <div id="e-commerce-product" class="simple tabbed">
+                        <app-header-bar (loggedInUserEmitter)="receiveLoggedInUser($event)"></app-header-bar>
+
+                        <div class="bg-primary text-auto row align-items-center justify-content-between p-3">
+                            <div class="row no-gutters align-items-center">
+                                <div class="product-image mr-4 ml-8">
+                                    <img src="../../../../assets/Content/images/ecommerce/product-image-placeholder.png">
+                                </div>
+                                <div class="truncate-date">
+                                    <b>Document Template</b>
+                                </div>
+                            </div>
+
+                            <div class="flex-grow-1"></div>
+                            <div class="mr-8">
+
+                                <ng-container *ngIf="!taskData?.mkey">
+                                    <button type="button"  class="btn btn-light mr-2" id="btnSaveTask" (click)="onAddDocTemp()">
+                                        ADD
+                                    </button>
+                                </ng-container>
+
+                                <ng-container *ngIf="taskData?.mkey">
+                                    <button type="button" *ngIf="updatedDetails" class="btn btn-light" (click)="onUpdateDOcTemp()" id="btnSaveTask">
+                                        SAVE
+                                    </button>
+                                </ng-container>
+                                                            
+                            </div>
+                        </div>
+                        
+                        <div class="">
+                            <form [formGroup]="docTempForm" (ngSubmit)="onSubmit()">
+                                <div class="p-2">
+                                    <div class="row">
+                                        <div class="col-xs-12 col-xl-4 col-md-12 mb-6">
+                                            <div class="form-group">
+                                                <label for="documentAbbrivation">Document Abbreviation</label>
+
+                                                <ng-container *ngIf="taskData?.mkey">
+                                                    <input type="text" formControlName="documentAbbrivation" [(ngModel)]="taskData.doC_ABBR" maxlength="150" class="form-control" />                                           
+                                                </ng-container>
+
+                                                <ng-container *ngIf="!taskData?.mkey">
+                                                    <input type="text" formControlName="documentAbbrivation" maxlength="150" class="form-control" />                                           
+                                                </ng-container>
+
+                                            </div>
+                                        </div>
+
+                                        <div class="col-xs-12 col-xl-4 col-md-12 mb-6">
+                                            <div class="form-group">
+                                                <label for="documentAbbrivation">Document Name</label>
+
+                                                <ng-container *ngIf="taskData?.mkey">
+                                                    <input type="text" formControlName="documentName" [(ngModel)]="taskData.doC_NAME" maxlength="150" class="form-control" />                                           
+                                                </ng-container>
+
+                                                <ng-container *ngIf="!taskData?.mkey">
+                                                    <input type="text" formControlName="documentName" maxlength="150" class="form-control" />                                           
+                                                </ng-container>
+
+                                            </div>
+                                        </div>
+
+                                        <div class="col-xs-12 col-xl-4 col-md-12">
+                                            <div class="form-group">
+                                                <label for="category">Category</label>
+
+                                                <ng-container *ngIf="taskData?.mkey">
+                                                    <select class="h6 form-control my-1" formControlName="category" [(ngModel)]="taskData.doC_CATEGORY">
+                                                        <option value=""> --SELECT--</option>
+                                                        <option *ngFor="let category of docCatList"
+                                                            [value]="category.mkey" [selected]="category.typE_DESC === taskData.category_Name">{{category.typE_DESC}}</option>
+                                                    </select>
+                                                </ng-container>
+
+                                                <ng-container *ngIf="!taskData?.mkey">
+                                                    <select class="h6 form-control my-1" formControlName="category">
+                                                        <option value=""> --SELECT--</option>
+                                                        <option *ngFor="let category of docCatList"
+                                                            [value]="category.mkey">{{category.typE_DESC}}</option>
+                                                    </select>
+                                                </ng-container>
+
+                                               
+                                            </div>
+                                        </div>
+                                    </div>
+                            
+                                    <div class="row mb-2">
+                                        <div class="col-xs-12 col-xl-4 col-md-12">
+                                            <div class="form-group">
+                                                <label for="documentNumberFieldName">Document Number Field Name</label>
+
+                                                <ng-container *ngIf="taskData?.mkey">
+                                                    <input type="text" formControlName="documentNumberFieldName" [(ngModel)]="taskData.doC_NUM_FIELD_NAME" maxlength="150" class="form-control" />                                         
+                                                </ng-container>
+
+                                                <ng-container *ngIf="!taskData?.mkey">
+                                                    <input type="text" formControlName="documentNumberFieldName" maxlength="150" class="form-control" />                                         
+                                                </ng-container>
+
+                                            </div>
+                                        </div>
+                            
+                                        <div class="col-xs-12 col-xl-4 col-md-12">
+                                            <div class="form-group">
+                                                <label>Document No. Applicable</label>
+                                                <div>
+                                                    <label>
+                                                        <ng-container *ngIf="taskData?.mkey">
+                                                            <input type="radio" formControlName="documentNotApplied" [(ngModel)]="taskData.doC_NUM_APP_FLAG" value="Y"> Yes
+                                                        </ng-container>
+                                                        <ng-container *ngIf="!taskData?.mkey">
+                                                            <input type="radio"  formControlName="documentNotApplied" value="Y"> Yes
+                                                        </ng-container>
+                                                    </label>
+                                                    &nbsp;
+                                                    <label>
+                                                        <ng-container *ngIf="taskData?.mkey">
+                                                            <input type="radio"  formControlName="documentNotApplied" [(ngModel)]="taskData.doC_NUM_APP_FLAG" value="N"> No
+                                                        </ng-container>
+                                                        <ng-container *ngIf="!taskData?.mkey">
+                                                            <input type="radio"  formControlName="documentNotApplied" value="N"> No
+                                                        </ng-container>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                            
+                                        <div class="col-xs-12 col-xl-4 col-md-12">
+                                            <div class="form-group">
+                                                <label>Validity Applicable</label>
+                                                <div>
+                                                    <label>
+
+                                                        <ng-container *ngIf="taskData?.mkey">
+                                                            <input type="radio" formControlName="validityApplied" [(ngModel)]="taskData.doC_NUM_VALID_FLAG" value="Y"> Yes
+                                                        </ng-container>
+
+                                                        <ng-container *ngIf="!taskData?.mkey">
+                                                            <input type="radio" formControlName="validityApplied" value="Y"> Yes
+                                                        </ng-container>
+
+                                                    </label>
+                                                    &nbsp;
+                                                    <label>
+
+                                                        <ng-container *ngIf="taskData?.mkey">
+                                                            <input type="radio" formControlName="validityApplied" [(ngModel)]="taskData.doC_NUM_VALID_FLAG" value="N"> No
+                                                        </ng-container>
+
+                                                        <ng-container *ngIf="!taskData?.mkey">
+                                                            <input type="radio" formControlName="validityApplied" value="N"> No
+                                                        </ng-container>
+
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                            
+                                    <div class="row mb-2">
+                                        <div class="col-xs-12 col-xl-4 col-md-12">
+                                            <div class="form-group">
+                                                <label for="documentDateFieldName">Document Date Field Name</label>
+                                                <ng-container *ngIf="taskData?.mkey">
+                                                    <input type="text" formControlName="documentDateFieldName" [(ngModel)]="taskData.doC_NUM_DATE_NAME" maxlength="150" class="form-control" />                                             
+                                                </ng-container>
+                                                <ng-container *ngIf="!taskData?.mkey">
+                                                    <input type="text" formControlName="documentDateFieldName" maxlength="150" class="form-control" />                                             
+                                                </ng-container>
+                                            </div>
+                                        </div>
+
+                                        
+                            
+                                        <div class="col-xs-12 col-xl-4 col-md-12">
+                                            <div class="form-group">
+                                                <label>Document Date Applicable</label>
+                                                <div>
+                                                    <label>
+                                                        <ng-container *ngIf="taskData?.mkey">
+                                                            <input type="radio" formControlName="documentDateApplicable" [(ngModel)]="taskData.doC_NUM_DATE_APP_FLAG" value="Y"> Yes
+                                                        </ng-container>
+
+                                                        <ng-container *ngIf="!taskData?.mkey">
+                                                            <input type="radio" formControlName="documentDateApplicable" value="Y"> Yes
+                                                        </ng-container>
+                                                    </label>
+                                                    &nbsp;
+                                                    <label>
+                                                        <ng-container *ngIf="taskData?.mkey">
+                                                            <input type="radio" formControlName="documentDateApplicable" [(ngModel)]="taskData.doC_NUM_DATE_APP_FLAG" value="N"> No
+                                                        </ng-container>
+
+                                                        <ng-container *ngIf="!taskData?.mkey">
+                                                            <input type="radio" formControlName="documentDateApplicable" value="N"> No
+                                                        </ng-container>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                            
+                                        <div class="col-xs-12 col-xl-4 col-md-12">
+                                            <div class="form-group">
+                                                <label>Attachment Applicable</label>
+                                                <div>
+                                                    <label>
+                                                        <ng-container *ngIf="taskData?.mkey">
+                                                            <input type="radio" formControlName="attachmentApplicable" [(ngModel)]="taskData.doC_ATTACH_APP_FLAG" value="Y"> Yes
+
+                                                        </ng-container>
+                                                        <ng-container *ngIf="!taskData?.mkey">
+                                                            <input type="radio" formControlName="attachmentApplicable" value="Y"> Yes
+
+                                                        </ng-container>
+                                                    </label>
+                                                    &nbsp;
+                                                    <label>
+                                                        <ng-container *ngIf="taskData?.mkey">
+                                                            <input type="radio" formControlName="attachmentApplicable" [(ngModel)]="taskData.doC_ATTACH_APP_FLAG" value="N"> No
+                                                        </ng-container>
+                                                        <ng-container *ngIf="!taskData?.mkey">
+                                                            <input type="radio" formControlName="attachmentApplicable" value="N"> No
+                                                        </ng-container>
+                                                        
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>                            
+                        </div>                       
+                    </div>                   
+                </div>             
+            </div>            
+        </div>  
+        <div class="accordion card tab-content">
+            <div *ngFor="let item of accordionItems; let i = index" class="accordion-item">
+                <h2 class="accordion-header">
+                    <button (click)="toggle(i)" class="accordion-button">
+                        {{ item.title }}
+                    </button>
+                </h2>
+                <div class="accordion-body">
+                    <form>
+                        <div class="mb-3" *ngIf="i === 0">
+                            <!-- For accordion 1 -->
+                        </div>
+                    </form>
+                </div>
+                <div class="accordion-body card">
+                    <form>
+                        <div class="mb-3" *ngIf="i === 1">
+                            <!-- For accordion 2 -->
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>      
+    </main>
+  
+</body>

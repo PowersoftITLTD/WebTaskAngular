@@ -1,0 +1,564 @@
+<body class="layout  layout-left-navigation layout-below-toolbar layout-below-footer" class="side-bar-scroll">
+    <main>
+        <div id="wrapper">
+            <div class="content-wrapper">
+                <div class="">
+                    <div id="e-commerce-product" class="simple tabbed">
+
+                        <app-header-bar (loggedInUserEmitter)="receiveLoggedInUser($event)"></app-header-bar>
+
+                        <div class="tab-pane fade show" *ngIf="selectedTab === 'taskInfo'" id="basic-info-tab-pane"
+                            role="tabpanel" aria-labelledby="basic-info-tab">
+
+
+
+                            <div class="bg-primary py-6 text-auto row align-items-center justify-content-between p-6">
+
+                                <div class="row no-gutters align-items-center">
+                                    <div class="product-image mr-4 ml-8">
+                                        <img
+                                            src="../../../../assets/Content/images/ecommerce/product-image-placeholder.png">
+                                    </div>
+                                    <div class="truncate-date">
+                                        <b>Recursive Task Detail</b>
+                                    </div>
+                                </div>
+
+                                <div class="flex-grow-1"></div>
+
+                                <div class="mr-8">
+                                    <button *ngIf="!updatedDetails && selectedTermChange !== 'Yearly'" type="button"
+                                        class="btn btn-light mr-2" (click)="onSubmitAdd()" id="btnSaveTask">
+                                        ADD
+                                    </button>
+
+                                    <button *ngIf="!updatedDetails && selectedTermChange === 'Yearly'" type="button"
+                                        class="btn btn-light mr-2" (click)="onSubmitAddYear()" id="btnSaveTask">
+                                        ADD Year
+                                    </button>
+
+                                    <button *ngIf="updatedDetails" type="button" class="btn btn-light"
+                                        (click)="onSubmitUpdate()" id="btnSaveTask">
+                                        SAVE
+                                    </button>
+                                </div>
+                            </div>
+
+                            <br>
+                            <div class="container-fluid">
+                                <div class="card p-4 tab-content">
+                                    <div class="card p-6 tab-content">
+                                        <form [formGroup]="recursiveTaskForm" (ngSubmit)="onSubmit()">
+                                            <div class="row">
+
+                                                <div class="col-xs-12 col-xl-4 col-md-12">
+                                                    <div class="form-group">
+                                                        <label for="category">Category</label>
+                                                        <select class="h6 form-control" formControlName="category"
+                                                            (change)="getPrivateCategory($event)">
+                                                            <option *ngFor="let Cat of category"
+                                                                [value]="Cat.TYPE_DESC">{{
+                                                                Cat.TYPE_DESC }}</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-xs-12 col-xl-8 col-md-12">
+                                                    <div class="form-group">
+                                                        <label for="taskName">Task Name</label>
+                                                        <input type="text" maxlength="150" class="form-control"
+                                                            maxlength="150" formControlName="taskName" />
+                                                        <div *ngIf="taskNameMaxLength()">Max 150 Characters</div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-xs-12 col-xl-12 col-md-12">
+                                                    <div class="form-group">
+                                                        <label for="taskDescription">Task Description</label>
+                                                        <textarea class="form-control" style="height: 8rem;"
+                                                            aria-describedby="task description" rows="3"
+                                                            maxlength="1000"
+                                                            formControlName="taskDescription"></textarea>
+                                                        <div *ngIf="descriptionMaxLength()">Max 1000 Characters</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-xs-12 col-xl-4 col-md-4">
+                                                    <div class="form-group">
+                                                        <label for="project">Property</label>
+
+                                                        <ng-container *ngIf="!taskData?.mkey">
+                                                            <select class="form-control " formControlName="project"
+                                                            #projectSelect (change)="onProjectSelect(projectSelect)"
+                                                                (change)="onProjectSelect(projectSelect)">
+                                                                <option value="" selected>Select</option>
+                                                                <option *ngFor="let p of project" [ngValue]="p">{{
+                                                                    p.TYPE_DESC }}
+                                                                </option>
+                                                            </select>
+                                                        </ng-container>
+
+
+                                                        <ng-container *ngIf="taskData?.mkey">
+                                                            <select class="form-control" formControlName="project"
+                                                                [(ngModel)]="taskData.project_Name" #projectSelect
+                                                                (change)="onProjectSelect(projectSelect)">
+                                                                <option value="0"
+                                                                    [selected]="taskData?.project_Name === '0'">Select
+                                                                </option>
+                                                                <option *ngFor="let p of project" [value]="p.TYPE_DESC">
+                                                                    {{
+                                                                    p.TYPE_DESC }}</option>
+                                                            </select>
+                                                        </ng-container>
+
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-xs-12 col-xl-4 col-md-4">
+                                                    <div class="form-group">
+                                                        <label for="subProject">Building</label>
+                                                        <ng-container *ngIf="!taskData?.mkey">
+                                                            <select class="form-control"  formControlName="subProject"  >
+                                                                <option value="0"
+                                                                    [selected]="taskData?.suB_PROJECT_ID === '0'">
+                                                                    Select
+                                                                </option>
+                                                                <option *ngFor="let s of sub_proj" [ngValue]="s">{{
+                                                                    s.TYPE_DESC }}
+                                                                </option>
+                                                            </select>
+                                                        </ng-container>
+
+                                                        <ng-container *ngIf="taskData?.mkey">
+                                                            <select class="form-control" formControlName="subProject"
+                                                                [(ngModel)]="taskData.sub_project_Name"  >
+                                                                <option value="0"
+                                                                    [selected]="taskData?.suB_PROJECT_ID === '0'">
+                                                                    Select
+                                                                </option>
+                                                                <option *ngFor="let s of sub_proj"
+                                                                    [selected]="s.TYPE_DESC === taskData.sub_project_Name">
+                                                                    {{ s.TYPE_DESC }}</option>
+                                                            </select>
+                                                        </ng-container>
+
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-xs-12 col-xl-4 col-md-4">
+                                                    <div class="form-group">
+                                                        <label for="noOfDays">No of Days</label>
+                                                        <ng-container *ngIf="!taskData?.mkey">
+                                                            <input type="number" min="1" class="form-control"
+                                                                appNumericOnly aria-describedby="depth"
+                                                                name="taskData?.nO_DAYS" formControlName="noOfDays" />
+                                                        </ng-container>
+
+
+                                                        <ng-container *ngIf="taskData?.mkey">
+                                                            <input type="number" class="form-control"
+                                                                [(ngModel)]="taskData.nO_DAYS === '' ? 1 : taskData.nO_DAYS"
+                                                                appNumericOnly aria-describedby="depth"
+                                                                formControlName="noOfDays" />
+                                                        </ng-container>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="">
+                                                <div class="row">
+                                                    <div class="col-xs-12 col-xl-4 col-md-4">
+                                                        <div class="form-group">
+                                                            <label for="assignedTo">Assigned To</label>
+
+                                                            <ng-container *ngIf="!taskData?.mkey">
+                                                                <input type="text" class="form-control"
+                                                                    formControlName="assignedTo"
+                                                                    [class.disabled]="disablePrivate"
+                                                                    [attr.disabled]="disablePrivate ? true : null"
+                                                                    (input)="filterEmployees($event)"
+                                                                    appAlphabeticOnly />
+                                                            </ng-container>
+
+                                                            <ng-container *ngIf="taskData?.mkey">
+                                                                <input type="text" class="form-control"
+                                                                    formControlName="assignedTo"
+                                                                    [(ngModel)]="taskData.assign_To_Name"
+                                                                    (input)="filterEmployees($event)"
+                                                                    appAlphabeticOnly />
+                                                            </ng-container>
+
+
+                                                            <div style="width: 100%;" class="pr-10 mt-1">
+                                                                <ul>
+                                                                    <li *ngFor="let event of filteredEmployees; let i = index;"
+                                                                        class="active" type="button"
+                                                                        [class.active]="filteredEmployees"
+                                                                        (click)="selectEmployee(event);">
+                                                                        {{ event.Assign_to }}
+                                                                    </li>
+                                                                </ul>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-xs-12 col-xl-8 col-md-8">
+                                                        <div class="form-group">
+                                                            <label for="tags">Tags</label>
+                                                            <ng-container *ngIf="!taskData?.mkey">
+                                                                <tag-input [addOnBlur]="true"
+                                                                    [formControl]="recursiveTaskForm.get('tags')">
+                                                                    <tag-input-dropdown [autocompleteItems]="allTags"
+                                                                        [showDropdownIfEmpty]="true"
+                                                                        [dynamicUpdate]="true"></tag-input-dropdown>
+                                                                </tag-input>
+                                                            </ng-container>
+
+                                                            <ng-container *ngIf="taskData?.mkey">
+                                                                <tag-input [(ngModel)]="selectedTags" [addOnBlur]="true"
+                                                                    [formControl]="recursiveTaskForm.get('tags')">
+                                                                    <tag-input-dropdown [autocompleteItems]="allTags"
+                                                                        [showDropdownIfEmpty]="true"></tag-input-dropdown>
+                                                                </tag-input>
+                                                            </ng-container>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+
+                                                <div class="">
+                                                    <div class="">
+
+                                                        <div class="row mt-6">
+                                                            <div class="col-xs-12 col-xl-3 col-md-12">
+                                                                <div class="form-group">
+                                                                    <label for="taskName">Term</label>
+                                                                    <select class="form-control mt-2"
+                                                                        (change)="onTermSelect(term)" #term
+                                                                        formControlName="termType">
+                                                                        <option *ngFor="let repeat of repeat_type"
+                                                                            [value]="repeat.type"><b>{{repeat.type ===
+                                                                                'Monthly' && repeat ===
+                                                                                repeat_type[repeat_type.length - 1] ?
+                                                                                'Yearly' :
+                                                                                repeat.type
+                                                                                }}</b>
+                                                                        </option>
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+
+                                                            <div
+                                                                class="col-xs-12 col-xl-3 col-md-12 display-start-end_1">
+                                                                <div class="form-group">
+                                                                    <label for="taskName">Starts</label>
+
+                                                                    <ng-container
+                                                                        *ngIf="taskData?.mkey; else noKeyTemplate">
+                                                                        <input type="date" class="form-control"
+                                                                            aria-describedby="depth" name="staDate_new"
+                                                                            formControlName="staDate_new" />
+                                                                    </ng-container>
+
+                                                                    <ng-template #noKeyTemplate>
+                                                                        <input type="date" class="form-control"
+                                                                            [ngModel]="dt | date:'yyyy-MM-dd'"
+                                                                            [attr.min]="minDate" max="9999-12-31"
+                                                                            appYearFormat aria-describedby="depth"
+                                                                            formControlName="startDate" />
+                                                                    </ng-template>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="col-xs-12 col-xl-2 col-md-12"
+                                                                *ngIf="regularDayUpdate">
+                                                                <div class="form-group" [hidden]="">
+                                                                    <label for="taskName">Repeat on</label>
+
+                                                                    <ng-container *ngIf="taskData?.mkey">
+                                                                        <input type="number"
+                                                                            [(ngModel)]="taskData.attributE13 === '' ? 1 : taskData.attributE13"
+                                                                            name="taskData?.attributE13" appNumericOnly
+                                                                            min="1" class="form-control"
+                                                                            formControlName="repeatTerm" />
+                                                                    </ng-container>
+
+                                                                    <ng-container *ngIf="!taskData?.mkey">
+                                                                        <input type="number"
+                                                                            name="taskData?.attributE13" appNumericOnly
+                                                                            min="1" class="form-control"
+                                                                            formControlName="repeatTerm" />
+                                                                    </ng-container>
+
+                                                                </div>
+                                                            </div>
+
+                                                            <div
+                                                                class="col-xs-12 col-xl-4 col-md-12 display-start-end_1">
+                                                                <div class="form-group">
+                                                                    <label for="taskName">Ends</label>
+                                                                    <mat-radio-group aria-label="Select an option"
+                                                                        formControlName="term"
+                                                                        (change)="onRadioChange($event)">
+                                                                        <div class="row">
+                                                                            <div class="col-2">
+                                                                                <mat-radio-button color="primary"
+                                                                                    value="never">Never</mat-radio-button>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="row align-items-center">
+                                                                            <div class="col-2 mt-7">
+                                                                                <mat-radio-button color="primary"
+                                                                                    value="on">On</mat-radio-button>
+                                                                            </div>
+                                                                            <div class="col-10 mt-7">
+
+                                                                                <ng-container *ngIf="taskData?.mkey">
+                                                                                    <input type="date"
+                                                                                        *ngIf="recursiveTaskForm.get('term').value !== 'never'"
+                                                                                        formControlName="endDate_new"
+                                                                                        name="endDate_new" appYearFormat
+                                                                                        class="form-control ml-2"
+                                                                                        aria-describedby="depth" />
+                                                                                </ng-container>
+
+                                                                                <ng-container *ngIf="!taskData?.mkey">
+                                                                                    <input type="date"
+                                                                                        *ngIf="recursiveTaskForm.get('term').value !== 'never'"
+                                                                                        formControlName="endDate"
+                                                                                        appYearFormat max="9999-12-31"
+                                                                                        [ngModel]="dt | date:'yyyy-MM-dd'"
+                                                                                        [min]="minDate"
+                                                                                        class="form-control ml-2"
+                                                                                        aria-describedby="depth" />
+                                                                                </ng-container>
+
+                                                                            </div>
+                                                                        </div>
+                                                                    </mat-radio-group>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="row" *ngIf="selectWeek">
+                                                            <div class="form-group">
+                                                                <label class="pl-6">Set Week Days</label>
+                                                                <div class="checkbox-container pl-5">
+                                                                    <div *ngFor="let day of weekDays"
+                                                                        class="checkbox-item">
+                                                                        <label class="checkbox customcb" type="button">
+                                                                            <input type="checkbox" id="{{day}}"
+                                                                                [value]="day" class="checkbox__input"
+                                                                                [checked]="selectedDays.has(day)"
+                                                                                (change)="onDayChange($event)" />
+                                                                            <span class="checkbox__inner">
+                                                                                <i
+                                                                                    class="d-flex justify-content-center pt-2 mx-2 week">{{day.charAt(0)}}</i>
+                                                                            </span>
+                                                                        </label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="row" *ngIf="selectMonth">
+                                                            <div class="col-xs-12 col-xl-4 col-md-12">
+                                                                <div class="form-group">
+                                                                    <label for="taskName">Select Month Day</label>
+                                                                    <select class=" form-control"
+                                                                        (change)="onDayChange($event)"
+                                                                        name="selectedMonth_day"
+                                                                        [(ngModel)]="selectedMonth_day"
+                                                                        [ngModelOptions]="{standalone: true}">
+                                                                        <option *ngFor="let day of month_days"
+                                                                            [value]="day.type">
+                                                                            {{ day.type === 'Day 0' ? 'Last Day' :
+                                                                            day.type }}
+                                                                        </option>
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="col-xs-12 col-xl-4 col-md-12">
+                                                                <div class="form-group" style="width: 100%;">
+                                                                    <label for="taskName">Select Month Day</label>
+                                                                    <app-multi-select-dropdown-new [list]="list"
+                                                                        [taskData]="taskData"
+                                                                        (shareCheckedList)="shareCheckedList($event)">
+                                                                    </app-multi-select-dropdown-new>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-xs-12 col-md-6 ">
+                                                            </div>
+                                                        </div>
+
+
+
+
+                                                        <div class="row display-start-end_2">
+
+                                                            <div
+                                                                class="col-xs-12 col-xl-3 col-md-12 display-start-end_1">
+                                                                <div class="form-group">
+                                                                    <label for="taskName">Starts</label>
+
+                                                                    <ng-container
+                                                                        *ngIf="taskData?.mkey; else noKeyTemplate">
+                                                                        <input type="date" class="form-control"
+                                                                            aria-describedby="depth" name="staDate_new"
+                                                                            formControlName="staDate_new" />
+                                                                    </ng-container>
+
+                                                                    <ng-template #noKeyTemplate>
+                                                                        <input type="date" class="form-control"
+                                                                            [ngModel]="dt | date:'yyyy-MM-dd'"
+                                                                            [attr.min]="minDate" max="9999-12-31"
+                                                                            appYearFormat aria-describedby="depth"
+                                                                            formControlName="startDate" />
+                                                                    </ng-template>
+                                                                </div>
+                                                            </div>
+
+
+                                                            <div class="col-xs-12 col-xl-4 col-md-12">
+                                                                <div class="form-group">
+                                                                    <label for="taskName">Ends</label>
+
+                                                                    <mat-radio-group aria-label="Select an option"
+                                                                        formControlName="term"
+                                                                        (change)="onRadioChange($event)">
+                                                                        <div class="row">
+                                                                            <div class="col-2">
+                                                                                <mat-radio-button color="primary"
+                                                                                    value="never">Never</mat-radio-button>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="row align-items-center">
+                                                                            <div class="col-2 mt-7">
+                                                                                <mat-radio-button color="primary"
+                                                                                    value="on">On</mat-radio-button>
+                                                                            </div>
+                                                                            <div class="col-10 mt-7">
+
+                                                                                <ng-container *ngIf="taskData?.mkey">
+                                                                                    <input type="date"
+                                                                                        *ngIf="recursiveTaskForm.get('term').value !== 'never'"
+                                                                                        formControlName="endDate_new"
+                                                                                        name="endDate_new" appYearFormat
+                                                                                        class="form-control ml-2"
+                                                                                        aria-describedby="depth" />
+                                                                                </ng-container>
+
+                                                                                <ng-container *ngIf="!taskData?.mkey">
+                                                                                    <input type="date"
+                                                                                        *ngIf="recursiveTaskForm.get('term').value !== 'never'"
+                                                                                        formControlName="endDate"
+                                                                                        appYearFormat max="9999-12-31"
+                                                                                        [ngModel]="dt | date:'yyyy-MM-dd'"
+                                                                                        [min]="minDate"
+                                                                                        class="form-control ml-2"
+                                                                                        aria-describedby="depth" />
+                                                                                </ng-container>
+
+                                                                            </div>
+                                                                        </div>
+                                                                    </mat-radio-group>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <div class="source-preview-wrapper">
+
+                                                        <ng-container *ngIf="!taskData?.mkey">
+                                                            <div class="preview">
+                                                                <div class="preview-elements">
+                                                                    <div class="custom-file" id="TaskInfocustom_file">
+
+
+                                                                        <input type="file" class="custom-file-input"
+                                                                            id="customFile" formControlName="file"
+                                                                            (change)="onFileSelected($event)">
+                                                                        <label class="custom-file-label"
+                                                                            for="customFile"
+                                                                            id="AttachmentDetails">Attachment if
+                                                                            any add:</label>
+                                                                    </div>
+                                                                    <div id="dvAtchment" style="display:none">
+                                                                        <a href="" target="_blank" id="DownAttchment">
+                                                                            <i class="fa fa-download"
+                                                                                aria-hidden="true"></i><span>DownFileName</span>
+                                                                        </a>
+                                                                        <button type="button"
+                                                                            style="background-color:transparent !important"
+                                                                            aria-label="Close">
+                                                                            <img src="../../../../assets/Content/icons/Del.png"
+                                                                                style="width:32px;" />
+                                                                        </button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </ng-container>
+
+                                                        <br>
+
+
+
+                                                        <br>
+
+
+                                                        <ng-container *ngIf="taskData?.mkey">
+                                                            <div class="preview">
+                                                                <div class="preview-elements">
+                                                                    <p>File Name: {{taskData.filE_NAME}}</p>
+
+                                                                    <div class="custom-file"
+                                                                        *ngIf="!taskData?.filE_NAME"
+                                                                        id="TaskInfocustom_file">
+                                                                        <input type="file" class="custom-file-input"
+                                                                            id="customFile" formControlName="file"
+                                                                            (change)="onFileSelected($event)">
+                                                                        <label class="custom-file-label"
+                                                                            for="customFile"
+                                                                            id="AttachmentDetails">Attachment if any
+                                                                            save:</label>
+                                                                    </div>
+
+                                                                    <div id="dvAtchment" *ngIf="taskData?.filE_NAME">
+                                                                        <a [href]="fileUrl(taskData.mkey)" type="button"
+                                                                            id="DownAttchment">
+                                                                            <i class="fa fa-download"
+                                                                                aria-hidden="true"></i>&nbsp;
+                                                                            <span>{{taskData.filE_NAME}}</span>
+                                                                        </a>
+                                                                        <button type="button" (click)="removeFile()"
+                                                                            style="background-color:transparent !important"
+                                                                            aria-label="Close">
+                                                                            <img src="../../../../assets/Content/icons/Del.png"
+                                                                                style="width:32px;" />
+                                                                        </button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </ng-container>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>

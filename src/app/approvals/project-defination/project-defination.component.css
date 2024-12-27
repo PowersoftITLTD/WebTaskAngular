@@ -1,0 +1,667 @@
+/*accordation*/
+.accordion {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    overflow: hidden;
+  }
+  
+  .accordion-item {
+    border-bottom: 1px solid #ccc;
+  }
+  
+  .accordion-header {
+    background-color: #e1d9d9c9;
+  }
+  
+  .accordion-button {
+    width: 100%;
+    text-align: left;
+    padding: 15px;
+    font-size: 16px;
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .accordion-body.show {
+    max-height: 1000px; 
+    opacity: 1;
+    display: block;
+  }
+  /* .accordion-button:hover {
+    background-color: #f1f1f1;
+  } */
+  
+  .task-item.disabled {
+    pointer-events: none; /* Disable interaction */
+    opacity: 0.5; /* Dim appearance */
+    cursor: not-allowed; /* Change cursor */
+  }
+
+  .progress-container {
+    width: 100%;
+    height: 20px;
+    background-color: #ccc;
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+  
+  }
+  
+  .progress-bar {
+    height: 100%;
+    background-color: #80ff80;
+    text-align: center;
+    color: black;
+  }
+  
+  .progress-bar span {
+    line-height: 20px;
+    position: absolute;
+    left: 50%;
+    top: 0;
+    transform: translateX(-50%);
+    font-weight: bold;
+  }
+  
+  
+  /* table */
+  .task-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .task-table th,
+  .task-table td {
+    padding: 8px;
+    text-align: left;
+  }
+  
+  .task-table th {
+    background-color: #f2f2f2;
+    text-align: center;
+  }
+  
+  table.task-table {
+    width: 100%;
+  }
+  
+  table.task-table th,
+  table.task-table td {
+    border-right: 1px solid #ddd;
+  }
+
+  td:hover{
+    color: #34c334;
+  }
+  
+  .task-table {
+    border-collapse: collapse;
+    border-spacing: 0;
+  }
+
+  .table-header {
+    position: sticky;
+    top: 0;
+    background-color: white; /* Change this to match your design */
+    z-index: 10; /* Ensure the header is above the table rows */
+    border-bottom: 1px solid #ddd;
+  }
+  
+  
+  .truncate-text {
+    min-width: 100px;
+    max-width: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  
+  .truncate-date {
+    min-width: 5px;
+    max-width: 10px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+
+  
+  .table-scroll-container {
+    max-height: 400px; /* Adjust to the desired height */
+    overflow-y: auto;
+  }
+  
+  .table-header th {
+    position: sticky;
+    top: 0;
+    background-color: #fff; /* Ensure header is visible on top */
+    z-index: 1; /* Ensure header is above the table body */
+  }
+  
+  
+  
+
+  
+  .table-header th {
+    position: sticky;
+    font-weight: bold;
+    top: 0;
+    background-color: #fff; /* Ensure header is visible on top */
+    z-index: 1; /* Ensure header is above the table body */
+  }
+  
+  
+ 
+  
+  .table-scroll-container::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+
+
+  .table-scroll-container::-webkit-scrollbar {
+    margin-top: 200px;
+
+    width: 14px;  /* Vertical scrollbar width */
+    height: 14px; /* Horizontal scrollbar height */
+  }
+  
+  .table-scroll-container::-webkit-scrollbar-thumb {
+
+    background: #888;
+    border-radius: 15px;
+  }
+  
+  .table-scroll-container::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }
+  
+  /* .truncate-text {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  } */
+  
+  .truncate-date {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 150px; /* Adjust if necessary */
+  }
+  
+  .disabled-row {
+    background-color: #f0f0f0; /* Light grey background for the row */
+    opacity: 0.6; /* Reduce visibility to indicate it's disabled */
+    pointer-events: none; /* Prevent interactions */
+  }
+  
+  /* For Disabled Fields */
+  .disabled-field {
+    background-color: #e9ecef; /* Light grey background */
+    color: #6c757d; /* Grey text color */
+    border: 1px solid #ced4da; /* Keep the border subtle */
+    cursor: not-allowed; /* Show not-allowed cursor */
+  }
+ 
+  
+  .accordion-body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.2s ease, opacity 0.5s ease;
+    opacity: 0;
+  }
+  
+
+  .form-group {
+    margin-bottom: 0.5rem !important; 
+  }
+  
+  .form-group label {
+    margin-bottom: 0.5rem !important; 
+  }
+  
+  .form-group input,
+  .form-group textarea {
+    padding: 0.2rem !important;
+    height: auto !important; 
+  }
+  
+
+  .dropdown {
+    position: relative;
+  }
+  
+  .dropdown-list {
+    border: 1px solid #ccc;
+    max-height: 500px;
+    overflow-y: auto;
+    position: absolute;
+    width: 100%;
+    background: white;
+    border-radius: 4px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    z-index: 10;
+    margin-top: 5px;
+  }
+  
+  .dropdown-list li {
+    list-style: none;
+    padding: 10px;
+  }
+  
+  .dropdown-list label {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+  }
+  
+  .dropdown-list input[type="checkbox"] {
+    margin-right: 10px;
+  }
+  
+  .search-input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-bottom: 5px;
+  }
+
+  .classification-border{
+    border-style: solid;
+    border-width: thin;
+    border-color: #bebfbf;
+  }
+
+
+  .input-container {
+    position: relative;
+  }
+  
+  .input-container input {
+    width: 100%;
+    display: none; /* Make the first input visible by default */
+  }
+  
+  .input-container:hover .select {
+    display: none; /* Show the text input on hover */
+  }
+  
+  .input-container:hover input[type="date"] {
+    display: block; /* Hide the date input on hover */
+  }
+  
+  .input-container .select {
+    display: block; /* Initially hide the text input */
+  }
+
+
+  .fa-solid {
+    display: inline-flex;        
+    justify-content: center;     
+    align-items: center;        
+    width: 2px;                
+    height: 24px;               
+    color: white;                
+    font-size: 14px;             
+    text-align: center;         
+    cursor: pointer;           
+    transition: background-color 0.3s; 
+  }
+  
+  .fa-plus{
+    background-color: #333;
+  }
+  
+  .plus{
+    background-color: #999;
+  }
+  
+  .fa-solid:hover {
+    background-color: #0056b3; /* Change background color on hover */
+  }
+
+  
+  .dropdown-list {
+    padding: 0;
+    margin: 0; 
+    list-style-type: none; 
+  }
+  
+  .country-header {
+    font-size: 1.2em;
+    margin: 10px 0; 
+    padding: 5px; 
+  }
+  
+  .dropdown-list li {
+    padding: 10px 15px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .dropdown-list li:hover {
+    background-color: rgba(216, 87, 87, 0.1);
+  }
+  
+  .dropdown-list li.selected {
+    background-color: rgba(216, 87, 87, 0.2); 
+  }
+
+  .selected {
+    background-color: #cce7ff; /* Light blue background for selected task */
+    color: #0056b3; /* Change text color */
+  }
+  
+  .selected .task-number {
+    font-weight: bold; /* Optional: Make the task number bold */
+  }
+  
+  .selected .task-detail {
+    color: #0056b3; /* Optional: Change color of task details */
+  }
+  
+  
+  
+  .sample-wrapper {
+    width: 100%; /* Ensure the wrapper uses full width */
+  }
+  
+  
+  /*progress*/
+  .progress {
+    background: #bebfbf;
+    border-radius: 20px;
+    margin: 0;
+  }
+  
+  .progress .progress-bar {
+    border-radius: 20px;
+    box-shadow: none;
+    animation: animate-positive 2s;
+  }
+  
+  .treegrid-indent {
+    width: 16px;
+    height: 16px;
+    display: inline-block;
+    position: relative;
+  }
+    
+  
+  body {
+    padding-left: 250px;
+  }
+  
+
+  
+  .active {
+    background-color: white;
+  }
+  
+  .active:hover {
+    background-color: aquamarine;
+  }
+  
+  .tab-content {
+    max-height: calc(100vh - 120px);
+    overflow-x: auto;
+    overflow-y: auto;
+  }
+  
+  .tab-content::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  .tab-content::-webkit-scrollbar-track {
+    background-color: transparent;
+  }
+  
+  .tab-content::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.3);
+    border-radius: 4px;
+  }
+  
+  .tab-content::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+  
+ 
+  
+  /*dropdown*/
+.dropdown {
+  max-height: 400px; 
+  overflow-y: auto; 
+  border: 1px solid #ddd;
+  background-color: white; 
+  z-index: 1000; 
+  max-height: 1500px;
+
+}
+
+.search-input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-bottom: 5px;
+}
+
+.dropdown-list {
+  padding: 0;
+  margin: 0; 
+  list-style-type: none; 
+}
+
+.country-header {
+  font-size: 1.2em;
+  margin: 10px 0; 
+  padding: 5px; 
+}
+
+.dropdown-list li {
+  padding: 10px 15px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.dropdown-list li:hover {
+  background-color: rgba(216, 87, 87, 0.1);
+}
+
+.dropdown-list li.selected {
+  background-color: rgba(216, 87, 87, 0.2); 
+}
+
+
+/* General styling for the task items */
+.task-item {
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  border-bottom: 1px solid #ccc;
+}
+
+/* Use Flexbox for horizontal layout of task details */
+.task-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px; /* Space between task details */
+  margin-top: 10px;
+  align-items: center;
+}
+
+.task-detail {
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 14px;
+  color: #333;
+}
+
+.task-number {
+  font-weight: bold;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+}
+
+.search-input {
+  margin-bottom: 10px;
+  padding: 8px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.dropdown-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* Adjust task details for small screens */
+@media (max-width: 768px) {
+  .task-details {
+      flex-direction: column; /* Stack details vertically on small screens */
+  }
+}
+
+  
+  @media only screen and (max-width: 992px) {
+    body {
+      padding-left: 0;
+    }
+  
+    .cate {
+      width: 100%;
+    }
+  
+    .description {
+      margin-top: 10rem;
+    }
+  
+    .custom-select {
+      width: 100%;
+    }
+  
+    
+    .display-start-end_1{
+      display: none;
+    }
+  
+    .display-start-end_2{
+      display: block;
+    }
+  
+    .month_class{
+      width: 32.5rem;
+    }
+  }
+  
+  
+  @media only screen and (max-width:380px){
+    .truncate-date {
+      min-width: 50px;
+      max-width: 75px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  
+    .month_class{
+      width: 0rem;
+    }
+  }
+  
+  @media only screen and (max-width: 992px) and (min-width:767px) {
+    .description {
+      margin-top: 1rem;
+    }
+  
+    .month_class{
+      width: 0rem;
+    }
+  }
+  
+  .combo-section {
+    position: relative;
+  }
+  
+  .search-input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-bottom: 5px;
+  }
+  
+  .dropdown {
+    position: relative;
+  }
+  
+  .dropdown-list {
+    border: 1px solid #ccc;
+    max-height: 500px;
+    overflow-y: auto;
+    position: absolute;
+    width: 100%;
+    background: white;
+    border-radius: 4px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    z-index: 10;
+    margin-top: 5px;
+  }
+  
+  .dropdown-list li {
+    list-style: none;
+    padding: 10px;
+  }
+  
+  .dropdown-list label {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+  }
+  
+  .dropdown-list input[type="checkbox"] {
+    margin-right: 10px;
+  }
+  
+  .select-button {
+    margin-top: 10px;
+    padding: 10px 15px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .select-button:hover {
+    background-color: #0056b3;
+  }
+  
+  .cities-container {
+    display: flex; /* Use flexbox for horizontal alignment */
+    flex-wrap: wrap; /* Allow tags to wrap to the next line */
+    gap: 8px; /* Space between tags */
+    max-width: 100%; /* Set a max width of 100% */
+    padding: 10px; /* Optional: Add some padding */
+    border: 1px solid #ccc; /* Optional: Add a border */
+    border-radius: 5px; /* Optional: Round the corners */
+    background-color: #f9f9f9; /* Optional: Background color */
+  }
+  
+  .city-tag {
+    background-color: #d8e8ff; 
+    border-radius: 12px;  
+    padding: 5px 10px; 
+    font-size: 14px;  
+    color: #333; 
+    
+  }
+  
+  
+  

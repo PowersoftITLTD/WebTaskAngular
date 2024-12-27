@@ -1,0 +1,47 @@
+.dropdown-container {
+    display: inline-block; 
+    position: relative; 
+}
+
+.drop-toggle {
+    background-color: #fff;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    border: 1px solid #ccc;
+    text-align: left;
+    display: flex;
+    justify-content: space-between; 
+    align-items: center; 
+}
+
+.drop-toggle i {
+    margin-left: auto;
+}
+
+.drop-show {
+    padding: 4px;
+    width: 100%; 
+    background-color: #FFF;
+    border: 1px solid #BABABA;
+    position: absolute;
+    z-index: 100;
+    box-shadow: 0 6px 10px rgba(0,0,0,.15);
+    bottom: 100%; 
+    left: 0;
+}
+
+.drop-show label {
+    display: block;
+    font-size: 15px;
+    cursor: pointer;
+}
+
+.drop-show label input {
+    vertical-align: top;
+}
+
+.drop-show label span {
+    display: inline-block;
+}
