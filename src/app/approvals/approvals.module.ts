@@ -14,6 +14,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { AddApprovalTempelateComponent } from './add-approval-tempelate/add-approval-tempelate.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TagInputModule } from 'ngx-chips';
+import { PipeContentModule } from '../pipes/pipe-content.module';
 
 
 @NgModule({
@@ -34,7 +35,8 @@ import { TagInputModule } from 'ngx-chips';
     MatIconModule,
     FormsModule,
     TagInputModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    PipeContentModule
   ]
 })
 export class ApprovalsModule { }

@@ -40,7 +40,7 @@
                                  
                                         <div class="toolbar d-flex align-items-center justify-content-between p-3 p-sm-6" >
                                             
-                                                <select class="custom-select mb-2 mr-sm-2 mb-sm-0" placeholder="Order" (change)="onFilterTypeChange($event)" ng-model="selected">
+                                                <select class="custom-select mb-2 mr-sm-1 mb-sm-0" placeholder="Order" (change)="onFilterTypeChange($event)" ng-model="selected">
                                                     <option [value]="'creationDate'" [selected]="filterType === 'creationDate'">Creation Date</option>
                                                     <option [value]="'completionDate'" [selected]="filterType === 'completionDate'">Completion Date</option>
                                                 </select>
@@ -55,7 +55,7 @@
                                                     <div class="todo-items w-10" >
                                                         
                                                         <div id="dvMain_$index" 
-                                                            *ngFor="let t of taskList | taskFilter:_SearchText; let i = index"
+                                                            *ngFor="let t of taskList | filterCategoryPipe: _SearchText : searchFields; let i = index"
                                                             class="todo-item  py-4 ripple row no-gutters flex-wrap flex-sm-nowrap align-items-center" 
                                                               >  
                                                                                                                        

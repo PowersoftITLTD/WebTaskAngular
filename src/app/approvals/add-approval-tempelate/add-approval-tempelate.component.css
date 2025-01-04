@@ -26,7 +26,7 @@
 }
 
 .accordion-body.show {
-  max-height: 1000px; /* Set this to a large value to accommodate most content */
+  max-height: 1000px;
   opacity: 1;
   display: block;
 }
@@ -35,11 +35,11 @@
 } */
 
 .form-group {
-  margin-bottom: 5px; /* Adjust the bottom margin */
+  margin-bottom: 5px; 
 }
 
 .form-group label {
-  font-size: 0.9em; /* Optionally reduce label font size */
+  font-size: 0.9em; 
 }
 
 .active {
@@ -75,6 +75,24 @@
   z-index: 999; 
   border-bottom: 2px solid #ddd;
 }
+
+thead th {
+  text-align: center; /* This will center align the text */
+}
+
+.end-date-container {
+  display: flex;
+  align-items: center; /* Vertically align the text and the button */
+}
+
+.end-date-text {
+  margin-right: 10px; /* Space between the text and the button */
+}
+
+.btn {
+  cursor: pointer; /* Makes the button clickable */
+}
+
 
 
 table.task-table {
@@ -141,6 +159,7 @@ table.task-table td {
   padding: 0;
   margin: 0; 
   list-style-type: none; 
+  
 }
 
 .country-header {
@@ -164,7 +183,9 @@ table.task-table td {
 }
 
 
-
+.doc_label{
+  margin-left: 17rem;
+}
 
 .sample-wrapper {
   width: 100%; /* Ensure the wrapper uses full width */
@@ -258,17 +279,6 @@ body {
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
 .input-container {
   position: relative;
 }
@@ -278,28 +288,21 @@ body {
   top: 0;
   left: 0;
   width: 100%;
-  display: none; /* Initially hide the select */
+  display: none; 
 }
 
 .input-container input {
   width: 100%;
-  display: block; /* Show the input initially */
+  display: block; 
 }
 
 .input-container:hover select {
-  display: block; /* Show the select on hover */
+  display: block; 
 }
 
 .input-container:hover input {
-  display: none; /* Hide the input on hover */
+  display: none; 
 }
-
-
-
-
-
-
-
 
 
 @media only screen and (max-width: 992px) {
@@ -359,22 +362,13 @@ body {
 }
 
 
-
-
-
-
-
-
-
-
-
-
 .combo-section {
   position: relative;
 }
 
 .search-input {
-  width: 100%;
+  width: 40rem;
+  margin-left:15rem;
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 4px;
@@ -383,6 +377,7 @@ body {
 
 .dropdown {
   position: relative;
+  
 }
 
 .dropdown-list {
@@ -396,6 +391,9 @@ body {
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
   z-index: 10;
   margin-top: 5px;
+  width: 40rem;
+  height: 40rem;
+  margin-left:15rem
 }
 
 .dropdown-list li {
@@ -428,14 +426,14 @@ body {
 }
 
 .cities-container {
-  display: flex; /* Use flexbox for horizontal alignment */
-  flex-wrap: wrap; /* Allow tags to wrap to the next line */
-  gap: 8px; /* Space between tags */
-  max-width: 100%; /* Set a max width of 100% */
-  padding: 10px; /* Optional: Add some padding */
-  border: 1px solid #ccc; /* Optional: Add a border */
-  border-radius: 5px; /* Optional: Round the corners */
-  background-color: #f9f9f9; /* Optional: Background color */
+  display: flex; 
+  flex-wrap: wrap; 
+  gap: 8px; 
+  max-width: 100%; 
+  padding: 10px; 
+  border: 1px solid #ccc; 
+  border-radius: 5px; 
+  background-color: #f9f9f9; 
 }
 
 .city-tag {
@@ -444,7 +442,7 @@ body {
   padding: 5px 10px; 
   font-size: 14px;  
   color: #333; 
-  
+  min-width: 60rem;
 }
 
 

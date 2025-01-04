@@ -267,6 +267,8 @@ export class DocumentTempelateComponent implements OnInit {
 
     this.apiService.postDocumentTempelate(addTmpDoc, this.recursiveLogginUser).subscribe({
       next:(addTemplateDate:any)=>{
+        this.router.navigate(['task/approval-screen'], {queryParams:{ source: 'document-tempelate' }});
+
         console.log('Data added successfully', addTemplateDate)
 
       }, error:(error)=>{
@@ -313,6 +315,8 @@ export class DocumentTempelateComponent implements OnInit {
 
     this.apiService.putDocumentTempelate(updateDocTemp, doc_temp_key,token).subscribe({
       next:(update_doc)=>{
+        this.router.navigate(['task/approval-screen'], {queryParams:{ source: 'document-tempelate' }});
+
         console.log('Doc updated successfully',update_doc )
       },error:(error)=>{
         console.log('Error occured',error)

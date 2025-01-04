@@ -17,6 +17,7 @@ export class ApprovalScreenComponent implements OnInit {
   task: any[] = [];
   taskList: any[] = [];
   docCatList:any[] = [];
+  searchFields: string[] = [];
 
 
   filterType: string = '';
@@ -99,6 +100,7 @@ export class ApprovalScreenComponent implements OnInit {
       }
     })
 
+
   }
 
 
@@ -129,6 +131,9 @@ export class ApprovalScreenComponent implements OnInit {
         console.error('Login failed:', error);
       }
     });
+
+    // console.log('Task List',this.taskList)
+
   }
 
 
@@ -170,7 +175,7 @@ onFilterTypeChange(event: Event) {
       const dateB = new Date(a.CREATION_DATE.split('/').reverse().join('-')); 
       return dateA.getTime() - dateB.getTime();
     }); 
-    // console.log('creationDate', creationDate)
+   
 
   }else if(value === 'completionDate'){
 
@@ -179,7 +184,7 @@ onFilterTypeChange(event: Event) {
       const dateB = new Date(a.COMPLETION_DATE.split('/').reverse().join('-')); 
       return dateA.getTime() - dateB.getTime();
     });          
-    // console.log('completionDate', completionDate)
+   
   }
 
 }
@@ -187,7 +192,7 @@ onFilterTypeChange(event: Event) {
 
 
 openSelectedTask(data: any) {
-  console.log('Data passed:', data); // Log the data to see its content
+  console.log('Data passed:', data); 
 
  
   
@@ -220,14 +225,13 @@ addApprovalTemp(add_new_data:any){
 }
 
 toggleSortOrder(): void {
-  this.isAscending = !this.isAscending; // Toggle the sort order
+  this.isAscending = !this.isAscending; 
   
-  // Sort the array based on 'mkey'
   this.taskList.sort((a, b) => {
     if (this.isAscending) {
-      return a.mkey - b.mkey; // Ascending order
+      return a.mkey - b.mkey; 
     } else {
-      return b.mkey - a.mkey; // Descending order
+      return b.mkey - a.mkey;
     }
   });
 }
@@ -235,12 +239,11 @@ toggleSortOrder(): void {
 fetchDocCategory(){
   this.recursiveLogginUser = this.apiService.getRecursiveUser();
 
-  console.log(this.recursiveLogginUser)
-
   this.apiService.getDocCategory(this.recursiveLogginUser).subscribe({
     next: (list: any) => {
       this.docCatList = list
       this.setCategoryData();
+
     },
     error: (error: any) => {
       console.error('Unable to fetch Document Type List', error);
@@ -253,6 +256,8 @@ fetchComboDetails(){
   this.apiService.getBuildingClassificationDP(this.recursiveLogginUser).subscribe({
     next: (list: any) => {
       this.buildingList = list;
+      this.setComboData()
+
       console.log('Building Classification List:', this.buildingList);       
     },
     error: (error: any) => {
@@ -282,19 +287,16 @@ fetchComboDetails(){
       console.error('Unable to fetch Statutory Authority List', error);
     }
   });
-  this.setComboData()
 }
 
 setCategoryData(): void {
   if (this.taskList) {
  
-
     this.taskList.forEach((task: any) => {
       const matchedCategory = this.docCatList.find((doc_type: any) => doc_type.mkey === task.doC_CATEGORY);
 
-
       if (matchedCategory) {
-        task.category_Name = matchedCategory.typE_DESC; // Add category name to the task
+        task.category_Name = matchedCategory.typE_DESC; 
       } else {
         console.log('No matching category found for doC_CATEGORY:', task.doC_CATEGORY);
       }
@@ -307,7 +309,6 @@ setCategoryData(): void {
 
 setComboData(): void {
   if (this.taskList) {
- 
 
     this.taskList.forEach((task: any) => {
       const matchedBuilding = this.buildingList.find((building: any) => building.mkey === task.buildinG_TYPE);
@@ -322,7 +323,6 @@ setComboData(): void {
         // console.log('No matching category found for doC_CATEGORY:', task.doC_CATEGORY);
       }
     });
-
     // console.log('Updated taskList with category names:', this.taskList);
   }
 }
@@ -336,7 +336,7 @@ getApprovalTempList(){
   this.apiService.getApprovalTemp(this.recursiveLogginUser).subscribe({
     next:(approval_temp_data) =>{
       
-      this.taskList = approval_temp_data;
+      this.taskList = approval_temp_data.reverse();
       this.fetchComboDetails()
       // console.log('approval_temp_data', approval_temp_data)
 
@@ -345,6 +345,7 @@ getApprovalTempList(){
     }
   })
 }
+
 
   getProjDefinationList(){
     const data = this.dataService.getUser();
@@ -360,7 +361,7 @@ getApprovalTempList(){
 
     this.apiService.getProjectDefination(this.recursiveLogginUser, USER_CRED.MKEY).subscribe({
       next:(proj_def) => {
-        this.taskList = proj_def;
+        this.taskList = proj_def.reverse();
         // console.log('proj_def',proj_def)
       },error:(error)=>{
         if(error){
@@ -388,7 +389,7 @@ getApprovalTempList(){
         this.fetchDocCategory();
 
 
-        this.taskList = doc_temp_list;
+        this.taskList = doc_temp_list.reverse();
       }, error: (error) => {
         if (error) {
           console.log('error', error)
@@ -415,7 +416,7 @@ getApprovalTempList(){
       next: (depositoryList) => {
         console.log('depositoryList', depositoryList)
 
-        this.taskList = depositoryList;
+        this.taskList = depositoryList.reverse();
       }, error: (error) => {
         if (error) {
           console.log('error', error)
@@ -425,16 +426,6 @@ getApprovalTempList(){
   }
   
 
-
 }
 
-  // this.router.navigate(['approvals', 'approved-tempelate', { Task_Num: add_new_appr_tempelate }]);
-
-  // this.router.navigate(['/recursive-task/add-recursive-task']);
-
-   // this.router.navigate(['approvals/project-defination']);
- // this.router.navigate(['approvals/document-tempelate']);
  
-
-    // this.router.navigate(['approvals/approved-tempelate']);
-    // this.selectedTab = 'approved-tempelate'

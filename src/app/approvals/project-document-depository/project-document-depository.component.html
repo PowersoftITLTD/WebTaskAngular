@@ -125,7 +125,7 @@
 
                                                             <ng-container *ngIf="taskData?.MKEY">
                                                                 <input type="text" maxlength="150" class="form-control"
-                                                                formControlName="documentNumberFieldName" [(ngModel)]="taskData.DOC_NUMBER" />
+                                                                formControlName="documentNumberFieldName" [(ngModel)]="taskData.DOC_NUMBER"  />
                                                             </ng-container>
 
                                                             <ng-container *ngIf="!taskData?.MKEY">
@@ -208,9 +208,9 @@
                                                     <label for="category">Document Abbr / Document name</label>
                                                     <div class="sample-wrapper">
                                                         <div class="pl-4 combo-section">
-                                                            <input type="text" placeholder="Search Documents" [(ngModel)]="searchQuery" class="search-input" (input)="filterDocs()" />
+                                                            <input type="text" placeholder="Search Documents" [(ngModel)]="searchQuery" [ngModelOptions]="{standalone: true}" class="search-input"  />
                                                             <div *ngIf="filteredDocs.length > 0" class="">
-                                                                <ul class="dropdown-list" style="height: 40rem;">
+                                                                <ul class="dropdown-list" style="width: 50rem;">
                                                                     <ng-container
                                                                         *ngFor="let country of getUniqueDocs('checklist')">
                                                                         <div class="country-header justify-content-center"
@@ -218,7 +218,7 @@
                                                                             <b>{{ country }}</b>
                                                                         </div>
                                                                         <ng-container
-                                                                            *ngFor="let sortedDoc of getGroupedAndSortedDocs('checklist')[country]">
+                                                                            *ngFor="let sortedDoc of (getGroupedAndSortedDocs('checklist') | filterDocsPipe: searchQuery)[country]">
                                                                             <li (click)="toggleSelection('checklist', sortedDoc)"
                                                                                 [class.selected]="isSelected('checklist', sortedDoc)">
                                                                                 {{ sortedDoc.typE_DESC }}

@@ -502,6 +502,8 @@ toggleSelection(task: any = []): void {
     this.apiService.postProjectDefination(addProjectDefination, this.recursiveLogginUser).subscribe({
       next: (addData: any) => {
         console.log('Data added successfully', addData)
+        this.router.navigate(['task/approval-screen'], {queryParams:{ source: 'project-defination' }});
+
       }, error: (error: ErrorHandler) => {
 
         console.log('Unable to get data', error)
@@ -579,6 +581,7 @@ toggleSelection(task: any = []): void {
     this.apiService.putProjectDefination(addProjectDefination, headerMkey, this.recursiveLogginUser).subscribe({
       next: (addData: any) => {
         console.log('Data added successfully', addData)
+        this.router.navigate(['task/approval-screen'], {queryParams:{ source: 'project-defination' }});
       }, error: (error: ErrorHandler) => {
         console.log('Unable to get data', error)
       }

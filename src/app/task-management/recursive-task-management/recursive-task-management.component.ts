@@ -231,18 +231,18 @@ mergingProjAndSubProjName() {
   }
 
   const projectMap = new Map(this.project.map((proj: any) => [proj.MASTER_MKEY, proj.TYPE_DESC]));
-  console.log('projectMap', projectMap)
+  // console.log('projectMap', projectMap)
 
   const token = this.apiService.getRecursiveUser();
 
 
   this.project.forEach((proj: any) => {
     this.apiService.getSubProjectDetailsNew(proj.MASTER_MKEY.toString(), token).subscribe(
-      (data: any) => {
-        this.sub_proj = data;
+      (response: any) => {
+        this.sub_proj = response[0].data;
 
         const subProjectMap = new Map(this.sub_proj.map((sub: any) => [sub.MASTER_MKEY, sub.TYPE_DESC]));
-        
+    
         if (this.taskList && this.taskList.length > 0) { 
           this.taskList.forEach((task: any) => {
 

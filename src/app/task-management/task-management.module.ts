@@ -11,6 +11,7 @@ import { SidePanelModule } from '../side-panel/SidePanelModule';
 import { PipeContentModule } from '../pipes/pipe-content.module';
 import { RecursiveTaskManagementComponent } from './recursive-task-management/recursive-task-management.component';
 import { ApprovalScreenComponent } from './approval-screen/approval-screen.component';
+// import { FilterCategoryPipePipe } from '../pipes/filter-category-pipe/filter-category-pipe.pipe';
 
 
 
@@ -19,6 +20,7 @@ import { ApprovalScreenComponent } from './approval-screen/approval-screen.compo
     TaskManagementComponent,
     RecursiveTaskManagementComponent,
     ApprovalScreenComponent,
+    // FilterCategoryPipePipe,
     TaskDuePipe,
   ],
   exports:[
@@ -31,7 +33,7 @@ import { ApprovalScreenComponent } from './approval-screen/approval-screen.compo
     HeaderBarModule,
     TaskManagementRoutingModule,
     SidePanelModule,
-    PipeContentModule
+    PipeContentModule,
   ],
   entryComponents: [
     SelectedTaskInfoComponent

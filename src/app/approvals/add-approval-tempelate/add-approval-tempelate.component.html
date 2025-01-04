@@ -350,7 +350,7 @@
                                                 <br>
                                                 
                                                 <div class="sample-wrapper">
-                                                    <table class="table mb-5 ml-2 mr-5">
+                                                    <table class="table">
                                                         <thead>
                                                             <tr>
                                                                 <th>Sr no.</th>
@@ -358,11 +358,15 @@
                                                                 <th>Sanctioning Department</th>
                                                                 <th>Sanctioning Authority</th>
                                                                 <th>Start Date</th>
-                                                                <th>End Date (Optional)</th>                                                                
                                                                 <th>
-                                                                    <i class="fa-solid fa-plus btn" type="button"
-                                                                        (click)="addRowNew()"></i>
-                                                                </th>
+                                                                    <div class="end-date-container">
+                                                                        <div class="end-date-text">End Date (Optional)</div>
+                                                                        <i class="fa-solid fa-plus btn" type="button" (click)="addRowNew()"></i>
+                                                                    </div>
+                                                                </th>                                                                                                                              
+                                                                <!-- <th>
+                                                                
+                                                                </th> -->
                                                             </tr>
                                                         </thead>
                                                         <tbody formArrayName="rows_new">
@@ -388,10 +392,10 @@
                                                                             {{sanctioningAuth.typE_DESC}} </option>
                                                                         </select>                                                                                                                               
                                                                     </td>                                                                                                                              
-                                                                    <td>
+                                                                    <td style="width:20rem">
                                                                         <input class="form-control" formControlName="startDate_newRow" [min]="currentDate"  type="date"  />
                                                                     </td>
-                                                                    <td>
+                                                                    <td style="width:20rem">
                                                                         <input class="form-control" formControlName="endDate_newRow" [min]="currentDate"  type="date"  />
                                                                     </td>                                                                 
                                                                     <!-- <td>
@@ -452,15 +456,15 @@
 
                                                 <!-- Right Column: Search and Select Documents -->
                                                 <div class="col-xs-6 col-xl-6 col-md-12">
-                                                    <div class="form-group sample-wrapper">
-                                                        <label for="category">Document</label>
+                                                    <div class="form-group">
+                                                        <label for="category" class="doc_label">Document</label>
                                                         <div class="sample-wrapper">
                                                             <div class="pl-4 combo-section">
-                                                                <input type="text" (input)="filterCities()"
+                                                                <input type="text" [(ngModel)]="searchQuery_1" [ngModelOptions]="{standalone: true}"
                                                                     placeholder="Select Document"
                                                                     class="search-input" />
-                                                                <div *ngIf="filteredDocs.length > 0" class="dropdown"
-                                                                    style="height: 510px;">
+                                                                <div *ngIf="filteredDocs.length > 0" class=""
+                                                                    style="height: 40rem;">
                                                                     <ul class="dropdown-list">
                                                                         <ng-container
                                                                             *ngFor="let category of getUniqueDocs('endResult')">
@@ -469,7 +473,7 @@
                                                                                 <b>{{ category }}</b>
                                                                             </div>
                                                                             <ng-container
-                                                                                *ngFor="let sortedDoc of getGroupedAndSortedDocs('endResult')[category]">
+                                                                                *ngFor="let sortedDoc of (getGroupedAndSortedDocs('endResult') | filterDocsPipe: searchQuery_1)[category]">
                                                                                 <li (click)="toggleSelection('endResult', sortedDoc)"
                                                                                     [class.selected]="isSelected('endResult', sortedDoc)">
                                                                                     {{ sortedDoc.typE_DESC }} 
@@ -508,6 +512,8 @@
                                                                             <td>{{i + 1}}</td>
                                                                             <td>{{city.attributE2}}</td>
                                                                             <td>{{city.typE_DESC}}</td>
+                                                                            <td>{{city.attributE2}}</td>
+                                                                            <td>{{city.typE_DESC}}</td>
                                                                         </tbody>
                                                                     </table>
                                                                 </div>
@@ -519,14 +525,14 @@
 
                                                 <div class="col-xs-12 col-xl-6 col-md-12">
                                                     <div class="form-group sample-wrapper">
-                                                        <label for="category">Document</label>
+                                                        <label for="category" class="doc_label">Document</label>
                                                         <div class="sample-wrapper">
                                                             <div class="pl-4 combo-section">
-                                                                <input type="text" (input)="filterCities()"
+                                                                <input type="text" [(ngModel)]="searchQuery" [ngModelOptions]="{standalone: true}" 
                                                                     placeholder="Select Documents"
                                                                     class="search-input" />
-                                                                <div *ngIf="filteredDocs.length > 0" class="dropdown"
-                                                                    style="height: 510px;">
+                                                                <div *ngIf="filteredDocs.length > 0" class=""
+                                                                    style="height: 40rem;">
                                                                     <ul class="dropdown-list">
                                                                         <ng-container
                                                                             *ngFor="let country of getUniqueDocs('checklist')">
@@ -535,7 +541,7 @@
                                                                                 <b>{{ country }}</b>
                                                                             </div>
                                                                             <ng-container
-                                                                                *ngFor="let sortedDoc of getGroupedAndSortedDocs('checklist')[country]">
+                                                                                *ngFor="let sortedDoc of (getGroupedAndSortedDocs('checklist') | filterDocsPipe: searchQuery)[country]">
                                                                                 <li (click)="toggleSelection('checklist', sortedDoc)"
                                                                                     [class.selected]="isSelected('checklist', sortedDoc)">
                                                                                     {{ sortedDoc.typE_DESC }} 
@@ -569,7 +575,6 @@
                                                                 <th>Authority Department</th>
                                                                 <th>End Result</th>
                                                                 <th>
-                                                                    <!-- Button for adding a new row -->
                                                                     <i class="fa-solid fa-plus btn" type="button"
                                                                         (click)="addRow()"></i>
                                                                 </th>
@@ -637,7 +642,6 @@
                                 </div>
                             </div>
                         </form>
-
                     </div>
                 </div>
             </div>

@@ -323,8 +323,6 @@
               
                         <div class="mb-3" *ngIf="i === 0">
 
-
-
                           <!-- For accordion 2 -->
                           <div *ngIf="!loading" class="progress-details">
                             <div class="table-scroll-container mx-2">
@@ -470,7 +468,7 @@
                                                       <input type="text" class="abbr-input form-control"
                                                        
                                                         [ngStyle]="isFieldDisabled ? { 'background-color': 'rgb(238 236 195)', 'color': '#11111', 'cursor': 'allowed' } : {}"
-                                                        maxlength="150" [(ngModel)]="selectedAssignTo" [ngModelOptions]="{standalone: true}"  (input)="SubfilterEmployeesInitiator($event)" />
+                                                        maxlength="150" [(ngModel)]="selectedAssignTo" [ngModelOptions]="{standalone: true}"  (input)="SubfilterEmployeesInitiator($event, task.TASK_NO?.TASK_NO)" />
                                                         <div style="width: 100%;" class="pr-10 mt-1">
                                                           <ul>
                                                             <li *ngFor="let event of subListFilteredEmp; let i = index;" class="active" type="button"
@@ -478,9 +476,9 @@
                                                               {{ event.Assign_to }}
                                                             </li>
                                                           </ul>
-                                                        </div>
-                                                    </div>
-                                                  </div>
+                                                       </div>
+                                                     </div>
+                                                   </div>
   
   
                                                   <div class="col-xs-12 col-xl-3 col-md-12">
@@ -682,7 +680,6 @@
                                               </div>
 
                                               <div class="row pl-3">
-
                                                 <div class="col-xs-12 col-xl-3 col-md-12">
                                                   <div class="form-group d-flex justify-content-between">
                                                     <label class="abbr-label" for="abbreviation">Responsible
@@ -690,7 +687,7 @@
                                                     <input type="text" class="abbr-input form-control"
                                                      
                                                       [ngStyle]="isFieldDisabled ? { 'background-color': 'rgb(238 236 195)', 'color': '#11111', 'cursor': 'allowed' } : {}"
-                                                      maxlength="150" [(ngModel)]="selectedAssignTo" [ngModelOptions]="{standalone: true}"  (input)="SubfilterEmployeesInitiator($event)" />
+                                                      maxlength="150" [(ngModel)]="selectedAssignTo" [ngModelOptions]="{standalone: true}"  (input)="SubfilterEmployeesInitiator($event, task.TASK_NO?.TASK_NO)" />
                                                       <div style="width: 100%;" class="pr-10 mt-1">
                                                         <ul>
                                                           <li *ngFor="let event of subListFilteredEmp; let i = index;" class="active" type="button"

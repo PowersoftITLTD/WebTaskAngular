@@ -167,7 +167,6 @@ export class AddRecursiveTaskNewComponent implements OnInit, OnDestroy {
       if (RecursiveTaskData) {
         try {
           this.taskData = JSON.parse(RecursiveTaskData);
-          console.log('Check task data',this.taskData)
           if (!isNewTask) {
             this.updatedDetails = this.taskData.mkey ? true : false;
           }
@@ -234,23 +233,17 @@ export class AddRecursiveTaskNewComponent implements OnInit, OnDestroy {
       const tagsArray = this.taskData.tags.split(',');
 
       this.selectedTags = tagsArray
-      console.log('tagsArray', tagsArray  )
     }   
   }
 
   _getSelectedTaskDetails() {
     const token = this.apiService.getRecursiveUser();
     // console.log('token', token)
-
-    console.log('this.taskData.projecT_ID', this.taskData.projecT_ID)
     
     this.apiService.getSubProjectDetailsNew(this.taskData.projecT_ID.toString(), token).subscribe(
       (response: any) => {
         this.sub_proj = response[0].data;
         this.setSubProjName();
-
-
-        console.log('this.sub_proj',this.sub_proj)                                  
       },
       (error: ErrorHandler) => {
         console.log(error, 'Error Occurred while fetching sub-projects');
@@ -261,7 +254,6 @@ export class AddRecursiveTaskNewComponent implements OnInit, OnDestroy {
       const tagsArray = this.taskData.tags.split(',');
       this.selectedTags = tagsArray;
 
-      console.log('tagsArray', tagsArray)
     } else {
       this.selectedTags = [];
     }
@@ -303,9 +295,6 @@ export class AddRecursiveTaskNewComponent implements OnInit, OnDestroy {
     }
 
     this.selectedMonth_day = month_day;
-
-
-    console.log('this.selectedMonth_day', this.selectedMonth_day)
 
 
     this.recursiveTaskForm = this.formBuilder.group({
@@ -527,15 +516,10 @@ export class AddRecursiveTaskNewComponent implements OnInit, OnDestroy {
 
 setSubProjName(): void {
   if (this.taskData && this.taskData.mkey) {
-
-    console.log('this.taskData.suB_PROJECT_ID', this.taskData.suB_PROJECT_ID);
     
     const matchedSubProj = this.sub_proj.find((sub_proj: any) => {
-      console.log(sub_proj.MASTER_MKEY);
       return sub_proj.MASTER_MKEY == this.taskData.suB_PROJECT_ID;
     });
-
-    console.log('matchedSubProj', matchedSubProj);
 
     if (matchedSubProj) {
       this.taskData.sub_project_Name = matchedSubProj.TYPE_DESC;

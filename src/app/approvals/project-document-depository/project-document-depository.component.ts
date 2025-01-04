@@ -121,8 +121,6 @@ export class ProjectDocumentDepositoryComponent implements OnInit {
           console.error('Unable to fetch Document Type List', error);
       }});
       this.getSubProj();
-
-
     }
   }
 
@@ -174,14 +172,17 @@ export class ProjectDocumentDepositoryComponent implements OnInit {
     }
 
     console.log('addDocDepository', addDocDepository)
-          this.tostar.success('Success', 'Template added successfuly')
+          // this.tostar.success('Success', 'Template added successfuly')
 
 
     this.apiService.postProjectDocument(this.recursiveLogginUser, addDocDepository).subscribe(
       (response) => {
         console.log('API response:', response);
         this.tostar.success('success', `Your request added successfully`);
-        this.uploadFile(response.mkey)
+        if(response){
+          this.uploadFile(response.mkey)
+        }
+        this.router.navigate(['task/approval-screen'], {queryParams:{ source: 'project-document-depository' }});
 
       },
       (error) => {
@@ -198,8 +199,6 @@ export class ProjectDocumentDepositoryComponent implements OnInit {
     console.log('from update',this.sub_proj)
     console.log('from update',this.project)
 
-  
-   
 
     const PROJECT = this.docDepositoryForm.get('propertyType')?.value;
     console.log('PROJECT.MASTER_MKEY', PROJECT)
@@ -262,6 +261,8 @@ export class ProjectDocumentDepositoryComponent implements OnInit {
     //     console.log('API response:', response);
     //     this.tostar.success('success', `Your request added successfully`);
     //     this.uploadFile(response.mkey)
+    //     this.router.navigate(['task/approval-screen'], {queryParams:{ source: 'project-document-depository' }});
+
 
     //   },
     //   (error) => {
@@ -354,8 +355,6 @@ export class ProjectDocumentDepositoryComponent implements OnInit {
         console.error('Login failed:', error);
       }
     });
-
-
   }
 
 
@@ -634,12 +633,11 @@ export class ProjectDocumentDepositoryComponent implements OnInit {
   }
 
   filterDocs() {
-    const query = this.searchQuery.trim().toUpperCase(); // Ensure the query is trimmed and case-insensitive
-    console.log('Searching for:', query);  // This should show the query in the console
+    const query = this.searchQuery.trim().toUpperCase(); // Normalize search query
+    console.log('query', query)
   
-    // Only proceed with filtering if there's a search query
+    // If no query, reset to show all docs
     if (!query) {
-      // If there's no query, reset the filteredDocs to show all documents
       this.filteredDocs = this.getGroupedAndSortedDocs('checklist');
       return;
     }
@@ -647,22 +645,22 @@ export class ProjectDocumentDepositoryComponent implements OnInit {
     const groupedDocs = this.getGroupedAndSortedDocs('checklist');
     const filteredGroupedDocs: any = {};
   
-    // Loop through each category and apply the filter
+    // Loop through each category and filter documents by matching query
     for (const category in groupedDocs) {
       const filteredCategoryDocs = groupedDocs[category].filter((doc: any) =>
-        doc.typE_DESC.toUpperCase().includes(query) || // Match document name
-        category.toUpperCase().includes(query) // Match category name
+        doc.typE_DESC.toUpperCase().includes(query) || category.toUpperCase().includes(query)
       );
   
-      // Only add categories with matching documents
+      // Add category to filtered docs if there are matching documents
       if (filteredCategoryDocs.length > 0) {
         filteredGroupedDocs[category] = filteredCategoryDocs;
       }
     }
   
-    // Update filteredDocs to trigger the view update
+    // Update filteredDocs to show only matched documents
     this.filteredDocs = filteredGroupedDocs;
   }
+  
   
   
 

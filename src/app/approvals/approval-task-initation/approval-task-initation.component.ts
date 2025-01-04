@@ -133,13 +133,7 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
     this.activeIndices = this.accordionItems.map((_, index) => index); // Set all indices to open
     this.initilizeApprInitiationForm();
     this.subListForm();
-
-
-
     this.fetchProjectData();
-
-
-
   }
 
 
@@ -182,7 +176,7 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
       building: [''],
       initiator: ['', Validators.required],
       abbrivation: ['', ],
-      sanctioningAuth: [this.taskData.SANCTION_AUTHORITY_NAME, ],
+      sanctioningAuth: [this.taskData.SANCTION_AUTHORITY_NAME ],
       shortDescription: ['', Validators.required],
       longDescriotion: ['', Validators.required],
       sanctioningDepartment: ['', ],
@@ -315,6 +309,13 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
     this.apiService.postApprovalInitiation(addApprovalInitiation, this.recursiveLogginUser ).subscribe({
       next:(response)=>{
         console.log(response.message)
+        // if(response.status === 'Error'){
+        //   this.tostar.error(response.message)
+        //   return
+        // }
+
+        this.tostar.success('Success', 'Template added successfuly');
+
         console.log('Project task initiation',response)
       },error:(error)=>{
         console.error('Login failed:', error);
@@ -684,8 +685,11 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
 
   }
 
-  SubfilterEmployeesInitiator(event: Event): void {
+  SubfilterEmployeesInitiator(event: Event, task_no:any): void {
+    console.log('task_no', task_no)
+    console.log('event',event)
     const value = (event.target as HTMLInputElement).value.trim();
+    console.log('value', value)
 
     if (!value) {
       this.subListFilteredEmp = [];
@@ -1146,7 +1150,6 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
 
     if(isValid){
       this.addApprovalInitiation();
-      this.tostar.success('Success', 'Template added successfuly');
     }else {
       console.log('Form is invalid, cannot add template');
     }
