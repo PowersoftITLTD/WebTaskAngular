@@ -1,0 +1,42 @@
+<body class="layout layout-left-navigation layout-below-toolbar layout-below-footer">
+    <main>
+        <div id="wrapper">
+            <div class="content-wrapper card">
+                <div class="">
+                    <div id="e-commerce-product" class="simple tabbed">
+                        <app-header-bar (loggedInUserEmitter)="receiveLoggedInUser($event)"></app-header-bar>
+
+
+                        <form> 
+                            <div class="tab-content">
+                                <div class="card p-3 ">
+                                    <div class="d-flex justify-content-center ">
+                                        <div class="row mx-2 ">
+                                            <div class="col-xs-12 col-xl-12 col-md-12">
+                                                <label for="taskName">Note:-</label>&nbsp;<span>Add category for sorting document</span> 
+                                            </div>
+                                            <div class="col-xs-12 col-xl-10 col-md-12">
+                                                <div class="form-group">
+                                                    <label for="taskName">Category</label>
+                                                    <input type="text" placeholder="Please add new category" class="form-control" maxlength="150">
+                                                </div>
+                                            </div>
+    
+                                            <div class="col-xs-12 col-xl-2 col-md-12">
+                                                <div class="form-group">
+                                                    <button class="btn btn-info mt-2">
+                                                        Add 
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>                                  
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>

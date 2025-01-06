@@ -15,6 +15,7 @@ import { AddApprovalTempelateComponent } from './add-approval-tempelate/add-appr
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TagInputModule } from 'ngx-chips';
 import { PipeContentModule } from '../pipes/pipe-content.module';
+import { CategoryMasterComponent } from './category-master/category-master.component';
 
 
 @NgModule({
@@ -25,7 +26,8 @@ import { PipeContentModule } from '../pipes/pipe-content.module';
     ProjectDocumentSearchComponent,
     ApprovalTaskInitationComponent,
     AddApprovalTempelateComponent,
-    ApprovedTempelateComponent
+    ApprovedTempelateComponent,
+    CategoryMasterComponent
   ],
   imports: [
     CommonModule,

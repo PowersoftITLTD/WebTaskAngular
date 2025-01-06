@@ -38,6 +38,7 @@ export class AddApprovalTempelateComponent implements OnInit {
   subTask:any[]=[];
 
   private isCheckValueCalled: boolean = false;
+  private isCheckValueCalled_1: boolean = false;
 
 
   selectedDocsMap: { [key: string]: any[] } = { endResult: [], checklist: [] };
@@ -315,6 +316,7 @@ export class AddApprovalTempelateComponent implements OnInit {
 
   if(this.taskData && this.taskData.mkey){
     this.addRow()
+    this.checkValueForNewRow_1();
 
     // this.check
     this.end_list = this.taskData.enD_RESULT_DOC_LST;
@@ -359,7 +361,7 @@ export class AddApprovalTempelateComponent implements OnInit {
   const formArrayVal: FormArray = (this.approvalTempForm.get('rows') as FormArray);
   const val_of_formArr = formArrayVal.value;
   
-  console.log('val_of_formArr', val_of_formArr);
+  // console.log('val_of_formArr', val_of_formArr);
   
   const subTasks = val_of_formArr
     .filter((row: any) => {
@@ -374,10 +376,29 @@ export class AddApprovalTempelateComponent implements OnInit {
         // SUBTASK_TAGS: sub_tags || null
       };
     });
-  
+
+
+  const formArrayVal_new: FormArray = (this.approvalTempForm.get('rows_new') as FormArray);
+
+
+  const val_of_formArr_new = formArrayVal_new.value;
+
+  console.log('val_of_formArr_new', val_of_formArr_new)
+
+  const subAuth = val_of_formArr_new
+  .map((row: any)=>{
+    return{
+      LEVEL:row.level.toString(),
+      SANCTIONING_DEPARTMENT:row.sanctioningDept,
+      SANCTIONING_AUTHORITY:row.sanctioningAuth,
+      START_DATE:row.startDate_newRow,
+      END_DATE:row.endDate_newRow
+    }
+  })
   
 
     console.log('subTasks', subTasks);
+    console.log('subAuth', subAuth)
 
     const tagsValue = this.approvalTempForm.get('tags')?.value;
 
@@ -399,17 +420,17 @@ export class AddApprovalTempelateComponent implements OnInit {
     console.log('tagsString', tagsString)
 
   
-    const addApprovalTemplate = this.createApprovalTemplate(abbrivation, assignedEmployee.MKEY, USER_CRED[0].MKEY, subTasks, tagsString);
+    const addApprovalTemplate = this.createApprovalTemplate(abbrivation, assignedEmployee.MKEY, USER_CRED[0].MKEY, subTasks, subAuth, tagsString);
 
     console.log('addApprovalTemplate', addApprovalTemplate);
 
-    // try {
-    //     const addApprlTempData = await this.apiService.postApprovalTemp(addApprovalTemplate, this.recursiveLogginUser).toPromise();
-    //     console.log('Data added successfully', addApprlTempData);
-    // } catch (error) {
-    //     console.error('Error updating task', error);
-    //     addFieldError('Error updating task');
-    // }
+    try {
+        const addApprlTempData = await this.apiService.postApprovalTemp(addApprovalTemplate, this.recursiveLogginUser).toPromise();
+        console.log('Data added successfully', addApprlTempData);
+    } catch (error) {
+        console.error('Error updating task', error);
+        addFieldError('Error updating task');
+    }
 
     if (fieldErrors.length > 0) {
         this.fieldErrs = fieldErrors 
@@ -418,12 +439,6 @@ export class AddApprovalTempelateComponent implements OnInit {
 
     this.tostar.success('Success','Template added successfuly')
     this.router.navigate(['task/approval-screen'], {queryParams:{ source: 'authority-tempelate' }});
-
-
-    // window.history.back();
-    // const formArrayVal:FormArray = (this.approvalTempForm.get('rows') as FormArray).value;
-
-    // console.log('formArrayVal from Add Tempelate',formArrayVal)
 
 
 }
@@ -442,7 +457,7 @@ getTags() {
 
 
 
-private createApprovalTemplate(MAIN_ABBR: string, employeeMKey: number, userMKey: number, Subtask:[], tagsString:string) {
+private createApprovalTemplate(MAIN_ABBR: string, employeeMKey: number, userMKey: number, Subtask:[], sancAuth:[], tagsString:string) {
     return {
         abbR_SHORT_DESC:this.approvalTempForm.get('shortDescription')?.value,
         buildinG_TYPE: Number(this.approvalTempForm.get('building')?.value),        
@@ -470,7 +485,8 @@ private createApprovalTemplate(MAIN_ABBR: string, employeeMKey: number, userMKey
         enD_RESULT_DOC_LST:this.end_list,
         checklisT_DOC_LST:this.check_list,
         TAGS:tagsString,
-        subtasK_LIST:Subtask || []
+        subtasK_LIST:Subtask || [],
+        sanctioninG_DEPARTMENT_LIST:sancAuth || []
     };
 }
 
@@ -509,10 +525,28 @@ updateApprovalTemplate(){
         subtasK_MKEY: row.subtasK_MKEY,  
         seQ_NO: row.sequentialNo.toString(),  
         subtasK_ABBR: row.abbrivation,  
-        // SUBTASK_TAGS: sub_tags || null
       };
     });
+
+    const formArrayVal_new: FormArray = (this.approvalTempForm.get('rows_new') as FormArray);
+
+
+    const val_of_formArr_new = formArrayVal_new.value;
   
+  
+    const subAuth = val_of_formArr_new
+    .map((row: any)=>{
+      return{
+        LEVEL:row.level.toString(),
+        SANCTIONING_DEPARTMENT:row.sanctioningDept,
+        SANCTIONING_AUTHORITY:row.sanctioningAuth,
+        START_DATE:row.startDate_newRow,
+        END_DATE:row.endDate_newRow
+      }
+    })
+    
+    console.log('subAuth', subAuth)
+
 
     const tagsValue = this.approvalTempForm.get('tags')?.value;
 
@@ -566,7 +600,8 @@ updateApprovalTemplate(){
     enD_RESULT_DOC_LST:this.end_list,
     checklisT_DOC_LST:this.check_list,
     tags:tagsString,
-    subtasK_LIST:subTasks || []
+    subtasK_LIST:subTasks || [],
+    sanctioninG_DEPARTMENT_LIST:subAuth || []
   }
 
   console.log('updateApprlTemp', updateApprlTemp)
@@ -989,7 +1024,6 @@ checkValueForNewRow(newRow: AbstractControl) {
             subtasK_MKEY: [subtask.subtasK_MKEY],
             subTaskTags: [''],
           });
-
           formArray.push(rowForm);
         }
       });
@@ -998,13 +1032,12 @@ checkValueForNewRow(newRow: AbstractControl) {
 }
 
 get rows_new() {
-  return (this.approvalTempForm.get('rows_new') as FormArray);
-
-  
+  return (this.approvalTempForm.get('rows_new') as FormArray);  
 }
 
 addRowNew() {
   const rows = this.rows_new.controls; 
+  
 
   if (rows.length === 0) {
 
@@ -1020,6 +1053,8 @@ addRowNew() {
     return;
   }
 
+  console.log('check group', this.approvalTempForm.get('rows_new').controls)
+
   const lastRow = rows[rows.length - 1]; 
   const prevRow = rows[rows.length - 2];
 
@@ -1029,7 +1064,7 @@ addRowNew() {
   for (let i = 0; i < rows.length; i++) {
   const row = rows[i];
 
-    if(rows[0].value.level !== 1){
+    if(rows[0].value.level !== 1 && !this.taskData && !this.taskData?.mkey){
     this.tostar.error('Level should start from 1')
     return
   }
@@ -1085,12 +1120,39 @@ const valuesArray = rows.map(row => row.value);
     });
 
     (this.approvalTempForm.get('rows_new') as FormArray).push(rowGroup);
+    // this.checkValueForNewRow_1(rowGroup)
    
   } else {
-    this.tostar.error(`Last row level should be ${previousLevel} or ${previousLevel + 1} from its previous row`);
-    
+    this.tostar.error(`Last row level should be ${previousLevel} or ${previousLevel + 1} from its previous row`);    
   }
 }
+
+checkValueForNewRow_1() {
+  const formArray_new_1 = this.approvalTempForm.get('rows_new') as FormArray;
+  console.log('formArray_new_1', formArray_new_1);
+  console.log('this.taskData.sanctioninG_DEPARTMENT_LIST', this.taskData.sanctioninG_DEPARTMENT_LIST);
+
+  formArray_new_1.clear();
+
+  this.taskData.sanctioninG_DEPARTMENT_LIST.forEach((department:any) => {
+    console.log('department', department.START_DATE)
+    const rowGroup = this.formBuilder.group({
+      level: [Number(department.LEVEL), [Validators.required, Validators.min(1)]],
+      sanctioningDept: [department.SANCTIONING_DEPARTMENT, Validators.required],
+      sanctioningAuth: [department.SANCTIONING_AUTHORITY, Validators.required],
+      startDate_newRow: [this.formatDate(department.START_DATE), Validators.required],
+      endDate_newRow: [department.END_DATE ? this.formatDate(department.END_DATE) : '', '']
+    });
+
+
+    formArray_new_1.push(rowGroup);
+  });
+
+  // Optionally, you can now trigger validation or any other logic you need after populating the form array.
+  // this.approvalTempForm.updateValueAndValidity();
+}
+
+
 
 
     
@@ -1269,6 +1331,25 @@ const valuesArray = rows.map(row => row.value);
       this.tostar.error(`${m}`);
       return;
     }
+
+    const formArrayVal_new: FormArray = (this.approvalTempForm.get('rows_new') as FormArray);
+
+
+    const val_of_formArr_new = formArrayVal_new.value;
+  
+  
+    const subAuth = val_of_formArr_new
+    .map((row: any)=>{
+      return{
+        LEVEL:row.level.toString(),
+        SANCTIONING_DEPARTMENT:row.sanctioningDept,
+        SANCTIONING_AUTHORITY:row.sanctioningAuth,
+        START_DATE:row.startDate_newRow,
+        END_DATE:row.endDate_newRow
+      }
+    })
+    
+    console.log('subAuth from on submit', subAuth)
     // const formArrayVal:any = (this.approvalTempForm.get('rows') as FormArray);
     // console.log('formArrayVal', formArrayVal.value)
 
@@ -1327,9 +1408,15 @@ const valuesArray = rows.map(row => row.value);
   
 
   ngOnDestroy(): void {
-    console.log('Component is being destroyed');
-
     sessionStorage.removeItem('task');
+  }
+
+  formatDate(date: string): string {
+    const formattedDate = new Date(date);
+    const year = formattedDate.getFullYear();
+    const month = (formattedDate.getMonth() + 1).toString().padStart(2, '0');
+    const day = formattedDate.getDate().toString().padStart(2, '0');
+    return `${year}-${month}-${day}`;
   }
 
 }

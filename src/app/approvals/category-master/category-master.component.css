@@ -1,0 +1,349 @@
+/*accordation*/
+.accordion {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    overflow: hidden;
+  }
+  
+  .accordion-item {
+    border-bottom: 1px solid #ccc;
+  }
+  
+  .accordion-header {
+    background-color: #e1d9d9c9;
+  }
+  
+  .accordion-button {
+    width: 100%;
+    text-align: left;
+    padding: 15px;
+    font-size: 16px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    background-color: #e1d9d9c9;
+  
+  }
+  
+
+  /* .accordion-button:hover {
+    background-color: #f1f1f1;
+  } */
+  
+  .form-group {
+    margin-bottom: 5px; 
+  }
+  
+  .form-group label {
+    font-size: 0.9em; 
+  }
+  
+  .active {
+    background-color: white;
+  }
+  
+
+  
+  .end-date-container {
+    display: flex;
+    align-items: center; /* Vertically align the text and the button */
+  }
+  
+  .end-date-text {
+    margin-right: 10px; /* Space between the text and the button */
+  }
+  
+  .btn {
+    cursor: pointer; /* Makes the button clickable */
+  }
+  
+  
+
+  
+  
+
+  
+  /* Make the .fa-solid icon circular and small */
+  .fa-solid {
+    display: inline-flex;        
+    justify-content: center;     
+    align-items: center;        
+    width: 2px;                
+    height: 24px;               
+    color: white;                
+    font-size: 14px;             
+    text-align: center;         
+    cursor: pointer;           
+    transition: background-color 0.3s; 
+  }
+  
+  .fa-plus{
+    background-color: #333;
+  }
+  
+  .fa-plus{
+    background-color: #999;
+  }
+  
+  .fa-solid:hover {
+    background-color: #0056b3; /* Change background color on hover */
+  }
+  
+
+  .country-header {
+    font-size: 1.2em;
+    margin: 10px 0; 
+    padding: 5px; 
+  }
+  
+
+  
+  
+  .doc_label{
+    margin-left: 17rem;
+  }
+  
+  .sample-wrapper {
+    width: 100%; /* Ensure the wrapper uses full width */
+  }
+  
+  
+  /*progress*/
+  .progress {
+    background: #bebfbf;
+    border-radius: 20px;
+    margin: 0;
+  }
+  
+  .progress .progress-bar {
+    border-radius: 20px;
+    box-shadow: none;
+    animation: animate-positive 2s;
+  }
+  
+  
+  .app-side-panel-wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0rem;
+    height: 100%;
+    background-color: #f1f1f1;
+  }
+  
+  body {
+    padding-left: 250px;
+  }
+  
+  .card{
+    min-height: 200rem;
+  }
+
+  .classification-border{
+    border-style: solid;
+    border-width: thin;
+    border-color: #bebfbf;
+  }
+  
+  .scrollable-container {
+    max-height: 400px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 15px;
+    border: 1px solid #ddd;
+    margin-bottom: 15px;
+  }
+  
+  .scrollable-container::-webkit-scrollbar {
+    width: 1px;
+  }
+  
+  .scrollable-container::-webkit-scrollbar-thumb {
+    background-color: #888;
+    border-radius: 10px;
+  }
+  
+  .scrollable-container::-webkit-scrollbar-track {
+    background-color: #f1f1f1;
+  }
+  
+  #select-week {
+    display: inline-block;
+    margin-right: 5px;
+  }
+  
+  
+  .select-term {
+    width: 100%;
+    text-align: center;
+  }
+  
+  
+  .input-container {
+    position: relative;
+  }
+  
+  .input-container select {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    display: none; 
+  }
+  
+  .input-container input {
+    width: 100%;
+    display: block; 
+  }
+  
+  .input-container:hover select {
+    display: block; 
+  }
+  
+  .input-container:hover input {
+    display: none; 
+  }
+  
+  
+  @media only screen and (max-width: 992px) {
+    body {
+      padding-left: 0;
+    }
+  
+    .cate {
+      width: 100%;
+    }
+  
+    .description {
+      margin-top: 10rem;
+    }
+  
+    .custom-select {
+      width: 100%;
+    }
+  
+    
+    .display-start-end_1{
+      display: none;
+    }
+  
+    .display-start-end_2{
+      display: block;
+    }
+  
+    .month_class{
+      width: 32.5rem;
+    }
+  }
+  
+  
+  @media only screen and (max-width:380px){
+    .truncate-date {
+      min-width: 50px;
+      max-width: 75px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  
+    .month_class{
+      width: 0rem;
+    }
+  }
+  
+  @media only screen and (max-width: 992px) and (min-width:767px) {
+    .description {
+      margin-top: 1rem;
+    }
+  
+    .month_class{
+      width: 0rem;
+    }
+  }
+  
+  
+  .combo-section {
+    position: relative;
+  }
+  
+  .search-input {
+    width: 40rem;
+    margin-left:15rem;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-bottom: 5px;
+  }
+  
+  .dropdown {
+    position: relative;
+    
+  }
+  
+  .dropdown-list {
+    border: 1px solid #ccc;
+    max-height: 500px;
+    overflow-y: auto;
+    position: absolute;
+    width: 100%;
+    background: white;
+    border-radius: 4px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    z-index: 10;
+    margin-top: 5px;
+    width: 40rem;
+    height: 40rem;
+    margin-left:15rem
+  }
+  
+  .dropdown-list li {
+    list-style: none;
+    padding: 10px;
+  }
+  
+  .dropdown-list label {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+  }
+  
+  .dropdown-list input[type="checkbox"] {
+    margin-right: 10px;
+  }
+  
+  .select-button {
+    margin-top: 10px;
+    padding: 10px 15px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .select-button:hover {
+    background-color: #0056b3;
+  }
+  
+  .cities-container {
+    display: flex; 
+    flex-wrap: wrap; 
+    gap: 8px; 
+    max-width: 100%; 
+    padding: 10px; 
+    border: 1px solid #ccc; 
+    border-radius: 5px; 
+    background-color: #f9f9f9; 
+  }
+  
+  .city-tag {
+    background-color: #d8e8ff; 
+    border-radius: 12px;  
+    padding: 5px 10px; 
+    font-size: 14px;  
+    color: #333; 
+    min-width: 60rem;
+  }
+  
+  
+  

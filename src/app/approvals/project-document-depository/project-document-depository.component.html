@@ -210,7 +210,7 @@
                                                         <div class="pl-4 combo-section">
                                                             <input type="text" placeholder="Search Documents" [(ngModel)]="searchQuery" [ngModelOptions]="{standalone: true}" class="search-input"  />
                                                             <div *ngIf="filteredDocs.length > 0" class="">
-                                                                <ul class="dropdown-list" style="width: 50rem;">
+                                                                <ul class="dropdown-list" >
                                                                     <ng-container
                                                                         *ngFor="let country of getUniqueDocs('checklist')">
                                                                         <div class="country-header justify-content-center"

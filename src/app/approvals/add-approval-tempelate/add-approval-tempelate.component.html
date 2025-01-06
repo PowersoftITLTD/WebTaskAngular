@@ -393,7 +393,7 @@
                                                                         </select>                                                                                                                               
                                                                     </td>                                                                                                                              
                                                                     <td style="width:20rem">
-                                                                        <input class="form-control" formControlName="startDate_newRow" [min]="currentDate"  type="date"  />
+                                                                        <input class="form-control" formControlName="startDate_newRow" [min]="currentDate"  type="date" />  
                                                                     </td>
                                                                     <td style="width:20rem">
                                                                         <input class="form-control" formControlName="endDate_newRow" [min]="currentDate"  type="date"  />
@@ -511,9 +511,7 @@
                                                                             *ngFor="let city of selectedDocsMap['checklist']; let i = index">
                                                                             <td>{{i + 1}}</td>
                                                                             <td>{{city.attributE2}}</td>
-                                                                            <td>{{city.typE_DESC}}</td>
-                                                                            <td>{{city.attributE2}}</td>
-                                                                            <td>{{city.typE_DESC}}</td>
+                                                                            <td>{{city.typE_DESC}}</td>                                                                       
                                                                         </tbody>
                                                                     </table>
                                                                 </div>

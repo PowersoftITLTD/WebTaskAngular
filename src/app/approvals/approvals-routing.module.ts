@@ -6,6 +6,7 @@ import { ProjectDocumentDepositoryComponent } from './project-document-depositor
 import { ProjectDocumentSearchComponent } from './project-document-search/project-document-search.component';
 import { ApprovalTaskInitationComponent } from './approval-task-initation/approval-task-initation.component';
 import { AddApprovalTempelateComponent } from './add-approval-tempelate/add-approval-tempelate.component';
+import { CategoryMasterComponent } from './category-master/category-master.component';
 // import { ApprovedTempelateComponent } from './approved-tempelate/approved-tempelate.component';
 
 const routes: Routes = [
@@ -14,7 +15,8 @@ const routes: Routes = [
   {path:'project-defination', component:ProjectDefinationComponent},
   {path:'project-document-depository', component:ProjectDocumentDepositoryComponent},
   {path:'project-document-search', component:ProjectDocumentSearchComponent},
-  {path:'approval-task-initiation', component:ApprovalTaskInitationComponent}
+  {path:'approval-task-initiation', component:ApprovalTaskInitationComponent},
+  {path:'category-master', component:CategoryMasterComponent}
 ];
 
 @NgModule({
