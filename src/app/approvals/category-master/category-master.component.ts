@@ -1,4 +1,5 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { ApiService } from 'src/app/services/api/api.service';
@@ -9,37 +10,33 @@ import { CredentialService } from 'src/app/services/credential/credential.servic
   templateUrl: './category-master.component.html',
   styleUrls: ['./category-master.component.css']
 })
-export class CategoryMasterComponent implements OnInit {
-  
+export class CategoryMasterComponent implements OnInit, OnDestroy {
+
   docTypeList: any[] = [];
-
   taskData: any;
-
   receivedUser: string | any;
-  createdOrUpdatedUserName: any
-
+  createdOrUpdatedUserName: any;
   updatedDetails: boolean = false;
 
   @Input() recursiveLogginUser: any = {};
-  
 
   loginName: string = '';
-  loginPassword: string = ''
+  loginPassword: string = '';
+  categoryForm: FormGroup | any; 
 
-
-  constructor(private credentialService: CredentialService,
+  constructor(
+    private credentialService: CredentialService,
     private apiService: ApiService,
     private router: Router,
     private tostar: ToastrService
   ) {
-
     const navigation: any = this.router.getCurrentNavigation();
     const isNewTemp = sessionStorage.getItem('isNewTemp') === 'true';
 
     if (navigation?.extras.state) {
       const RecursiveTaskData: any = navigation.extras.state.taskData;
       this.taskData = RecursiveTaskData;
-      console.log('RecursiveTaskData', RecursiveTaskData)
+      console.log('RecursiveTaskData', RecursiveTaskData);
 
       if (RecursiveTaskData.mkey) {
         this.updatedDetails = !isNewTemp; // Don't update if adding a new task
@@ -54,7 +51,7 @@ export class CategoryMasterComponent implements OnInit {
       if (RecursiveTaskData) {
         try {
           this.taskData = JSON.parse(RecursiveTaskData);
-          console.log('Check task data', this.taskData)
+          console.log('Check task data', this.taskData);
           if (!isNewTemp) {
             this.updatedDetails = this.taskData.mkey ? true : false;
           }
@@ -67,6 +64,9 @@ export class CategoryMasterComponent implements OnInit {
 
   ngOnInit(): void {
     this.onLogin();
+    this.categoryForm = new FormGroup({
+      category: new FormControl('')  // Set an initial value (empty string)
+    });
   }
 
   receiveLoggedInUser(user: any): void {
@@ -74,14 +74,10 @@ export class CategoryMasterComponent implements OnInit {
   }
 
   onLogin() {
-
     this.credentialService.validateUser(this.loginName, this.loginPassword);
-
     const data = this.credentialService.getUser();
 
-    this.createdOrUpdatedUserName = data[0]?.FIRST_NAME,
-
-      console.log('onLogin data')
+    this.createdOrUpdatedUserName = data[0]?.FIRST_NAME;
 
     const USER_CRED = {
       EMAIL_ID_OFFICIAL: data[0]?.EMAIL_ID_OFFICIAL,
@@ -101,30 +97,108 @@ export class CategoryMasterComponent implements OnInit {
     });
   }
 
+  // Add a new category
+  addCategoryForDocSort() {
+    const categoryName = this.categoryForm.value.category;  
+    const data = this.credentialService.getUser();
+    const token = this.apiService.getRecursiveUser();
 
+    const USER_CRED = {
+      USER_MKEY: data[0]?.MKEY,
+      COMPANY_ID: data[0]?.COMPANY_ID
+    };
 
-  
-  // addCategoryForDocSort(){
-  //   const data = this.credentialService.getUser();
-  //   const token = this.apiService.getRecursiveUser();
+    const addCategory = {
+      DOC_CATEGORY: categoryName,
+      CREATED_BY: USER_CRED.USER_MKEY,
+      COMPANY_ID: USER_CRED.COMPANY_ID
+    };
+        
+    this.apiService.postDocumentTempCategory(JSON.stringify(addCategory), token).subscribe({
+      next: (response) => {
 
+        console.log('Category added successfully', response);
+        if(response.Status === 'Ok' && response.Message === 'Inserted Successfully'){
+          this.tostar.success('Category added successfully');
+          this.router.navigate(['task/approval-screen'], { queryParams: { source: 'category-master' } });
+        }else if(response.Status === 'Error' && response.Message === 'Category already exists!!!'){
+          this.tostar.warning('This category is already exist');
 
-  //   console.log('data',data);
+        }
+       
+      },
+      error: (err) => {
+        console.error(err);
+      }
+    });
+  }
 
+  // Update or delete category based on flag
+  updateCategoryForDocSort(deleteFlag: string) {
+    const categoryName = this.categoryForm.value.category;  
+    const data = this.credentialService.getUser();
+    const token = this.apiService.getRecursiveUser();
 
-  //   this.apiService.postDocumentTempCategory(token, ).subscribe({
-  //     next:()=>{
+    const USER_CRED = {
+      USER_MKEY: data[0]?.MKEY,
+      COMPANY_ID: data[0]?.COMPANY_ID
+    };
 
-  //     }
-  //   })
+    console.log('Check flag', deleteFlag);
 
+    const updateCategory = {
+      MKEY: this.taskData?.mkey,
+      DOC_CATEGORY: categoryName,
+      CREATED_BY: USER_CRED.USER_MKEY,
+      DELETE_FLAG: deleteFlag  // Pass 'Y' for delete or 'N' for save
+    };
 
-  // }
-    
-  
-  
-   
-  
-    
+    console.log('updateCategory',updateCategory)
+
+    this.apiService.updateDocumentTempCategory(updateCategory, token).subscribe({
+      next: (data) => {
+        console.log('Category updated successfully', data);
+        if (deleteFlag === 'Y') {
+          this.tostar.warning('Category deleted successfully');
+        } else {
+          this.tostar.success('Category updated successfully');
+        }
+        this.router.navigate(['task/approval-screen'], { queryParams: { source: 'category-master' } });
+      },
+      error: (err) => {
+        console.error(err);
+      }
+    });
+
+  }
+
+  onDeleteClick() {
+    const confirmDelete = confirm("Are you sure you want to delete?");
+    if (confirmDelete) {
+        console.log('Delete click');
+        this.onsubmit('Y');
+    } else {
+        console.log('Delete cancelled');
+    }
+}
+
+  onsubmit(flag?: string) {
+    if (this.categoryForm.value.category === '' || this.categoryForm.value.category === null || this.categoryForm.value.category === undefined) {
+      this.tostar.error('Please update the category');
+    } else if (!this.taskData || !this.taskData?.mkey) {
+      this.addCategoryForDocSort();
+    } else {
+      if (flag === 'Y') {
+        this.updateCategoryForDocSort('Y'); 
+      } else {
+        this.updateCategoryForDocSort('N');  
+      }
+    }
+  }
+
+  ngOnDestroy(): void {
+    console.log('Component is being destroyed');
+    sessionStorage.removeItem('task');
+  }
 
 }
