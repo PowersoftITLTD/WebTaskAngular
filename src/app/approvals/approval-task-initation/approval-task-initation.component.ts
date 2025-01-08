@@ -1,7 +1,7 @@
 import { Component, ErrorHandler, Input, OnDestroy, OnInit } from '@angular/core';
 import { CITIES, ICity } from './../add-approval-tempelate/cities';
 import { ApiService } from 'src/app/services/api/api.service';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CredentialService } from 'src/app/services/credential/credential.service';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
@@ -176,10 +176,10 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
       building: [''],
       initiator: ['', Validators.required],
       abbrivation: ['', ],
-      sanctioningAuth: [this.taskData.SANCTION_AUTHORITY_NAME ],
+      // sanctioningAuth: [this.taskData.SANCTION_AUTHORITY_NAME ],
+      // sanctioningDepartment: ['', ],
       shortDescription: ['', Validators.required],
       longDescriotion: ['', Validators.required],
-      sanctioningDepartment: ['', ],
       responsiblePerson: ['', Validators.required],
       jobRole: ['', ],
       daysRequired: [''],
@@ -188,7 +188,8 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
       endDate: ['', Validators.required],
       complitionDate:['',Validators.required],
       ProjectApprovalSrNo: [''],
-      editRow: this.formBuilder.array([])
+      editRow: this.formBuilder.array([]),
+      rows_new: this.formBuilder.array([])
     })
   }
 
@@ -452,6 +453,7 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
 
     if (this.taskData.MKEY && this.buildingList && this.standardList) {
       this.getSubProj();
+      // this.checkValueForNewRow_1();
     }
 
     this.getTree();
@@ -931,6 +933,122 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
 
     return result;
   }
+
+ get rows_new() {
+    return (this.appeInitForm.get('rows_new') as FormArray);
+  }
+
+   addRowNew() {
+      const rows = this.rows_new.controls;
+  
+  
+      if (rows.length === 0) {
+  
+        this.rows_new.push(
+          this.formBuilder.group({
+            level: [1, [Validators.required, Validators.min(1)]],
+            sanctioningDept: ['', Validators.required],
+            sanctioningAuth: ['', Validators.required],
+            startDate_newRow: ['', Validators.required],
+            endDate_newRow: ['']
+          })
+        );
+        return;
+      }
+  
+      console.log('check group', this.appeInitForm.get('rows_new').controls)
+  
+      const lastRow = rows[rows.length - 1];
+      const prevRow = rows[rows.length - 2];
+  
+      const lastLevel = lastRow.value?.level;
+      const previousLevel = prevRow ? prevRow.value?.level : null;
+  
+      for (let i = 0; i < rows.length; i++) {
+        const row = rows[i];
+  
+        if (rows[0].value.level !== 1 && !this.taskData && !this.taskData?.mkey) {
+          this.tostar.error('Level should start from 1')
+          return
+        }
+  
+        const requiredFields = ['level', 'sanctioningDept', 'sanctioningAuth', 'startDate_newRow'];
+        const rowEmpty = requiredFields.some(field => !row.value[field]);
+        if (rowEmpty) {
+          this.tostar.error('Please fill in all fields in all rows before adding a new row');
+          return;
+        }
+  
+      }
+  
+      if (lastLevel === previousLevel) {
+        const startDate = new Date(lastRow.value?.startDate_newRow);
+        const endDate = new Date(prevRow.value?.endDate_newRow);
+  
+        console.log('endDate', endDate)
+  
+        if (!isNaN(endDate.getTime())) {
+          if (startDate > endDate) {
+            console.log('Start date is greater than end date');
+          } else {
+            console.log('Start date is NOT greater than end date');
+            this.tostar.error('Start date of same level should greater then end date of same level');
+            return;
+          }
+        }
+      }
+  
+      const start_date_new = new Date(lastRow.value?.startDate_newRow)
+      const end_date_new = new Date(lastRow.value?.endDate_newRow)
+  
+  
+      if (start_date_new > end_date_new) {
+        this.tostar.error('End date should be greater then start date');
+        return
+      }
+  
+  
+      const valuesArray = rows.map(row => row.value);
+  
+      // console.log('valuesArray',valuesArray)
+  
+      if (lastLevel !== null && (previousLevel === null || lastLevel == previousLevel + 1 || lastLevel == previousLevel)) {
+  
+        const rowGroup = this.formBuilder.group({
+          level: ['', Validators.required],
+          sanctioningAuth: ['', Validators.required],
+          sanctioningDept: ['', Validators.required],
+          startDate_newRow: ['', Validators.required],
+          endDate_newRow: ['']
+        });
+  
+        (this.appeInitForm.get('rows_new') as FormArray).push(rowGroup);
+        // this.checkValueForNewRow_1(rowGroup)
+  
+      } else {
+        this.tostar.error(`Last row level should be ${previousLevel} or ${previousLevel + 1} from its previous row`);
+      }
+    }
+
+
+    checkValueForNewRow_1() {
+      const formArray_new_1 = this.appeInitForm.get('rows_new') as FormArray;
+      console.log('formArray_new_1', formArray_new_1);
+      console.log('this.taskData.sanctioninG_DEPARTMENT_LIST', this.taskData.sanctioninG_DEPARTMENT_LIST);
+  
+      formArray_new_1.clear();
+  
+      this.taskData.sanctioninG_DEPARTMENT_LIST.forEach((department: any) => {
+        const rowGroup = this.formBuilder.group({
+          level: [Number(department.LEVEL), [Validators.required, Validators.min(1)]],
+          sanctioningDept: [department.SANCTIONING_DEPARTMENT, Validators.required],
+          sanctioningAuth: [department.SANCTIONING_AUTHORITY, Validators.required],
+          startDate_newRow: [this.formatDate(department.START_DATE), Validators.required],
+          endDate_newRow: [department.END_DATE ? this.formatDate(department.END_DATE) : '', '']
+        });
+        formArray_new_1.push(rowGroup);
+      });
+    }
 
   async getTree() {
 

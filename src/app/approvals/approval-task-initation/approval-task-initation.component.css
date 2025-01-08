@@ -32,6 +32,15 @@
   background-color: #f1f1f1;
 } */
 
+.end-date-container {
+  display: flex;
+  align-items: center; /* Vertically align the text and the button */
+}
+
+.end-date-text {
+  margin-right: 10px; /* Space between the text and the button */
+}
+
 
 .mat-icon.matPrefix {
   position: absolute;

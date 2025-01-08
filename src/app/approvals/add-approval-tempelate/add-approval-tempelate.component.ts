@@ -327,11 +327,12 @@ export class AddApprovalTempelateComponent implements OnInit {
     const abbrivation = this.approvalTempForm.get('abbr')?.value;
     const addFieldError = (message: string) => fieldErrors.push(message);
 
-    const assignedToValue = this.approvalTempForm.get('assignedTo')?.value.trim();
-    const assignedEmployee = this.employees.find(employee => employee.Assign_to === assignedToValue);
+    const assignedToValue = this.approvalTempForm.get('assignedTo')?.value;
+    const trimmedAssignedToValue = assignedToValue ? assignedToValue.trim() : '';    const assignedEmployee = this.employees.find(employee => employee.Assign_to === assignedToValue);
 
     if (!assignedEmployee || !assignedEmployee.MKEY) {
-      addFieldError('Please select valid Responsible Person');
+      trimmedAssignedToValue === null
+      // addFieldError('Please select valid Responsible Person');
     }
 
     if (abbrivation) {
@@ -413,8 +414,11 @@ export class AddApprovalTempelateComponent implements OnInit {
 
     console.log('tagsString', tagsString)
 
+    const assignedEmployeeMKey = assignedEmployee ? assignedEmployee.MKEY : null;
 
-    const addApprovalTemplate = this.createApprovalTemplate(abbrivation, assignedEmployee.MKEY, USER_CRED[0].MKEY, subTasks, subAuth, tagsString);
+
+
+    const addApprovalTemplate = this.createApprovalTemplate(abbrivation,assignedEmployeeMKey, USER_CRED[0].MKEY, subTasks, subAuth, tagsString);
 
     console.log('addApprovalTemplate', addApprovalTemplate);
 
@@ -497,7 +501,7 @@ export class AddApprovalTempelateComponent implements OnInit {
     const fieldErrors: string[] = [];
     const addFieldError = (message: string) => fieldErrors.push(message);
 
-    const assignedToValue = this.approvalTempForm.get('assignedTo')?.value.trim();
+    const assignedToValue = this.approvalTempForm.get('assignedTo')?.value;
     const assignedEmployee = this.employees.find(employee => employee.Assign_to === assignedToValue);
 
     if (!assignedEmployee || !assignedEmployee.MKEY) {
@@ -530,18 +534,18 @@ export class AddApprovalTempelateComponent implements OnInit {
 
     const subAuth = val_of_formArr_new
       .map((row: any) => {
+        const endDate = row.endDate_newRow ? row.endDate_newRow : null;
         return {
           LEVEL: row.level.toString(),
           SANCTIONING_DEPARTMENT: row.sanctioningDept,
           SANCTIONING_AUTHORITY: row.sanctioningAuth,
           START_DATE: row.startDate_newRow,
-          END_DATE: row.endDate_newRow,
+          END_DATE: endDate,
           MKEY: this.taskData?.mkey
         }
       })
 
     console.log('subAuth', subAuth)
-
 
     const tagsValue = this.approvalTempForm.get('tags')?.value;
 
@@ -564,6 +568,7 @@ export class AddApprovalTempelateComponent implements OnInit {
     console.log('subTasks', subTasks);
     const doc_temp_key = this.taskData.mkey
 
+    const  assignedEmployeeMKey = assignedEmployee ? assignedEmployee.MKEY : null;
     // console.log('checklisT_DOC_LST', this.taskData.checklisT_DOC_LST)
     // console.log('enD_RESULT_DOC_LST', this.taskData.enD_RESULT_DOC_LST)
 
@@ -577,7 +582,7 @@ export class AddApprovalTempelateComponent implements OnInit {
       lonG_DESCRIPTION: this.approvalTempForm.get('longDescrition')?.value,
       maiN_ABBR: this.approvalTempForm.get('abbr')?.value,
       authoritY_DEPARTMENT: this.approvalTempForm.get('department')?.value,
-      resposiblE_EMP_MKEY: assignedEmployee.MKEY,
+      resposiblE_EMP_MKEY: assignedEmployeeMKey,
       joB_ROLE: Number(this.approvalTempForm.get('jobRole')?.value),
       dayS_REQUIERD: Number(this.approvalTempForm.get('noOfDays')?.value),
       attributE1: null,

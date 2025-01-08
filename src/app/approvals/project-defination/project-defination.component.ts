@@ -499,16 +499,16 @@ toggleSelection(task: any = []): void {
     }
 
     console.log(addProjectDefination)
-    this.apiService.postProjectDefination(addProjectDefination, this.recursiveLogginUser).subscribe({
-      next: (addData: any) => {
-        console.log('Data added successfully', addData)
-        this.router.navigate(['task/approval-screen'], {queryParams:{ source: 'project-defination' }});
+    // this.apiService.postProjectDefination(addProjectDefination, this.recursiveLogginUser).subscribe({
+    //   next: (addData: any) => {
+    //     console.log('Data added successfully', addData)
+    //     this.router.navigate(['task/approval-screen'], {queryParams:{ source: 'project-defination' }});
 
-      }, error: (error: ErrorHandler) => {
+    //   }, error: (error: ErrorHandler) => {
 
-        console.log('Unable to get data', error)
-      }
-    })
+    //     console.log('Unable to get data', error)
+    //   }
+    // });
   }
 
 
@@ -550,7 +550,7 @@ toggleSelection(task: any = []): void {
     } else {
 
       subTaskList = this.flatList
-      console.log('subTaskList', subTaskList )
+      // console.log('subTaskList', subTaskList )
         // Otherwise, remove "Ready to Initiate" tasks
         // subTaskList = subTaskList.filter(task => task.status !== "Ready to Initiate");
         
@@ -837,12 +837,10 @@ toggleSelection(task: any = []): void {
         this.recursiveLogginUser = this.apiService.getRecursiveUser();
         this.apiService.projectDefinationOption(USER_CRED[0]?.MKEY, token, buildingCla, buildingStd, statutoryAuth).subscribe({
           next: (gerAbbrRelData) => {
-            console.log('Get list: ', gerAbbrRelData)
             // this.projDefinationTable = gerAbbrRelData
-            console.log('gerAbbrRelData', gerAbbrRelData)
 
             const check = gerAbbrRelDataArr.push(gerAbbrRelData)
-            console.log('check', gerAbbrRelDataArr.push(gerAbbrRelData))
+            // console.log('check', gerAbbrRelDataArr.push(gerAbbrRelData))
             this.getTree(gerAbbrRelData);
           },
           error: (error) => {
@@ -1366,45 +1364,97 @@ toggleSelection(task: any = []): void {
     return true;
   }
   
-  // New function to validate task dates and parent-child relationships
-  validateTaskDates(subTaskList: any[]): boolean {
-    // Sort tasks by task number to ensure the parent-child order
-    subTaskList.sort((a, b) => a.tasK_NO.localeCompare(b.tasK_NO));
+  // validateTaskDates(subTaskList: any[]): boolean {
+  //   console.log('subTaskList', subTaskList)
+  //   subTaskList.sort((a, b) => a.tasK_NO.localeCompare(b.tasK_NO));
   
-    // Loop through all tasks and validate parent-child relationships
-    for (let i = 0; i < subTaskList.length; i++) {
-      const task = subTaskList[i];
-      const startDate = new Date(task.tentativE_START_DATE);
-      const endDate = new Date(task.tentativE_END_DATE);
+  //   for (let i = 0; i < subTaskList.length; i++) {
+  //     const task = subTaskList[i];
+  //     const startDate = new Date(task.tentativE_START_DATE);
+  //     const endDate = new Date(task.tentativE_END_DATE);
   
-      // Validate the end date of parent tasks against child tasks
-      const isParent = !task.tasK_NO.includes('.');
-      if (isParent) {
-        // Check if this parent task's end date is greater than any child task
-        const childTask = subTaskList.find(child => child.tasK_NO.startsWith(task.tasK_NO + '.') && new Date(child.tentativE_END_DATE) > endDate);
+  //     const isParent = !task.tasK_NO.includes('.');
+  //     if (isParent) {
+  //       const childTask = subTaskList.find(child => child.tasK_NO.startsWith(task.tasK_NO + '.') && new Date(child.tentativE_END_DATE) > endDate);
   
-        if (childTask) {
-          this.tostar.error(`End date of parent task (${task.tasK_NO}) should be greater than child task (${childTask.tasK_NO})`);
-          return true;  // Exit on first error
-        }
-      }
+  //       if (childTask) {
+  //         this.tostar.error(`End date of parent task (${task.tasK_NO}) should be greater than child task (${childTask.tasK_NO})`);
+  //         return true;  // Exit on first error
+  //       }
+  //     }
       
-      if (i === 0) {
-        const position1EndDate = new Date(task.tentativE_END_DATE);
+  //     if (i === 0) {
+  //       const position1EndDate = new Date(task.tentativE_END_DATE);
   
-        for (let j = 1; j < subTaskList.length; j++) {
-          const otherTask = subTaskList[j];
-          const otherEndDate = new Date(otherTask.tentativE_END_DATE);
-          if (otherEndDate > position1EndDate) {
-            this.tostar.error(`End date of task (${task.tasK_NO}) should be greater than ${otherTask.tasK_NO}`);
-            return true; // Exit on first error
-          }
+  //       for (let j = 1; j < subTaskList.length; j++) {
+  //         const otherTask = subTaskList[j];
+  //         const otherEndDate = new Date(otherTask.tentativE_END_DATE);
+  //         if (otherEndDate > position1EndDate) {
+  //           this.tostar.error(`End date of task (${task.tasK_NO}) should be greater than ${otherTask.tasK_NO}`);
+  //           return true;
+  //         }
+  //       }
+  //     }
+  //   }
+  
+  //   return false;  // All checks passed
+  // }
+
+  validateTaskDates(subTaskList: any[]): boolean {
+    console.log('subTaskList', subTaskList);
+
+    // Sort task list by task number using a numeric comparison (split by dots).
+    subTaskList.sort((a, b) => {
+        const taskNoA = a.tasK_NO.split('.').map(Number);
+        const taskNoB = b.tasK_NO.split('.').map(Number);
+
+        for (let i = 0; i < Math.max(taskNoA.length, taskNoB.length); i++) {
+            if ((taskNoA[i] || 0) < (taskNoB[i] || 0)) return -1;
+            if ((taskNoA[i] || 0) > (taskNoB[i] || 0)) return 1;
         }
-      }
+        return 0;
+    });
+
+    // Iterate over each task
+    for (let i = 0; i < subTaskList.length; i++) {
+        const task = subTaskList[i];
+        const startDate = new Date(task.tentativE_START_DATE);
+        const endDate = new Date(task.tentativE_END_DATE);
+
+        const isParent = !task.tasK_NO.includes('.'); // Check if the task is a parent task.
+
+        if (isParent) {
+            // Check for child task with a later end date than the parent task's end date
+            const childTask = subTaskList.find(child => 
+                child.tasK_NO.startsWith(task.tasK_NO + '.') && new Date(child.tentativE_END_DATE) > endDate
+            );
+
+            if (childTask) {
+                this.tostar.error(`End date of parent task (${task.tasK_NO}) should be greater than child task (${childTask.tasK_NO})`);
+                return true;  // Exit on first error
+            }
+        }
+
+        // Additional validation for task date relationships (first task comparison)
+        if (i === 0) {
+            const position1EndDate = new Date(task.tentativE_END_DATE);
+
+            for (let j = 1; j < subTaskList.length; j++) {
+                const otherTask = subTaskList[j];
+                const otherEndDate = new Date(otherTask.tentativE_END_DATE);
+                
+                if (otherEndDate > position1EndDate) {
+                    this.tostar.error(`End date of task (${task.tasK_NO}) should be greater than ${otherTask.tasK_NO}`);
+                    return true;  // Exit on first error
+                }
+            }
+        }
     }
-  
+
     return false;  // All checks passed
-  }
+}
+
+
   
   
 

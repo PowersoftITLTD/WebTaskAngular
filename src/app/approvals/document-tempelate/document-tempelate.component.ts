@@ -238,7 +238,7 @@ export class DocumentTempelateComponent implements OnInit {
       MKEY: data[0]?.MKEY,
       EMAIL_ID_OFFICIAL: data[0]?.EMAIL_ID_OFFICIAL,
       PASSWORD: atob(data[0]?.LOGIN_PASSWORD),
-
+      COMPANY_ID: data[0]?.COMPANY_ID
     };
 
     const addTmpDoc:any = {
@@ -258,6 +258,7 @@ export class DocumentTempelateComponent implements OnInit {
       createD_BY: data[0]?.MKEY,
       // creatioN_DATE: this.formatDateForInput(today),
       lasT_UPDATED_BY: data[0]?.MKEY,
+      companY_ID:data[0]?.COMPANY_ID,
       // lasT_UPDATE_DATE: this.formatDateForInput(today),
       deletE_FLAG: "N"
     }
@@ -288,6 +289,8 @@ export class DocumentTempelateComponent implements OnInit {
     const token = this.apiService.getRecursiveUser();
     const doc_temp_key = this.taskData.mkey
 
+    
+
 
     const updateDocTemp = {
       mkey: this.taskData.mkey,
@@ -307,6 +310,7 @@ export class DocumentTempelateComponent implements OnInit {
       attributE5: "string",
       createD_BY: data[0]?.MKEY,
       lasT_UPDATED_BY: data[0]?.MKEY,
+      companY_ID:data[0]?.COMPANY_ID
       // status": "string",
       // message": "string"
     }

@@ -167,11 +167,10 @@
                   </div>
 
                   <div class="row">
-                    <div class="col-xs-12 col-xl-3 col-md-12 ">
+                    <!-- <div class="col-xs-12 col-xl-3 col-md-12 ">
                       <div class="form-group">
                         <label for="category">Sanctioning Authority</label>
 
-                        <!-- <ng-container *ngIf="taskData?.MKEY"> -->
                           <select class="form-control" [class.disabled]="true"
                           [attr.disabled]="true" [disabled]="isFieldDisabled">
                             <option value="">--SELECT--</option>
@@ -181,20 +180,10 @@
                               {{ sanctioningAuth.typE_DESC }}
                             </option>
                           </select>
-                          
-                        <!-- </ng-container> -->
-
-                        <!-- <ng-container *ngIf="!taskData?.MKEY">
-                          <select class="form-control" formControlName="sanctioningAuth">
-                            <option value=""> --SELECT--</option>
-                            <option *ngFor="let sanctioningAuth of SanctoningAuthList" [value]="sanctioningAuth.mkey"
-                              [selected]="sanctioningAuth.typE_DESC === taskData.SANCTION_AUTHORITY_NAME">
-                              {{sanctioningAuth.typE_DESC}} </option>
-                          </select>
-                        </ng-container> -->
+                                               
                       </div>
-                    </div>
-                    <div class="col-xs-12 col-xl-3 col-md-12 ">
+                    </div> -->
+                    <!-- <div class="col-xs-12 col-xl-3 col-md-12 ">
 
                       <div class="form-group">
 
@@ -211,9 +200,11 @@
                             class="form-control" maxlength="150" />
                         </ng-container>
                       </div>
-                    </div>
+                    </div> -->
 
-                    <div class="col-xs-12 col-xl-3 col-md-12">
+                   
+
+                    <!-- <div class="col-xs-12 col-xl-3 col-md-12">
                       <div class="form-group">
                         <label for="taskName">Start Date&nbsp;<small>*</small></label>
                         <input type="date"
@@ -229,7 +220,7 @@
                           [ngStyle]="isFieldDisabled ? { 'background-color': 'rgb(238 236 195)', 'color': '#11111', 'cursor': 'allowed' } : {}"
                           formControlName="endDate" [min]="currentDate" maxlength="150" class="form-control" maxlength="150" />
                       </div>
-                    </div>
+                    </div> -->
                   </div>
 
                   <div class="row">
@@ -285,17 +276,25 @@
                       </div>
                     </div>
 
-                    <div class="col-xs-12 col-xl-8 col-md-8">
-                      <div class="form-group">
-                          <label for="tags">Tags</label>
-                            <tag-input [addOnBlur]="true"
-                                [formControl]="appeInitForm.get('tags')">
-                                <tag-input-dropdown [autocompleteItems]="allTags"
-                                    [showDropdownIfEmpty]="true"
-                                    [dynamicUpdate]="true"></tag-input-dropdown>
-                            </tag-input>
-                      </div>
-                   </div>
+              
+                   <div class="col-xs-12 col-xl-4 col-md-12">
+                    <div class="form-group">
+                      <label for="taskName">Start Date&nbsp;<small>*</small></label>
+                      <input type="date"
+                        [ngStyle]="isFieldDisabled ? { 'background-color': 'rgb(238 236 195)', 'color': '#11111', 'cursor': 'allowed' } : {}"
+                        formControlName="startDate" [min]="currentDate" maxlength="150" class="form-control" maxlength="150" />
+                    </div>
+                  </div>
+
+                  <div class="col-xs-12 col-xl-4 col-md-12">
+                    <div class="form-group">
+                      <label for="taskName">End Date&nbsp;<small>*</small></label>
+                      <input type="date"
+                        [ngStyle]="isFieldDisabled ? { 'background-color': 'rgb(238 236 195)', 'color': '#11111', 'cursor': 'allowed' } : {}"
+                        formControlName="endDate" [min]="currentDate" maxlength="150" class="form-control" maxlength="150" />
+                    </div>
+                  </div>
+
                    <div class="col-xs-12 col-xl-4 col-md-12">
                     <div class="form-group">
                       <label for="taskName">Complition Date&nbsp;<small>*</small></label>
@@ -304,6 +303,88 @@
                         formControlName="complitionDate" [min]="currentDate" maxlength="150" class="form-control" maxlength="150" />
                     </div>
                   </div>
+
+                  <div class="col-xs-12 col-xl-12 col-md-12">
+                    <div class="form-group">
+                      <label for="tags">Tags</label>
+                        <tag-input [addOnBlur]="true"
+                            [formControl]="appeInitForm.get('tags')">
+                            <tag-input-dropdown [autocompleteItems]="allTags"
+                                [showDropdownIfEmpty]="true"
+                                [dynamicUpdate]="true"></tag-input-dropdown>
+                        </tag-input>
+                  </div>
+                  </div>
+
+                  <br>
+                  <br>
+                  <br>
+                  <br>
+                  <br>
+                  <div class="sample-wrapper">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Sr no.</th>
+                                <th>Level</th>
+                                <th>Sanctioning Department</th>
+                                <th>Sanctioning Authority</th>
+                                <th>Start Date</th>
+                                <th>
+                                    <div class="end-date-container">
+                                        <div class="end-date-text">End Date (Optional)</div>
+                                        <i class="fa-solid fa-plus btn" type="button" (click)="addRowNew()"></i>
+                                    </div>
+                                </th>                                                                                                                              
+                                <!-- <th>
+                                
+                                </th> -->
+                            </tr>
+                        </thead>
+                        <tbody formArrayName="rows_new">
+                            <ng-container >
+                                <tr *ngFor="let row of appeInitForm.get('rows_new').controls; let i = index" [formGroupName]="i">
+                                    <td>
+                                        <div class="mt-1 ml-2">
+                                            {{ i + 1 }}
+                                        </div>
+                                    </td>
+                                    <td style="width:10rem">
+                                        <input class="form-control"  formControlName="level" type="number"  />
+                                    </td>                                                                     
+                               
+                                    <td>
+                                        <input class="form-control" formControlName="sanctioningDept" type="text"  />
+                                    </td>  
+                                    <td>          
+                                        <select class="h6 form-control" formControlName="sanctioningAuth">
+                                        <option value=""> --SELECT--</option>
+                                        <option *ngFor="let sanctioningAuth of SanctoningAuthList"
+                                            [value]="sanctioningAuth.mkey">
+                                            {{sanctioningAuth.typE_DESC}} </option>
+                                        </select>                                                                                                                               
+                                    </td>                                                                                                                              
+                                    <td style="width:20rem">
+                                        <input class="form-control" formControlName="startDate_newRow" [min]="currentDate"  type="date" />  
+                                    </td>
+                                    <td style="width:20rem">
+                                        <input class="form-control" formControlName="endDate_newRow" [min]="currentDate"  type="date"  />
+                                    </td>                                                                 
+                                    <!-- <td>
+                                        <i class="fa fa-trash ml-6" type="button" style="font-size: small; color: rgb(0, 110, 255)"
+                                            (click)="removeRowNew(i)"></i>
+                                    </td> -->
+                                </tr>
+                            </ng-container>
+                        </tbody>
+
+                    </table>
+                    <!-- <div *ngIf="getRelAbbr.length === 0"
+                        class="no-data d-flex justify-content-center align-items-center">
+                        No row to show
+                    </div> -->
+                </div>
+                  
 
 
                   </div>

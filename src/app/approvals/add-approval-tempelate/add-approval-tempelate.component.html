@@ -334,12 +334,23 @@
                                                 <div class="col-xs-12 col-xl-8 col-md-8">
                                                     <div class="form-group">
                                                         <label for="tags">Tags</label>
-                                                        <tag-input [addOnBlur]="true"
+                                                        <ng-container *ngIf="taskData?.mkey">
+                                                            <tag-input [addOnBlur]="true"
                                                             [formControl]="approvalTempForm.get('tags')">
                                                             <tag-input-dropdown [autocompleteItems]="allTags"
                                                                 [showDropdownIfEmpty]="true"
                                                                 [dynamicUpdate]="true"></tag-input-dropdown>
                                                         </tag-input>
+                                                        </ng-container>
+                                                        <ng-container *ngIf="!taskData?.mkey">
+                                                            <tag-input [addOnBlur]="true"
+                                                            [formControl]="approvalTempForm.get('tags')">
+                                                            <tag-input-dropdown [autocompleteItems]="allTags"
+                                                                [showDropdownIfEmpty]="true"
+                                                                [dynamicUpdate]="true"></tag-input-dropdown>
+                                                        </tag-input>
+                                                        </ng-container>
+                                                      
                                                     </div>
                                                 </div>
                                                 
