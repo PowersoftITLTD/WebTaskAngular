@@ -93,6 +93,26 @@ thead th {
   cursor: pointer; /* Makes the button clickable */
 }
 
+.circle {
+  height: 2px;
+  width: 2px;
+  background-color: #bbb;
+  border-radius: 50%;
+}
+
+.circle:hover {
+  background-color: #0056b3; /* Hover effect */
+}
+
+
+.doc_label {
+  display: flex;
+  align-items: center;
+}
+
+.icon-container {
+  margin-right: 8px; /* Adjust as necessary */
+}
 
 
 table.task-table {

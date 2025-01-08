@@ -373,10 +373,25 @@ export class DocumentTempelateComponent implements OnInit {
   
     Object.keys(this.docTempForm.controls).forEach(controlName => {
       const control = this.docTempForm.get(controlName);
+
+      console.log('CHECK CONTROL NAME', controlName)
   
       if (control?.errors?.required) {
+       if(
+        controlName === 'documentNumberFieldName' && this.docTempForm.get('documentNotApplied')?.value === 'Y' ||
+        controlName === 'documentDateFieldName' && this.docTempForm.get('documentDateApplicable')?.value === 'Y' ||
+        controlName === 'documentName' ||
+        controlName === 'category' ||
+        controlName === 'documentAbbrivation' ||
+        controlName === 'attachmentApplicable'||
+        controlName === 'validityApplied' ||
+        controlName === 'documentDateApplicable' ||
+        controlName === 'documentNotApplied'
+       ){
         const formattedControlName = convertToTitleCase(controlName);
         addControlError(formattedControlName);
+        } 
+   
       }
     });
   
@@ -392,7 +407,7 @@ export class DocumentTempelateComponent implements OnInit {
       return false;  
     }
   
-    return this.docTempForm.valid;
+    return true;
   }
 
   onAddDocTemp() {

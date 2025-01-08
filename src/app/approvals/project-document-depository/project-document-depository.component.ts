@@ -241,6 +241,7 @@ export class ProjectDocumentDepositoryComponent implements OnInit {
       
 
     const addDocDepository: any = {
+      MKEY:this.taskData?.MKEY,
       BUILDING_TYPE: subProjectName,
       PROPERTY_TYPE: projectName,
       DOC_NAME: DOC_NAME_MKEY,
@@ -249,26 +250,27 @@ export class ProjectDocumentDepositoryComponent implements OnInit {
       DOC_ATTACHMENT: this.docDepositoryForm.get('documentAttachment')?.value,
       VALIDITY_DATE: this.docDepositoryForm.get('validityDate')?.value,
       CREATED_BY: USER_CRED[0]?.MKEY,
-      attributE1: USER_CRED[0]?.MKEY.toString(),
-      attributE2: "ADD FORM",
-      attributE3: "ADD",
+      DELETE_FLAG:'N'
+      // attributE1: USER_CRED[0]?.MKEY.toString(),
+      // attributE2: "ADD FORM",
+      // attributE3: "ADD",
     }
 
     console.log('updateDocDepository', addDocDepository)
 
-    // this.apiService.postProjectDocument(this.recursiveLogginUser, addDocDepository).subscribe(
-    //   (response) => {
-    //     console.log('API response:', response);
-    //     this.tostar.success('success', `Your request added successfully`);
-    //     this.uploadFile(response.mkey)
-    //     this.router.navigate(['task/approval-screen'], {queryParams:{ source: 'project-document-depository' }});
+    this.apiService.putProjectDocument(this.recursiveLogginUser, addDocDepository).subscribe(
+      (response) => {
+        console.log('API response:', response);
+        this.tostar.success('success', `Your request added successfully`);
+        this.uploadFile(response.mkey)
+        this.router.navigate(['task/approval-screen'], {queryParams:{ source: 'project-document-depository' }});
 
 
-    //   },
-    //   (error) => {
-    //     console.error('Error:', error);
-    //   }
-    // );
+      },
+      (error) => {
+        console.error('Error:', error);
+      }
+    );
   }
 
 
@@ -289,21 +291,18 @@ export class ProjectDocumentDepositoryComponent implements OnInit {
 
     };
 
+
+    console.log('FILE', this.file)
+
     if (this.file) {
       const additionalAttributes = {
-        files: this.file,
-        TASK_MKEY: task_mkey,
-        CREATED_BY: USER_CRED.MKEY,
-        ATTRIBUTE14: USER_CRED.MKEY,
-        ATTRIBUTE15: 'Add',
-        ATTRIBUTE16: 'Add but',
-        FILE_NAME: this.file.name,
-        FILE_PATH: `${this.baseURL}/Attachment/${task_mkey}`
+        MKEY:this.taskData?.MKEY,
+        FILE_NAME: this.file,
       };
 
       // console.log('additionalAttributes',additionalAttributes)
 
-      this.apiService.recursiveFileUploader(this.file, additionalAttributes, this.recursiveLogginUser).subscribe(
+      this.apiService.postDocUploadDepository(this.file, additionalAttributes, this.recursiveLogginUser).subscribe(
         response => {
           console.log('Upload successful:', response);
         },

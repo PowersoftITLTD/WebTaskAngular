@@ -185,18 +185,25 @@
                                                                         id="AttachmentDetails">Attachment if
                                                                         any add:</label>
                                                                 </div>
-                                                                <div id="dvAtchment" style="display:none">
-                                                                    <a href="" target="_blank" id="DownAttchment">
-                                                                        <i class="fa fa-download"
-                                                                            aria-hidden="true"></i><span>DownFileName</span>
-                                                                    </a>
-                                                                    <button type="button"
-                                                                        style="background-color:transparent !important"
-                                                                        aria-label="Close">
-                                                                        <img src="../../../../assets/Content/icons/Del.png"
-                                                                            style="width:32px;" />
-                                                                    </button>
-                                                                </div>
+                                                                <div id="dvAtchment"
+                                                               ><!-- *ngIf="taskDetails[0].FILE_NAME && !editMode"-->
+
+                                                                <a  target="_blank"
+                                                                    id="DownAttchment"> <!--[href]="fileUrl()"-->
+                                                                    <i class="fa fa-download"
+                                                                        aria-hidden="true"></i><span>
+                                                                        {{taskData.FILE_NAME}}</span>
+                                                                </a>
+
+                                                                <button type="button"                                                                    
+                                                                    style="background-color:transparent !important"
+                                                                    aria-label="Close">
+                                                                    <img src="../../../../assets/Content/icons/Del.png"
+                                                                        style="width:32px;" /><!--[ngClass]="{ 'disabled-field': !canEditTaskDescription() }"
+                                                                        (click)="removeFile()"-->
+                                                                </button>
+
+                                                            </div>
                                                             </div>
                                                         </div>
                                                     </div>

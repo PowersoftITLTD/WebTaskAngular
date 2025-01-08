@@ -827,8 +827,7 @@ toggleSelection(task: any = []): void {
       const buildingStd = this.projectDefForm.get('blsStandard')?.value;
       const statutoryAuth = this.projectDefForm.get('statutoryAuth')?.value;
 
-      console.log(typeof buildingCla)
-
+    
   
       console.log(`buildingCla: ${buildingCla} buildingStd: ${buildingStd} statutoryAuth: ${statutoryAuth}`)
       // this.hasDataBeenPassed = true; 
@@ -838,6 +837,7 @@ toggleSelection(task: any = []): void {
         this.apiService.projectDefinationOption(USER_CRED[0]?.MKEY, token, buildingCla, buildingStd, statutoryAuth).subscribe({
           next: (gerAbbrRelData) => {
             // this.projDefinationTable = gerAbbrRelData
+            console.log('gerAbbrRelData', gerAbbrRelData)
 
             const check = gerAbbrRelDataArr.push(gerAbbrRelData)
             // console.log('check', gerAbbrRelDataArr.push(gerAbbrRelData))
@@ -868,6 +868,11 @@ toggleSelection(task: any = []): void {
       const buildingCla = this.taskData.buildinG_CLASSIFICATION;
       const buildingStd = this.taskData.buildinG_STANDARD;
       const statutoryAuth = this.taskData.statutorY_AUTHORITY;
+
+      console.log('USER_CRED[0]?.MKEY', typeof USER_CRED[0]?.MKEY)
+      console.log('Building', typeof buildingCla)
+      console.log('Standard', typeof buildingStd)
+      console.log('Statutoory', typeof statutoryAuth)
 
       if (buildingCla && buildingStd && statutoryAuth) {
         this.recursiveLogginUser = this.apiService.getRecursiveUser();
