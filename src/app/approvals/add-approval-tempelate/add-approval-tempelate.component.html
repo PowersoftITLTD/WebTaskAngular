@@ -469,8 +469,8 @@
                                                 <div class="col-xs-6 col-xl-6 col-md-12">
                                                     <div class="form-group">
                                                             <label for="category" class="doc_label">Document 
-                                                                <span>
-                                                                    <i class="fa-solid fa-plus btn circle" type="button"></i>
+                                                                <span class="px-12">
+                                                                    <i class="fa-solid fa-plus btn" type="button" (click)="openDialog()"></i>
                                                                 </span>
                                                             </label>
                                                       
@@ -549,13 +549,13 @@
                                                                     style="height: 40rem;">
                                                                     <ul class="dropdown-list">
                                                                         <ng-container
-                                                                            *ngFor="let country of getUniqueDocs('checklist')">
+                                                                            *ngFor="let country of getUniqueINST('checklist')">
                                                                             <div class="country-header justify-content-center"
                                                                                 style="color: rgb(216, 87, 87);">
                                                                                 <b>{{ country }}</b>
                                                                             </div>
                                                                             <ng-container
-                                                                                *ngFor="let sortedDoc of (getGroupedAndSortedDocs('checklist') | filterDocsPipe: searchQuery)[country]">
+                                                                                *ngFor="let sortedDoc of (getGroupedAndINSTDetails('checklist') | filterDocsPipe: searchQuery)[country]">
                                                                                 <li (click)="toggleSelection('checklist', sortedDoc)"
                                                                                     [class.selected]="isSelected('checklist', sortedDoc)">
                                                                                     {{ sortedDoc.typE_DESC }} 

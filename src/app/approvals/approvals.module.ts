@@ -18,6 +18,7 @@ import { PipeContentModule } from '../pipes/pipe-content.module';
 import { CategoryMasterComponent } from './category-master/category-master.component';
 
 
+
 @NgModule({
   declarations: [
     DocumentTempelateComponent,
@@ -38,7 +39,7 @@ import { CategoryMasterComponent } from './category-master/category-master.compo
     FormsModule,
     TagInputModule,
     ReactiveFormsModule,
-    PipeContentModule
+    PipeContentModule,
   ]
 })
 export class ApprovalsModule { }

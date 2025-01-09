@@ -394,7 +394,28 @@ export class DocumentTempelateComponent implements OnInit {
    
       }
     });
-  
+
+
+    const check_field_num_name = this.docTempForm.get('documentNumberFieldName')?.value
+    const check_field_date_name = this.docTempForm.get('documentNumberFieldName')?.value
+
+    const doc_num_applicable = this.docTempForm.get('documentNotApplied')?.value
+    const doc_date_applicable = this.docTempForm.get('documentDateApplicable')?.value
+
+    console.log('doc_num_applicable', doc_num_applicable)
+
+    if ((check_field_num_name && doc_num_applicable === 'N')) {
+      this.tostar.error(`Please set 'Document No. Applicable' to 'Yes' if field is required`);
+      return false;
+    }
+
+    if ((check_field_date_name && doc_date_applicable === 'N')) {
+      this.tostar.error(`Please set 'Document Date Applicable' to 'Yes' if field is required`);
+      return false;
+    }
+
+    console.log('check_field_name', check_field_num_name)
+    console.log('check_field_date_name', check_field_date_name)
     if (requiredControls.length > 0) {
       const m = `${requiredControls.join(' , ')}`;
       this.tostar.error(`${m}`);

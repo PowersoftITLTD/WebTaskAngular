@@ -6,6 +6,8 @@ import { AbstractControl, FormArray, FormBuilder, FormGroup, ValidationErrors, V
 import { CredentialService } from 'src/app/services/credential/credential.service';
 import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
+import { MatDialog } from '@angular/material/dialog';
+import { DocumentTempelateComponent } from '../document-tempelate/document-tempelate.component';
 
 @Component({
   selector: 'app-add-approval-tempelate',
@@ -49,6 +51,7 @@ export class AddApprovalTempelateComponent implements OnInit {
   jobRoleList: any[] = [];
   departmentList: any[] = [];
   docTypeList: any[] = [];
+  instruDetailsList:any[] = [];
   SanctoningAuthList: any[] = [];
   SanctoningDeptList: any[] = [];
   employees: any[] = [];
@@ -110,7 +113,8 @@ export class AddApprovalTempelateComponent implements OnInit {
     private apiService: ApiService,
     private tostar: ToastrService,
     private router: Router,
-    private credentialService: CredentialService
+    private credentialService: CredentialService,
+    private dialog: MatDialog
   ) {
     const navigation: any = this.router.getCurrentNavigation();
     const isNewTemp = sessionStorage.getItem('isNewTemp') === 'true';
@@ -288,6 +292,25 @@ export class AddApprovalTempelateComponent implements OnInit {
     });
 
 
+    this.apiService.getInstructionDetails(this.recursiveLogginUser).subscribe({
+      next: (list: any) => {
+        this.instruDetailsList = list
+
+        console.log('Check Instruction List', this.instruDetailsList)
+
+        if (this.taskData && this.taskData.mkey) {
+          this.mappedSelectedEndList();
+          this.mappedSelectedCheckList();
+        }
+
+        // console.log('Document Type List:', this.docTypeList);
+      },
+      error: (error: any) => {
+        console.error('Unable to fetch Document Type List', error);
+      }
+    });
+
+
     this.apiService.getDepartmentDP(this.recursiveLogginUser).subscribe({
       next: (list: any) => {
         this.departmentList = list
@@ -318,6 +341,13 @@ export class AddApprovalTempelateComponent implements OnInit {
     }
   }
 
+
+  openDialog(): void {
+    this.dialog.open(DocumentTempelateComponent, {
+      width: '400px',
+      data: { /* Any data to pass to the modal if needed */ }
+    });
+  }
 
   async addApprovalTempelate() {
 
@@ -771,7 +801,7 @@ export class AddApprovalTempelateComponent implements OnInit {
       }
     }
 
-    let selectedItems = this.docTypeList.filter(doc => allSelectedMkeys.includes(doc.mkey));
+    let selectedItems = this.instruDetailsList.filter(doc => allSelectedMkeys.includes(doc.mkey));
 
 
     selectedItems.forEach(item => {
@@ -845,9 +875,37 @@ export class AddApprovalTempelateComponent implements OnInit {
     return Array.from(new Set(this.docTypeList.map(docs => docs.attributE2)));
   }
 
+  getUniqueINST(listType: 'endResult' | 'checklist'): string[] {
+    return Array.from(new Set(this.instruDetailsList.map(docs => docs.attributE2)));
+  }
+
   getGroupedAndSortedDocs(listType: 'endResult' | 'checklist') {
     const groupedDocs: any = {};
     this.docTypeList.forEach(docs => {
+      const category = docs.attributE2 || 'Uncategorized';
+      if (!groupedDocs[category]) {
+        groupedDocs[category] = [];
+      }
+      groupedDocs[category].push(docs);
+    });
+
+    // Sort within groups by document name
+    for (const docCategory in groupedDocs) {
+      groupedDocs[docCategory].sort((a: any, b: any) => {
+        const nameA = a.typE_DESC || '';
+        const nameB = b.typE_DESC || '';
+        return nameA.localeCompare(nameB);
+      });
+    }
+
+    return groupedDocs;
+  }
+
+
+  getGroupedAndINSTDetails(listType: 'endResult' | 'checklist') {
+
+    const groupedDocs: any = {};
+    this.instruDetailsList.forEach(docs => {
       const category = docs.attributE2 || 'Uncategorized';
       if (!groupedDocs[category]) {
         groupedDocs[category] = [];

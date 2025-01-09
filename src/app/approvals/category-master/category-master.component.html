@@ -6,7 +6,7 @@
                     <div id="e-commerce-product" class="simple tabbed">
                         <app-header-bar (loggedInUserEmitter)="receiveLoggedInUser($event)"></app-header-bar>
 
-                        <form [formGroup]="categoryForm" (ngSubmit)="onsubmit()">  <!-- Bind to the FormGroup -->
+                        <form [formGroup]="categoryForm" (ngSubmit)="onsubmit()">  
                             <div class="tab-content">
                                 <div class="card p-3">
                                     <div class="d-flex justify-content- mx-12">
@@ -27,22 +27,14 @@
                                             </div>
 
                                             <div class="col-xs-12 col-xl-2 col-md-12">
-                                                <div class="form-group" *ngIf="!taskData?.mkey">
-                                                    <button class="btn btn-info mt-2" type="submit" [disabled]="categoryForm.invalid"> 
-                                                        Add
-                                                    </button>
-                                                </div>
+                                                <button class="btn btn-info mt-2" type="submit" [disabled]="categoryForm.invalid" (click)="onActionButtonClick('category', true)">
+                                                    {{ taskData?.mkey ? 'Save' : 'Add' }}
+                                                </button>
 
-                                                <div class="form-group" *ngIf="taskData?.mkey">
-                                                    <div class="d-flex align-items-center">
-                                                        <button class="btn btn-info mt-2" type="submit" [disabled]="categoryForm.invalid"> 
-                                                            Save                                                      
-                                                        </button>
-                                                        <i class="fa fa-trash ml-5 mt-4" type="submit" (click)="onDeleteClick()" style="font-size: large; color: rgb(204, 73, 36); cursor: pointer;"></i>
-
-                                                    </div>
+                                                <div *ngIf="taskData?.mkey">
+                                                    <i class="fa fa-trash ml-5 mt-4" type="submit" (click)="onDeleteClick()" style="font-size: large; color: rgb(204, 73, 36); cursor: pointer;"></i>
                                                 </div>
-                                                
+                                               
                                             </div>
                                             
                                             <div class="col-xs-12 col-xl-12 col-md-12 mt-12">
@@ -53,33 +45,24 @@
                                                 <div class="form-group">
                                                     <label for="taskName">Detailed Instructions</label>
                                                     <div *ngIf="taskData && taskData?.mkey">
-                                                        <input type="text" placeholder="Please add new category" class="form-control" [(ngModel)]="taskData.typE_DESC" maxlength="150" formControlName="category">  
+                                                        <input type="text" placeholder="Please add new category" class="form-control"  maxlength="150" formControlName="instruction">  
                                                     </div>
                                                     <div *ngIf="!taskData && !taskData?.mkey">
-                                                        <input type="text" placeholder="Please add new category" class="form-control"  maxlength="150" formControlName="category">  
+                                                        <input type="text" placeholder="Please add new category" class="form-control"  maxlength="150" formControlName="instruction">  
                                                     </div>
                                                 </div>
                                             </div>
 
                                             
-
                                             <div class="col-xs-12 col-xl-2 col-md-12">
-                                                <div class="form-group" *ngIf="!taskData?.mkey">
-                                                    <button class="btn btn-info mt-2" type="submit" [disabled]="categoryForm.invalid"> 
-                                                        Add
-                                                    </button>
-                                                </div>
 
-                                                <div class="form-group" *ngIf="taskData?.mkey">
-                                                    <div class="d-flex align-items-center">
-                                                        <button class="btn btn-info mt-2" type="submit" [disabled]="categoryForm.invalid"> 
-                                                            Save                                                      
-                                                        </button>
-                                                        <i class="fa fa-trash ml-5 mt-4" type="submit" (click)="onDeleteClick()" style="font-size: large; color: rgb(204, 73, 36); cursor: pointer;"></i>
+                                                <button class="btn btn-info mt-2" type="submit" [disabled]="categoryForm.invalid" (click)="onActionButtonClick('instruction', true)">
+                                                    {{ taskData?.mkey ? 'Save' : 'Add' }}
+                                                </button>
 
-                                                    </div>
-                                                </div>
-                                                
+                                                <div *ngIf="taskData?.mkey">
+                                                    <i class="fa fa-trash ml-5 mt-4" type="submit" (click)="onDeleteClick()" style="font-size: large; color: rgb(204, 73, 36); cursor: pointer;"></i>
+                                                </div>                                                                                          
                                             </div>
                                         </div>
                                     </div>                                  

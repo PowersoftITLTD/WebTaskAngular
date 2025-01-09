@@ -17,12 +17,15 @@ export class CategoryMasterComponent implements OnInit, OnDestroy {
   receivedUser: string | any;
   createdOrUpdatedUserName: any;
   updatedDetails: boolean = false;
+  isCategoryUpdate: boolean = false;
+  isInstructionUpdate: boolean = false;
 
   @Input() recursiveLogginUser: any = {};
 
   loginName: string = '';
   loginPassword: string = '';
-  categoryForm: FormGroup | any; 
+  categoryForm: FormGroup | any;
+  instructionForm: FormGroup | any;
 
   constructor(
     private credentialService: CredentialService,
@@ -65,8 +68,12 @@ export class CategoryMasterComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.onLogin();
     this.categoryForm = new FormGroup({
-      category: new FormControl('')  // Set an initial value (empty string)
+      category: new FormControl(''),  // Set an initial value (empty string)
+      instruction: new FormControl('')
+
     });
+
+
   }
 
   receiveLoggedInUser(user: any): void {
@@ -99,7 +106,7 @@ export class CategoryMasterComponent implements OnInit, OnDestroy {
 
   // Add a new category
   addCategoryForDocSort() {
-    const categoryName = this.categoryForm.value.category;  
+    const categoryName = this.categoryForm.value.category;
     const data = this.credentialService.getUser();
     const token = this.apiService.getRecursiveUser();
 
@@ -113,19 +120,58 @@ export class CategoryMasterComponent implements OnInit, OnDestroy {
       CREATED_BY: USER_CRED.USER_MKEY,
       COMPANY_ID: USER_CRED.COMPANY_ID
     };
-        
+
     this.apiService.postDocumentTempCategory(JSON.stringify(addCategory), token).subscribe({
       next: (response) => {
 
         console.log('Category added successfully', response);
-        if(response.Status === 'Ok' && response.Message === 'Inserted Successfully'){
+        if (response.Status === 'Ok' && response.Message === 'Inserted Successfully') {
           this.tostar.success('Category added successfully');
           this.router.navigate(['task/approval-screen'], { queryParams: { source: 'category-master' } });
-        }else if(response.Status === 'Error' && response.Message === 'Category already exists!!!'){
+        } else if (response.Status === 'Error' && response.Message === 'Category already exists!!!') {
           this.tostar.warning('This category is already exist');
 
         }
-       
+
+      },
+      error: (err) => {
+        console.error(err);
+      }
+    });
+  }
+
+
+  // Add a new Instruction
+  addINSTR() {
+    const categoryName = this.categoryForm.value.instruction;
+    const data = this.credentialService.getUser();
+    const token = this.apiService.getRecursiveUser();
+
+    const USER_CRED = {
+      USER_MKEY: data[0]?.MKEY,
+      COMPANY_ID: data[0]?.COMPANY_ID
+    };
+
+    const addInstruction = {
+      DOC_CATEGORY: categoryName,
+      CREATED_BY: USER_CRED.USER_MKEY,
+      COMPANY_ID: USER_CRED.COMPANY_ID
+    };
+
+
+    console.log('addInstruction', addInstruction)
+
+    this.apiService.postInstructionDetails(JSON.stringify(addInstruction), token).subscribe({
+      next: (response) => {
+
+        console.log('Instruction added successfully', response);
+        if (response.Status === 'Ok' && response.Message === 'Inserted Successfully') {
+          this.tostar.success('Instruction added successfully');
+          this.router.navigate(['task/approval-screen'], { queryParams: { source: 'category-master' } });
+        } else if (response.Status === 'Error' && response.Message === 'Category already exists!!!') {
+          this.tostar.warning('This Instruction is already exist');
+        }
+
       },
       error: (err) => {
         console.error(err);
@@ -135,7 +181,7 @@ export class CategoryMasterComponent implements OnInit, OnDestroy {
 
   // Update or delete category based on flag
   updateCategoryForDocSort(deleteFlag: string) {
-    const categoryName = this.categoryForm.value.category;  
+    const categoryName = this.categoryForm.value.category;
     const data = this.credentialService.getUser();
     const token = this.apiService.getRecursiveUser();
 
@@ -153,7 +199,7 @@ export class CategoryMasterComponent implements OnInit, OnDestroy {
       DELETE_FLAG: deleteFlag  // Pass 'Y' for delete or 'N' for save
     };
 
-    console.log('updateCategory',updateCategory)
+    console.log('updateCategory', updateCategory)
 
     this.apiService.updateDocumentTempCategory(updateCategory, token).subscribe({
       next: (data) => {
@@ -175,26 +221,71 @@ export class CategoryMasterComponent implements OnInit, OnDestroy {
   onDeleteClick() {
     const confirmDelete = confirm("Are you sure you want to delete?");
     if (confirmDelete) {
-        console.log('Delete click');
-        this.onsubmit('Y');
+      console.log('Delete click');
+      this.onsubmit('Y');
     } else {
-        console.log('Delete cancelled');
-    }
-}
-
-  onsubmit(flag?: string) {
-    if (this.categoryForm.value.category === '' || this.categoryForm.value.category === null || this.categoryForm.value.category === undefined) {
-      this.tostar.error('Please update the category');
-    } else if (!this.taskData || !this.taskData?.mkey) {
-      this.addCategoryForDocSort();
-    } else {
-      if (flag === 'Y') {
-        this.updateCategoryForDocSort('Y'); 
-      } else {
-        this.updateCategoryForDocSort('N');  
-      }
+      console.log('Delete cancelled');
     }
   }
+
+  onActionButtonClick(field: string, isUpdate: boolean = false) {
+    console.log('onActionButtonClick', field, '&', isUpdate);
+
+    // Set the action type (add or update) based on the button clicked
+    if (field === 'category') {
+        this.isCategoryUpdate = isUpdate;  // Update category flag
+        this.isInstructionUpdate = false;  // Reset instruction flag
+    } else if (field === 'instruction') {
+        this.isInstructionUpdate = isUpdate; // Update instruction flag
+        this.isCategoryUpdate = false;  // Reset category flag
+    }
+
+    // Log the updated flags for debugging
+    console.log('Category Update Flag:', this.isCategoryUpdate);
+    console.log('Instruction Update Flag:', this.isInstructionUpdate);
+}
+
+  
+
+
+
+  onsubmit(flag?: string) {
+
+
+    console.log('this.isCategoryUpdate', this.isCategoryUpdate);
+    console.log('this.isInstructionUpdate', this.isInstructionUpdate);
+
+    if (this.isCategoryUpdate) {
+      if (this.categoryForm.value.category === '' || this.categoryForm.value.category === null || this.categoryForm.value.category === undefined) {
+        this.tostar.error('Please update the category');
+      } else if (!this.taskData || !this.taskData?.mkey) {
+        this.addCategoryForDocSort();
+      } else {
+        if (flag === 'Y') {
+          this.updateCategoryForDocSort('Y');
+        } else {
+          this.updateCategoryForDocSort('N');
+        }
+      }
+    } else if (this.isInstructionUpdate) {
+      if (this.categoryForm.value.instruction === '' || this.categoryForm.value.instruction === null || this.categoryForm.value.instruction === undefined) {
+        this.tostar.error('Please update the Instruction');
+      } else if (!this.taskData || !this.taskData?.mkey) {
+        this.addINSTR();
+      } else {
+        if (flag === 'Y') {
+          // this.updateCategoryForDocSort('Y');
+        } else {
+          console.log('sdkjh');
+
+          // this.updateCategoryForDocSort('N');
+        }
+      }
+    }
+
+  }
+
+
 
   ngOnDestroy(): void {
     console.log('Component is being destroyed');

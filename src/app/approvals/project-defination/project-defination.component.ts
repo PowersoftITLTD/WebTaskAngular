@@ -731,7 +731,7 @@ toggleSelection(task: any = []): void {
     this.apiService.getProjectDetailsNew(token).subscribe(
       (response: any) => {
         this.project = response[0].data;
-        console.log("Project", this.project);
+        // console.log("Project", this.project);
       },
       (error: ErrorHandler) => {
         console.log(error, 'Error Occurred while fetching projects');
@@ -838,6 +838,11 @@ toggleSelection(task: any = []): void {
           next: (gerAbbrRelData) => {
             // this.projDefinationTable = gerAbbrRelData
             console.log('gerAbbrRelData', gerAbbrRelData)
+
+           const check_TAsk_no =  gerAbbrRelData.forEach((task:any)=>{
+              console.log(typeof task?.TASK_NO)
+            })
+            console.log('TASk_no', check_TAsk_no)
 
             const check = gerAbbrRelDataArr.push(gerAbbrRelData)
             // console.log('check', gerAbbrRelDataArr.push(gerAbbrRelData))
@@ -1083,6 +1088,8 @@ toggleSelection(task: any = []): void {
 }
 
  async getTree(optionList: any[] = [], _jobRoleList: any[] = [], _departmentList: any[] = []) {
+
+  console.log('optionList', optionList)
     
    
     this.recursiveLogginUser = this.apiService.getRecursiveUser();
@@ -1141,6 +1148,8 @@ toggleSelection(task: any = []): void {
     this.loading = true;
   
     const same_data = optionListArr;
+
+    console.log('optionListArr', optionListArr)
 
     const buildHierarchy = (tasks: any, rootTaskNo: any) => {
       const rootTask = tasks.find((task: any) => task.TASK_NO === rootTaskNo);
