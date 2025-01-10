@@ -1,4 +1,4 @@
-import { Component, ErrorHandler, Input, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, ErrorHandler, Input, OnInit, ViewChild } from '@angular/core';
 import { IgxComboComponent } from 'igniteui-angular';
 import { CITIES, ICity } from './cities';
 import { ApiService } from 'src/app/services/api/api.service';
@@ -8,6 +8,8 @@ import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { DocumentTempelateComponent } from '../document-tempelate/document-tempelate.component';
+import { AddDocumentDialogComponent } from './add-document-dialog/add-document-dialog.component';
+import { AddInstructionDialogComponent } from './add-instruction-dialog/add-instruction-dialog.component';
 
 @Component({
   selector: 'app-add-approval-tempelate',
@@ -114,7 +116,8 @@ export class AddApprovalTempelateComponent implements OnInit {
     private tostar: ToastrService,
     private router: Router,
     private credentialService: CredentialService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private cdr: ChangeDetectorRef
   ) {
     const navigation: any = this.router.getCurrentNavigation();
     const isNewTemp = sessionStorage.getItem('isNewTemp') === 'true';
@@ -343,9 +346,39 @@ export class AddApprovalTempelateComponent implements OnInit {
 
 
   openDialog(): void {
-    this.dialog.open(DocumentTempelateComponent, {
-      width: '400px',
+    this.dialog.open(AddDocumentDialogComponent, {
+      width: '80rem',            
       data: { /* Any data to pass to the modal if needed */ }
+    });
+  }
+
+  // openDialogINSTR(): void {
+  //   this.dialog.open(AddInstructionDialogComponent, {
+  //     width: '50rem',  
+  //     height:'20rem',
+  //     data: { /* Any data to pass to the modal if needed */ }
+  //   });
+  // }
+
+  openDialogINSTR(): void {
+    const dialogRef = this.dialog.open(AddInstructionDialogComponent, {
+      width: '50rem',
+      height: '20rem',
+      data: { /* Any data you want to pass to the dialog */ }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        console.log('result', result)
+        this.approvalTempForm.reset();
+        this.cdr.detectChanges();  // Manually trigger change detection
+       const check =  {
+          "DOC_INSTR": "New updatn",
+          "CREATED_BY": 2693,
+          "COMPANY_ID": 1
+      }
+        this.instruDetailsList.push(result);
+      }
     });
   }
 
@@ -875,8 +908,13 @@ export class AddApprovalTempelateComponent implements OnInit {
     return Array.from(new Set(this.docTypeList.map(docs => docs.attributE2)));
   }
 
-  getUniqueINST(listType: 'endResult' | 'checklist'): string[] {
-    return Array.from(new Set(this.instruDetailsList.map(docs => docs.attributE2)));
+  // getUniqueINST(listType: 'endResult' | 'checklist'): string[] {
+  //   return Array.from(new Set(this.instruDetailsList.map(docs => docs.attributE2)));
+  // }
+
+  getUniqueINST(listType: 'endResult' | 'checklist') {
+    const categories = this.instruDetailsList.map(doc => doc.attributE2 || 'Uncategorized');
+    return [...new Set(categories)];
   }
 
   getGroupedAndSortedDocs(listType: 'endResult' | 'checklist') {

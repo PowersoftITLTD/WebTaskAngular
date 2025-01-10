@@ -16,6 +16,9 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TagInputModule } from 'ngx-chips';
 import { PipeContentModule } from '../pipes/pipe-content.module';
 import { CategoryMasterComponent } from './category-master/category-master.component';
+import { AddDocumentDialogComponent } from './add-approval-tempelate/add-document-dialog/add-document-dialog.component';
+import { AddInstructionDialogComponent } from './add-approval-tempelate/add-instruction-dialog/add-instruction-dialog.component';
+import { InstructionMasterComponent } from './instruction-master/instruction-master.component';
 
 
 
@@ -28,7 +31,10 @@ import { CategoryMasterComponent } from './category-master/category-master.compo
     ApprovalTaskInitationComponent,
     AddApprovalTempelateComponent,
     ApprovedTempelateComponent,
-    CategoryMasterComponent
+    CategoryMasterComponent,
+    AddDocumentDialogComponent,
+    AddInstructionDialogComponent,
+    InstructionMasterComponent
   ],
   imports: [
     CommonModule,

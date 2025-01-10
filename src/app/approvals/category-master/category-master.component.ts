@@ -141,7 +141,6 @@ export class CategoryMasterComponent implements OnInit, OnDestroy {
   }
 
 
-  // Add a new Instruction
   addINSTR() {
     const categoryName = this.categoryForm.value.instruction;
     const data = this.credentialService.getUser();
@@ -179,7 +178,6 @@ export class CategoryMasterComponent implements OnInit, OnDestroy {
     });
   }
 
-  // Update or delete category based on flag
   updateCategoryForDocSort(deleteFlag: string) {
     const categoryName = this.categoryForm.value.category;
     const data = this.credentialService.getUser();

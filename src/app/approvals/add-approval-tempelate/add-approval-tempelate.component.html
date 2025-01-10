@@ -539,7 +539,11 @@
 
                                                 <div class="col-xs-12 col-xl-6 col-md-12">
                                                     <div class="form-group sample-wrapper">
-                                                        <label for="category" class="doc_label">Document</label>
+                                                        <label for="category" class="doc_label">Document
+                                                            <span class="px-12">
+                                                                <i class="fa-solid fa-plus btn" type="button" (click)="openDialogINSTR()"></i>
+                                                            </span>
+                                                        </label>
                                                         <div class="sample-wrapper">
                                                             <div class="pl-4 combo-section">
                                                                 <input type="text" [(ngModel)]="searchQuery" [ngModelOptions]="{standalone: true}" 

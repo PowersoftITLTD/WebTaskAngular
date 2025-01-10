@@ -1,0 +1,188 @@
+<body class="layout layout-left-navigation layout-below-toolbar layout-below-footer">
+    <main>
+        <div id="wrapper">
+            <div class="content-wrapper">
+                <div class="">
+                    <div id="e-commerce-product" class="simple tabbed">
+                        <!-- <app-header-bar (loggedInUserEmitter)="receiveLoggedInUser($event)"></app-header-bar> -->
+
+                        
+                        
+                        <div class="">
+                            <form [formGroup]="docTempForm" (ngSubmit)="onSubmit()">
+                                <div class="p-2">
+                                    <div class="row">
+                                        <div class="col-xs-12 col-xl-4 col-md-12 mb-6">
+                                            <div class="form-group">
+                                                <label for="documentAbbrivation">Document Abbreviation</label>
+
+                                                <ng-container>
+                                                    <input type="text" formControlName="documentAbbrivation"  maxlength="150" class="form-control" />                                           
+                                                </ng-container>
+
+
+                                            </div>
+                                        </div>
+
+                                        <div class="col-xs-12 col-xl-4 col-md-12 mb-6">
+                                            <div class="form-group">
+                                                <label for="documentAbbrivation">Document Name</label>
+
+                                                <ng-container>
+                                                    <input type="text" formControlName="documentName"  maxlength="150" class="form-control" />                                           
+                                                </ng-container>
+
+                                             
+
+                                            </div>
+                                        </div>
+
+                                        <div class="col-xs-12 col-xl-4 col-md-12">
+                                            <div class="form-group">
+                                                <label for="category">Category&nbsp;<span></span></label>                                                
+
+                                                <ng-container>
+                                                    <select class="h6 form-control my-1" formControlName="category" >
+                                                        <option value=""> --SELECT--</option>
+                                                        <option *ngFor="let category of docCatList"
+                                                            [value]="category.mkey" >{{category.typE_DESC}}</option> <!--[selected]="category.typE_DESC === taskData.category_Name"-->
+                                                    </select>
+                                                </ng-container>
+
+                                              
+                                               
+                                            </div>
+                                        </div>
+                                    </div>
+                            
+                                    <div class="row mb-2">
+                                        <div class="col-xs-12 col-xl-4 col-md-12">
+                                            <div class="form-group">
+                                                <label for="documentNumberFieldName">Document Number Field Name</label>
+
+                                                <ng-container>
+                                                    <input type="text" formControlName="documentNumberFieldName"  maxlength="150" class="form-control" />                                         
+                                                </ng-container>
+
+                                             
+
+                                            </div>
+                                        </div>
+                            
+                                        <div class="col-xs-12 col-xl-4 col-md-12">
+                                            <div class="form-group">
+                                                <label>Document No. Applicable</label>
+                                                <div>
+                                                    <label>
+                                                        <ng-container >
+                                                            <input type="radio" formControlName="documentNotApplied"  value="Y"> Yes
+                                                        </ng-container>
+
+                                                        <ng-container >
+                                                            <input type="radio"  formControlName="documentNotApplied" value="N"> No
+                                                        </ng-container>
+                                                    </label>
+                                                    &nbsp;
+                                                   
+                                                </div>
+                                            </div>
+                                        </div>
+                            
+                                        <div class="col-xs-12 col-xl-4 col-md-12">
+                                            <div class="form-group">
+                                                <label>Validity Applicable</label>
+                                                <div>
+                                                    <label>
+
+                                                        <ng-container>
+                                                            <input type="radio" formControlName="validityApplied"  value="Y"> Yes
+                                                        </ng-container>
+
+                                                        <ng-container>
+                                                            <input type="radio"  formControlName="documentNotApplied" value="N"> No
+                                                        </ng-container>
+
+                                                    </label>
+                                                    &nbsp;
+                                                
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                            
+                                    <div class="row mb-2">
+                                        <div class="col-xs-12 col-xl-4 col-md-12">
+                                            <div class="form-group">
+                                                <label for="documentDateFieldName">Document Date Field Name</label>
+                                                <ng-container >
+                                                    <input type="text" formControlName="documentDateFieldName"  maxlength="150" class="form-control" />                                             
+                                                </ng-container>
+
+                                            
+                                            </div>
+                                        </div>
+
+                                        
+                            
+                                        <div class="col-xs-12 col-xl-4 col-md-12">
+                                            <div class="form-group">
+                                                <label>Document Date Applicable</label>
+                                                <div>
+                                                    <label>
+                                                        <ng-container>
+                                                            <input type="radio" formControlName="documentDateApplicable"  value="Y"> Yes
+                                                        </ng-container>
+
+                                                        <ng-container>
+                                                            <input type="radio" formControlName="documentDateApplicable" value="N"> No
+                                                        </ng-container>
+                                                    </label>
+                                                    &nbsp;
+                                                
+                                                </div>
+                                            </div>
+                                        </div>
+                            
+                                        <div class="col-xs-12 col-xl-4 col-md-12">
+                                            <div class="form-group">
+                                                <label>Attachment Applicable</label>
+                                                <div>
+                                                    <label>
+                                                        <ng-container >
+                                                            <input type="radio" formControlName="attachmentApplicable"  value="Y"> Yes
+                                                        </ng-container>
+
+                                                        <ng-container >
+                                                            <input type="radio" formControlName="attachmentApplicable" value="N"> No
+                                                        </ng-container>
+                                                    </label>
+                                                    &nbsp;
+                                               
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>                            
+                        </div>
+                        <div class=" text-auto row align-items-center justify-content-center p-3" style="background-color: rgb(123, 181, 181);">
+                    
+                            <div class="">
+
+                                <ng-container >
+                                    <button type="button"  class="btn btn-success mr-2" id="btnSaveTask" (click)="onAddDocTemp()">
+                                        ADD
+                                    </button>
+                                    <button type="button"  class="btn btn-danger mr-2" id="btnSaveTask" (click)="closeDialog()">
+                                        Cancel
+                                    </button>
+                                </ng-container>
+                                                                                        
+                            </div>
+                        </div>                       
+                    </div>                   
+                </div>             
+            </div>            
+        </div>  
+    </main>  
+</body>
