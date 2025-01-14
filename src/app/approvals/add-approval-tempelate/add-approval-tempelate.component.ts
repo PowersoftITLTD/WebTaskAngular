@@ -352,14 +352,7 @@ export class AddApprovalTempelateComponent implements OnInit {
     });
   }
 
-  // openDialogINSTR(): void {
-  //   this.dialog.open(AddInstructionDialogComponent, {
-  //     width: '50rem',  
-  //     height:'20rem',
-  //     data: { /* Any data to pass to the modal if needed */ }
-  //   });
-  // }
-
+  
   openDialogINSTR(): void {
     const dialogRef = this.dialog.open(AddInstructionDialogComponent, {
       width: '50rem',
@@ -370,14 +363,17 @@ export class AddApprovalTempelateComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         console.log('result', result)
-        this.approvalTempForm.reset();
-        this.cdr.detectChanges();  // Manually trigger change detection
-       const check =  {
-          "DOC_INSTR": "New updatn",
-          "CREATED_BY": 2693,
-          "COMPANY_ID": 1
+
+        // this.approvalTempForm.reset();
+        // this.cdr.detectChanges();  // Manually trigger change detection
+
+
+       const new_instr =  {
+        typE_DESC:result[0].typE_DESC,
+        attributE2:result[0].typE_CODE,
+        mkey:result[0].mkey
       }
-        this.instruDetailsList.push(result);
+        this.instruDetailsList.push(new_instr);
       }
     });
   }
@@ -813,7 +809,6 @@ export class AddApprovalTempelateComponent implements OnInit {
     });
 
     this.selectedDocsMap['endResult'] = mappedSelectedArray;
-
   }
 
 
@@ -833,6 +828,7 @@ export class AddApprovalTempelateComponent implements OnInit {
         allSelectedMkeys = [...allSelectedMkeys, ...selectedMkeys];
       }
     }
+
 
     let selectedItems = this.instruDetailsList.filter(doc => allSelectedMkeys.includes(doc.mkey));
 
@@ -1217,7 +1213,7 @@ export class AddApprovalTempelateComponent implements OnInit {
 
   checkValueForNewRow_1() {
     const formArray_new_1 = this.approvalTempForm.get('rows_new') as FormArray;
-    console.log('formArray_new_1', formArray_new_1);
+    // console.log('formArray_new_1', formArray_new_1);
     console.log('this.taskData.sanctioninG_DEPARTMENT_LIST', this.taskData.sanctioninG_DEPARTMENT_LIST);
 
     formArray_new_1.clear();
@@ -1362,7 +1358,7 @@ export class AddApprovalTempelateComponent implements OnInit {
     const requiredFields: string[] = [];
     const valid = this.approvalTempForm.valid;
   
-    console.log('this.approvalTempForm.valid: ', valid);
+    // console.log('this.approvalTempForm.valid: ', valid);
   
     const addControlError = (message: string) => requiredControls.push(message);
   
@@ -1407,7 +1403,6 @@ export class AddApprovalTempelateComponent implements OnInit {
   
     for (let i = 0; i < subAuth.length; i++) {
       const current = subAuth[i];
-      console.log('current', current)
 
       if (previousRow && current.LEVEL === previousRow.LEVEL) {
         if (current.START_DATE <= previousRow.END_DATE) {

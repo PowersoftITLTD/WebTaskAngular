@@ -28,7 +28,7 @@ const routes: Routes = [
   { path: 'task', loadChildren: () => import('../app/task-management/task-management.module').then(m => m.TaskManagementModule), canActivate: [AuthGuardGuard] },
 
   // add recursive task
-  { path: 'recursive-task', loadChildren: () => import('../app/add-recursive-task/add-recursive-task.module').then(m => m.AddRecursiveTaskModule), canActivate: [AuthGuardGuard] },
+  { path: 'recursive-task', loadChildren: () => import('../app/add-recursive-new/add-recursive-task-new.module').then(m => m.AddRecursiveTaskNewModule), canActivate: [AuthGuardGuard] },
 
   //add approval tempelate
   { path: 'approval-tempelate', loadChildren:() => import('../app/approval-tempelate/approval-tempelate.module').then(m => m.ApprovalTempelateModule), canActivate:[AuthGuardGuard] },
@@ -37,7 +37,10 @@ const routes: Routes = [
   { path: 'project-uploader', loadChildren: () => import('../app/project-uploader/project-uploader.module').then(m => m.ProjectUploaderModule), canActivate: [AuthGuardGuard] },
 
   //approvals
-  { path:'approvals', loadChildren:()=> import('../app/approvals/approvals.module').then(m => m.ApprovalsModule), canActivate:[AuthGuardGuard]}
+  { path:'approvals', loadChildren:()=> import('../app/approvals/approvals.module').then(m => m.ApprovalsModule), canActivate:[AuthGuardGuard]},
+
+  //Compliance
+  { path:'compliance', loadChildren:()=> import('../app/compliance/compliance.module').then(m => m.ComplianceModule), canActivate:[AuthGuardGuard] }
 
 ];
 

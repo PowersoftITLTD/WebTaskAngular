@@ -62,7 +62,7 @@ export class AddInstructionDialogComponent implements OnInit {
         console.log('Instruction added successfully', response);
         if (response.Status === 'Ok' && response.Message === 'Inserted Successfully') {
           this.tostar.success('Instruction added successfully');
-          this.dialogRef.close(addInstruction);
+          this.dialogRef.close(response.data);
           // this.categoryForm.reset();
           // this.router.navigate(['task/approval-screen'], { queryParams: { source: 'category-master' } });
         } else if (response.Status === 'Error' && response.Message === 'Category already exists!!!') {

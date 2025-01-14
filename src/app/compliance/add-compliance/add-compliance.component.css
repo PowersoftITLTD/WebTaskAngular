@@ -1,0 +1,160 @@
+/* @import url('../../../assets/Content/css/main.css'); */
+
+.progress {
+    background: #bebfbf;
+    border-radius: 20px;
+    margin: 0;
+}
+
+.progress .progress-bar {
+    border-radius: 20px;
+    box-shadow: none;
+    animation: animate-positive 2s;
+}
+
+.treegrid-indent {
+    width: 16px;
+    height: 16px;
+    display: inline-block;
+    position: relative;
+}
+
+.spinner-grow {
+    display: inline-block;
+    width: 2rem;
+    height: 2rem;
+    vertical-align: text-bottom;
+    background-color: currentColor;
+    border-radius: 50%;
+    opacity: 0;
+    -webkit-animation: spinner-grow .75s linear infinite;
+    animation: spinner-grow .75s linear infinite;
+}
+
+
+.product-details-wrapper {
+    width: calc(100% - 300px); 
+    float: right;
+}
+
+.app-side-panel-wrapper {
+    position: absolute; 
+    top: 0; 
+    left: 0; 
+    width: 0rem;
+    height: 100%;
+    background-color: #f1f1f1;
+}
+
+small{
+  color: red;
+}
+
+body{
+    padding-left: 240px;
+}
+
+.menu {
+    position: absolute !important;
+    top: 0px !important; 
+    left: 10px !important;
+    background-color: white !important;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    z-index: 1000 !important;
+}
+
+.menu.inactive {
+    display: none !important;
+}
+
+
+.menu ul {
+    list-style: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.menu ul li {
+    padding: 5px !important;
+}
+
+.menu ul li a {
+    text-decoration: none !important;
+    color: #333 !important;
+}
+
+.menu ul li.divider {
+    border-top: 1px solid #ddd !important;
+}
+
+.active{
+    background-color: white;
+}
+
+.active:hover {
+    background-color: aquamarine; 
+}
+
+
+  .tab-content {
+    max-height: calc(100vh - 200px); 
+    overflow-y: auto; 
+  }
+  
+  .tab-content::-webkit-scrollbar {
+    width: 8px; 
+  }
+  
+  .tab-content::-webkit-scrollbar-track {
+    background-color: transparent; 
+  }
+  
+  .tab-content::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.3); 
+    border-radius: 4px; 
+  }
+  
+  .tab-content::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+
+  .cate{
+    width: 80%;
+  }
+
+
+  .form-group {
+    margin-bottom: 0.2rem !important; 
+  }
+  
+  .form-group label {
+    margin-bottom: 0.2rem !important; 
+  }
+  
+  .form-group input,
+  .form-group textarea {
+    padding: 0.2rem !important;
+    height: auto !important; 
+  }
+
+  @media only screen and (max-width: 992px) {
+   
+    body{
+        padding-left: 0px;
+    }
+
+    .cate{
+        width: 100%;
+    }
+
+      .description{
+        margin-top: 10rem;
+      }
+  }
+
+
+  @media only screen and (max-width: 992px) and (min-width:767px){
+    .description{
+        margin-top: 1rem;
+      }
+  }

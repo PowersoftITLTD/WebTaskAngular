@@ -4,6 +4,7 @@ import { TaskManagementComponent } from './task-management/task-management.compo
 import { SelectedTaskInfoComponent } from '../task-details/add-task/selected-task-info/selected-task-info.component';
 import { RecursiveTaskManagementComponent } from './recursive-task-management/recursive-task-management.component';
 import { ApprovalScreenComponent } from './approval-screen/approval-screen.component';
+import { ComplianceManagementComponent } from './compliance-management/compliance-management.component';
 // import { AddTaskComponent } from '../task-details/add-task/add-task.component';
 
 const routes: Routes = [
@@ -15,8 +16,8 @@ const routes: Routes = [
   { path:'approval-screen', component:ApprovalScreenComponent},
   { path:'selected-task-info', component:SelectedTaskInfoComponent},
   { path:'selected-task-info/:task', component:SelectedTaskInfoComponent},
-  { path:'task/selected-task-info/:task', component:SelectedTaskInfoComponent}
-
+  { path:'task/selected-task-info/:task', component:SelectedTaskInfoComponent},
+  { path:'compliance-management', component:ComplianceManagementComponent}
 ];
 
 @NgModule({

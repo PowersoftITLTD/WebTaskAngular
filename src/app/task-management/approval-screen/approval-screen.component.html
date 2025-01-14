@@ -39,11 +39,23 @@
                                     <div class="page-content-card" style="height:100%;" >
                                  
                                         <div class="toolbar d-flex align-items-center justify-content-between p-3 p-sm-6" >
-                                            
-                                                <select class="custom-select mb-2 mr-sm-1 mb-sm-0" placeholder="Order" (change)="onFilterTypeChange($event)" ng-model="selected">
-                                                    <option [value]="'creationDate'" [selected]="filterType === 'creationDate'">Creation Date</option>
-                                                    <option [value]="'completionDate'" [selected]="filterType === 'completionDate'">Completion Date</option>
-                                                </select>
+
+                                                <div >
+                                                    <select class="custom-select mb-2 mr-sm-1 mb-sm-0" placeholder="Order" (change)="onFilterTypeChange($event)" ng-model="selected">
+                                                        <option [value]="'creationDate'" [selected]="filterType === 'creationDate'">Creation Date</option>
+                                                        <option [value]="'completionDate'" [selected]="filterType === 'completionDate'">Completion Date</option>
+                                                    </select>
+                                                </div>
+                                              
+                                                <!-- <div *ngIf="buttonText === 'ADD Category'">
+                                                    <button class="btn-primary mr-2" (click)="changeEndAndCheckList('End List')">
+                                                        End List
+                                                    </button>
+                                                    <button class="btn-warning" (click)="changeEndAndCheckList('Check List')">
+                                                        Check List
+                                                    </button>
+                                                </div> -->
+                                              
                                                 <button type="button" (click)="toggleSortOrder()" style="background-color: white;">
                                                     <i class="fas fa-sort-amount-up-alt" [hidden]="!isAscending" [class.active]="isAscending"></i>
                                                     <i class="fas fa-sort-amount-down-alt" [hidden]="isAscending" [class.active]="!isAscending"></i>
@@ -62,14 +74,12 @@
                                                             <div class="info col px-4" type="button" (click)="openSelectedTask(t)"  >
 
 
-                                                              <ng-container *ngIf="buttonText !== 'ADD Template'">
-                                                                <div class="title" style="font-family: 'Muli', 'Helvetica Neue', 'Arial', sans-serif;font-weight:bold;float:left;width:100%">
-                                                                    
-                                                                    <span style="color:#328da8;">{{i+1}}</span>
+                                                              <ng-container *ngIf="buttonText !== 'ADD Template' && buttonText !== 'ADD Category'">
+                                                                <div class="title" style="font-family: 'Muli', 'Helvetica Neue', 'Arial', sans-serif;font-weight:bold;float:left;width:100%">                                                                    
+                                                                    <!-- <span style="color:#328da8;">{{i+1}}</span> -->
                                                                     {{t.shorT_DESCRIPTION}} <span style="float:right;color:#328da8;margin-left:154px;"></span>
                                                                     {{t.legaL_ENTITY}} <span style="float:right;color:#328da8;margin-left:154px;"></span>
                                                                     {{t.DOC_NUMBER}} <span style="float:right;color:#328da8;margin-left:154px;"></span>
-
                                                                 </div>
                                                               </ng-container>  
                                                                  
@@ -81,6 +91,13 @@
                                                                     {{t.doC_NAME}}
                                                                     {{t.DOC_NUMBER}}
                                                                 </div>
+
+                                                                <div  *ngIf="buttonText === 'ADD Category' || buttonText === 'ADD Instruction'" style="font-family: 'Muli', 'Helvetica Neue', 'Arial', sans-serif;font-weight:bold;float:left;width:100%" >                                                
+                                                                    <span style="color:#328da8;">{{i+1}}</span>
+
+                                                                    {{t.typE_DESC}}
+                                                                    {{t.TYPE_DESC}}
+                                                                </div>
                                                                 <!-- <div *ngIf="buttonText === 'ADD Template'" class="notes mt-1" >                                                
                                                                     {{t.doC_NAME}}
                                                                 </div>                                                           -->
@@ -90,7 +107,8 @@
 
                                                                
                                                                 
-                                                                <div class="tags" >
+                                                                <div class="tags" *ngIf="buttonText !== 'ADD Category' && buttonText !== 'ADD Instruction'"
+                                                                >
                                                                     <div class="tag badge mt-2 mr-1" *ngIf="t.category_Name">
                                                                         <div class="row no-gutters align-items-center">
                                                                             <i class="fas fa-folder small-icon pt-2 mb-1"></i>                                                 

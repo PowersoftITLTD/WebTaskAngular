@@ -199,11 +199,11 @@ export class InstructionMasterComponent implements OnInit {
         DELETE_FLAG: deleteFlag  // Pass 'Y' for delete or 'N' for save
       };
   
-      console.log('update instriuction', updateINST);
+      // console.log('update instriuction', updateINST);
 
-      console.log('updateINST token', token);
+      // console.log('updateINST token', token);
 
-      console.log('JSON.stringify(updateINST)', JSON.stringify(updateINST) );
+      // console.log('JSON.stringify(updateINST)', JSON.stringify(updateINST) );
   
       this.apiService.putInstructionDetails(JSON.stringify(updateINST), token).subscribe({
         next: (data) => {
@@ -225,6 +225,7 @@ export class InstructionMasterComponent implements OnInit {
     onDeleteClick() {
       const confirmDelete = confirm("Are you sure you want to delete?");
       if (confirmDelete) {
+        this.isInstructionUpdate = true;
         console.log('Delete click');
         this.onsubmit('Y');
       } else {
@@ -255,6 +256,7 @@ export class InstructionMasterComponent implements OnInit {
   
     onsubmit(flag?: string) {
   
+      console.log('Check flag: ',flag)
   
       console.log('this.isCategoryUpdate', this.isCategoryUpdate);
       console.log('this.isInstructionUpdate', this.isInstructionUpdate);
@@ -265,7 +267,7 @@ export class InstructionMasterComponent implements OnInit {
         } else if (!this.taskData || !this.taskData?.MKEY) {
           this.addINSTR();
         } else {
-          if (flag === 'Y') {
+          if (flag === 'Y') {            
             this.updateINST('Y');
           } else {
             this.updateINST('N');

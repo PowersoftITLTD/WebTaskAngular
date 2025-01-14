@@ -220,6 +220,7 @@ export class CategoryMasterComponent implements OnInit, OnDestroy {
     const confirmDelete = confirm("Are you sure you want to delete?");
     if (confirmDelete) {
       console.log('Delete click');
+      this.isCategoryUpdate = true
       this.onsubmit('Y');
     } else {
       console.log('Delete cancelled');

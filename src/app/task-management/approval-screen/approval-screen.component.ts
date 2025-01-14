@@ -38,6 +38,8 @@ export class ApprovalScreenComponent implements OnInit {
   docTypeList:any[] = [];
   SanctoningAuthList:any[]=[];
   SanctoningDeptList:any[]=[];
+  catList:any[]=[];
+  INSTRList:any[]=[];
 
   options: any[] = [];
   employees: any[] = [];
@@ -97,10 +99,21 @@ export class ApprovalScreenComponent implements OnInit {
       } else if(source === 'project-document-depository'){
         this.getDocumentDepository();
         this.buttonText = 'ADD Depository'
+      }else if(source === 'category-master'){
+        this.buttonText = 'ADD Category'
+        this.getCategoryList();
+      }else if(source === 'instruction-master'){
+        this.buttonText = 'ADD Instruction'
+        this.getINSTRList();
       }
     })
 
 
+  }
+
+
+  changeEndAndCheckList(select_type:string){
+    console.log('select_type', select_type)
   }
 
 
@@ -193,8 +206,6 @@ onFilterTypeChange(event: Event) {
 
 openSelectedTask(data: any) {
   console.log('Data passed:', data); 
-
- 
   
   const button = this.buttonText;
   if (button === 'ADD Template') {
@@ -205,6 +216,10 @@ openSelectedTask(data: any) {
     this.router.navigate(['approvals', 'project-defination', { Temp_Id: data.mkey }], {state: { taskData: data }});
   }else if(button === 'ADD Depository'){
     this.router.navigate(['approvals', 'project-document-depository', { Temp_Id: data.MKEY }], {state: { taskData: data }});
+  }else if(button === 'ADD Category'){
+    this.router.navigate(['approvals', 'category-master', {Temp_Id:data.mkey}], {state: { taskData: data }})
+  }else if(button === 'ADD Instruction'){
+    this.router.navigate(['approvals', 'instruction-master', {Temp_Id:data.MKEY}], {state: { taskData: data }})
   }
 }
 
@@ -220,6 +235,10 @@ addApprovalTemp(add_new_data:any){
     this.router.navigate(['approvals', 'project-defination', { Temp_Id: add_new_data }]);
   }else if(button === 'ADD Depository'){
     this.router.navigate(['approvals', 'project-document-depository', { Temp_Id: add_new_data }]);
+  }else if(button === 'ADD Category'){
+    this.router.navigate(['approvals', 'category-master', { Temp_Id: add_new_data }])
+  }else if(button === 'ADD Instruction'){
+    this.router.navigate(['approvals', 'instruction-master', { Temp_Id: add_new_data }])
   }
 
 }
@@ -287,6 +306,17 @@ fetchComboDetails(){
       console.error('Unable to fetch Statutory Authority List', error);
     }
   });
+
+
+  this.apiService.getDocTypeDP(this.recursiveLogginUser).subscribe({
+    next: (list: any) => {
+      this.catList = list
+
+    },
+    error: (error: any) => {
+      console.error('Unable to fetch Document Type List', error);
+    }
+  });
 }
 
 setCategoryData(): void {
@@ -298,11 +328,11 @@ setCategoryData(): void {
       if (matchedCategory) {
         task.category_Name = matchedCategory.typE_DESC; 
       } else {
-        console.log('No matching category found for doC_CATEGORY:', task.doC_CATEGORY);
+        // console.log('No matching category found for doC_CATEGORY:', task.doC_CATEGORY);
       }
     });
 
-    console.log('Updated taskList with category names:', this.taskList);
+    // console.log('Updated taskList with category names:', this.taskList);
   }
 }
 
@@ -423,6 +453,39 @@ getApprovalTempList(){
         }
       }
     })
+  }
+
+
+  getCategoryList(){
+    this.docTypeList = this.taskList
+    this.recursiveLogginUser = this.apiService.getRecursiveUser();
+
+    this.apiService.getDocCategory(this.recursiveLogginUser).subscribe({
+      next: (list: any) => {
+        this.catList = list;
+        this.taskList = this.catList
+      },
+      error: (error: any) => {
+        console.error('Unable to fetch Document Type List', error);
+      }
+    });
+  }
+
+
+  getINSTRList(){
+    this.docTypeList = this.taskList
+    this.recursiveLogginUser = this.apiService.getRecursiveUser();
+
+    this.apiService.getInstructionList(this.recursiveLogginUser).subscribe({
+      next: (list: any) => {
+        this.INSTRList = list;
+        this.taskList = this.INSTRList
+        console.log('INSTRList: ',this.taskList)
+      },
+      error: (error: any) => {
+        console.error('Unable to fetch Document Type List', error);
+      }
+    });
   }
   
 
