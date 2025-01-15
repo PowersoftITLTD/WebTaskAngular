@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, ErrorHandler, Input, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Component, ErrorHandler, Input, OnDestroy, OnInit } from '@angular/core';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { ApiService } from 'src/app/services/api/api.service';
@@ -12,7 +12,7 @@ import { SideBarService } from 'src/app/services/side-panel/side-bar.service';
   templateUrl: './add-compliance.component.html',
   styleUrls: ['./add-compliance.component.css']
 })
-export class AddComplianceComponent implements OnInit {
+export class AddComplianceComponent implements OnInit, OnDestroy {
 
   complianceForm: FormGroup | any
 
@@ -35,6 +35,11 @@ export class AddComplianceComponent implements OnInit {
 
   jobRoleList: any[] = [];
   departmentList: any[] = [];
+  raisedAtList:any[] = [];
+
+  taskData: any;
+
+
   category: any = [];
   project: any = [];
   sub_proj: any = [];
@@ -44,6 +49,7 @@ export class AddComplianceComponent implements OnInit {
   filteredEmployees: any[] = [];
 
   inputHasValue: boolean = false;
+  updatedDetails: boolean = false;
 
 
   constructor(
@@ -54,9 +60,42 @@ export class AddComplianceComponent implements OnInit {
         private http: HttpClient,
         private router: Router,
         // private sidebarService: SideBarService
-  ) { }
+  ) { 
+
+    const navigation: any = this.router.getCurrentNavigation();
+    const isNewTemp = sessionStorage.getItem('isNewTemp') === 'true';
+    console.log(isNewTemp)
+    if (navigation?.extras.state) {
+      const RecursiveTaskData: any = navigation.extras.state.taskData;
+      this.taskData = RecursiveTaskData;
+      console.log('RecursiveTaskData', this.taskData)
+
+      if (RecursiveTaskData.mkey) {
+        this.updatedDetails = !isNewTemp;
+      } else {
+        this.updatedDetails = false;
+      }
+
+      sessionStorage.setItem('task', JSON.stringify(RecursiveTaskData));
+      sessionStorage.removeItem('add_new_task');
+    } else {
+      const RecursiveTaskData = sessionStorage.getItem('task');
+      if (RecursiveTaskData) {
+        try {
+          this.taskData = JSON.parse(RecursiveTaskData);
+          if (!isNewTemp) {
+            this.updatedDetails = this.taskData.mkey ? true : false;
+          }
+        } catch (error) {
+          console.error('Failed to parse task data', error);
+        }
+      }
+    }  
+  }
 
   ngOnInit(): void {
+
+    console.log(this.taskData)
 
     this.onLogin();
     this.complianceFormInitlize();
@@ -82,6 +121,12 @@ export class AddComplianceComponent implements OnInit {
         status:['', Validators.required],
         tags:['', Validators.required]
     })
+
+    if(this.taskData && this.taskData.MKEY){
+      this.complianceForm.patchValue({responsibleDepartment:this.taskData.RESPONSIBLE_DEPARTMENT});
+      this.complianceForm.patchValue({jobRole:this.taskData.JOB_ROLE});
+      this.complianceForm.patchValue({raisedAt: this.taskData.RAISED_AT});      
+    }
   }
 
 
@@ -131,15 +176,26 @@ export class AddComplianceComponent implements OnInit {
     });
 
 
+    this.apiService.getRaisedAt(this.recursiveLogginUser).subscribe({
+      next: (list: any) => {
+        this.raisedAtList = list
 
+        console.log('Raised At', this.raisedAtList)
+
+      }, error: (error: ErrorHandler) => {
+        this.tostar.error('Error occured while fetching Raised At')
+
+        console.log(error)
+      }
+    });
 
     this.apiService.getDepartmentDP(this.recursiveLogginUser).subscribe({
-      next: (list: any) => {
+      next:(list:any)=>{
         this.departmentList = list
         this.setDepartmentName();
 
       }, error: (error: ErrorHandler) => {
-
+        this.tostar.error('Error occured while fetching Responsible Department')
       }
     })
 
@@ -184,32 +240,39 @@ export class AddComplianceComponent implements OnInit {
 
 
 setJobName(): void {
-  // if (this.taskData && this.taskData.MKEY) {
+  if (this.taskData && this.taskData.MKEY) {
 
-  //   // console.log('this.departmentList', this.jobRoleList)
-  //   const matchedJobRole = this.jobRoleList.find((role: any) =>
-  //     role.mkey === Number(this.taskData.JOB_ROLE)
-  //   );
+    // console.log('this.departmentList', this.jobRoleList)
+    const matchedJobRole = this.jobRoleList.find((role: any) =>
+      role.mkey === Number(this.taskData.JOB_ROLE)
+    );
 
-  //   if (matchedJobRole) {
-  //     this.taskData.JOB_ROLE_NAME = matchedJobRole.typE_DESC;
-  //   }
-  // }
+    if (matchedJobRole) {
+      this.taskData.JOB_ROLE_NAME = matchedJobRole.typE_DESC;
+    }
+  }
 }
 
 
 setDepartmentName(): void {
-  // if (this.taskData && this.taskData.MKEY) {
+  if (this.taskData && this.taskData.MKEY) {
 
-  //   // console.log('this.departmentList', this.departmentList)
-  //   const matchedDept = this.departmentList.find((department: any) =>
-  //     department.mkey === Number(this.taskData.AUTHORITY_DEPARTMENT)
-  //   );
+    const matchedDept = this.departmentList.find((department: any) =>
 
-  //   if (matchedDept) {
-  //     this.taskData.AUTHORITY_DEPARTMENT_NAME = matchedDept.typE_DESC;
-  //   }
-  // }
+      department.mkey === Number(this.taskData.RESPONSIBLE_DEPARTMENT)
+    );
+
+    console.log('Dept List: ', this.departmentList)
+
+    console.log('matchedDept', matchedDept)
+
+
+    if (matchedDept) {
+      this.taskData.AUTHORITY_DEPARTMENT_NAME = matchedDept.typE_DESC;
+
+      console.log(this.taskData)
+    }
+  }
 }
 
   fetchEmployeeName(): void {
@@ -242,6 +305,8 @@ setDepartmentName(): void {
           }
 
           this.employees.push({ Assign_to: capitalizedFullName, MKEY: MKEY });
+          this.setEmpName();
+
         });
         // console.log('this.employees', this.employees);    
       },
@@ -299,6 +364,74 @@ setDepartmentName(): void {
     }
   
 
+    onAddAndUpdateCompliance(){
+
+      const token = this.apiService.getRecursiveUser();
+      const user_data = this.credentialService.getUser();
+
+      const assignedToValue = this.complianceForm.get('responsiblePerson')?.value;
+      const assignedEmployee = this.employees.find(employee => employee.Assign_to === assignedToValue);
+      const  assignedEmployeeMKey = assignedEmployee ? assignedEmployee.MKEY : null;
+
+
+      const tagsValue = this.complianceForm.get('tags')?.value;
+
+      let tagsString = '';
+      // console.log('tagsValue', tagsValue)
+  
+      if (Array.isArray(tagsValue)) {
+        tagsString = tagsValue.map(tag => {
+          if (typeof tag === 'string') {
+            return tag;
+          } else if (tag.display) {
+            return tag.display;
+          } else {
+            return '';
+          }
+        }).join(',');
+      }
+
+
+      const PROJECT = this.complianceForm.get('property')?.value;
+      const SUB_PROJECT = this.complianceForm.get('building')?.value;
+
+      console.log('Task Data', this.taskData)
+
+      let mkey
+      
+
+      const compliance_data = {
+        MKEY: this.taskData && this.taskData.MKEY ? this.taskData.MKEY : 0,
+        PROPERTY:this.complianceForm.get('property')?.value.MKEY,
+        BUILDING:this.complianceForm.get('building')?.value.MKEY,
+        SHORT_DESCRIPTION:this.complianceForm.get('shortDescription')?.value,
+        LONG_DESCRIPTION:this.complianceForm.get('longDescription')?.value,
+        RAISED_AT:this.complianceForm.get('raisedAt')?.value,
+        RESPONSIBLE_DEPARTMENT:this.complianceForm.get('responsibleDepartment')?.value,
+        JOB_ROLE:this.complianceForm.get('jobRole')?.value,
+        RESPONSIBLE_PERSON:assignedEmployeeMKey,
+        TO_BE_COMPLETED_BY:this.complianceForm.get('toBeCompletedBy')?.value,
+        NO_DAYS:this.complianceForm.get('noOfDays')?.value,
+        STATUS:this.complianceForm.get('status')?.value,
+        Tags:tagsString,
+        DELETE_FLAG:'N',
+        CREATED_BY:user_data[0].MKEY
+      }
+
+
+      this.apiService.postComplianceDetails(compliance_data, token).subscribe({
+        next:(data)=>{
+          console.log('Data updated successfully',data)
+        },error:(error:ErrorHandler)=>{
+
+          console.log(error)
+          this.tostar.error('Unable to send Request', 'Error occured')
+        }
+      })
+
+      console.log('compliance_data: ',compliance_data)
+    }
+
 
   filterEmployees(event: Event): void {
     const value = (event.target as HTMLInputElement).value.trim();
@@ -319,9 +452,70 @@ setDepartmentName(): void {
     // console.log('filteredEmployees', this.filteredEmployees);
   }
 
-  createData(){
-    const values = this.complianceForm.value
-    console.log('Values', values)
+  setEmpName(): void {
+    if (this.taskData && this.taskData.MKEY) {
+  
+      // console.log('setEmpName',this.employees)
+      // console.log('this.departmentList', this.departmentList)
+      const matchedEmp = this.employees.find((employee: any) =>
+        employee.MKEY === Number(this.taskData.RESPONSIBLE_PERSON)
+      );
+  
+      // console.log('matchedEmp', matchedEmp)
+  
+      if (matchedEmp) {
+        this.taskData.emp_name = matchedEmp.Assign_to;
+      }
+    }
   }
+
+
+   onSubmit() {
+      // const requiredControls: string[] = [];
+      // const requiredFields: string[] = [];
+      // const valid = this.complianceForm.valid;
+    
+      // // console.log('this.approvalTempForm.valid: ', valid);
+    
+      // const addControlError = (message: string) => requiredControls.push(message);
+    
+      // const convertToTitleCase = (input: string) => {
+      //   return input.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase()).trim() + ' is required';
+      // };
+    
+      // // Check for required form controls
+      // Object.keys(this.complianceForm.controls).forEach(controlName => {
+      //   const control = this.complianceForm.get(controlName);
+      //   if (control?.errors?.required) {
+      //     // Convert camelCase to Title Case
+      //     const formattedControlName = convertToTitleCase(controlName);
+      //     addControlError(formattedControlName);
+      //   }
+      // });
+    
+      // // If required controls are missing, show error
+      // if (requiredControls.length > 0) {
+      //   const m = `${requiredControls.join(' , ')}`;
+      //   this.tostar.error(`${m}`);
+      //   return;
+      // }
+      this.onAddAndUpdateCompliance();
+
+      return true;
+    }
+
+  createData(){
+    this.onAddAndUpdateCompliance();
+    // const values = this.complianceForm.value
+    // console.log('Values', values)
+  }
+
+  ngOnDestroy(): void {
+    console.log('Component is being destroyed');
+
+    sessionStorage.removeItem('task');
+  }
+
+
 
 }

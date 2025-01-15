@@ -1,215 +1,301 @@
 <body class="layout  layout-left-navigation layout-below-toolbar layout-below-footer" class="side-bar-scroll">
-    <main>
-      <div id="wrapper">
-  
-  
-        <div class="content-wrapper">
-  
-          <div class="">
-  
-            <!-- <app-side-panel></app-side-panel>   -->
-  
-            <div id="e-commerce-product" class="simple tabbed">
-              <!-- HEADER -->
-  
-              <app-header-bar (loggedInUserEmitter)="receiveLoggedInUser($event)"></app-header-bar>
-  
-              <div class="tab-pane fade show"  id="basic-info-tab-pane" role="tabpanel"
-                aria-labelledby="basic-info-tab"> <!--*ngIf="selectedTab === 'taskInfo'"-->
-  
-                <div class="bg-primary py-6 text-auto row align-items-center justify-content-between p-0">
-  
-                  <div class="row no-gutters align-items-center">
-                    <div class="product-image mr-4 ml-8">
-                      <img src="../../../../assets/Content/images/ecommerce/product-image-placeholder.png">
-                    </div>
-                    <div>
-                      <b>Task Detail</b>
-                    </div>
+  <main>
+    <div id="wrapper">
+
+
+      <div class="content-wrapper">
+
+        <div class="">
+
+
+          <div id="e-commerce-product" class="simple tabbed">
+
+            <app-header-bar (loggedInUserEmitter)="receiveLoggedInUser($event)"></app-header-bar>
+
+            <div class="tab-pane fade show" id="basic-info-tab-pane" role="tabpanel" aria-labelledby="basic-info-tab">
+
+              <div class="bg-primary py-6 text-auto row align-items-center justify-content-between p-0">
+
+                <div class="row no-gutters align-items-center">
+                  <div class="product-image mr-4 ml-8">
+                    <img src="../../../../assets/Content/images/ecommerce/product-image-placeholder.png">
                   </div>
-  
-                  <div class="flex-grow-1"></div>
-  
-                  <div class="mr-8">
-                    <button type="button" class="btn btn-light" (click)="createData()"  id="btnSaveTask"> <!--(click)="onSubmit()"-->
-                      SAVE
-                    </button>
+                  <div>
+                    <b>Compliance Detail</b>
                   </div>
                 </div>
-  
-                <br>
-                <div class="container-fluid">
-                  <div class="card p-5 tab-content">
-                    <form [formGroup]="complianceForm" (ngSubmit)="createData()"> <!--[formGroup]="taskForm" (ngSubmit)="createData()"-->
-                      <div class="row" >
-                        <div class="col-xs-12 col-xl-4 col-md-4">
-                          <div class="form-group">
-                            <label for="category">Status <small>*</small></label>
-                            <select class="h6 custom-select form-control cate" formControlName="status"> <!-- (change)="getPrivateCategory($event)"-->
-                              <option value="" selected>--Select--</option>
-                              <option  >Status</option> <!--*ngFor="let Cat of category" [value]="Cat.TYPE_DESC"-->
-                            </select>
-                          </div>
-                        </div>
-                        <div class="col-xs-12 col-xl-8 col-md-8">
-                          <div class="form-group">
-                            <label for="taskName">Short Description <small>*</small></label>
-                            <input type="text" maxlength="150" class="form-control" maxlength="150"
-                             formControlName="shortDescription" >
-                            <div *ngIf="taskNameMaxLength()">Max 150 Characters</div>
-                          </div>
-                        </div>
-                      </div>
-                     
-  
-                      <div class="row">
-                        <div class="col-xs-12 col-xl-4 col-md-4">
-                          <div class="form-group">
-                            <label for="project">Property</label>
+
+                <div class="flex-grow-1"></div>
+
+                <div class="mr-8">
+                  <button type="button" class="btn btn-light" (click)="onSubmit()" id="btnSaveTask">
+                    {{ taskData?.MKEY ? 'Update' : 'Save' }}
+                  </button>
+                </div>
+              </div>
+
+              <br>
+
+              <div class="container-fluid">
+                <div class="card p-5 tab-content">
+                  <form [formGroup]="complianceForm" (ngSubmit)="createData()">
+
+                    <div class="row">
+                      <div class="col-xs-12 col-xl-6 col-md-4">
+                        <div class="form-group">
+                          <label for="project">Property</label>
+
+                          <ng-container *ngIf="taskData?.MKEY">
                             <select class="h6 custom-select cate" formControlName="property" #projectSelect
                               (change)="onProjectSelect(projectSelect)">
                               <option value="" selected>Select</option>
                               <option *ngFor="let p of project" [ngValue]="p">{{ p.TYPE_DESC }}</option>
                             </select>
-                          </div>
-                        </div>
-  
-  
-                        <div class="col-xs-12 col-xl-4 col-md-4">
-                          <div class="form-group">
-                            <label for="subProject">Building</label>
-                            <select class="h6 custom-select cate" formControlName="building" >
-                              <option value="" selected>Select</option>
-                              <option *ngFor="let s of sub_proj" [ngValue]="s">{{ s.TYPE_DESC }}</option>
-                            </select>
-                          </div>
-                        </div>
-  
-                        <div class="col-xs-12 col-xl-4 col-md-4">
-                          <div class="form-group">
-                            <label for="completionDate">To be completed by <small>*</small></label>
-                            <input type="date" class="form-control" formControlName="toBeCompletedBy"  aria-describedby="depth"
-                               />
-                          </div>
-                        </div>
-                      </div>
+                          </ng-container>
 
-                      <div class="row description">
-                        <div class="col-12">
-                          <div class="form-group">
-                            <label for="longDescription">Long Description <small>*</small></label>
-                            <textarea class="form-control" aria-describedby="task description" rows="3" maxlength="1000"
-                              formControlName="longDescription"></textarea>
-                            <div *ngIf="descriptionMaxLength()">Max 1000 Characters</div>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div class="row">
-                        <div class="col-xs-12 col-xl-4 col-md-4">
-                          <div class="form-group">
-                            <label for="assignedTo">Responsible Person <small>*</small></label>
-                            <input type="text" class="form-control" formControlName="responsiblePerson"                              
-                              (input)="filterEmployees($event)" appAlphabeticOnly placeholder="Search Name" />
-                            <div style="width: 100%;" class="pr-10 mt-1">
-                              <ul>
-                                <li *ngFor="let event of filteredEmployees; let i = index;" class="active" type="button"
-                                  [class.active]="filteredEmployees" (click)="selectEmployee(event);">
-                                  {{ event.Assign_to }}
-                                </li>
-                              </ul>
-                            </div>
-                          </div>
-                        </div>
-                        <div class="col-xs-12 col-xl-8 col-md-8">
-                          <div class="form-group">
-                            <label for="tags">Tags</label>
-                            <tag-input [addOnBlur]="true" [formControl]="complianceForm.get('tags')"> <!---->
-                              <tag-input-dropdown [autocompleteItems]="allTags" [showDropdownIfEmpty]="true"
-                                [dynamicUpdate]="true"></tag-input-dropdown>
-                            </tag-input>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div class="row">
-
-                        <div class="col-xs-12 col-xl-3 col-md-4">
-                          <div class="form-group">
-                            <label for="project">Raised At</label>
-                            <select class="h6 custom-select cate"  #projectSelect
+                          <ng-container *ngIf="!taskData?.MKEY">
+                            <select class="h6 custom-select cate" formControlName="property" #projectSelect
                               (change)="onProjectSelect(projectSelect)">
                               <option value="" selected>Select</option>
                               <option *ngFor="let p of project" [ngValue]="p">{{ p.TYPE_DESC }}</option>
                             </select>
-                          </div>
-                        </div>
+                          </ng-container>
 
-                        <div class="col-xs-12 col-xl-3 col-md-4">
-                          <div class="form-group">
-                            <label for="project">Job Role</label>
-                            <select class="h6 custom-select cate" >
-                              <option value="" selected>Select</option>
-                              <option *ngFor="let jobRole of jobRoleList" [ngValue]="jobRole.mkey">{{ jobRole.typE_DESC }}</option>
-                            </select>
-                          </div>
-                        </div>
-  
-  
-                        <div class="col-xs-12 col-xl-3 col-md-4">
-                          <div class="form-group">
-                            <label for="subProject">Responsible Department</label>
-                            <select class="h6 custom-select cate" >
-                              <option value="" selected>Select</option>
-                              <option *ngFor="let dept of departmentList" [ngValue]="dept">{{ dept.typE_DESC }}</option>
-                            </select>
-                          </div>
-                        </div>
-  
-                        <div class="col-xs-12 col-xl-3 col-md-4">
-                          <div class="form-group">
-                            <label for="taskName">No of Days <small>*</small></label>
-                            <input type="number" maxlength="150" formControlName="noOfDays" class="form-control" maxlength="150"
-                              >
-                            <div *ngIf="taskNameMaxLength()">Max 150 Characters</div>
-                          </div>
                         </div>
                       </div>
-  
-                      
-  
-  
-                      <!-- <div class="form-group">
-                        <div class="source-preview-wrapper">
-                          <div class="preview">
-                            <div class="preview-elements mb-3">
-                              <div class="custom-file" id="TaskInfocustom_file">
-                                <input type="file" class="custom-file-input" id="customFile" 
-                                  >
-                                <label class="custom-file-label" for="customFile" id="AttachmentDetails">Attachment if
-                                  any:</label>
-                              </div>
-                              <div id="dvAtchment" style="display:none">
-                                <a href="" target="_blank" id="DownAttchment">
-                                  <i class="fa fa-download" aria-hidden="true"></i><span>DownFileName</span>
-                                </a>
-                                <button type="button" style="background-color:transparent !important" aria-label="Close">
-                                  <img src="../../../../assets/Content/icons/Del.png" style="width:32px;" />
-                                </button>
-                              </div>
-                            </div>
+
+
+                      <div class="col-xs-12 col-xl-6 col-md-4">
+                        <div class="form-group">
+                          <label for="subProject">Building</label>
+                          <select class="h6 custom-select cate" formControlName="building">
+                            <option value="" selected>Select</option>
+                            <option *ngFor="let s of sub_proj" [ngValue]="s">{{ s.TYPE_DESC }}</option>
+                          </select>
+                        </div>
+                      </div>
+
+
+                    </div>
+
+                    <br>
+                   
+
+
+                    <div class="row description">
+
+                      <div class="col-xs-12 col-xl-4 col-md-8">
+                        <div class="form-group">
+                          <label for="taskName">Short Description</label>
+
+                          <ng-container *ngIf="taskData?.MKEY">
+                            <input type="text" maxlength="150" [(ngModel)]="taskData.SHORT_DESCRIPTION"
+                              class="form-control" maxlength="150" formControlName="shortDescription">
+                          </ng-container>
+
+                          <ng-container *ngIf="!taskData?.MKEY">
+                            <input type="text" maxlength="150" class="form-control" maxlength="150"
+                              formControlName="shortDescription">
+                          </ng-container>
+
+                          <div *ngIf="taskNameMaxLength()">Max 150 Characters</div>
+                        </div>
+                      </div>
+
+                      <div class="col-xs-12 col-xl-8 col-md-8">
+                        <div class="form-group">
+                          <label for="longDescription">Long Description</label>
+
+                          <ng-container *ngIf="taskData?.MKEY">
+                            <textarea class="form-control" [(ngModel)]="taskData.LONG_DESCRIPTION"
+                              aria-describedby="task description" rows="3" maxlength="1000"
+                              formControlName="longDescription"></textarea>
+                          </ng-container>
+
+                          <ng-container *ngIf="!taskData?.MKEY">
+                            <textarea class="form-control" aria-describedby="task description" rows="3" maxlength="1000"
+                              formControlName="longDescription"></textarea>
+                          </ng-container>
+
+                          <div *ngIf="descriptionMaxLength()">Max 1000 Characters</div>
+                        </div>
+                      </div>
+                    </div>            
+
+
+                    <div class="row">
+
+                    
+
+                      <div class="col-xs-12 col-xl-4 col-md-4">
+                        <div class="form-group">
+                          <label for="subProject">Responsible Department</label>
+
+                          <ng-container *ngIf="taskData?.MKEY">
+                            <select 
+                              class="h6 custom-select cate" 
+                              formControlName="responsibleDepartment">
+                              <option value="">--SELECT--</option>
+                              <option *ngFor="let dept of departmentList" [ngValue]="dept.mkey">
+                                {{ dept.typE_DESC }}
+                              </option>
+                            </select>
+                          </ng-container>
+                          
+
+                          <ng-container *ngIf="!taskData?.MKEY">
+                            <select class="h6 custom-select cate" formControlName="responsibleDepartment">
+                              <option value="" selected>Select</option>
+                              <option *ngFor="let dept of departmentList" [ngValue]="dept.mkey">{{ dept.typE_DESC }}
+                              </option>
+                            </select>
+                          </ng-container>
+                    
+                        </div>
+                      </div>
+
+                      <div class="col-xs-12 col-xl-4 col-md-4">
+                        <div class="form-group">
+                          <label for="project">Job Role</label>
+                          <select class="h6 custom-select cate" formControlName="jobRole">
+                            <option value="" selected>Select</option>
+                            <option *ngFor="let jobRole of jobRoleList" [ngValue]="jobRole.mkey">{{ jobRole.typE_DESC }}
+                            </option>
+                          </select>
+                        </div>
+                      </div>
+
+                      <div class="col-xs-12 col-xl-4 col-md-4">
+                        <div class="form-group">
+                          <label for="assignedTo">Responsible Person </label>
+
+                          <ng-container *ngIf="taskData?.MKEY">
+                            <input type="text" class="form-control" [(ngModel)]="taskData.emp_name"
+                              formControlName="responsiblePerson" (input)="filterEmployees($event)" appAlphabeticOnly />
+                          </ng-container>
+
+                          <ng-container *ngIf="!taskData?.MKEY">
+                            <input type="text" class="form-control" formControlName="responsiblePerson"
+                              (input)="filterEmployees($event)" appAlphabeticOnly placeholder="Search Name" />
+                          </ng-container>
+
+                          <div style="width: 100%;" class="pr-10 mt-1">
+                            <ul>
+                              <li *ngFor="let event of filteredEmployees; let i = index;" class="active" type="button"
+                                [class.active]="filteredEmployees" (click)="selectEmployee(event);">
+                                {{ event.Assign_to }}
+                              </li>
+                            </ul>
                           </div>
                         </div>
-                      </div> -->
-                    </form>
-                  </div>
+                      </div>                  
+                    </div>
+
+
+
+
+                 
+                    <br>
+                    <div class="row">
+                      <div class="col-xs-12 col-xl-3 col-md-4">
+                        <div class="form-group">
+                          <label for="category">Status </label>
+
+                          <ng-container *ngIf="taskData?.MKEY">
+                            <input type="text" maxlength="150" [(ngModel)]="taskData.STATUS" class="form-control"
+                              maxlength="150" formControlName="status">
+                          </ng-container>
+
+                          <ng-container *ngIf="!taskData?.MKEY">
+                            <input type="text" maxlength="150" class="form-control" maxlength="150"
+                              formControlName="status">
+                          </ng-container>
+
+
+                        </div>
+                      </div>
+
+                      <div class="col-xs-12 col-xl-3 col-md-4">
+                        <div class="form-group">
+                          <label for="project">Raised At</label>
+                          <select class="h6 custom-select cate" formControlName="raisedAt">
+                            <option value="" selected>Select</option>
+                            <option *ngFor="let r of raisedAtList" [ngValue]="r.mkey">{{ r.typE_DESC }}</option>
+                          </select>
+                        </div>
+                      </div>
+
+                      <div class="col-xs-12 col-xl-6 col-md-8">
+                        <div class="form-group">
+                          <label for="tags">Tags</label>
+                          <tag-input [addOnBlur]="true" [formControl]="complianceForm.get('tags')">
+                            <tag-input-dropdown [autocompleteItems]="allTags" [showDropdownIfEmpty]="true"
+                              [dynamicUpdate]="true"></tag-input-dropdown>
+                          </tag-input>
+                        </div>
+                      </div>
+
+                    
+                    </div>
+
+                 
+
+                     <br>
+                     <fieldset>
+                      <legend><b>To be completed by:</b></legend>
+
+                      <div class="row" style="background-color: rgb(220, 227, 227); height: 10rem;">
+    
+                          <div class="col-xs-12 col-xl-4 col-md-4">
+                            <div class="form-group mt-2">
+                              <label for="taskName">No of Days</label>
+    
+                              <ng-container *ngIf="taskData?.MKEY">
+                                <input type="number" maxlength="150" [(ngModel)]="taskData.NO_DAYS"
+                                  formControlName="noOfDays" class="form-control" maxlength="150">
+                              </ng-container>
+    
+                              <ng-container *ngIf="!taskData?.MKEY">
+                                <input type="number" maxlength="150" formControlName="noOfDays" class="form-control"
+                                  maxlength="150">
+                              </ng-container>
+    
+                            </div>
+                          </div>
+  
+                          <div class="col-xs-12 col-xl-4 col-md-4">
+                            <div class="form-group">
+                              <label for="completionDate">Complition Date </label>
+                              <input type="date" class="form-control" formControlName="toBeCompletedBy"
+                                aria-describedby="depth" />
+                            </div>
+                          </div>
+  
+  
+                          <div class="col-xs-12 col-xl-4 col-md-4">
+                            <div class="form-group">
+                              <label for="project">Before Approval Task</label>
+                              <select class="h6 custom-select cate" formControlName="raisedAt">
+                                <option value="" selected>Select</option>
+                                <option value="" selected>Select</option>
+  
+                              </select>
+                            </div>
+                          </div>
+  
+                        <!-- </div> -->
+                      </div>
+                     </fieldset>
+                    
+
+                  </form>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </main>
-  </body>
+    </div>
+  </main>
+</body>
 
-  <!--formControlName="file"        (change)="onFileSelected($event)"-->
