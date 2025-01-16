@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, ErrorHandler, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { ApiService } from 'src/app/services/api/api.service';
 import { CredentialService } from 'src/app/services/credential/credential.service';
@@ -18,9 +18,13 @@ export class AddComplianceComponent implements OnInit, OnDestroy {
 
   createdOrUpdatedUserName: any
 
+  isFieldDisabled = true; 
+
+
   loginName: string = '';
   loginPassword: string = '';
 
+  source:any;
 
   receivedUser: any;
 
@@ -32,10 +36,12 @@ export class AddComplianceComponent implements OnInit, OnDestroy {
   allTags: any[] = [];
   selectedTags: any[] = [];
   selectedCategory: any;
-
+  initiate:string | any;
   jobRoleList: any[] = [];
   departmentList: any[] = [];
   raisedAtList:any[] = [];
+  raisedBefore:any[] = [];
+  complianceStatus:any[]=[];
 
   taskData: any;
 
@@ -59,6 +65,7 @@ export class AddComplianceComponent implements OnInit, OnDestroy {
         private credentialService: CredentialService,
         private http: HttpClient,
         private router: Router,
+        private activatedRoute: ActivatedRoute,
         // private sidebarService: SideBarService
   ) { 
 
@@ -66,9 +73,14 @@ export class AddComplianceComponent implements OnInit, OnDestroy {
     const isNewTemp = sessionStorage.getItem('isNewTemp') === 'true';
     console.log(isNewTemp)
     if (navigation?.extras.state) {
+
       const RecursiveTaskData: any = navigation.extras.state.taskData;
+      const initiate_mode: any = navigation.extras.state.initiate
       this.taskData = RecursiveTaskData;
-      console.log('RecursiveTaskData', this.taskData)
+      this.initiate = initiate_mode
+      console.log('task data', this.taskData)
+      console.log('initiate', this.initiate)
+
 
       if (RecursiveTaskData.mkey) {
         this.updatedDetails = !isNewTemp;
@@ -77,6 +89,8 @@ export class AddComplianceComponent implements OnInit, OnDestroy {
       }
 
       sessionStorage.setItem('task', JSON.stringify(RecursiveTaskData));
+      sessionStorage.setItem('initiate', initiate_mode);
+
       sessionStorage.removeItem('add_new_task');
     } else {
       const RecursiveTaskData = sessionStorage.getItem('task');
@@ -95,7 +109,11 @@ export class AddComplianceComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
 
-    console.log(this.taskData)
+    console.log('Oninit Task Data', this.taskData);
+    this.initiate = this.activatedRoute.snapshot.paramMap.get('initiate');
+    console.log('Initiate mode:', this.initiate);
+
+    
 
     this.onLogin();
     this.complianceFormInitlize();
@@ -103,6 +121,7 @@ export class AddComplianceComponent implements OnInit, OnDestroy {
     this.fetchProjectData();
     this.fetchEmployeeName();
     this.getTagsnew();
+
   }
 
 
@@ -122,11 +141,18 @@ export class AddComplianceComponent implements OnInit, OnDestroy {
         tags:['', Validators.required]
     })
 
-    if(this.taskData && this.taskData.MKEY){
+ 
+
+    if(this.taskData && this.taskData.MKEY ){
       this.complianceForm.patchValue({responsibleDepartment:this.taskData.RESPONSIBLE_DEPARTMENT});
       this.complianceForm.patchValue({jobRole:this.taskData.JOB_ROLE});
       this.complianceForm.patchValue({raisedAt: this.taskData.RAISED_AT});      
+
+      this.getSubProj();
     }
+
+
+   
   }
 
 
@@ -156,6 +182,8 @@ export class AddComplianceComponent implements OnInit, OnDestroy {
         console.error('Login failed:', error);
       }
     });
+
+    //;
   }
 
   private fetchData(): void {
@@ -176,11 +204,29 @@ export class AddComplianceComponent implements OnInit, OnDestroy {
     });
 
 
-    this.apiService.getRaisedAt(this.recursiveLogginUser).subscribe({
+    //getComplianceStatus
+    this.apiService.getComplianceStatus(this.recursiveLogginUser).subscribe({
       next: (list: any) => {
-        this.raisedAtList = list
+        this.complianceStatus = list[0].Data
 
-        console.log('Raised At', this.raisedAtList)
+        console.log('Status', this.complianceStatus)
+
+        console.log('check Initiate mode form:', this.initiate)
+        if (this.initiate === null) {
+          const defaultStatus = this.complianceStatus.find(c => c.TYPE_DESC === "New");
+    
+          console.log('defaultStatus', defaultStatus)
+          if (defaultStatus) {
+            this.complianceForm.patchValue({ status: defaultStatus.TYPE_DESC });
+          }
+        }else if(this.initiate === 'initiate_mode'){
+          const defaultStatus = this.complianceStatus.find(c => c.TYPE_DESC === "Initiated");
+    
+          console.log('defaultStatus', defaultStatus)
+          if (defaultStatus) {
+            this.complianceForm.patchValue({ status: defaultStatus.TYPE_DESC });
+          }
+        }
 
       }, error: (error: ErrorHandler) => {
         this.tostar.error('Error occured while fetching Raised At')
@@ -188,6 +234,8 @@ export class AddComplianceComponent implements OnInit, OnDestroy {
         console.log(error)
       }
     });
+
+
 
     this.apiService.getDepartmentDP(this.recursiveLogginUser).subscribe({
       next:(list:any)=>{
@@ -199,10 +247,12 @@ export class AddComplianceComponent implements OnInit, OnDestroy {
       }
     })
 
-    // if (this.taskData.MKEY && this.buildingList && this.standardList) {
-    //   this.getSubProj();
-    //   // this.checkValueForNewRow_1();
-    // }  
+    if (this.taskData && this.taskData.MKEY) {
+      // this.checkValueForNewRow_1();
+    }  
+
+
+  
 
   }
 
@@ -355,6 +405,8 @@ setDepartmentName(): void {
             console.log(response)
             this.sub_proj = response[0]?.data;
             console.log("Sub-Project", this.sub_proj);
+            // this.raisedAtListCheck()
+
           },
           (error: ErrorHandler) => {
             console.log(error, 'Error Occurred while fetching sub-projects');
@@ -363,6 +415,60 @@ setDepartmentName(): void {
       }
     }
   
+
+
+
+    raisedAtListCheck() {
+      const propertyMKey = this.complianceForm.get('property')?.value?.MASTER_MKEY;
+      const buildingMKey = this.complianceForm.get('building')?.value?.MASTER_MKEY;
+    
+      const user = this.credentialService.getUser();
+      const token = this.apiService.getRecursiveUser();
+
+    
+      if (!propertyMKey || !buildingMKey || !user?.[0]?.MKEY || !token) {
+        this.tostar.error('Missing required inputs for fetching Raised At data');
+        return;
+      }
+    
+    
+    
+      const handleError = (error: any, type: string) => {
+        this.tostar.error(`Error occurred while fetching ${type} data`);
+        console.error(`${type} Error:`, error);
+      };
+    
+      // Fetch "Raised At" data
+      this.apiService.getRaisedAt(buildingMKey, propertyMKey, user[0].MKEY, token).subscribe({
+        next: (list: any) => {
+          if (list?.[0]?.data) {
+            this.raisedAtList = list[0].data;
+            console.log('Raised At Data:', this.raisedAtList);
+          }
+          const message = list?.[0]?.Message || 'No message provided';
+          this.tostar.warning(message);
+        },
+        error: (error: any) => handleError(error, 'Raised At'),
+      });
+    
+      // Fetch "Raised Before" data - Use this.raisedBefore
+      this.apiService.getRaisedBedore(buildingMKey, propertyMKey, user[0].MKEY, token).subscribe({
+        next: (list: any) => {
+          if (list?.[0]?.data) {
+            this.raisedBefore = list[0].data;
+            console.log('Raised Before Data:', this.raisedBefore);
+          }
+          const message = list?.[0]?.Message || 'No message provided';
+          this.tostar.warning(message);
+        },
+        error: (error: any) => handleError(error, 'Raised Before'),
+      });
+    }
+    
+    
+
+
+    //getRaisedBedore
 
     onAddAndUpdateCompliance(){
 
@@ -402,8 +508,8 @@ setDepartmentName(): void {
 
       const compliance_data = {
         MKEY: this.taskData && this.taskData.MKEY ? this.taskData.MKEY : 0,
-        PROPERTY:this.complianceForm.get('property')?.value.MKEY,
-        BUILDING:this.complianceForm.get('building')?.value.MKEY,
+        PROPERTY:this.complianceForm.get('property')?.value.MASTER_MKEY,
+        BUILDING:this.complianceForm.get('building')?.value.MASTER_MKEY,
         SHORT_DESCRIPTION:this.complianceForm.get('shortDescription')?.value,
         LONG_DESCRIPTION:this.complianceForm.get('longDescription')?.value,
         RAISED_AT:this.complianceForm.get('raisedAt')?.value,
@@ -469,6 +575,57 @@ setDepartmentName(): void {
     }
   }
 
+  getSubProj() {
+
+    const token = this.apiService.getRecursiveUser();
+
+    console.log('this.taskData.PROPERTY', this.taskData.PROPERTY)
+
+    this.apiService.getSubProjectDetailsNew(this.taskData.PROPERTY.toString(), token).subscribe(
+      (response: any) => {
+        this.sub_proj = response[0].data;
+
+        console.log('Sub Project',this.sub_proj)
+        this.setProjectNameToTaskData();
+
+      },
+      (error: ErrorHandler) => {
+        console.log(error, 'Error Occurred while fetching sub-projects');
+      }
+    );
+  }
+
+
+  setProjectNameToTaskData(): void {
+
+    if (this.taskData && this.taskData.MKEY) {
+
+      const matchedProject = this.project.find((property: any) => property.MASTER_MKEY === Number(this.taskData.PROPERTY));
+
+      const matchedSubProject = this.sub_proj.find((building: any) => building.MASTER_MKEY === Number(this.taskData.BUILDING_MKEY));
+
+      // const matchedEmployee = this.employees.find((emp: any) => emp.MKEY === Number(this.taskData.RESPOSIBLE_EMP_MKEY))
+
+      // console.log(this.employees)
+
+      // console.log('matchedEmployee', matchedEmployee)
+      // console.log('this.taskData.RESPOSIBLE_EMP_MKEY', this.taskData.RESPOSIBLE_EMP_MKEY)
+      if (matchedProject) {
+        this.taskData.project_Name = matchedProject.TYPE_DESC;
+
+      }
+
+      if (matchedSubProject) {
+        this.taskData.sub_proj_name = matchedSubProject.TYPE_DESC;
+      }
+
+
+      // if (matchedEmployee) {
+      //   this.taskData.employee_name = matchedEmployee.Assign_to
+      // }
+    }
+  }
+
 
    onSubmit() {
       // const requiredControls: string[] = [];
@@ -514,6 +671,8 @@ setDepartmentName(): void {
     console.log('Component is being destroyed');
 
     sessionStorage.removeItem('task');
+    sessionStorage.removeItem('initiate');
+
   }
 
 
