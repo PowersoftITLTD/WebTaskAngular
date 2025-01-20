@@ -51,9 +51,9 @@
                                                         <select class="form-control" formControlName="propertyType"
                                                             [(ngModel)]="taskData.property" #projectSelect
                                                             (change)="onProjectSelect(projectSelect)">
-                                                            <!-- <option value="0">Select</option> -->
+                                                            <option value="0">Select</option>
                                                             <option *ngFor="let p of project" [ngValue]="p"
-                                                                [selected]="p.TYPE_DESC === taskData.project_Name">
+                                                            [selected]="p.TYPE_DESC === taskData.PROPERTY_NAME">
                                                                 {{ p.TYPE_DESC }}
                                                             </option>
                                                         </select>
@@ -62,7 +62,7 @@
                                                     <ng-container *ngIf="!taskData?.MKEY">
                                                         <select class="form-control " formControlName="propertyType"
                                                             #projectSelect (change)="onProjectSelect(projectSelect)">
-                                                            <option value="" selected>Select</option>
+                                                            <option value="0" selected>Select</option>
                                                             <option *ngFor="let p of project" [ngValue]="p">{{
                                                                 p.TYPE_DESC }}</option>
                                                         </select>
@@ -80,7 +80,8 @@
                                                             name="buildingType" [(ngModel)]="taskData.projecT_NAME">
                                                             <option value="0">Select</option>
                                                             <option *ngFor="let s of sub_proj"
-                                                                [selected]="s.TYPE_DESC === taskData.sub_proj_name">
+                                                            [ngValue]="s"
+                                                            [selected]="s.TYPE_DESC === taskData.BUILDING_NAME">
                                                                 {{ s.TYPE_DESC }}
                                                             </option>
                                                         </select>
@@ -90,7 +91,7 @@
                                                         <select class="form-control" formControlName="buildingType">
                                                             <option value="0">Select
                                                             </option>
-                                                            <option *ngFor="let s of sub_proj" [ngValue]="s">{{
+                                                            <option  *ngFor="let s of sub_proj" [ngValue]="s">{{
                                                                 s.TYPE_DESC }}
                                                             </option>
                                                         </select>
@@ -155,7 +156,7 @@
                                                     </div>
 
                                                     <div *ngIf="docType[0]?.DOC_NUM_VALID_FLAG === 'Y'"
-                                                        class="col-xs-12 col-xl-12 col-md-12 mb-6">
+                                                        class="col-xs-12 col-xl-12 col-md-12">
                                                         <div class="form-group">
                                                             <label for="documentAbbrivation">validity Date</label>
                                                             <ng-container *ngIf="taskData?.MKEY">
@@ -171,39 +172,84 @@
                                                         </div>
                                                     </div>
 
-                                                    <div class="col-xs-12 col-xl-12 col-md-12 mb-6">
-                                                        <div class="preview">
-                                                            <div class="preview-elements">
-                                                                <div class="custom-file" id="TaskInfocustom_file">
-
-
-                                                                    <input type="file" class="custom-file-input"
-                                                                        id="customFile"
-                                                                        formControlName="documentAttachment"
-                                                                        (change)="onFileSelected($event)">
-                                                                    <label class="custom-file-label" for="customFile"
-                                                                        id="AttachmentDetails">Attachment if
-                                                                        any add:</label>
-                                                                </div>
-                                                                <div id="dvAtchment"
-                                                               ><!-- *ngIf="taskDetails[0].FILE_NAME && !editMode"-->
-
-                                                                <a  target="_blank"
-                                                                    id="DownAttchment"> <!--[href]="fileUrl()"-->
-                                                                    <i class="fa fa-download"
-                                                                        aria-hidden="true"></i><span>
-                                                                        {{taskData.FILE_NAME}}</span>
-                                                                </a>
-
-                                                                <button type="button"                                                                    
-                                                                    style="background-color:transparent !important"
-                                                                    aria-label="Close">
-                                                                    <img src="../../../../assets/Content/icons/Del.png"
-                                                                        style="width:32px;" /><!--[ngClass]="{ 'disabled-field': !canEditTaskDescription() }"
-                                                                        (click)="removeFile()"-->
-                                                                </button>
-
-                                                            </div>
+                                                    <div class="col-xs-12 col-xl-12 col-md-12 ">
+                                                        <div class="form-group">
+                                                            <div class="source-preview-wrapper">
+        
+                                                                <ng-container *ngIf="!taskData?.MKEY">
+                                                                    <div class="preview">
+                                                                        <div class="preview-elements">
+                                                                            <div class="custom-file" id="TaskInfocustom_file">
+        
+        
+                                                                                <input type="file" class="custom-file-input"
+                                                                                    id="customFile" formControlName="documentName"
+                                                                                    (change)="onFileSelected($event)">
+                                                                                <label class="custom-file-label"
+                                                                                    for="customFile"
+                                                                                    id="AttachmentDetails">Attachment if
+                                                                                    any add:</label>
+                                                                            </div>
+                                                                            <div id="dvAtchment" style="display:none">
+                                                                                <a href="" target="_blank" id="DownAttchment">
+                                                                                    <i class="fa fa-download"
+                                                                                        aria-hidden="true"></i><span>DownFileName</span>
+                                                                                </a>
+                                                                                <button type="button"
+                                                                                    style="background-color:transparent !important"
+                                                                                    aria-label="Close">
+                                                                                    <img src="../../../../assets/Content/icons/Del.png"
+                                                                                        style="width:32px;" />
+                                                                                </button>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </ng-container>
+        
+                                                                <br>
+        
+        
+        
+                                                                <br>
+        
+        
+                                                                <ng-container *ngIf="taskData?.MKEY">
+                                                                    <div class="preview">
+                                                                        <div class="preview-elements">
+        
+                                                                            <div class="custom-file"
+                                                                                *ngIf="!taskData?.DOC_ATTACHMENT"
+                                                                                id="TaskInfocustom_file">
+                                                                                <input type="file" class="custom-file-input"
+                                                                                    id="customFile" formControlName="documentName"
+                                                                                    (change)="onFileSelected($event)">
+                                                                                <label class="custom-file-label"
+                                                                                    for="customFile"
+                                                                                    id="AttachmentDetails">Attachment if any
+                                                                                    save:</label>
+                                                                            </div>
+        
+                                                                            <div id="dvAtchment" *ngIf="taskData?.DOC_ATTACHMENT">
+                                                                                <a  type="button"
+                                                                                    id="DownAttchment">
+                                                                                
+                                                                                    <span>{{taskData.DOC_ATTACHMENT}}
+                                                                                    
+                                                                                    </span>
+                                                                                    <i class="fa fa-download"
+                                                                                    [href]="fileUrl()"
+                                                                                    aria-hidden="true"></i>&nbsp;
+                                                                                    <img src="../../../../assets/Content/icons/Del.png"
+                                                                                    style="width:32px;" (click)="removeFile()"/>
+                                                                                </a>
+                                                                                <button type="button" 
+                                                                                    style="background-color:transparent !important"
+                                                                                    aria-label="Close">                                                                                                                                                                         
+                                                                                </button>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </ng-container>
                                                             </div>
                                                         </div>
                                                     </div>

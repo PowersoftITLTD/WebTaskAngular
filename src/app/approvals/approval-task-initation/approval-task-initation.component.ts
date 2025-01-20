@@ -307,7 +307,7 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
     console.log('addApprovalInitiation: ', addApprovalInitiation);
     // console.log('recursiveLogginUser', this.recursiveLogginUser)
 
-    this.apiService.postApprovalInitiation(addApprovalInitiation, this.recursiveLogginUser ).subscribe({
+    this.apiService.postApprovalInitiation(addApprovalInitiation, this.recursiveLogginUser).subscribe({
       next:(response)=>{
         console.log(response.message)
         // if(response.status === 'Error'){

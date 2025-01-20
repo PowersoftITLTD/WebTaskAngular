@@ -263,7 +263,7 @@ export class InstructionMasterComponent implements OnInit {
   
       if (this.isInstructionUpdate) {
         if (this.categoryForm.value.instruction === '' || this.categoryForm.value.instruction === null || this.categoryForm.value.instruction === undefined) {
-          this.tostar.error('Please update the category');
+          this.tostar.error('Please update the Instruction');
         } else if (!this.taskData || !this.taskData?.MKEY) {
           this.addINSTR();
         } else {

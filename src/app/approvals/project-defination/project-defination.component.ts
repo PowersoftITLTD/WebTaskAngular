@@ -370,7 +370,6 @@ toggleSelection(task: any = []): void {
 
     this.uniqList = flatternDataTable;
 
-    // console.log(this.uniqList)
 
 
   }
@@ -499,16 +498,16 @@ toggleSelection(task: any = []): void {
     }
 
     console.log(addProjectDefination)
-    // this.apiService.postProjectDefination(addProjectDefination, this.recursiveLogginUser).subscribe({
-    //   next: (addData: any) => {
-    //     console.log('Data added successfully', addData)
-    //     this.router.navigate(['task/approval-screen'], {queryParams:{ source: 'project-defination' }});
+    this.apiService.postProjectDefination(addProjectDefination, this.recursiveLogginUser).subscribe({
+      next: (addData: any) => {
+        console.log('Data added successfully', addData)
+        this.router.navigate(['task/approval-screen'], {queryParams:{ source: 'project-defination' }});
 
-    //   }, error: (error: ErrorHandler) => {
+      }, error: (error: ErrorHandler) => {
 
-    //     console.log('Unable to get data', error)
-    //   }
-    // });
+        console.log('Unable to get data', error)
+      }
+    });
   }
 
 
@@ -840,7 +839,7 @@ toggleSelection(task: any = []): void {
             console.log('gerAbbrRelData', gerAbbrRelData)
 
            const check_TAsk_no =  gerAbbrRelData.forEach((task:any)=>{
-              console.log(typeof task?.TASK_NO)
+              console.log('check task no', task.TASK_NO)
             })
             console.log('TASk_no', check_TAsk_no)
 
@@ -1058,6 +1057,9 @@ toggleSelection(task: any = []): void {
 
 
     return tasks.map((task: any) => {
+      
+
+      // console.log('task', task)
       let newTaskNo = '';
 
       if (task.SUBTASK_PARENT_ID === 0) {
@@ -1076,6 +1078,7 @@ toggleSelection(task: any = []): void {
       task.TASK_NO = newTaskNo;
 
       taskNumbers.set(task.HEADER_MKEY, newTaskNo);
+
 
       return task;
     });
@@ -1339,11 +1342,11 @@ toggleSelection(task: any = []): void {
         return;
       }
   
-      const invalidDateSubTask = this.validateTaskDates(subTaskList);
+      // const invalidDateSubTask = this.validateTaskDates(subTaskList);
   
-      if (invalidDateSubTask) {
-        return;  
-      }
+      // if (invalidDateSubTask) {
+      //   return;  
+      // }
     }
   
     console.log('subTaskList', subTaskList)
@@ -1582,7 +1585,7 @@ toggleSelection(task: any = []): void {
         const jobRole = jobRoleList.find((role:any) => role.mkey === parseInt(item.joB_ROLE));
         const departmentRole = departmentList.find((department:any) => department.mkey === parseInt(item.department));
 
-        // console.log('Item', item)
+        console.log('Item', item)
         return {
           TASK_NO: item.tasK_NO,
           maiN_ABBR: item.approvaL_ABBRIVATION,

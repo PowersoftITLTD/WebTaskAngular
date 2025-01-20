@@ -374,7 +374,7 @@ export class DocumentTempelateComponent implements OnInit {
     Object.keys(this.docTempForm.controls).forEach(controlName => {
       const control = this.docTempForm.get(controlName);
 
-      console.log('CHECK CONTROL NAME', controlName)
+      // console.log('CHECK CONTROL NAME', controlName)
   
       if (control?.errors?.required) {
        if(
