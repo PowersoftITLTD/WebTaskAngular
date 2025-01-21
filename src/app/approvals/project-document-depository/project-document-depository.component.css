@@ -201,7 +201,7 @@ body {
 
 
 .tab-content {
-  max-height: calc(100vh - 100px);
+  max-height: calc(100vh - 120px);
   overflow-x: auto;
   overflow-y: auto;
 }
@@ -225,7 +225,7 @@ body {
 
 
 .scrollable-container {
-  max-height: 400px;
+  max-height: 350px;
   overflow-y: auto;
   overflow-x: hidden;
   padding: 15px;

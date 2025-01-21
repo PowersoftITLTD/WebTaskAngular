@@ -915,6 +915,7 @@ export class AddApprovalTempelateComponent implements OnInit {
 
   getGroupedAndSortedDocs(listType: 'endResult' | 'checklist') {
     const groupedDocs: any = {};
+
     this.docTypeList.forEach(docs => {
       const category = docs.attributE2 || 'Uncategorized';
       if (!groupedDocs[category]) {
@@ -933,6 +934,7 @@ export class AddApprovalTempelateComponent implements OnInit {
     }
 
     return groupedDocs;
+    
   }
 
 
