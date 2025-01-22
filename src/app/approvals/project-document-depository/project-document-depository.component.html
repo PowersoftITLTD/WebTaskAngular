@@ -23,7 +23,13 @@
 
                                 </div>
                                 <div class="mr-8 ">
-                                    <div *ngIf="!taskData?.MKEY">
+
+                                    <div>
+                                        <button type="button" class="btn btn-light" (click)="onSubmit()" id="btnSaveTask">
+                                            {{ taskData?.MKEY ? 'Update' : 'Save' }}
+                                        </button>
+                                    </div>
+                                    <!-- <div *ngIf="!taskData?.MKEY">
                                         <button type="submit" class="btn btn-light mr-2" (click)="onDocDepository()"
                                             id="btnSaveTask">
                                             ADD
@@ -35,10 +41,10 @@
                                             id="btnSaveTask">
                                             SAVE
                                         </button>
-                                    </div>
+                                    </div> -->
                                 </div>
                             </div>
-                            <form [formGroup]="docDepositoryForm" (ngSubmit)="onSubmit()">
+                            <form [formGroup]="docDepositoryForm" (ngSubmit)="createData()">
                                 <div class="tab-content">
                                     <div class="p-2 card">
                                         <div class="row justify-content-between">
@@ -176,7 +182,7 @@
                                                         <div class="form-group">
                                                             <div class="source-preview-wrapper">
 
-                                                                <ng-container *ngIf="!taskData?.MKEY">
+                                                                <ng-container >
                                                                     <div class="preview">
                                                                         <div class="preview-elements">
                                                                             <div class="custom-file"
@@ -215,10 +221,9 @@
                                                                 <br>
 
 
-                                                                <ng-container *ngIf="taskData?.MKEY">
+                                                                <!-- <ng-container *ngIf="taskData?.MKEY">
                                                                     <div class="preview">
                                                                         <div class="preview-elements">
-                                                                            <!-- File Input -->
                                                                             <div class="custom-file"
                                                                                 *ngIf="!taskData?.DOC_ATTACHMENT"
                                                                                 id="TaskInfocustom_file">
@@ -233,8 +238,7 @@
                                                                                     any save:</label>
                                                                             </div>
 
-                                                                            <!-- File List -->
-                                                                            <!-- <div class="form-group sample-wrapper">
+                                                                            <div class="form-group sample-wrapper">
                                                                             <label for="selectedFiles">Selected Files</label>
                                                                             <div class="sample-wrapper">
                                                                               <div class="pl-4 combo-section">
@@ -255,8 +259,8 @@
                                                                                 </div>
                                                                               </div>
                                                                             </div>
-                                                                        </div> -->
-                                                                            <!-- <div id="dvAtchment" *ngIf="myFiles.length > 0">
+                                                                        </div>
+                                                                            <div id="dvAtchment" *ngIf="myFiles.length > 0">
                                                                           <div *ngFor="let file of myFiles; let i = index" class="file-item">
                                                                             <a type="button" id="DownAttchment">
                                                                               <span>{{ file }}</span> 
@@ -268,10 +272,10 @@
                                                                               (click)="removeFile(i)" 
                                                                               alt="Delete File">
                                                                           </div>
-                                                                        </div> -->
+                                                                        </div>
                                                                         </div>
                                                                     </div>
-                                                                </ng-container>
+                                                                </ng-container> -->
 
 
 
@@ -321,13 +325,13 @@
                                                     <div *ngIf="myFiles.length > 0">
                                                         <ul class="dropdown-list">
                                                             <!-- Iterate through myFiles -->
-                                                            <ng-container *ngFor="let file of myFilesName; let i = index">
+                                                            <ng-container *ngFor="let file of myFiles; let i = index">
                                                                 <li class="file-item">
-                                                                    <span>{{ file }}</span>
+                                                                    <span >{{ file.name }}</span>
                                                                   
                                                                     <!--(click)="downloadFile(file.file)"  *ngIf="taskData?.MKEY"-->
                                                                     <ng-container *ngIf="taskData?.MKEY">
-                                                                        <i class="fa fa-download mx-6" aria-hidden="true"></i>
+                                                                        <i class="fa fa-download mx-6" (click)="downloadFile(file.file)" aria-hidden="true"></i>
                                                                     </ng-container>
 
                                                                     <i class="fa fa-trash mx-3" (click)="removeFile(i)"></i>

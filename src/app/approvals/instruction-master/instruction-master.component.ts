@@ -161,7 +161,7 @@ export class InstructionMasterComponent implements OnInit {
   
       console.log('addInstruction', addInstruction)
   
-      this.apiService.postInstructionDetails(JSON.stringify(addInstruction), token).subscribe({
+      this.apiService.postInstructionDetails(addInstruction, token).subscribe({
         next: (response) => {
   
           console.log('Instruction added successfully', response);

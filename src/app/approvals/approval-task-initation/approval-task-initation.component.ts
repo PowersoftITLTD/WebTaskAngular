@@ -314,6 +314,7 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
         //   this.tostar.error(response.message)
         //   return
         // }
+        this.router.navigate(['/task/task-management']);
 
         this.tostar.success('Success', 'Template added successfuly');
 
