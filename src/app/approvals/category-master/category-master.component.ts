@@ -70,9 +70,7 @@ export class CategoryMasterComponent implements OnInit, OnDestroy {
     this.categoryForm = new FormGroup({
       category: new FormControl(''),  // Set an initial value (empty string)
       instruction: new FormControl('')
-
     });
-
 
   }
 

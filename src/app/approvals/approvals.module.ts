@@ -19,6 +19,8 @@ import { CategoryMasterComponent } from './category-master/category-master.compo
 import { AddDocumentDialogComponent } from './add-approval-tempelate/add-document-dialog/add-document-dialog.component';
 import { AddInstructionDialogComponent } from './add-approval-tempelate/add-instruction-dialog/add-instruction-dialog.component';
 import { InstructionMasterComponent } from './instruction-master/instruction-master.component';
+import { MatTooltipModule } from '@angular/material/tooltip';
+
 
 
 
@@ -46,6 +48,7 @@ import { InstructionMasterComponent } from './instruction-master/instruction-mas
     TagInputModule,
     ReactiveFormsModule,
     PipeContentModule,
+    MatTooltipModule 
   ]
 })
 export class ApprovalsModule { }

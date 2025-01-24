@@ -25,23 +25,11 @@
                                 <div class="mr-8 ">
 
                                     <div>
-                                        <button type="button" class="btn btn-light" (click)="onSubmit()" id="btnSaveTask">
+                                        <button type="button" class="btn btn-light" (click)="onSubmit()"
+                                            id="btnSaveTask">
                                             {{ taskData?.MKEY ? 'Update' : 'Save' }}
                                         </button>
                                     </div>
-                                    <!-- <div *ngIf="!taskData?.MKEY">
-                                        <button type="submit" class="btn btn-light mr-2" (click)="onDocDepository()"
-                                            id="btnSaveTask">
-                                            ADD
-                                        </button>
-                                    </div>
-
-                                    <div *ngIf="taskData?.MKEY">
-                                        <button type="submit" class="btn btn-light mr-2" (click)="updateDepository()"
-                                            id="btnSaveTask">
-                                            SAVE
-                                        </button>
-                                    </div> -->
                                 </div>
                             </div>
                             <form [formGroup]="docDepositoryForm" (ngSubmit)="createData()">
@@ -182,7 +170,7 @@
                                                         <div class="form-group">
                                                             <div class="source-preview-wrapper">
 
-                                                                <ng-container >
+                                                                <ng-container>
                                                                     <div class="preview">
                                                                         <div class="preview-elements">
                                                                             <div class="custom-file"
@@ -198,88 +186,12 @@
                                                                                     <!-- id="AttachmentDetails"-->
                                                                                     any add:</label>
                                                                             </div>
-                                                                            <!-- <div id="dvAtchment" style="display:none">
-                                                                                <a href="" target="_blank" id="DownAttchment">
-                                                                                    <i class="fa fa-download"
-                                                                                        aria-hidden="true"></i><span>DownFileName</span>
-                                                                                </a>
-                                                                                <button type="button"
-                                                                                    style="background-color:transparent !important"
-                                                                                    aria-label="Close">
-                                                                                    <img src="../../../../assets/Content/icons/Del.png"
-                                                                                        style="width:32px;" />
-                                                                                </button>
-                                                                            </div> -->
+
                                                                         </div>
                                                                     </div>
                                                                 </ng-container>
-
                                                                 <br>
-
-
-
                                                                 <br>
-
-
-                                                                <!-- <ng-container *ngIf="taskData?.MKEY">
-                                                                    <div class="preview">
-                                                                        <div class="preview-elements">
-                                                                            <div class="custom-file"
-                                                                                *ngIf="!taskData?.DOC_ATTACHMENT"
-                                                                                id="TaskInfocustom_file">
-                                                                                <input type="" class="custom-file-input"
-                                                                                    id="customFile"
-                                                                                    formControlName="documentName"
-                                                                                    (change)="onFileSelected($event)"
-                                                                                    multiple>
-                                                                                <label class="custom-file-label"
-                                                                                    for="customFile"
-                                                                                    id="AttachmentDetails">Attachment if
-                                                                                    any save:</label>
-                                                                            </div>
-
-                                                                            <div class="form-group sample-wrapper">
-                                                                            <label for="selectedFiles">Selected Files</label>
-                                                                            <div class="sample-wrapper">
-                                                                              <div class="pl-4 combo-section">
-                                                                                <div *ngIf="myFiles.length > 0">
-                                                                                  <ul class="dropdown-list">
-                                                                                    <ng-container *ngFor="let file of myFiles; let i = index">
-                                                                                      <li class="file-item">
-                                                                                        <span>{{ file }}</span>
-                                                                                        <i class="fa fa-download" (click)="downloadFile(file.file)" aria-hidden="true"></i> 
-                                                                                        <img 
-                                                                                          src="../../../../assets/Content/icons/Del.png" 
-                                                                                          alt="Delete" 
-                                                                                          class="delete-icon" 
-                                                                                          (click)="removeFile(i)">
-                                                                                      </li>
-                                                                                    </ng-container>
-                                                                                  </ul>
-                                                                                </div>
-                                                                              </div>
-                                                                            </div>
-                                                                        </div>
-                                                                            <div id="dvAtchment" *ngIf="myFiles.length > 0">
-                                                                          <div *ngFor="let file of myFiles; let i = index" class="file-item">
-                                                                            <a type="button" id="DownAttchment">
-                                                                              <span>{{ file }}</span> 
-                                                                              <i class="fa fa-download" aria-hidden="true"></i>
-                                                                            </a>
-                                                                            <img 
-                                                                              src="../../../../assets/Content/icons/Del.png" 
-                                                                              style="width:32px;" 
-                                                                              (click)="removeFile(i)" 
-                                                                              alt="Delete File">
-                                                                          </div>
-                                                                        </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </ng-container> -->
-
-
-
-
                                                             </div>
                                                         </div>
                                                     </div>
@@ -327,14 +239,17 @@
                                                             <!-- Iterate through myFiles -->
                                                             <ng-container *ngFor="let file of myFiles; let i = index">
                                                                 <li class="file-item">
-                                                                    <span >{{ file.name }}</span>
-                                                                  
+                                                                    <span>{{ file.name }}</span>
+
                                                                     <!--(click)="downloadFile(file.file)"  *ngIf="taskData?.MKEY"-->
                                                                     <ng-container *ngIf="taskData?.MKEY">
-                                                                        <i class="fa fa-download mx-6" (click)="downloadFile(file.file)" aria-hidden="true"></i>
+                                                                        <a class="fa fa-download mx-6"
+                                                                            [href]="downloadFile(file.file)"
+                                                                            target="_blank" aria-hidden="true"></a>
                                                                     </ng-container>
 
-                                                                    <i class="fa fa-trash mx-3" (click)="removeFile(i)"></i>
+                                                                    <i class="fa fa-trash mx-3"
+                                                                        (click)="removeFile(i)"></i>
 
                                                                 </li>
                                                             </ng-container>

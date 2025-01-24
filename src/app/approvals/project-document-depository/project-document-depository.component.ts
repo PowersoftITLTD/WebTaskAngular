@@ -28,7 +28,7 @@ export class ProjectDocumentDepositoryComponent implements OnInit {
   public filteredDocs: ICity[] = [];
 
   myFiles: { file: File; name: string }[] = [];
-  myFilesName:any[] = [];
+  myFilesName: any[] = [];
 
   public cities: ICity[] = CITIES;
   file: File | any;
@@ -115,7 +115,6 @@ export class ProjectDocumentDepositoryComponent implements OnInit {
 
       this.apiService.getDocTypeDP(this.recursiveLogginUser).subscribe({
         next: (list: any) => {
-          console.log('DOC TYPE LIST', list)
           const doc_key = this.taskData.DOC_MKEY
           list.filter((doc: any) => {
             if (doc.mkey === doc_key) {
@@ -127,22 +126,19 @@ export class ProjectDocumentDepositoryComponent implements OnInit {
           console.error('Unable to fetch Document Type List', error);
         }
       });
-      // this.getSubProj();
     }
 
     if (this.taskData && this.taskData.MKEY) {
       this.getSubProj();
-      this.taskData.PROJECT_DOC_FILES.forEach((docFile:any) => {
-        console.log('docFile', docFile)
+      this.taskData.PROJECT_DOC_FILES.forEach((docFile: any) => {
         this.myFiles.push({
-            name:docFile.FILE_NAME,
-            file: docFile.FILE_PATH, 
+          name: docFile.FILE_NAME,
+          file: docFile.FILE_PATH,
         });
-    });
+      });
 
     }
 
-    console.log('Check PROJECT_DOC_FILES',this.taskData)
   }
 
 
@@ -159,116 +155,26 @@ export class ProjectDocumentDepositoryComponent implements OnInit {
   }
 
 
-  addDocumentDepository() {
-    const USER_CRED = this.credentialService.getUser();
-
-    this.recursiveLogginUser = this.apiService.getRecursiveUser();
-    const PROJECT = this.docDepositoryForm.get('propertyType')?.value;
-    const SUB_PROJECT = this.docDepositoryForm.get('buildingType')?.value;
-
-    console.log('docType addDocumentDepository', this.docType[0]?.MKEY)
-    console.log('USER_CRED[0]?.MKEY', USER_CRED[0]?.MKEY)
-    const DOC_NAME_MKEY = this.docType[0]?.MKEY;
-
-    if (!PROJECT || !SUB_PROJECT || !DOC_NAME_MKEY) {
-      this.tostar.error('Property, Building Type, or Document selection is missing!');
-      return;
-    } else if (!DOC_NAME_MKEY) {
-      this.tostar.error('Please select document from list');
-      return;
-    }
-
-    const formData:any = new FormData();
-
-  
-
-
-    const addDocDepository: any = {
-      BUILDING_MKEY: SUB_PROJECT.MASTER_MKEY,
-      PROPERTY_MKEY: PROJECT.MASTER_MKEY,
-      DOC_NAME: DOC_NAME_MKEY,
-      DOC_NUMBER: this.docDepositoryForm.get('documentNumberFieldName')?.value,
-      DOC_DATE: this.docDepositoryForm.get('documentDateFieldName')?.value,
-      VALIDITY_DATE: this.docDepositoryForm.get('validityDate')?.value,
-      CREATED_BY: USER_CRED[0]?.MKEY,
-      ATTRIBUTE1: USER_CRED[0]?.MKEY.toString(),
-      PROJECT_DOC_FILES: this.myFiles || [],    
-      DELETE_FLAG:'N'
-    };
-    
-    console.log("addDocDepository", addDocDepository);
-    
-    Object.keys(addDocDepository).forEach((key) => {
-      if (key === "PROJECT_DOC_FILES" && Array.isArray(addDocDepository[key])) {
-        addDocDepository[key].forEach((file: File, index: number) => {
-          formData.append(`${key}`, file);
-        });
-      } else if (key !== "PROJECT_DOC_FILES") {
-        const value = addDocDepository[key] !== undefined ? addDocDepository[key] : "";
-        formData.append(key, value);
-      }
-    });
-    
-    console.log("Form Data Contents:");
-    for (const [key, value] of formData.entries()) {
-      console.log(`${key}:`, value);
-    }
-    
-    
-    this.apiService.postProjectDocument(this.recursiveLogginUser, formData).subscribe(
-      (response) => {
-        console.log('API response:', response);
-        this.tostar.success('success', `Your request added successfully`);
-        // if (response) {
-        //   this.uploadFile(response.mkey)
-        // }
-        this.router.navigate(['task/approval-screen'], { queryParams: { source: 'project-document-depository' } });
-
-      },
-      (error) => {
-        console.error('Error:', error);
-      }
-    );
-  }
-
 
   AddAndUpdateDocumentDepository() {
+
     const USER_CRED = this.credentialService.getUser();
-
-
-    console.log('from update', this.sub_proj)
-    console.log('from update', this.project)
-
-
     const PROJECT = this.docDepositoryForm.get('propertyType')?.value;
-    console.log('PROJECT.MASTER_MKEY', PROJECT)
-    const matchedProject = this.project.find((project: any) => project.TYPE_DESC === PROJECT);
-    console.log('matchedProject', matchedProject)
 
     const SUB_PROJECT = this.docDepositoryForm.get('buildingType')?.value;
-    console.log(SUB_PROJECT)
 
-    const SELECTED_PROJ = this.sub_proj.find((sub_proj: any) => sub_proj.TYPE_DESC === SUB_PROJECT);
-    // console.log('SUB_PROJECT.MASTER_MKEY', SELECTED_PROJ.MASTER_MKEY)
+    let SELECTED_PROJ;
+
+    if (!this.taskData) {
+      SELECTED_PROJ = this.sub_proj.find((sub_proj: any) => sub_proj.TYPE_DESC === SUB_PROJECT.TYPE_DESC);
+    }
 
     const projectName = PROJECT?.MASTER_MKEY ? PROJECT.MASTER_MKEY : this.taskData?.PROPERTY_MKEY;
     const subProjectName = SELECTED_PROJ?.MASTER_MKEY ? SELECTED_PROJ.MASTER_MKEY : this.taskData?.BUILDING_MKEY;
 
-    console.log('projectName', projectName)
-    console.log('subProjectName', subProjectName)
-
     this.recursiveLogginUser = this.apiService.getRecursiveUser();
 
-
-    console.log('docType addDocumentDepository', this.docType[0]?.MKEY)
-    console.log('USER_CRED[0]?.MKEY', USER_CRED[0]?.MKEY)
     const DOC_NAME_MKEY = this.docType[0]?.MKEY;
-
-    // console.log('DOC_NAME_MKEY', DOC_NAME_MKEY)
-    // console.log('PROJECT',PROJECT)
-    // console.log('SUB_PROJECT', SUB_PROJECT)
-
-
 
     if (!projectName || !subProjectName || !DOC_NAME_MKEY) {
       this.tostar.error('Property, Building Type, or Document Name is missing!');
@@ -277,21 +183,17 @@ export class ProjectDocumentDepositoryComponent implements OnInit {
       this.tostar.error('Please select document from list');
       return;
     }
-    const formData:any = new FormData();
 
-
+    const formData: any = new FormData();
     const check_building = this.docDepositoryForm.get('buildingType')?.value;
     const check_property = this.docDepositoryForm.get('propertyType')?.value;
 
     if (this.taskData && this.taskData.MKEY) {
       if (this.docDepositoryForm.get('propertyType')?.value?.MASTER_MKEY !== undefined) {
         this.taskData.PROPERTY_TYPE = null
-        // this.taskData.BUILDING_MKEY = null        
       }
     }
 
-    // console.log('this.taskData.PROPERTY_MKEY', this.taskData.PROPERTY_MKEY)
-    // console.log('this.taskData.BUILDING_MKEY', this.taskData.BUILDING_MKEY)
 
     if (this.taskData && this.taskData?.MKEY) {
       if (this.taskData.PROPERTY_MKEY === undefined && this.taskData.BUILDING_MKEY === null || check_building === '0' || check_property === '0') {
@@ -302,33 +204,23 @@ export class ProjectDocumentDepositoryComponent implements OnInit {
       }
     }
 
-    const doc_name = this.docDepositoryForm.get('documentAttachment')?.value
-
-    console.log('check_building', check_building);
-    console.log('check_property', check_property);
-    // console.log('BUILDING_TYPE', this.taskData.BUILDING_TYPE);
-    // console.log('PROPERTY_TYPE', this.taskData.PROPERTY_TYPE);
-    // console.log('this.taskData.DOC_ATTACHMENT', this.taskData.DOC_ATTACHMENT);
-    // console.log('doc_name', doc_name);
 
     const addDocDepository: any = {
-      MKEY:  this.taskData && this.taskData.MKEY ? this.taskData?.MKEY : 0,
+      MKEY: this.taskData && this.taskData.MKEY ? this.taskData?.MKEY : 0,
       BUILDING_MKEY: this.docDepositoryForm.get('buildingType')?.value?.MASTER_MKEY || this.taskData.BUILDING_MKEY,
       PROPERTY_MKEY: this.docDepositoryForm.get('propertyType')?.value?.MASTER_MKEY || this.taskData.PROPERTY_MKEY,
       DOC_MKEY: DOC_NAME_MKEY,
       DOC_NUMBER: this.docDepositoryForm.get('documentNumberFieldName')?.value,
       DOC_DATE: this.docDepositoryForm.get('documentDateFieldName')?.value,
-      // DOC_ATTACHMENT: this.taskData.DOC_ATTACHMENT,
       VALIDITY_DATE: this.docDepositoryForm.get('validityDate')?.value,
       CREATED_BY: USER_CRED[0]?.MKEY,
       DELETE_FLAG: 'N',
-      PROJECT_DOC_FILES:this.myFiles
-      // attributE1: USER_CRED[0]?.MKEY.toString(),
-      // attributE2: "ADD FORM",
-      // attributE3: "ADD",
+      PROJECT_DOC_FILES: this.myFiles
+
     }
 
 
+    console.log('Check files from ADD and Updated model: ', this.myFiles)
     Object.keys(addDocDepository).forEach((key) => {
       if (key === "PROJECT_DOC_FILES" && Array.isArray(addDocDepository[key])) {
         addDocDepository[key].forEach((file: File | any, index: number) => {
@@ -344,18 +236,15 @@ export class ProjectDocumentDepositoryComponent implements OnInit {
     for (const [key, value] of formData.entries()) {
       console.log(`${key}:`, value);
     }
-    
+
 
     console.log('updateDocDepository', addDocDepository)
 
-    this.apiService.putProjectDocument(this.recursiveLogginUser,  formData).subscribe(
+    this.apiService.putProjectDocument(this.recursiveLogginUser, formData).subscribe(
       (response) => {
         console.log('API response:', response);
         this.tostar.success('success', `Your request added successfully`);
-        // this.uploadFile(response.mkey)
-        //this.router.navigate(['task/approval-screen'], { queryParams: { source: 'project-document-depository' } });
-
-
+        this.router.navigate(['task/approval-screen'], { queryParams: { source: 'project-document-depository' } });
       },
       (error) => {
         console.error('Error:', error);
@@ -406,13 +295,13 @@ export class ProjectDocumentDepositoryComponent implements OnInit {
   }
 
 
-  downloadFile(file_path: any){
-    console.log(`http://192.168.19.188:8065${file_path}`)
-    // console.log(`http://192.168.19.188:8065/Attachments/Document%20Depository/7/${file_name}`)
-    return `http://192.168.19.188:8065/${file_path}`
-
-
+  downloadFile(file_path: any): any {
+    const baseUrl = 'http://192.168.19.188:8065';
+    const fullPath = `${baseUrl}/${file_path}`;
+    return fullPath;
   }
+
+
 
   onFileSelected(event: Event) {
     const inputElement = event.target as HTMLInputElement;
@@ -424,19 +313,19 @@ export class ProjectDocumentDepositoryComponent implements OnInit {
           name: file.name,
         });
       });
-  
+
       console.log('Check files', this.myFiles);
-  
+
       const labelElement = document.getElementById('AttachmentDetails');
       if (labelElement) {
         // Join file names for display
-        const fileNames = this.myFiles.map((item:any) => item.name).join(', ');
+        const fileNames = this.myFiles.map((item: any) => item.name).join(', ');
         labelElement.textContent = fileNames;
       }
     }
   }
-  
-  
+
+
 
   onLogin() {
 
@@ -473,7 +362,6 @@ export class ProjectDocumentDepositoryComponent implements OnInit {
     this.apiService.getDocTypeDP(this.recursiveLogginUser).subscribe({
       next: (list: any) => {
         this.docTypeList = list
-        console.log('docTypeList', this.docTypeList)
         this.mappedSelectedCheckList();
 
         // console.log('Document Type List:', this.docTypeList);
@@ -545,15 +433,10 @@ export class ProjectDocumentDepositoryComponent implements OnInit {
 
     const token = this.apiService.getRecursiveUser();
 
-    console.log('token', token)
-    console.log('this.taskData.BUILDING_MKEY getSubProj', this.taskData.BUILDING_MKEY)
     this.apiService.getSubProjectDetailsNew(this.taskData.PROPERTY_MKEY.toString(), token).subscribe(
       (response: any) => {
 
-        console.log(response)
         this.sub_proj = response[0]?.data;
-
-        console.log('Sub Project', response[0].data)
         this.setProjectNameToTaskData();
 
       },
@@ -573,8 +456,6 @@ export class ProjectDocumentDepositoryComponent implements OnInit {
           const matchedProject = project.find((property: any) =>
             property.MASTER_MKEY === this.taskData.PROPERTY_MKEY
           );
-
-          console.log('matchedProject', matchedProject)
 
 
           const matchedSubProject = this.sub_proj.find((building: any) =>
@@ -733,7 +614,6 @@ export class ProjectDocumentDepositoryComponent implements OnInit {
     return Array.from(new Set(this.docTypeList.map(docs => docs.attributE2)));
   }
 
-
   onSubmit(): boolean {
     const requiredControls: string[] = [];
     const convertToTitleCase = (input: string) => {
@@ -743,14 +623,13 @@ export class ProjectDocumentDepositoryComponent implements OnInit {
     Object.keys(this.docDepositoryForm.controls).forEach(controlName => {
       const control = this.docDepositoryForm.get(controlName);
 
-      // Check for required fields and the flag conditions
       if (control?.errors?.required) {
         if (
           (controlName === 'documentNumberFieldName' && this.docType[0]?.DOC_NUM_APP_FLAG === 'Y') ||
           (controlName === 'documentDateFieldName' && this.docType[0]?.DOC_NUM_DATE_APP_FLAG === 'Y') ||
           (controlName === 'validityDate' && this.docType[0]?.DOC_NUM_VALID_FLAG === 'Y')
         ) {
-          // Convert camelCase to Title Case
+
           const formattedControlName = convertToTitleCase(controlName);
           requiredControls.push(formattedControlName);
         }
@@ -760,68 +639,40 @@ export class ProjectDocumentDepositoryComponent implements OnInit {
     if (requiredControls.length > 0) {
       const m = `${requiredControls.join(', ')}`;
       this.tostar.error(m);
-      return false; // Form is invalid
+      return false; 
     }
 
     this.AddAndUpdateDocumentDepository();
-    return true; // Form is valid
+    return true;
   }
 
 
 
 
   removeFile(index: number) {
-    this.myFiles.splice(index, 1);
-    this.myFilesName.splice(index, 1)
+    const confirmDelete = confirm("Are you sure you want to delete file?");
+
+    if (confirmDelete) {
+      this.myFiles.splice(index, 1);
+      this.myFilesName.splice(index, 1)
+    } else {
+      console.log('Delete cancelled');
+
+    }
+
   }
 
-    fileUrl(filePath: string) {
-      return `http://192.168.19.188:8087/${filePath}`;
+  fileUrl(filePath: string) {
+    return `http://192.168.19.188:8087/${filePath}`;
   }
 
 
-
-
-  
-  createData(){
+  createData() {
     this.AddAndUpdateDocumentDepository();
-    // const values = this.complianceForm.value
-    // console.log('Values', values)
   }
-
-
-
-  // onDocDepository() {
-  //   const isValid = this.onSubmit();
-
-  //   if (isValid) {
-  //     this.addDocumentDepository();
-  //     // this.tostar.success('Success', 'Template added successfuly')
-  //   } else {
-  //     console.log('Form is invalid, cannot add template');
-  //   }
-  // }
-
-  // // this.onSubmit();
-
-
-
-
-  // updateDepository() {
-  //   const isValid = this.onSubmit();
-
-  //   if (isValid) {
-  //     this.updateDocumentDepository();
-  //     // this.tostar.success('Success', 'Template added successfuly')
-  //   } else {
-  //     console.log('Form is invalid, cannot add template');
-  //   }
-  // }
 
 
   ngOnDestroy(): void {
-    console.log('Component is being destroyed');
-
     sessionStorage.removeItem('task');
   }
 

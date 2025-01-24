@@ -102,11 +102,9 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
 
     const navigation: any = this.router.getCurrentNavigation();
     const isNewTemp = sessionStorage.getItem('isNewTemp') === 'true';
-    console.log(isNewTemp)
     if (navigation?.extras.state) {
       const RecursiveTaskData: any = navigation.extras.state.taskData;
       this.taskData = RecursiveTaskData;
-      console.log('RecursiveTaskData', this.taskData)
 
       if (RecursiveTaskData.mkey) {
         this.updatedDetails = !isNewTemp;
@@ -865,7 +863,7 @@ toggleSelection(task: any = []): void {
 
   selectedOptionList(){
 
-      console.log('selectedOptionList come here')
+      // console.log('selectedOptionList come here')
       const token = this.apiService.getRecursiveUser();
       const USER_CRED = this.credentialService.getUser();
 
@@ -873,19 +871,16 @@ toggleSelection(task: any = []): void {
       const buildingStd = this.taskData.buildinG_STANDARD;
       const statutoryAuth = this.taskData.statutorY_AUTHORITY;
 
-      console.log('USER_CRED[0]?.MKEY', typeof USER_CRED[0]?.MKEY)
-      console.log('Building', typeof buildingCla)
-      console.log('Standard', typeof buildingStd)
-      console.log('Statutoory', typeof statutoryAuth)
+      // console.log('USER_CRED[0]?.MKEY', typeof USER_CRED[0]?.MKEY)
+      // console.log('Building', typeof buildingCla)
+      // console.log('Standard', typeof buildingStd)
+      // console.log('Statutoory', typeof statutoryAuth)
 
       if (buildingCla && buildingStd && statutoryAuth) {
         this.recursiveLogginUser = this.apiService.getRecursiveUser();
         this.apiService.projectDefinationOption(USER_CRED[0]?.MKEY, token, buildingCla, buildingStd, statutoryAuth).subscribe({
           next: (gerAbbrRelData) => {
-
-            console.log('this.taskData.buildinG_CLASSIFICATION', this.taskData.buildinG_CLASSIFICATION)
-            
-
+          
             if (!this.isCleared) { // Only call getTree if not cleared
               this.projDefinationTable = gerAbbrRelData
 
@@ -1092,7 +1087,7 @@ toggleSelection(task: any = []): void {
 
  async getTree(optionList: any[] = [], _jobRoleList: any[] = [], _departmentList: any[] = []) {
 
-  console.log('optionList', optionList)
+  // console.log('optionList', optionList)
     
    
     this.recursiveLogginUser = this.apiService.getRecursiveUser();
@@ -1152,7 +1147,7 @@ toggleSelection(task: any = []): void {
   
     const same_data = optionListArr;
 
-    console.log('optionListArr', optionListArr)
+    // console.log('optionListArr', optionListArr)
 
     const buildHierarchy = (tasks: any, rootTaskNo: any) => {
       const rootTask = tasks.find((task: any) => task.TASK_NO === rootTaskNo);
@@ -1263,7 +1258,7 @@ toggleSelection(task: any = []): void {
           };
           no_parent_arr.push(parentTask);
         } else {
-          console.log(`Found Parent Task: ${parentTask.TASK_NO.TASK_NO}`);
+          // console.log(`Found Parent Task: ${parentTask.TASK_NO.TASK_NO}`);
           parentTask.subtask.push(task);
         }
       }
@@ -1315,7 +1310,6 @@ toggleSelection(task: any = []): void {
         // Convert camelCase to Title Case
         const formattedControlName = convertToTitleCase(controlName);
 
-        console.log('formattedControlName', formattedControlName)
         addControlError(formattedControlName);
       }
     });
@@ -1335,7 +1329,6 @@ toggleSelection(task: any = []): void {
       });
 
   
-      console.log('subTaskList', subTaskList)
   
       if (invalidSubTask) {
         this.tostar.error('Missing tentative start or end date for a subtask');
@@ -1349,7 +1342,7 @@ toggleSelection(task: any = []): void {
       // }
     }
   
-    console.log('subTaskList', subTaskList)
+    // console.log('subTaskList', subTaskList)
   
     const selectedSeqArr = this.selectedSeqArr;
     const uniqList = this.uniqList;
@@ -1585,7 +1578,6 @@ toggleSelection(task: any = []): void {
         const jobRole = jobRoleList.find((role:any) => role.mkey === parseInt(item.joB_ROLE));
         const departmentRole = departmentList.find((department:any) => department.mkey === parseInt(item.department));
 
-        console.log('Item', item)
         return {
           TASK_NO: item.tasK_NO,
           maiN_ABBR: item.approvaL_ABBRIVATION,

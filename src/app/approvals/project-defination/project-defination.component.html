@@ -505,13 +505,13 @@
                                           </span>
                                         </ng-container>
                                       </td>
-                                      <td class="truncate-text">{{ task.TASK_NO?.maiN_ABBR }}</td>
-                                      <td class="truncate-text">{{ task.TASK_NO?.abbR_SHORT_DESC }}</td>
-                                      <td class="truncate-text">{{ task.TASK_NO?.dayS_REQUIERD }}</td>
-                                      <td class="truncate-text">{{ task.TASK_NO?.department }}</td>
-                                      <td class="truncate-text">{{ task.TASK_NO?.joB_ROLE }}</td>
-                                      <td class="truncate-text">{{ task.TASK_NO?.resposiblE_EMP }}</td>
-                                      <td class="truncate-text">{{ task.TASK_NO?.enD_RESULT_DOC }}</td>
+                                      <td class="truncate-text" matTooltip="{{ task.TASK_NO?.maiN_ABBR }}">{{ task.TASK_NO?.maiN_ABBR }}</td>
+                                      <td class="truncate-text" matTooltip="{{ task.TASK_NO?.abbR_SHORT_DESC }}">{{ task.TASK_NO?.abbR_SHORT_DESC }}</td>
+                                      <td class="truncate-text" matTooltip="{{ task.TASK_NO?.dayS_REQUIERD }}">{{ task.TASK_NO?.dayS_REQUIERD }}</td>
+                                      <td class="truncate-text" matTooltip="{{ task.TASK_NO?.department }}">{{ task.TASK_NO?.department }}</td>
+                                      <td class="truncate-text"  matTooltip="{{ task.TASK_NO?.joB_ROLE }}">{{ task.TASK_NO?.joB_ROLE }}</td>
+                                      <td class="truncate-text" matTooltip="{{ task.TASK_NO?.resposiblE_EMP }}">{{ task.TASK_NO?.resposiblE_EMP }}</td>
+                                      <td class="truncate-text"  matTooltip="{{ task.TASK_NO?.enD_RESULT_DOC }}">{{ task.TASK_NO?.enD_RESULT_DOC }}</td>
                                       <td>
                                         <ng-container *ngIf="taskData?.mkey">
                                           <input type="date" [ngClass]="{'disabled': isTaskDisabled(task)}"
@@ -599,13 +599,13 @@
                                         </span>
                                       </ng-container>
                                     </td>
-                                    <td class="truncate-text">{{ task.TASK_NO?.maiN_ABBR }}</td>
-                                    <td class="truncate-text">{{ task.TASK_NO?.abbR_SHORT_DESC }}</td>
-                                    <td class="truncate-text">{{ task.TASK_NO?.dayS_REQUIERD }}</td>
-                                    <td class="truncate-text">{{ task.TASK_NO?.department }}</td>
-                                    <td class="truncate-text">{{ task.TASK_NO?.joB_ROLE }}</td>
-                                    <td class="truncate-text">{{ task.TASK_NO?.resposiblE_EMP }}</td>
-                                    <td class="truncate-text">{{ task.TASK_NO?.enD_RESULT_DOC }}</td>
+                                    <td class="truncate-text" matTooltip="{{ task.TASK_NO?.maiN_ABBR }}">{{ task.TASK_NO?.maiN_ABBR }}</td>
+                                    <td class="truncate-text"  matTooltip="{{ task.TASK_NO?.abbR_SHORT_DESC }}">{{ task.TASK_NO?.abbR_SHORT_DESC }}</td>
+                                    <td class="truncate-text" matTooltip="{{ task.TASK_NO?.dayS_REQUIERD }}">{{ task.TASK_NO?.dayS_REQUIERD }}</td>
+                                    <td class="truncate-text" matTooltip="{{ task.TASK_NO?.department }}">{{ task.TASK_NO?.department }}</td>
+                                    <td class="truncate-text" matTooltip="{{ task.TASK_NO?.joB_ROLE }}">{{ task.TASK_NO?.joB_ROLE }}</td>
+                                    <td class="truncate-text" matTooltip="{{ task.TASK_NO?.resposiblE_EMP }}">{{ task.TASK_NO?.resposiblE_EMP }}</td>
+                                    <td class="truncate-text" matTooltip="{{ task.TASK_NO?.enD_RESULT_DOC }}">{{ task.TASK_NO?.enD_RESULT_DOC }}</td>
                                     <td>
                                       <ng-container *ngIf="taskData?.mkey">
                                         <input type="date" [min]="currentDate" class="form-control"
@@ -637,7 +637,7 @@
                                     <td class="truncate-text"
                                       style="max-width:100rem; position: sticky; right: 0; background: white; z-index: 1;">
                                       <div
-                                        *ngIf="task.TASK_NO?.status !== 'Ready to Initiate' && task.TASK_NO?.status !== 'Initiated'">
+                                        *ngIf="!taskData?.mkey && task.TASK_NO?.status !== 'Ready to Initiate' && task.TASK_NO?.status !== 'Initiated'">
                                         Created
                                       </div>
                                       <div *ngIf="taskData?.mkey">
