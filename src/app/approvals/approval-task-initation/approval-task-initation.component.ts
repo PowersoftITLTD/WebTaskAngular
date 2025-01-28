@@ -127,7 +127,9 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
     }
   }
 
-  ngOnInit(): void {
+  ngOnInit(): void {  
+    
+    console.log('CHEKC the task: ', this.taskData)
     this.onLogin();
     this.fetchEmployeeName();
     this.activeIndices = this.accordionItems.map((_, index) => index); // Set all indices to open
@@ -305,7 +307,7 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
     };
 
     console.log('addApprovalInitiation: ', addApprovalInitiation);
-    // console.log('recursiveLogginUser', this.recursiveLogginUser)
+    console.log('recursiveLogginUser', this.recursiveLogginUser)
 
     this.apiService.postApprovalInitiation(addApprovalInitiation, this.recursiveLogginUser).subscribe({
       next:(response)=>{
@@ -860,6 +862,8 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
         const subTaskIndex = this.taskData.SUBTASK_LIST.findIndex(
           (subtask: any) => subtask.approvaL_MKEY === task.approvaL_MKEY
         );
+
+        // window.location.reload();
   
         if (subTaskIndex > -1) {
           // Merge updated data into the local subtask
@@ -1091,6 +1095,7 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
           department_mkey: departmentRole ? departmentRole.mkey : 0,
           start_date: item.TENTATIVE_START_DATE,
           end_date: item.TENTATIVE_END_DATE,
+          RESPOSIBLE_EMP_NAME:item.RESPOSIBLE_EMP_NAME,
           resposiblE_EMP_MKEY: item.RESPOSIBLE_EMP_MKEY,
           status: item.STATUS
         };
@@ -1099,8 +1104,10 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
 
     this.loading = true;
 
-
+    this.selectedAssignTo
     console.log('optionListArr', optionListArr)
+
+    
 
 
     const same_data = optionListArr;
@@ -1253,6 +1260,24 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
         addControlError(formattedControlName);
       }
     });
+
+
+    const subTaskList =  this.taskData.SUBTASK_LIST;
+
+    console.log('this.taskData.SUBTASK_LIST', this.taskData.SUBTASK_LIST)
+    console.log('subTaskList', subTaskList)
+  
+    if (subTaskList && subTaskList.length > 0) {
+      const invalidSubTasks = subTaskList.filter((subTask:any) => {
+        console.log('subTask', subTask)
+        return !subTask.RESPOSIBLE_EMP_MKEY; // Checks for 0, undefined, null, or empty string
+      });
+    
+      if (invalidSubTasks.length > 0) {
+        this.tostar.error('Please add responsible person to the subtask/s');
+        return;
+      }
+    }
   
     if (requiredControls.length > 0) {
       const errorMessage = `${requiredControls.join(' , ')}`;

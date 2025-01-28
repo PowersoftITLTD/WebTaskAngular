@@ -447,7 +447,8 @@
                                         <td class="truncate-text">{{ task.TASK_NO?.dayS_REQUIERD }}</td>
                                         <td class="truncate-text">{{ task.TASK_NO?.department }}</td>
                                         <td class="truncate-text">{{ task.TASK_NO?.joB_ROLE }}</td>
-                                        <td class="truncate-text">{{ task.TASK_NO?.Responsible_Person }}</td>
+                                        <!-- <td class="truncate-text">{{ task.TASK_NO?.Responsible_Person }}</td> -->
+                                        <td class="truncate-text">{{ task.TASK_NO?.RESPOSIBLE_EMP_NAME }}</td>
                                         <td class="truncate-text">{{ task.TASK_NO?.enD_RESULT_DOC }}</td>
 
                                         <td>
@@ -536,10 +537,9 @@
                                                     <div class="form-group d-flex justify-content-between">
                                                       <label class="abbr-label" for="abbreviation">Responsible
                                                         Person</label>
-                                                      <input type="text" class="abbr-input form-control"
-                                                       
+                                                      <input type="text" class="abbr-input form-control"                                                       
                                                         [ngStyle]="isFieldDisabled ? { 'background-color': 'rgb(238 236 195)', 'color': '#11111', 'cursor': 'allowed' } : {}"
-                                                        maxlength="150" [(ngModel)]="selectedAssignTo" [ngModelOptions]="{standalone: true}"  (input)="SubfilterEmployeesInitiator($event, task.TASK_NO?.TASK_NO)" />
+                                                        maxlength="150" [(ngModel)]="selectedAssignTo" placeholder="{{task.TASK_NO?.RESPOSIBLE_EMP_NAME}}"  [ngModelOptions]="{standalone: true}"  (input)="SubfilterEmployeesInitiator($event, task.TASK_NO?.TASK_NO)" />
                                                         <div style="width: 100%;" class="pr-10 mt-1">
                                                           <ul>
                                                             <li *ngFor="let event of subListFilteredEmp; let i = index;" class="active" type="button"
@@ -666,7 +666,9 @@
                                       <td class="truncate-text">{{ task.TASK_NO?.dayS_REQUIERD }}</td>
                                       <td class="truncate-text">{{ task.TASK_NO?.department }}</td>
                                       <td class="truncate-text">{{ task.TASK_NO?.joB_ROLE }}</td>
-                                      <td class="truncate-text">{{ task.TASK_NO?.Responsible_Person }}</td>
+                                      <!-- <td class="truncate-text">{{ task.TASK_NO?.Responsible_Person }}</td> -->
+                                      <td class="truncate-text">{{ task.TASK_NO?.RESPOSIBLE_EMP_NAME }}</td>
+
                                       <td class="truncate-text">{{ task.TASK_NO?.enD_RESULT_DOC }}</td>
                                       <!-- <td class="truncate-text">{{ task.TASK_NO?.STATUS }}</td> -->
 
@@ -758,7 +760,7 @@
                                                     <input type="text" class="abbr-input form-control"
                                                      
                                                       [ngStyle]="isFieldDisabled ? { 'background-color': 'rgb(238 236 195)', 'color': '#11111', 'cursor': 'allowed' } : {}"
-                                                      maxlength="150" [(ngModel)]="selectedAssignTo" [ngModelOptions]="{standalone: true}"  (input)="SubfilterEmployeesInitiator($event, task.TASK_NO?.TASK_NO)" />
+                                                      maxlength="150" [(ngModel)]="selectedAssignTo" placeholder="{{task.TASK_NO?.RESPOSIBLE_EMP_NAME}}" [ngModelOptions]="{standalone: true}"  (input)="SubfilterEmployeesInitiator($event, task.TASK_NO?.TASK_NO)" />
                                                       <div style="width: 100%;" class="pr-10 mt-1">
                                                         <ul>
                                                           <li *ngFor="let event of subListFilteredEmp; let i = index;" class="active" type="button"

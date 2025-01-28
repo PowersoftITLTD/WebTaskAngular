@@ -77,7 +77,7 @@ export class ProjectDocumentDepositoryComponent implements OnInit {
     if (navigation?.extras.state) {
       const RecursiveTaskData: any = navigation.extras.state.taskData;
       this.taskData = RecursiveTaskData;
-      console.log('RecursiveTaskData', RecursiveTaskData)
+      // console.log('RecursiveTaskData', RecursiveTaskData)
 
       if (RecursiveTaskData.mkey) {
         this.updatedDetails = !isNewTemp;
