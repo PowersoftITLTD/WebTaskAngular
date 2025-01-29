@@ -881,6 +881,28 @@ toggleSelection(task: any = []): void {
         this.apiService.projectDefinationOption(USER_CRED[0]?.MKEY, token, buildingCla, buildingStd, statutoryAuth).subscribe({
           next: (gerAbbrRelData) => {
           
+            console.log('Selected Project def data',gerAbbrRelData)
+            const newTasks = gerAbbrRelData.map((task: any) => {
+              const newTask = {
+                HEADER_MKEY: task.HEADER_MKEY,              
+                SEQ_NO: task.TASK_NO,
+                TASK_NO:task.TASK_NO,
+                MAIN_ABBR: task.MAIN_ABBR,
+                ABBR_SHORT_DESC: task.ABBR_SHORT_DESC,
+                DAYS_REQUIERD: task.DAYS_REQUIERD,
+                AUTHORITY_DEPARTMENT: task.AUTHORITY_DEPARTMENT,
+                END_RESULT_DOC: task.END_RESULT_DOC,
+                JOB_ROLE: task.JOB_ROLE,
+                SUBTASK_PARENT_ID: task.SUBTASK_PARENT_ID,
+                RESPOSIBLE_EMP_MKEY: task.RESPOSIBLE_EMP_MKEY,
+                LONG_DESCRIPTION: task.LONG_DESCRIPTION,
+                Status: task.Status,
+                Message: task.Message
+              };
+              return newTask;
+            });
+            
+            console.log('After looping of Proj Def',newTasks);
             if (!this.isCleared) { // Only call getTree if not cleared
               this.projDefinationTable = gerAbbrRelData
 

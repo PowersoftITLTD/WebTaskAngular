@@ -863,7 +863,7 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
           (subtask: any) => subtask.approvaL_MKEY === task.approvaL_MKEY
         );
 
-        // window.location.reload();
+        window.location.reload();
   
         if (subTaskIndex > -1) {
           // Merge updated data into the local subtask
