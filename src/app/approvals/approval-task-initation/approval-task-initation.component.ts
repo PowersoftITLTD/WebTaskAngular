@@ -830,6 +830,8 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
         }
       }).join(',');
     }
+
+    console.log('check name', matchedEmp)
   
     const responsibleEmpMKey = (assignTo === null || assignTo === undefined || assignTo === '' || !matchedEmp) 
       ? task.resposiblE_EMP_MKEY
@@ -842,7 +844,8 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
       SHORT_DESCRIPTION: task.abbr_short_DESC,
       LONG_DESCRIPTION: task.abbR_SHORT_DESC,
       TAGS: tagsString,
-      resposiblE_EMP_MKEY: responsibleEmpMKey,
+      resposiblE_EMP_MKEY:responsibleEmpMKey,
+      RESPOSIBLE_EMP_NAME:matchedEmp.Assign_to,
       createD_BY: data[0].MKEY,
       lasT_UPDATED_BY: data[0].MKEY,
       TENTATIVE_START_DATE: task.start_date,

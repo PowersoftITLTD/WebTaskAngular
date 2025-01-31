@@ -361,34 +361,32 @@
 
 
                                   <ng-container *ngIf="!taskData?.mkey">
-                                    
+                               
                                     <ul class="dropdown-list" style="height:40rem">
                                       <ng-template #recursiveTaskTemplate let-tasks>
-                                        
                                         <ng-container *ngFor="let task of tasks">
-                                        
-                                          <!-- <li> -->
-                                           
-                                          <!-- </li> -->
-                                          <li class="task-item" [ngClass]="{'selected': isSelected(task)}">
-                                            <!--[ngClass]="{'selected': isSelected(task)}"
-                                            (click)="toggleSelection(task)"-->
-                                        
+                                          
+                                          <li class="task-item"
+                                            [ngClass]="{'selected': isSelected(task) || isTaskInSavedList(task), 'disabled': isTaskDisabled(task)}"
+                                            [attr.disabled]="isTaskDisabled(task) ? '' : null"
+                                            >
                                             <ng-container *ngIf="task.TASK_NO?.TASK_NO">
+                                              
                                               <div class="task-details">
                                                 <span class="select-all-container">
-                                                  <input type="checkbox" class="task-item" [ngClass]="{'selected': isSelected(task)}" (click)="toggleSelection(task)">
+                                                  <input type="checkbox" class="task-item" [ngClass]="{'selected': isSelected(task)}" (click)="isTaskDisabled(task) ? null : toggleSelection(task)">
                                                 </span>
                                                 <span class="task-number"
                                                   [style.marginLeft.px]="calculateIndentation(task.TASK_NO.TASK_NO, task.subtask && task.subtask.length > 0 ? 15 : 30,  task.TASK_NO.start_date, task.TASK_NO.end_date)">
-                                                  <mat-icon *ngIf="task.subtask && task.subtask.length > 0"
-                                                    (click)="toggleVisibility(task)" style="cursor: pointer;">
-                                                    <img
+                                                  <mat-icon (click)="toggleVisibility(task)" style="cursor: pointer;" >
+                                                    <img *ngIf="task.subtask && task.subtask.length > 0"
                                                       src="../../../../assets/Content/images/{{ task.visible ? 'collapse.png' : 'expand.png' }}">
                                                   </mat-icon>
                                                   {{ task.TASK_NO.TASK_NO }}
+
                                                 </span>
                                                 <div class="task-detail">{{ task.TASK_NO?.maiN_ABBR }}</div>
+
                                                 <div class="task-detail">{{ task.TASK_NO?.abbR_SHORT_DESC }}</div>
                                               </div>
                                             </ng-container>
@@ -402,24 +400,26 @@
                                       </ng-template>
 
                                       <ng-container *ngFor="let task of subTasks">
-                                      
-                                        <li class="task-item" [ngClass]="{'selected': isSelected(task)}">
-                                         
+                                        <li class="task-item"
+                                          [ngClass]="{'selected': isSelected(task) || isTaskInSavedList(task), 'disabled': isTaskDisabled(task)}"
+                                          [attr.disabled]="isTaskDisabled(task) ? '' : null"
+                                          >
                                           <ng-container *ngIf="task.TASK_NO?.TASK_NO">
                                             <div class="task-details">
                                               <span class="select-all-container">
-                                                <input type="checkbox" [ngClass]="{'selected': isSelected(task)}" (click)="toggleSelection(task)">
-                                              </span>
-                                              <span class="task-number"
+                                                <input type="checkbox" class="task-item" [ngClass]="{'selected': isSelected(task)}" (click)="isTaskDisabled(task) ? null : toggleSelection(task)">
+                                              </span>                                           
+                                              <span class="task-number" 
                                                 [style.marginLeft.px]="calculateIndentation(task.TASK_NO.TASK_NO, task.subtask && task.subtask.length > 0 ? 15 : 30,  task.TASK_NO.start_date, task.TASK_NO.end_date)">
-                                                <mat-icon *ngIf="task.subtask && task.subtask.length > 0"
-                                                  (click)="toggleVisibility(task)" style="cursor: pointer;">
-                                                  <img
+                                                <mat-icon (click)="toggleVisibility(task)" style="cursor: pointer;" >
+                                                  <img *ngIf="task.subtask && task.subtask.length > 0"
                                                     src="../../../../assets/Content/images/{{ task.visible ? 'collapse.png' : 'expand.png' }}">
                                                 </mat-icon>
                                                 {{ task.TASK_NO.TASK_NO }}
+
                                               </span>
                                               <div class="task-detail">{{ task.TASK_NO?.maiN_ABBR }}</div>
+
                                               <div class="task-detail">{{ task.TASK_NO?.abbR_SHORT_DESC }}</div>
                                             </div>
                                           </ng-container>
