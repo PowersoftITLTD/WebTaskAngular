@@ -153,7 +153,7 @@
                   <div class="classification-border px-2 py-2 mt-2">
 
                     <div class="d-flex justify-content-end mt-2 mr-3">
-                      <i class="fa-solid plus btn mr-2" type="button" (click)="getOptionList()"><small>Get
+                      <i class="fa-solid plus btn mr-2" type="button" *ngIf="isLoading" (click)="getOptionList()" ><small>Get
                           List</small></i>
 
                      <div >
@@ -294,26 +294,26 @@
                                       <ng-template #recursiveTaskTemplate let-tasks>
                                         <ng-container *ngFor="let task of tasks">
                                           
-                                          <li class="task-item"
-                                            [ngClass]="{'selected': isSelected(task) || isTaskInSavedList(task), 'disabled': isTaskDisabled(task)}"
-                                            [attr.disabled]="isTaskDisabled(task) ? '' : null"
-                                            >
+                                          <li class="task-item">
                                             <ng-container *ngIf="task.TASK_NO?.TASK_NO">
                                               
                                               <div class="task-details">
                                                 <span class="select-all-container">
-                                                  <input type="checkbox" class="task-item" [ngClass]="{'selected': isSelected(task)}" (click)="isTaskDisabled(task) ? null : toggleSelection(task)">
+                                                  <input type="checkbox" class="task-item" 
+                                                  [ngClass]="{'selected': isSelected(task) || isTaskInSavedList(task), 'disabled': isTaskDisabled(task)}"
+                                            [attr.disabled]="isTaskDisabled(task) ? '' : null"
+                                                  [ngClass]="{'selected': isSelected(task)}" (click)="isTaskDisabled(task) ? null : toggleSelection(task)">
                                                 </span>
                                                 <span class="task-number"
-                                                  [style.marginLeft.px]="calculateIndentation(task.TASK_NO.TASK_NO, task.subtask && task.subtask.length > 0 ? 15 : 30,  task.TASK_NO.start_date, task.TASK_NO.end_date)">
+                                                  [style.marginLeft.px]="calculateIndentation(task.TASK_NO.TASK_NO, task.subtask && task.subtask.length > 0 ? 15 : 15,  task.TASK_NO.start_date, task.TASK_NO.end_date)">
                                                   <mat-icon (click)="toggleVisibility(task)" style="cursor: pointer;">
                                                     <img *ngIf="task.subtask && task.subtask.length > 0"
                                                       src="../../../../assets/Content/images/{{ task.visible ? 'collapse.png' : 'expand.png' }}">
                                                   </mat-icon>
-                                                  <!-- {{ task.TASK_NO.TASK_NO }} -->
-                                                  <div class="task-detail">{{ task.TASK_NO?.maiN_ABBR }}</div>
-
+                                                  {{ task.TASK_NO.TASK_NO }}
                                                 </span>
+                                                <div class="task-detail">{{ task.TASK_NO?.maiN_ABBR }}</div>
+
                                                 <div class="task-detail">{{ task.TASK_NO?.abbR_SHORT_DESC }}</div>
                                               </div>
                                             </ng-container>
@@ -327,25 +327,26 @@
                                       </ng-template>
 
                                       <ng-container *ngFor="let task of subTasks">
-                                        <li class="task-item"
-                                          [ngClass]="{'selected': isSelected(task) || isTaskInSavedList(task), 'disabled': isTaskDisabled(task)}"
-                                          [attr.disabled]="isTaskDisabled(task) ? '' : null"
+                                        <li class="task-item"                                          
                                           >
                                           <ng-container *ngIf="task.TASK_NO?.TASK_NO">
                                             <div class="task-details">
                                               <span class="select-all-container">
-                                                <input type="checkbox" class="task-item" [ngClass]="{'selected': isSelected(task)}" (click)="isTaskDisabled(task) ? null : toggleSelection(task)">
+                                                <input type="checkbox" class="task-item" [ngClass]="{'selected': isSelected(task)}" 
+                                                [ngClass]="{'selected': isSelected(task) || isTaskInSavedList(task), 'disabled': isTaskDisabled(task)}"
+                                          [attr.disabled]="isTaskDisabled(task) ? '' : null"
+                                                (click)="isTaskDisabled(task) ? null : toggleSelection(task)">
                                               </span>                                           
                                               <span class="task-number"
-                                                [style.marginLeft.px]="calculateIndentation(task.TASK_NO.TASK_NO, task.subtask && task.subtask.length > 0 ? 15 : 30,  task.TASK_NO.start_date, task.TASK_NO.end_date)">
+                                                [style.marginLeft.px]="calculateIndentation(task.TASK_NO.TASK_NO, task.subtask && task.subtask.length > 0 ? 15 : 15,  task.TASK_NO.start_date, task.TASK_NO.end_date)">
                                                 <mat-icon (click)="toggleVisibility(task)" style="cursor: pointer;">
                                                   <img *ngIf="task.subtask && task.subtask.length > 0"
                                                     src="../../../../assets/Content/images/{{ task.visible ? 'collapse.png' : 'expand.png' }}">
                                                 </mat-icon>
-                                                <!-- {{ task.TASK_NO.TASK_NO }} -->
-                                                <div class="task-detail">{{ task.TASK_NO?.maiN_ABBR }}</div>
-
+                                                {{ task.TASK_NO.TASK_NO }}
                                               </span>
+                                              <div class="task-detail">{{ task.TASK_NO?.maiN_ABBR }}</div>
+
                                               <div class="task-detail">{{ task.TASK_NO?.abbR_SHORT_DESC }}</div>
                                             </div>
                                           </ng-container>
@@ -377,7 +378,7 @@
                                                   <input type="checkbox" class="task-item" [ngClass]="{'selected': isSelected(task)}" (click)="isTaskDisabled(task) ? null : toggleSelection(task)">
                                                 </span>
                                                 <span class="task-number"
-                                                  [style.marginLeft.px]="calculateIndentation(task.TASK_NO.TASK_NO, task.subtask && task.subtask.length > 0 ? 15 : 30,  task.TASK_NO.start_date, task.TASK_NO.end_date)">
+                                                  [style.marginLeft.px]="calculateIndentation(task.TASK_NO.TASK_NO, task.subtask && task.subtask.length > 0 ? 15 : 15,  task.TASK_NO.start_date, task.TASK_NO.end_date)">
                                                   <mat-icon (click)="toggleVisibility(task)" style="cursor: pointer;" >
                                                     <img *ngIf="task.subtask && task.subtask.length > 0"
                                                       src="../../../../assets/Content/images/{{ task.visible ? 'collapse.png' : 'expand.png' }}">
@@ -410,7 +411,7 @@
                                                 <input type="checkbox" class="task-item" [ngClass]="{'selected': isSelected(task)}" (click)="isTaskDisabled(task) ? null : toggleSelection(task)">
                                               </span>                                           
                                               <span class="task-number" 
-                                                [style.marginLeft.px]="calculateIndentation(task.TASK_NO.TASK_NO, task.subtask && task.subtask.length > 0 ? 15 : 30,  task.TASK_NO.start_date, task.TASK_NO.end_date)">
+                                                [style.marginLeft.px]="calculateIndentation(task.TASK_NO.TASK_NO, task.subtask && task.subtask.length > 0 ? 15 : 15,  task.TASK_NO.start_date, task.TASK_NO.end_date)">
                                                 <mat-icon (click)="toggleVisibility(task)" style="cursor: pointer;" >
                                                   <img *ngIf="task.subtask && task.subtask.length > 0"
                                                     src="../../../../assets/Content/images/{{ task.visible ? 'collapse.png' : 'expand.png' }}">
@@ -591,8 +592,8 @@
                                       <ng-container *ngIf="task.TASK_NO.TASK_NO">
                                         <span
                                           [style.marginLeft.px]="calculateIndentation(task.TASK_NO.TASK_NO, task.subtask && task.subtask.length > 0 ? 15 : 30, task.TASK_NO.start_date, task.TASK_NO.end_date)">
-                                          <mat-icon (click)="toggleVisibility(task)" style="cursor: pointer;">
-                                            <img
+                                          <mat-icon (click)="toggleVisibility(task)" style="cursor: pointer;" *ngIf="task.subtask && task.subtask.length > 0">
+                                            <img *ngIf="task.subtask && task.subtask.length > 0"
                                               src="../../../../assets/Content/images/{{ task.visible ? 'collapse.png' : 'expand.png' }}">
                                           </mat-icon>
                                           {{ task.TASK_NO.TASK_NO }}

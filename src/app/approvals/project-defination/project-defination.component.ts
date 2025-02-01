@@ -17,6 +17,8 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
 
   public cities: ICity[] = CITIES;
 
+  isLoading:boolean = true; // Hide the button when clicked
+
   receivedUser: string | any;
   taskDetails: any;
   loading: boolean = false;
@@ -800,9 +802,8 @@ toggleSelection(task: any = []): void {
 
   getOptionList() {
 
-    // if (this.hasDataBeenPassed) {
-    //   return; 
-    // }
+    
+  
     const token = this.apiService.getRecursiveUser();
     const USER_CRED = this.credentialService.getUser();
     let gerAbbrRelDataArr = []
@@ -831,6 +832,7 @@ toggleSelection(task: any = []): void {
             const check = gerAbbrRelDataArr.push(gerAbbrRelData)
             // console.log('check gerAbbrRelData', gerAbbrRelData)
             this.getTree(gerAbbrRelData);
+            this.isLoading = false;
           },
           error: (error) => {
             // console.log('error.status',error.error.status)
@@ -888,6 +890,8 @@ toggleSelection(task: any = []): void {
               };
               return newTask;
             });
+
+            this.isLoading = false;
             
             console.log('After looping of Proj Def',newTasks);
             if (!this.isCleared) { // Only call getTree if not cleared
@@ -936,6 +940,7 @@ toggleSelection(task: any = []): void {
     this.isCleared = true; // Set clear flag
     console.log('Clear action executed.');
     this.tostar.success('Cleared successfully');
+    this.isLoading = true
   }
 
   reset(){
@@ -978,6 +983,7 @@ toggleSelection(task: any = []): void {
 
     if (task && Object.values(task).every(value => value !== undefined)) {
       this.unFlatternArr = [task]; 
+
       this.newToggltSel(task)
 
     }
@@ -1264,7 +1270,7 @@ toggleSelection(task: any = []): void {
         return subtasks.map((subtask: any) => {
           const subtaskWithNestedTaskNo: any = {
             TASK_NO: subtask,
-            visible: true,
+            visible: false,
             subtask: buildSubtasks(subtask.TASK_NO, depth + 1)
           };
 
@@ -1294,7 +1300,7 @@ toggleSelection(task: any = []): void {
           ...rootTask,
           TASK_NO: rootTask.TASK_NO,
         },
-        visible: true,
+        visible: false,
         subtask: buildSubtasks(rootTask.TASK_NO, rootDepth)
       };
 
@@ -1322,6 +1328,7 @@ toggleSelection(task: any = []): void {
       }
     });
 
+    console.log('subTasks: ',this.subTasks)
 
     this.loading = false;
 
@@ -1334,7 +1341,7 @@ toggleSelection(task: any = []): void {
     const no_parent_arr = noParentTree.map((item: any) => ({
       TASK_NO: item,
       subtask: [],
-      visible: true
+      visible: false
     }));
 
 
@@ -1355,7 +1362,7 @@ toggleSelection(task: any = []): void {
           parentTask = {
             TASK_NO: { TASK_NO: parentTaskPrefix },
             subtask: [task],
-            visible: true
+            visible: false
           };
           no_parent_arr.push(parentTask);
         } else {
@@ -1738,7 +1745,7 @@ toggleSelection(task: any = []): void {
     const no_parent_arr = noParentTree.map((item: any) => ({
       TASK_NO: item,
       subtask: [],
-      visible: true
+      visible: false
     }));
 
 
@@ -1759,7 +1766,7 @@ toggleSelection(task: any = []): void {
           parentTask = {
             TASK_NO: { TASK_NO: parentTaskPrefix },
             subtask: [task],
-            visible: true
+            visible: false
           };
           no_parent_arr.push(parentTask);
         } else {

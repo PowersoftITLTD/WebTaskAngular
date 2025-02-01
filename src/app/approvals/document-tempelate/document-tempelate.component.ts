@@ -230,6 +230,7 @@ export class DocumentTempelateComponent implements OnInit {
 
     const data = this.credentialService.getUser();
     this.recursiveLogginUser = this.apiService.getRecursiveUser();
+    
 
 
     const today = new Date();
@@ -266,18 +267,18 @@ export class DocumentTempelateComponent implements OnInit {
 
     console.log('addTmpDoc', addTmpDoc)
 
-    // this.apiService.postDocumentTempelate(addTmpDoc, this.recursiveLogginUser).subscribe({
-    //   next:(addTemplateDate:any)=>{
-    //     this.router.navigate(['task/approval-screen'], {queryParams:{ source: 'document-tempelate' }});
+    this.apiService.postDocumentTempelate(addTmpDoc, this.recursiveLogginUser).subscribe({
+      next:(addTemplateDate:any)=>{
+        this.router.navigate(['task/approval-screen'], {queryParams:{ source: 'document-tempelate' }});
 
-    //     console.log('Data added successfully', addTemplateDate)
+        console.log('Data added successfully', addTemplateDate)
 
-    //   }, error:(error)=>{
-    //     if(error){
-    //       console.error('Error updating task', error)
-    //     }
-    //   }
-    // })
+      }, error:(error)=>{
+        if(error){
+          console.error('Error updating task', error)
+        }
+      }
+    })
     
   }
 
@@ -289,9 +290,32 @@ export class DocumentTempelateComponent implements OnInit {
     const token = this.apiService.getRecursiveUser();
     const doc_temp_key = this.taskData.mkey
 
+    const doc_num_feild_name = this.docTempForm.get('documentNumberFieldName')?.value
+    const doc_date_feild_name = this.docTempForm.get('documentDateFieldName')?.value
+
+    const doc_not_app = this.docTempForm.get('documentNotApplied')?.value
+    const doc_date_app =  this.docTempForm.get('documentDateApplicable')?.value
+
+    console.log('doc_num_feild_name', doc_num_feild_name)
+    console.log('doc_date_feild_name', doc_date_feild_name)
+
+    console.log('doc_not_app', doc_not_app)
+    console.log('doc_date_app', doc_date_app)
+
+
+    if ((doc_num_feild_name === '' || doc_num_feild_name === undefined || doc_num_feild_name === null) && doc_not_app !== 'N') {
+      this.tostar.error(`Please set Document No. Applicable to 'Yes'`);
+    }
     
-
-
+    
+    
+    console.log(
+      "Condition Check:",
+      doc_num_feild_name === '' || doc_num_feild_name === undefined || doc_num_feild_name === null,
+      "AND",
+      doc_not_app === 'Y'
+    );
+    
     const updateDocTemp = {
       mkey: this.taskData.mkey,
       doC_CATEGORY: Number(this.docTempForm.get('category')?.value),
@@ -397,7 +421,7 @@ export class DocumentTempelateComponent implements OnInit {
 
 
     const check_field_num_name = this.docTempForm.get('documentNumberFieldName')?.value
-    const check_field_date_name = this.docTempForm.get('documentNumberFieldName')?.value
+    const check_field_date_name = this.docTempForm.get('documentDateFieldName')?.value
 
     const doc_num_applicable = this.docTempForm.get('documentNotApplied')?.value
     const doc_date_applicable = this.docTempForm.get('documentDateApplicable')?.value

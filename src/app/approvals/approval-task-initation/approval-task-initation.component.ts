@@ -80,6 +80,8 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
   loginName: string = '';
   loginPassword: string = '';
 
+  initiatorName:string = ''
+
 
   public accordionItems = [
     { title: 'Sub Task', content: 'Some placeholder content for the second accordion panel.' },
@@ -173,10 +175,14 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
 
 
   initilizeApprInitiationForm() {
+
+    const USER_CRED = this.credentialService.getUser();
+    console.log('this.initiatorName', USER_CRED[0].EMP_FULL_NAME)
+
     this.appeInitForm = this.formBuilder.group({
       property: [''],
       building: [''],
-      initiator: ['', Validators.required],
+      initiator: [USER_CRED[0].EMP_FULL_NAME || '', Validators.required],
       abbrivation: ['', ],
       // sanctioningAuth: [this.taskData.SANCTION_AUTHORITY_NAME ],
       // sanctioningDepartment: ['', ],
