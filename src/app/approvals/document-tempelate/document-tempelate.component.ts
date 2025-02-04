@@ -230,7 +230,6 @@ export class DocumentTempelateComponent implements OnInit {
 
     const data = this.credentialService.getUser();
     this.recursiveLogginUser = this.apiService.getRecursiveUser();
-    
 
 
     const today = new Date();
@@ -290,32 +289,9 @@ export class DocumentTempelateComponent implements OnInit {
     const token = this.apiService.getRecursiveUser();
     const doc_temp_key = this.taskData.mkey
 
-    const doc_num_feild_name = this.docTempForm.get('documentNumberFieldName')?.value
-    const doc_date_feild_name = this.docTempForm.get('documentDateFieldName')?.value
-
-    const doc_not_app = this.docTempForm.get('documentNotApplied')?.value
-    const doc_date_app =  this.docTempForm.get('documentDateApplicable')?.value
-
-    console.log('doc_num_feild_name', doc_num_feild_name)
-    console.log('doc_date_feild_name', doc_date_feild_name)
-
-    console.log('doc_not_app', doc_not_app)
-    console.log('doc_date_app', doc_date_app)
-
-
-    if ((doc_num_feild_name === '' || doc_num_feild_name === undefined || doc_num_feild_name === null) && doc_not_app !== 'N') {
-      this.tostar.error(`Please set Document No. Applicable to 'Yes'`);
-    }
     
-    
-    
-    console.log(
-      "Condition Check:",
-      doc_num_feild_name === '' || doc_num_feild_name === undefined || doc_num_feild_name === null,
-      "AND",
-      doc_not_app === 'Y'
-    );
-    
+
+
     const updateDocTemp = {
       mkey: this.taskData.mkey,
       doC_CATEGORY: Number(this.docTempForm.get('category')?.value),
@@ -398,12 +374,12 @@ export class DocumentTempelateComponent implements OnInit {
     Object.keys(this.docTempForm.controls).forEach(controlName => {
       const control = this.docTempForm.get(controlName);
 
-      // console.log('CHECK documentDateApplicable', this.docTempForm.get('documentDateApplicable')?.value)
+      // console.log('CHECK CONTROL NAME', controlName)
   
       if (control?.errors?.required) {
        if(
-        (controlName === 'documentNumberFieldName' && this.docTempForm.get('documentNotApplied')?.value === 'Y') ||
-        (controlName === 'documentDateFieldName' && this.docTempForm.get('documentDateApplicable')?.value === 'Y') ||
+        controlName === 'documentNumberFieldName' && this.docTempForm.get('documentNotApplied')?.value === 'Y' ||
+        controlName === 'documentDateFieldName' && this.docTempForm.get('documentDateApplicable')?.value === 'Y' ||
         controlName === 'documentName' ||
         controlName === 'category' ||
         controlName === 'documentAbbrivation' ||
@@ -421,21 +397,19 @@ export class DocumentTempelateComponent implements OnInit {
 
 
     const check_field_num_name = this.docTempForm.get('documentNumberFieldName')?.value
-    const check_field_date_name = this.docTempForm.get('documentDateFieldName')?.value
+    const check_field_date_name = this.docTempForm.get('documentNumberFieldName')?.value
 
     const doc_num_applicable = this.docTempForm.get('documentNotApplied')?.value
     const doc_date_applicable = this.docTempForm.get('documentDateApplicable')?.value
 
     console.log('doc_num_applicable', doc_num_applicable)
-    console.log('doc_date_applicable', doc_date_applicable)
 
-
-    if ((check_field_num_name === 'Y' && doc_num_applicable === 'N')) {
+    if ((check_field_num_name && doc_num_applicable === 'N')) {
       this.tostar.error(`Please set 'Document No. Applicable' to 'Yes' if field is required`);
       return false;
     }
 
-    if ((check_field_date_name === 'Y' && doc_date_applicable === 'N')) {
+    if ((check_field_date_name && doc_date_applicable === 'N')) {
       this.tostar.error(`Please set 'Document Date Applicable' to 'Yes' if field is required`);
       return false;
     }

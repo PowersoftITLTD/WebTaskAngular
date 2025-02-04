@@ -17,8 +17,6 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
 
   public cities: ICity[] = CITIES;
 
-  isLoading:boolean = true; // Hide the button when clicked
-
   receivedUser: string | any;
   taskDetails: any;
   loading: boolean = false;
@@ -423,6 +421,7 @@ toggleSelection(task: any = []): void {
         });
       }else{
         result.push({
+          // headeR_MKEY:this.taskData.mkey,
           tasK_NO: task.TASK_NO.TASK_NO.trim(),        
           dayS_REQUIRED: Number(task.TASK_NO.dayS_REQUIERD),
           approvaL_ABBRIVATION: task.TASK_NO.maiN_ABBR,
@@ -438,7 +437,21 @@ toggleSelection(task: any = []): void {
         });
       }
 
-    
+      // result.push({
+      //   headeR_MKEY:this.taskData.mkey,
+      //   tasK_NO: task.TASK_NO.TASK_NO.trim(),        
+      //   dayS_REQUIRED: Number(task.TASK_NO.dayS_REQUIERD),
+      //   approvaL_ABBRIVATION: task.TASK_NO.maiN_ABBR,
+      //   approvaL_DESCRIPTION: task.TASK_NO.abbR_SHORT_DESC,
+      //   resposiblE_EMP_MKEY: Number(task.TASK_NO.resposiblE_EMP_MKEY),
+      //   tentativE_START_DATE: task.TASK_NO.start_date,
+      //   tentativE_END_DATE: task.TASK_NO.end_date,
+      //   department: task.TASK_NO.department_mkey,
+      //   joB_ROLE: task.TASK_NO.joB_ROLE_mkey,
+      //   approvaL_MKEY:task.TASK_NO.approvaL_MKEY,
+      //   outpuT_DOCUMENT: task.TASK_NO.enD_RESULT_DOC,
+      //   status: task.TASK_NO.status || 'created',
+      // });
 
       if (task.subtask && task.subtask.length > 0) {
         task.subtask.forEach(flatten);
@@ -486,7 +499,6 @@ toggleSelection(task: any = []): void {
     this.apiService.postProjectDefination(addProjectDefination, this.recursiveLogginUser).subscribe({
       next: (addData: any) => {
         console.log('Data added successfully', addData)
-        this.tostar.success('Success', 'Template added successfuly')
         this.router.navigate(['task/approval-screen'], {queryParams:{ source: 'project-defination' }});
 
       }, error: (error: ErrorHandler) => {
@@ -566,7 +578,6 @@ toggleSelection(task: any = []): void {
     this.apiService.putProjectDefination(addProjectDefination, headerMkey, this.recursiveLogginUser).subscribe({
       next: (addData: any) => {
         console.log('Data added successfully', addData)
-        this.tostar.success('Success', 'Template added successfuly')
         this.router.navigate(['task/approval-screen'], {queryParams:{ source: 'project-defination' }});
       }, error: (error: ErrorHandler) => {
         console.log('Unable to get data', error)
@@ -802,8 +813,9 @@ toggleSelection(task: any = []): void {
 
   getOptionList() {
 
-    
-  
+    // if (this.hasDataBeenPassed) {
+    //   return; 
+    // }
     const token = this.apiService.getRecursiveUser();
     const USER_CRED = this.credentialService.getUser();
     let gerAbbrRelDataArr = []
@@ -830,9 +842,8 @@ toggleSelection(task: any = []): void {
             console.log('TASk_no', check_TAsk_no)
 
             const check = gerAbbrRelDataArr.push(gerAbbrRelData)
-            // console.log('check gerAbbrRelData', gerAbbrRelData)
+            // console.log('check', gerAbbrRelDataArr.push(gerAbbrRelData))
             this.getTree(gerAbbrRelData);
-            this.isLoading = false;
           },
           error: (error) => {
             // console.log('error.status',error.error.status)
@@ -890,8 +901,6 @@ toggleSelection(task: any = []): void {
               };
               return newTask;
             });
-
-            this.isLoading = false;
             
             console.log('After looping of Proj Def',newTasks);
             if (!this.isCleared) { // Only call getTree if not cleared
@@ -940,7 +949,6 @@ toggleSelection(task: any = []): void {
     this.isCleared = true; // Set clear flag
     console.log('Clear action executed.');
     this.tostar.success('Cleared successfully');
-    this.isLoading = true
   }
 
   reset(){
@@ -983,7 +991,6 @@ toggleSelection(task: any = []): void {
 
     if (task && Object.values(task).every(value => value !== undefined)) {
       this.unFlatternArr = [task]; 
-
       this.newToggltSel(task)
 
     }
@@ -1060,129 +1067,39 @@ toggleSelection(task: any = []): void {
     );
   }
 
-  convertTaskNo(tasks: any[]): any[] {
+
+  convertTaskNo(tasks: Task[]): Task[] {
     const parentTaskCount = new Map<number, number>();
     const taskNumbers = new Map<number, string>();
-  
-    // Step 1: Organize tasks by parent ID
-    const taskMap = new Map<number, any[]>();
-    tasks.forEach((task) => {
-      if (!taskMap.has(task.SUBTASK_PARENT_ID)) {
-        taskMap.set(task.SUBTASK_PARENT_ID, []);
+
+
+    return tasks.map((task: any) => {
+      
+
+      // console.log('task', task)
+      let newTaskNo = '';
+
+      if (task.SUBTASK_PARENT_ID === 0) {
+        const count = parentTaskCount.get(0) || 0;
+        newTaskNo = (count + 1).toString();
+        parentTaskCount.set(0, count + 1);
+      } else {
+        const parentTaskNo = taskNumbers.get(task.SUBTASK_PARENT_ID);
+        if (parentTaskNo) {
+          const count = parentTaskCount.get(task.SUBTASK_PARENT_ID) || 0;
+          newTaskNo = `${parentTaskNo}.${count + 1}`;
+          parentTaskCount.set(task.SUBTASK_PARENT_ID, count + 1);
+        }
       }
-      taskMap.get(task.SUBTASK_PARENT_ID)?.push(task);
+
+      task.TASK_NO = newTaskNo;
+
+      taskNumbers.set(task.HEADER_MKEY, newTaskNo);
+
+
+      return task;
     });
-  
-    // Step 2: Recursive function to assign TASK_NO, In this it will assign the 
-    function assignTaskNumbers(parentId: number, prefix = "") {
-      if (!taskMap.has(parentId)) return;
-      
-      let count = 1;
-      for (const task of taskMap.get(parentId)!) {
-        const taskNo = prefix ? `${prefix}.${count}` : `${count}`;
-        task.TASK_NO = taskNo;
-        taskNumbers.set(task.HEADER_MKEY, taskNo);
-        parentTaskCount.set(task.HEADER_MKEY, 0);
-        count++;
-  
-        // Recursively process subtasks
-        assignTaskNumbers(task.HEADER_MKEY, taskNo);
-      }
-    }
-  
-    // Step 3: Assign numbers starting from top-level parents (SUBTASK_PARENT_ID = 0)
-    assignTaskNumbers(0);
-  
-    console.log("Check the task from convertTaskNo", tasks);
-    return tasks;
   }
-  
-
-  // convertTaskNo(tasks: any[]): any[] {
-
-  //   const parentTaskCount = new Map<number, number>();
-  //   const taskNumbers = new Map<number, string>();
-
-
-  //   return tasks.map((task: any) => {
-      
-
-  //     // console.log('task', task)
-  //     let newTaskNo = '';
-
-  //     if (task.SUBTASK_PARENT_ID === 0) {
-  //       const count = parentTaskCount.get(0) || 0;
-  //       newTaskNo = (count + 1).toString();
-  //       parentTaskCount.set(0, count + 1);
-  //     } else {
-  //       const parentTaskNo = taskNumbers.get(task.SUBTASK_PARENT_ID);
-
-  //       if (parentTaskNo) {
-
-  //         const count = parentTaskCount.get(task.SUBTASK_PARENT_ID) || 0;
-
-  //         newTaskNo = `${parentTaskNo}.${count + 1}`;
-  //         parentTaskCount.set(task.SUBTASK_PARENT_ID, count + 1);
-  //       }else{
-  //         newTaskNo = `${parentTaskNo}`;
-
-  //       }
-  //     }
-
-  //     task.TASK_NO = newTaskNo;
-
-  //     taskNumbers.set(task.HEADER_MKEY, newTaskNo);
-
-
-  //     return task;
-  //   });
-  // }
-
-//   convertTaskNo(tasks: any[]): any[] {
-//     const parentTaskCount = new Map<number, number>(); 
-//     const taskNumbers = new Map<number, string>(); 
-//     const processedTasks = new Set<number>(); 
-
-//     tasks.sort((a, b) => a.SUBTASK_PARENT_ID - b.SUBTASK_PARENT_ID);
-
-//     return tasks.map((task: any) => {
-//         let newTaskNo = '';
-
-//         // If task has no parent (parent task)
-//         if (task.SUBTASK_PARENT_ID === 0) {
-//             const count = parentTaskCount.get(0) || 0;
-//             newTaskNo = (count + 1).toString();
-//             parentTaskCount.set(0, count + 1);
-//         } else {
-//             // Ensure the parent task is processed before its children
-//             let parentTaskNo = taskNumbers.get(task.SUBTASK_PARENT_ID);
-
-//             console.log('parentTaskNo: ', parentTaskNo)
-//             // If the parent task is not processed yet, return an empty task number for now
-//             // In this if parent is not 0 then it will take the new parent_id instead of 0 or natural number
-//             if (parentTaskNo) {
-//                 const count = parentTaskCount.get(task.SUBTASK_PARENT_ID) || 0;
-//                 newTaskNo = `${parentTaskNo}.${count + 1}`;
-//                 parentTaskCount.set(task.SUBTASK_PARENT_ID, count + 1);
-//             } else {
-//                 // If parent task is not found, this could be an invalid or circular reference
-//                 console.warn(`Parent task with ID ${task.SUBTASK_PARENT_ID} not found for task ${task.HEADER_MKEY}`);
-//                 newTaskNo = `${parentTaskNo}`;
-//             }
-//         }
-
-//         task.TASK_NO = newTaskNo;
-//         taskNumbers.set(task.HEADER_MKEY, newTaskNo);
-//         processedTasks.add(task.HEADER_MKEY);
-
-//         return task;
-//     });
-// }
-
-
-
-
-
 
 
   removeDuplicates(array: any[]): any[] {
@@ -1210,9 +1127,7 @@ toggleSelection(task: any = []): void {
         console.error('Error fetching data:', error);
     }
     
-    const check_convert_task =  this.convertTaskNo(optionList);
-
-    console.log('check_convert_task', check_convert_task)
+    this.convertTaskNo(optionList);
 
     const jobRoleList = jobRole_new;
     const departmentList = department_new
@@ -1270,7 +1185,7 @@ toggleSelection(task: any = []): void {
         return subtasks.map((subtask: any) => {
           const subtaskWithNestedTaskNo: any = {
             TASK_NO: subtask,
-            visible: false,
+            visible: true,
             subtask: buildSubtasks(subtask.TASK_NO, depth + 1)
           };
 
@@ -1300,7 +1215,7 @@ toggleSelection(task: any = []): void {
           ...rootTask,
           TASK_NO: rootTask.TASK_NO,
         },
-        visible: false,
+        visible: true,
         subtask: buildSubtasks(rootTask.TASK_NO, rootDepth)
       };
 
@@ -1328,7 +1243,6 @@ toggleSelection(task: any = []): void {
       }
     });
 
-    console.log('subTasks: ',this.subTasks)
 
     this.loading = false;
 
@@ -1341,7 +1255,7 @@ toggleSelection(task: any = []): void {
     const no_parent_arr = noParentTree.map((item: any) => ({
       TASK_NO: item,
       subtask: [],
-      visible: false
+      visible: true
     }));
 
 
@@ -1362,7 +1276,7 @@ toggleSelection(task: any = []): void {
           parentTask = {
             TASK_NO: { TASK_NO: parentTaskPrefix },
             subtask: [task],
-            visible: false
+            visible: true
           };
           no_parent_arr.push(parentTask);
         } else {
@@ -1582,7 +1496,7 @@ toggleSelection(task: any = []): void {
     if (isValid) {
 
       this.addProjectDef();
-      // this.tostar.success('Success', 'Template added successfuly')
+      this.tostar.success('Success', 'Template added successfuly')
     } else {
       console.log('Form is invalid, cannot add template');
     }
@@ -1745,7 +1659,7 @@ toggleSelection(task: any = []): void {
     const no_parent_arr = noParentTree.map((item: any) => ({
       TASK_NO: item,
       subtask: [],
-      visible: false
+      visible: true
     }));
 
 
@@ -1766,7 +1680,7 @@ toggleSelection(task: any = []): void {
           parentTask = {
             TASK_NO: { TASK_NO: parentTaskPrefix },
             subtask: [task],
-            visible: false
+            visible: true
           };
           no_parent_arr.push(parentTask);
         } else {

@@ -80,8 +80,6 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
   loginName: string = '';
   loginPassword: string = '';
 
-  initiatorName:string = ''
-
 
   public accordionItems = [
     { title: 'Sub Task', content: 'Some placeholder content for the second accordion panel.' },
@@ -175,14 +173,10 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
 
 
   initilizeApprInitiationForm() {
-
-    const USER_CRED = this.credentialService.getUser();
-    console.log('this.initiatorName', USER_CRED[0].EMP_FULL_NAME)
-
     this.appeInitForm = this.formBuilder.group({
       property: [''],
       building: [''],
-      initiator: [USER_CRED[0].EMP_FULL_NAME || '', Validators.required],
+      initiator: ['', Validators.required],
       abbrivation: ['', ],
       // sanctioningAuth: [this.taskData.SANCTION_AUTHORITY_NAME ],
       // sanctioningDepartment: ['', ],
@@ -836,8 +830,6 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
         }
       }).join(',');
     }
-
-    console.log('check name', matchedEmp)
   
     const responsibleEmpMKey = (assignTo === null || assignTo === undefined || assignTo === '' || !matchedEmp) 
       ? task.resposiblE_EMP_MKEY
@@ -850,8 +842,7 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
       SHORT_DESCRIPTION: task.abbr_short_DESC,
       LONG_DESCRIPTION: task.abbR_SHORT_DESC,
       TAGS: tagsString,
-      resposiblE_EMP_MKEY:responsibleEmpMKey,
-      RESPOSIBLE_EMP_NAME:matchedEmp.Assign_to,
+      resposiblE_EMP_MKEY: responsibleEmpMKey,
       createD_BY: data[0].MKEY,
       lasT_UPDATED_BY: data[0].MKEY,
       TENTATIVE_START_DATE: task.start_date,

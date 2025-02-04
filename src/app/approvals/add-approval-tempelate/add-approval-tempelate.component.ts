@@ -196,7 +196,6 @@ export class AddApprovalTempelateComponent implements OnInit {
       // sanctioningDept:['',Validators.required],      
       endResult: ['dummy_1, dummy_2'],
       tags: [''],
-      sequenceOrder:[''],
       rows: this.formBuilder.array([], [this.duplicateAbbrivationValidator()]),
       rows_new: this.formBuilder.array([])
     })
