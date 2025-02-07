@@ -17,6 +17,9 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
 
   public cities: ICity[] = CITIES;
 
+  isLoading: boolean = true; // Hide the button when clicked
+  disableChilCheckBox: boolean = false;
+
   receivedUser: string | any;
   taskDetails: any;
   loading: boolean = false;
@@ -26,8 +29,8 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
   uniqueSubTask: any[] = []
   unFlatternArr: any[] = [];
   existingTaskA: any;
-
-  flatList:any
+  selectAllChecked: boolean = false;
+  flatList: any
 
   formVisibleMap: boolean[] = [];
 
@@ -35,7 +38,7 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
   projectDefForm: FormGroup | any;
 
   selectedDocsMap: { [key: string]: any[] } = { endResult: [], checklist: [] };
-  private hasDataBeenPassed = false; 
+  private hasDataBeenPassed = false;
 
   disableClear = false
 
@@ -65,7 +68,7 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
   new_list_of_selectedSeqArr: any[] = [];
   projDefinationTable: any[] = []
   uniqList: any[] = [];
-  
+
 
   end_list: object = {};
   check_list: object = {};
@@ -81,11 +84,11 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
   loginName: string = '';
   loginPassword: string = '';
   ValueList: any[] = [];
-  validValueList: any[]=[];
+  validValueList: any[] = [];
 
   public activeIndices: number[] = []; // Change here
   subTasks: any[] = [];
-  optionSubTASk:any[] = [];
+  optionSubTASk: any[] = [];
 
   public accordionItems = [
     { title: 'Applicable approvals', content: 'Some placeholder content for the first accordion panel.' },
@@ -105,6 +108,8 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
     if (navigation?.extras.state) {
       const RecursiveTaskData: any = navigation.extras.state.taskData;
       this.taskData = RecursiveTaskData;
+
+      console.log('RecursiveTaskData', RecursiveTaskData)
 
       if (RecursiveTaskData.mkey) {
         this.updatedDetails = !isNewTemp;
@@ -126,12 +131,12 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
           console.error('Failed to parse task data', error);
         }
       }
-    }  
-    
+    }
+
   }
 
   ngOnInit(): void {
- 
+
     this.activeIndices = this.accordionItems.map((_, index) => index);
     this.onLogin();
     this.fetchProjectData();
@@ -139,8 +144,8 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
     if (this.taskData && this.taskData.mkey) {
       this.selectedOptionList();
       this.getTree_new();
-      this.getSubProj();    
-       
+      this.getSubProj();
+
     }
     this.initilizeProjDefForm();
     this.fetchEmployeeName();
@@ -171,7 +176,7 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
     this.disableClear = false;
     return false;
   }
-  
+
   toggleFormVisibility(index: number) {
     this.formVisibleMap[index] = !this.formVisibleMap[index];
   }
@@ -180,126 +185,120 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
     this.formVisibleMap[index] = !this.formVisibleMap[index];
   }
 
-  
 
-toggleSelection(task: any = []): void {
-  const taskId = task?.TASK_NO?.TASK_NO;
 
-  // Safely check and toggle selection state
-  if (this.selectedTasksId.has(taskId)) {
-    this.selectedTasksId.delete(taskId);
-    this.selectedTasks.delete(task);
-  } else {
-    this.selectedTasksId.add(taskId);
-    this.selectedTasks.add(task);
-  }
+  toggleSelection(task: any = []): void {
+    const taskId = task?.TASK_NO?.TASK_NO;
 
-  console.log('new_list_of_selectedSeqArr: ', this.new_list_of_selectedSeqArr);
-  console.log('selectedSeqArr before updates: ', this.selectedSeqArr);
-
-  // Combine and deduplicate tasks
-  let selectedTasksArray: any[];
-
-  // Utility function to count maiN_ABBR occurrences
-  const getUniqueTasks = (tasksArray: any[]): any[] => {
-    const abbrCount = new Map();
-
-    const countAbbr = (tasks: any[]) => {
-      tasks.forEach((task: any) => {
-        const abbr = task?.TASK_NO?.maiN_ABBR;
-        if (abbr) abbrCount.set(abbr, (abbrCount.get(abbr) || 0) + 1);
-
-        if (task.subtask?.length) countAbbr(task.subtask); // Recursive call
-      });
-    };
-
-    const filterUniqueTasks = (tasks: any[]): any[] => {
-      return tasks
-        .filter((task: any) => abbrCount.get(task?.TASK_NO?.maiN_ABBR) === 1)
-        .map((task: any) => ({
-          ...task,
-          subtask: filterUniqueTasks(task.subtask || []), // Recursive filtering
-        }));
-    };
-
-    countAbbr(tasksArray); // Step 1: Count
-    return filterUniqueTasks(tasksArray); // Step 2: Filter
-  };
-
-  if (this.taskData?.mkey && !this.isCleared) {
-    const status = this.taskData.approvalS_ABBR_LIST?.[0]?.status;
-
-    if (status === 'Initiated' || status === 'Ready to Initiate') {
-      console.log('Combining data', this.new_list_of_selectedSeqArr);
-
-      // Merge, deduplicate, and filter for unique tasks
-      selectedTasksArray = [...this.selectedTasks, ...this.new_list_of_selectedSeqArr];
-      const uniqueTasksArray = getUniqueTasks(selectedTasksArray);
-
-      console.log('uniqueTasksArray', uniqueTasksArray);
-      selectedTasksArray = [...uniqueTasksArray,...this.new_list_of_selectedSeqArr];
+    // Safely check and toggle selection state
+    if (this.selectedTasksId.has(taskId)) {
+      this.selectedTasksId.delete(taskId);
+      this.selectedTasks.delete(task);
     } else {
-      // Only existing tasks
+      this.selectedTasksId.add(taskId);
+      this.selectedTasks.add(task);
+    }
+
+    // Combine and deduplicate tasks
+    let selectedTasksArray: any[];
+
+    // Utility function to count maiN_ABBR occurrences
+    const getUniqueTasks = (tasksArray: any[]): any[] => {
+      const abbrCount = new Map();
+
+      const countAbbr = (tasks: any[]) => {
+        tasks.forEach((task: any) => {
+          const abbr = task?.TASK_NO?.maiN_ABBR;
+          if (abbr) abbrCount.set(abbr, (abbrCount.get(abbr) || 0) + 1);
+
+          if (task.subtask?.length) countAbbr(task.subtask); // Recursive call
+        });
+      };
+
+      const filterUniqueTasks = (tasks: any[]): any[] => {
+        return tasks
+          .filter((task: any) => abbrCount.get(task?.TASK_NO?.maiN_ABBR) === 1)
+          .map((task: any) => ({
+            ...task,
+            subtask: filterUniqueTasks(task.subtask || []), // Recursive filtering
+          }));
+      };
+
+      countAbbr(tasksArray); // Step 1: Count
+      return filterUniqueTasks(tasksArray); // Step 2: Filter
+    };
+
+    if (this.taskData?.mkey && !this.isCleared) {
+      const status = this.taskData.approvalS_ABBR_LIST?.[0]?.status;
+
+      if (status === 'Initiated' || status === 'Ready to Initiate') {
+        // console.log('Combining data', this.new_list_of_selectedSeqArr);
+
+        // Merge, deduplicate, and filter for unique tasks
+        selectedTasksArray = [...this.selectedTasks, ...this.new_list_of_selectedSeqArr];
+        const uniqueTasksArray = getUniqueTasks(selectedTasksArray);
+
+        selectedTasksArray = [...uniqueTasksArray, ...this.new_list_of_selectedSeqArr];
+      } else {
+        // Only existing tasks
+        selectedTasksArray = [...this.selectedTasks];
+      }
+    } else {
       selectedTasksArray = [...this.selectedTasks];
     }
-  } else {
-    selectedTasksArray = [...this.selectedTasks];
+
+
+    console.log(this.selectedSeqArr)
+
+    // Function to check if task exists as a subtask
+    const hasMatchingSubtask = (task: any, tasks: any[]): boolean => {
+      return tasks.some((parentTask) =>
+        parentTask.subtask?.some((subtask: any) => {
+          if (subtask?.TASK_NO?.TASK_NO.trim() === task?.TASK_NO?.TASK_NO.trim()) {
+            return true;
+          }
+          return subtask.subtask?.length > 0 && hasMatchingSubtask(task, [subtask]);
+        })
+      );
+    };
+
+    // Remove parent tasks that exist in subtasks
+    const removeParentTaskIfInSubtasks = (tasks: any[]): any[] => {
+      return tasks.filter((task: any) => !hasMatchingSubtask(task, tasks));
+    };
+
+    // Filter tasks to exclude duplicates in subtasks
+    const updatedTasksArray = removeParentTaskIfInSubtasks(selectedTasksArray);
+
+    // Sort tasks by sequence
+    this.selectedSeqArr = this.sortTasksBySequence(updatedTasksArray);
+
+
+
+    // Flatten tasks into a linear structure
+    const flattenedTasks = this.breakToLinear(this.selectedSeqArr);
+
+    const removeDup = this.removeDuplicates(this.selectedSeqArr)
+
+    this.selectedSeqArr = removeDup;
+
+    // console.log('this.selectedSeqArr', this.selectedSeqArr)
+
+    // Ensure uniqueness in the flattened tasks
+    const seen = new Set();
+    const uniqueTasks = flattenedTasks.filter((task) => {
+      const taskNo = task?.TASK_NO?.TASK_NO;
+      if (seen.has(taskNo)) return false;
+      seen.add(taskNo);
+      return true;
+    });
+
+    // Update the uniqueSubTask property
+    this.uniqueSubTask = uniqueTasks;
   }
 
-  console.log('selectedTasksArray before subtask check:', selectedTasksArray);
-
-  console.log(this.selectedSeqArr)
-
-  // Function to check if task exists as a subtask
-  const hasMatchingSubtask = (task: any, tasks: any[]): boolean => {
-    return tasks.some((parentTask) =>
-      parentTask.subtask?.some((subtask: any) => {
-        if (subtask?.TASK_NO?.TASK_NO.trim() === task?.TASK_NO?.TASK_NO.trim()) {
-          return true;
-        }
-        return subtask.subtask?.length > 0 && hasMatchingSubtask(task, [subtask]);
-      })
-    );
-  };
-
-  // Remove parent tasks that exist in subtasks
-  const removeParentTaskIfInSubtasks = (tasks: any[]): any[] => {
-    return tasks.filter((task: any) => !hasMatchingSubtask(task, tasks));
-  };
-
-  // Filter tasks to exclude duplicates in subtasks
-  const updatedTasksArray = removeParentTaskIfInSubtasks(selectedTasksArray);
-
-  // Sort tasks by sequence
-  this.selectedSeqArr = this.sortTasksBySequence(updatedTasksArray);
-  console.log('Selected Array after sorting:', this.selectedSeqArr);
 
 
-
-  // Flatten tasks into a linear structure
-  const flattenedTasks = this.breakToLinear(this.selectedSeqArr);
-
-  const removeDup = this.removeDuplicates(this.selectedSeqArr)
-  console.log('removeDup', removeDup)
-
-  this.selectedSeqArr = removeDup;
-
-  // Ensure uniqueness in the flattened tasks
-  const seen = new Set();
-  const uniqueTasks = flattenedTasks.filter((task) => {
-    const taskNo = task?.TASK_NO?.TASK_NO;
-    if (seen.has(taskNo)) return false;
-    seen.add(taskNo);
-    return true;
-  });
-
-  // Update the uniqueSubTask property
-  this.uniqueSubTask = uniqueTasks;
-  console.log('uniqueSubTask:', this.uniqueSubTask);
-}
-
-  
-  
   isTaskDisabled(task: any): boolean {
 
     if (this.isCleared) {
@@ -309,30 +308,31 @@ toggleSelection(task: any = []): void {
     if (this.taskData?.approvalS_ABBR_LIST[0].status === 'Initiated' || this.taskData?.approvalS_ABBR_LIST[0].status === 'Ready to Initiate') {
       const savedTaskNos = this.taskData?.approvalS_ABBR_LIST.map((item: any) => item.approvaL_ABBRIVATION.trim());
       // console.log("Saved Task Numbers (Trimmed):", savedTaskNos);
-    
+
       if (savedTaskNos.includes(task.TASK_NO?.maiN_ABBR.trim())) {
         // console.log("Disabling Task:", task.TASK_NO?.TASK_NO.trim());
-        return true; 
+        return true;
       }
-    
-      return false; 
+
+      return false;
     }
-    
+
     return false;
   }
-  
+
   isAllSelected(): boolean {
-    return this.subTasks.every(task => task.selected);  
+    return this.subTasks.every(task => task.selected);
   }
 
-  toggleSelectAll(event: any): void {
-    const selectAll = event.checked;
-    this.subTasks.forEach(task => {
-      task.selected = selectAll;
-      this.toggleSelection(task); 
-    });
+  toggleSelectAll(task: any): void {
+    // Force `selected` to be a boolean (true or false)
+    task.selected = task.selected !== undefined ? !task.selected : true;
+
+    // Call the function to update selection state
+    this.toggleSelection(task);
   }
-  
+
+
   newToggltSel(taskArray: any) {
 
     const input_table_id = taskArray.TASK_NO.TASK_NO;
@@ -345,7 +345,7 @@ toggleSelection(task: any = []): void {
       this.tableData.add(taskArray);
     }
 
-    const selectedTasksArray = [...this.tableData ]; 
+    const selectedTasksArray = [...this.tableData];
 
     if (selectedTasksArray.length > 0) {
 
@@ -369,25 +369,23 @@ toggleSelection(task: any = []): void {
     this.uniqList = flatternDataTable;
 
 
-
   }
 
 
   disableInitiatedTask(task: any): boolean {
     // console.log('Task:', task);
     // console.log('Approval List:', this.taskData.approvalS_ABBR_LIST);
-      return (
+    return (
       this.taskData.approvalS_ABBR_LIST.some(
-        (item:any) =>
+        (item: any) =>
           item.approvaL_ABBRIVATION === task.TASK_NO?.approvaL_ABBRIVATION &&
           item.status === 'Initiated'
-          
       )
     );
   }
 
 
-  
+
 
 
   breakToLinear(selectedSeq: any) {
@@ -403,10 +401,10 @@ toggleSelection(task: any = []): void {
 
       // console.log('task from breakToLinear',task)
 
-      if(this.taskData && this.taskData.mkey){
+      if (this.taskData && this.taskData.mkey) {
         result.push({
-          headeR_MKEY:this.taskData.mkey,
-          tasK_NO: task.TASK_NO.TASK_NO.trim(),        
+          headeR_MKEY: this.taskData.mkey,
+          tasK_NO: task.TASK_NO.TASK_NO.trim(),
           dayS_REQUIRED: Number(task.TASK_NO.dayS_REQUIERD),
           approvaL_ABBRIVATION: task.TASK_NO.maiN_ABBR,
           approvaL_DESCRIPTION: task.TASK_NO.abbR_SHORT_DESC,
@@ -415,14 +413,13 @@ toggleSelection(task: any = []): void {
           tentativE_END_DATE: task.TASK_NO.end_date,
           department: task.TASK_NO.department_mkey,
           joB_ROLE: task.TASK_NO.joB_ROLE_mkey,
-          approvaL_MKEY:task.TASK_NO.approvaL_MKEY,
+          approvaL_MKEY: task.TASK_NO.approvaL_MKEY,
           outpuT_DOCUMENT: task.TASK_NO.enD_RESULT_DOC,
           status: task.TASK_NO.status || 'created',
         });
-      }else{
+      } else {
         result.push({
-          // headeR_MKEY:this.taskData.mkey,
-          tasK_NO: task.TASK_NO.TASK_NO.trim(),        
+          tasK_NO: task.TASK_NO.TASK_NO.trim(),
           dayS_REQUIRED: Number(task.TASK_NO.dayS_REQUIERD),
           approvaL_ABBRIVATION: task.TASK_NO.maiN_ABBR,
           approvaL_DESCRIPTION: task.TASK_NO.abbR_SHORT_DESC,
@@ -431,27 +428,13 @@ toggleSelection(task: any = []): void {
           tentativE_END_DATE: task.TASK_NO.end_date,
           department: task.TASK_NO.department_mkey,
           joB_ROLE: task.TASK_NO.joB_ROLE_mkey,
-          approvaL_MKEY:task.TASK_NO.approvaL_MKEY,
+          approvaL_MKEY: task.TASK_NO.approvaL_MKEY,
           outpuT_DOCUMENT: task.TASK_NO.enD_RESULT_DOC,
           status: task.TASK_NO.status || 'created',
         });
       }
 
-      // result.push({
-      //   headeR_MKEY:this.taskData.mkey,
-      //   tasK_NO: task.TASK_NO.TASK_NO.trim(),        
-      //   dayS_REQUIRED: Number(task.TASK_NO.dayS_REQUIERD),
-      //   approvaL_ABBRIVATION: task.TASK_NO.maiN_ABBR,
-      //   approvaL_DESCRIPTION: task.TASK_NO.abbR_SHORT_DESC,
-      //   resposiblE_EMP_MKEY: Number(task.TASK_NO.resposiblE_EMP_MKEY),
-      //   tentativE_START_DATE: task.TASK_NO.start_date,
-      //   tentativE_END_DATE: task.TASK_NO.end_date,
-      //   department: task.TASK_NO.department_mkey,
-      //   joB_ROLE: task.TASK_NO.joB_ROLE_mkey,
-      //   approvaL_MKEY:task.TASK_NO.approvaL_MKEY,
-      //   outpuT_DOCUMENT: task.TASK_NO.enD_RESULT_DOC,
-      //   status: task.TASK_NO.status || 'created',
-      // });
+
 
       if (task.subtask && task.subtask.length > 0) {
         task.subtask.forEach(flatten);
@@ -474,10 +457,14 @@ toggleSelection(task: any = []): void {
     const PROJECT = this.projectDefForm.get('property')?.value;
     const SUB_PROJECT = this.projectDefForm.get('subProject')?.value;
 
-    const subTaskList = this.uniqList
+    const subTaskList = this.flatList
+
+    console.log('uniq list',this.uniqList)
+    console.log('flatList list',this.flatList)
 
     console.log('PROJECT', PROJECT)
     console.log('SUB_PROJECT', SUB_PROJECT)
+    
     const addProjectDefination = {
       projecT_NAME: SUB_PROJECT.MASTER_MKEY,
       projecT_ABBR: this.projectDefForm.get('projectAbbr')?.value,
@@ -499,7 +486,8 @@ toggleSelection(task: any = []): void {
     this.apiService.postProjectDefination(addProjectDefination, this.recursiveLogginUser).subscribe({
       next: (addData: any) => {
         console.log('Data added successfully', addData)
-        this.router.navigate(['task/approval-screen'], {queryParams:{ source: 'project-defination' }});
+        this.tostar.success('Success', 'Template added successfuly')
+        this.router.navigate(['task/approval-screen'], { queryParams: { source: 'project-defination' } });
 
       }, error: (error: ErrorHandler) => {
 
@@ -514,9 +502,9 @@ toggleSelection(task: any = []): void {
     this.recursiveLogginUser = this.apiService.getRecursiveUser();
     const headerMkey = this.taskData.mkey
 
-    console.log('from update',this.sub_proj)
-  
-    console.log('sub_project',this.taskData.projecT_NAME)
+    console.log('from update', this.sub_proj)
+
+    console.log('sub_project', this.taskData.projecT_NAME)
     console.log('Project', this.taskData.property)
 
     const PROJECT = this.projectDefForm.get('property')?.value;
@@ -531,33 +519,33 @@ toggleSelection(task: any = []): void {
     const projectName = PROJECT?.MASTER_MKEY ? PROJECT.MASTER_MKEY : this.taskData?.property;
     const subProjectName = SELECTED_PROJ?.MASTER_MKEY ? SELECTED_PROJ.MASTER_MKEY : this.taskData?.projecT_NAME;
 
-    
-    let subTaskList = this.uniqList;
-  
-   
-      if (!this.isCleared) {
-        subTaskList = subTaskList.filter((task, index, self) => {
-            // Check if task is not "Ready to Initiate" and is not a duplicate task with status "created"
-            const isDuplicate = self.findIndex(t => t.tasK_NO === task.tasK_NO) !== index;
 
-            // Keep tasks that are either "Ready to Initiate" or "created" and if it is the first occurrence (or not a duplicate with status "created")
-            return (task.status === "Ready to Initiate" || task.status === "created" || task.status === "Initiated") &&
-                  (!isDuplicate || task.status === "Ready to Initiate") || (!isDuplicate || task.status === "Initiated");                                
-        });
+    let subTaskList = this.uniqList;
+
+
+    if (!this.isCleared) {
+      subTaskList = subTaskList.filter((task, index, self) => {
+        // Check if task is not "Ready to Initiate" and is not a duplicate task with status "created"
+        const isDuplicate = self.findIndex(t => t.tasK_NO === task.tasK_NO) !== index;
+
+        // Keep tasks that are either "Ready to Initiate" or "created" and if it is the first occurrence (or not a duplicate with status "created")
+        return (task.status === "Ready to Initiate" || task.status === "created" || task.status === "Initiated") &&
+          (!isDuplicate || task.status === "Ready to Initiate") || (!isDuplicate || task.status === "Initiated");
+      });
     } else {
 
       subTaskList = this.flatList
       // console.log('subTaskList', subTaskList )
-        // Otherwise, remove "Ready to Initiate" tasks
-        // subTaskList = subTaskList.filter(task => task.status !== "Ready to Initiate");
-        
+      // Otherwise, remove "Ready to Initiate" tasks
+      // subTaskList = subTaskList.filter(task => task.status !== "Ready to Initiate");
+
     }
-  
-  
+
+
     console.log('Filtered Sub Task List:', subTaskList);
-  
+
     const addProjectDefination = {
-      mkey:this.taskData.mkey,
+      mkey: this.taskData.mkey,
       projecT_NAME: subProjectName,
       projecT_ABBR: this.projectDefForm.get('projectAbbr')?.value,
       property: projectName,
@@ -573,22 +561,23 @@ toggleSelection(task: any = []): void {
       lasT_UPDATED_BY: USER_CRED[0].MKEY,
       approvalS_ABBR_LIST: this.removeDuplicates(subTaskList)
     };
-  
+
     console.log(addProjectDefination);
     this.apiService.putProjectDefination(addProjectDefination, headerMkey, this.recursiveLogginUser).subscribe({
       next: (addData: any) => {
         console.log('Data added successfully', addData)
-        this.router.navigate(['task/approval-screen'], {queryParams:{ source: 'project-defination' }});
+        this.tostar.success('Success', 'Template added successfuly')
+        this.router.navigate(['task/approval-screen'], { queryParams: { source: 'project-defination' } });
       }, error: (error: ErrorHandler) => {
         console.log('Unable to get data', error)
       }
     });
   }
-  
 
-  
 
-  initiateToApprovalInitiation(approvalKey:any) {
+
+
+  initiateToApprovalInitiation(approvalKey: any) {
     console.log('taskData Check', this.taskData)
     this.recursiveLogginUser = this.apiService.getRecursiveUser();
     const project_mkey = this.taskData.mkey
@@ -596,12 +585,12 @@ toggleSelection(task: any = []): void {
 
     console.log(`project_mkey: ${project_mkey}, approval_mkey ${approvalKey}`)
 
-    this.apiService.getApprovalInitiation(this.recursiveLogginUser,project_mkey, approvalKey).subscribe({
-      next:(response)=>{
-        if(response){
-          console.log('initiateToApprovalInitiation',response.data)
+    this.apiService.getApprovalInitiation(this.recursiveLogginUser, project_mkey, approvalKey).subscribe({
+      next: (response) => {
+        if (response) {
+          console.log('initiateToApprovalInitiation', response.data)
           this.navigateToApprovalInitiation(response.data);
-        } 
+        }
       },
       error: (error) => {
 
@@ -611,9 +600,9 @@ toggleSelection(task: any = []): void {
   }
 
 
-  navigateToApprovalInitiation(apprInitData:any){
-    this.router.navigate(['approvals', 'approval-task-initiation', { Task_Num: apprInitData.MKEY }], {state: { taskData: apprInitData }});
-  } 
+  navigateToApprovalInitiation(apprInitData: any) {
+    this.router.navigate(['approvals', 'approval-task-initiation', { Task_Num: apprInitData.MKEY }], { state: { taskData: apprInitData } });
+  }
 
   onLogin() {
 
@@ -647,6 +636,100 @@ toggleSelection(task: any = []): void {
 
   }
 
+
+
+  //   selectAll() {
+  //     this.selectAllChecked = !this.selectAllChecked; 
+
+  //     if (this.selectAllChecked) {
+  //         console.log('Check the sub task from if');
+
+  //         this.subTasks.forEach(task => {
+  //             task.checked = true;
+  //             this.toggleSelection(task);        
+  //         });
+
+  //     } else {
+  //         console.log('Check the sub task from else');
+
+  //         // Reset the arrays immediately
+  //         this.ValueList = [];
+  //         this.selectedSeqArr = [];
+  //         this.flatList = [];
+
+  //         // Uncheck all subTasks immediately
+  //         this.subTasks.forEach(task => {
+  //           console.log('Check the check box',task)
+  //             task.checked = false; // Ensure each subtask is explicitly unchecked
+
+  //             this.toggleSelection(task);
+  //         });
+
+  //         // Ensure selectAllChecked is false after updating all tasks
+  //         // this.selectAllChecked = false;
+  //     }
+  // }
+
+
+  // selectAll() {
+  //   this.selectAllChecked = !this.selectAllChecked;
+
+  //   if (this.selectAllChecked) {
+  //     console.log('Checking all subtasks...');
+
+  //     this.subTasks.forEach(task => {
+  //       task.checked = true;
+  //       if (task.subtask && task.subtask.length > 0) {
+  //         task.subtask.forEach((innerTask: any) => {  
+  //           innerTask.checked = true;
+  //         });
+  //       }
+  //       this.toggleSelection(task);
+  //     });
+
+  //   } else {
+  //     console.log('Unchecking all subtasks...');
+
+  //     // Clear selection lists
+  //     this.ValueList = [];
+  //     this.selectedSeqArr = [];
+  //     this.flatList = [];
+
+  //     this.subTasks.forEach(task => {
+  //       task.checked = false;
+  //       if (task.subtask && task.subtask.length > 0) {
+  //         task.subtask.forEach((innerTask: any) => {
+  //           innerTask.checked = false;
+  //         });
+  //       }
+  //       this.toggleSelection(task);
+  //     });
+  //   }
+
+  //   // Force Angular to detect changes
+  //   // this.cdr.detectChanges();
+  // }
+
+  selectAll() {
+    this.selectAllChecked = !this.selectAllChecked;
+
+    const updateTaskSelection = (task: any, isChecked: boolean) => {
+      task.checked = isChecked;
+
+      if (task.subtask && task.subtask.length > 0) {
+        task.subtask.forEach((innerTask: any) => {
+          updateTaskSelection(innerTask, isChecked);
+        });
+      }
+    };
+
+    this.subTasks.forEach(task => {
+      updateTaskSelection(task, this.selectAllChecked);
+      this.toggleSelection(task);
+    });
+  }
+
+
   fetchData(): void {
     this.recursiveLogginUser = this.apiService.getRecursiveUser();
 
@@ -668,10 +751,10 @@ toggleSelection(task: any = []): void {
         this.SanctoningAuthList = response.sanctoningAuthList;
         this.docTypeList = response.docTypeList;
 
-    
+
         this.bindComboClassification();
 
-    
+
       },
       error: (error: any) => {
         console.error('Error fetching data', error);
@@ -693,12 +776,7 @@ toggleSelection(task: any = []): void {
         }
       });
     }
-
-
-
   }
-
-
 
   onProjectSelect(selectElement: HTMLSelectElement) {
     const selectedIndex = selectElement.selectedIndex - 1;
@@ -706,7 +784,6 @@ toggleSelection(task: any = []): void {
 
     const selectedProjectMkey = selectedOption ? selectedOption.MASTER_MKEY : 0;
     const token = this.apiService.getRecursiveUser();
-
 
     if (selectedProjectMkey) {
       this.apiService.getSubProjectDetailsNew(selectedProjectMkey.toString(), token).subscribe(
@@ -760,26 +837,26 @@ toggleSelection(task: any = []): void {
   setProjectNameToTaskData(): void {
     if (this.taskData && this.taskData.mkey) {
       const token = this.apiService.getRecursiveUser();
-  
+
       this.apiService.getProjectDetailsNew(token).subscribe(
         (response: any) => {
           const project = response[0].data;
-  
-          const matchedProject = project.find((property: any) => 
-        
+
+          const matchedProject = project.find((property: any) =>
+
             property.MASTER_MKEY === this.taskData.property
           );
-          
-          const matchedSubProject = this.sub_proj.find((building: any) => 
+
+          const matchedSubProject = this.sub_proj.find((building: any) =>
             building.MASTER_MKEY === Number(this.taskData.projecT_NAME)
           );
-  
+
           if (matchedProject) {
             this.taskData.project_Name = matchedProject.TYPE_DESC;
           } else {
             console.log('No matching project found for MASTER_MKEY:', this.taskData.property);
           }
-  
+
           if (matchedSubProject) {
             this.taskData.sub_proj_name = matchedSubProject.TYPE_DESC;
           } else {
@@ -792,7 +869,7 @@ toggleSelection(task: any = []): void {
       );
     }
   }
-  
+
 
 
 
@@ -813,115 +890,118 @@ toggleSelection(task: any = []): void {
 
   getOptionList() {
 
-    // if (this.hasDataBeenPassed) {
-    //   return; 
-    // }
+
+
     const token = this.apiService.getRecursiveUser();
     const USER_CRED = this.credentialService.getUser();
     let gerAbbrRelDataArr = []
 
-      const buildingCla = this.projectDefForm.get('bldCla')?.value;
-      const buildingStd = this.projectDefForm.get('blsStandard')?.value;
-      const statutoryAuth = this.projectDefForm.get('statutoryAuth')?.value;
+    const buildingCla = this.projectDefForm.get('bldCla')?.value;
+    const buildingStd = this.projectDefForm.get('blsStandard')?.value;
+    const statutoryAuth = this.projectDefForm.get('statutoryAuth')?.value;
 
-    
-  
-      console.log(`buildingCla: ${buildingCla} buildingStd: ${buildingStd} statutoryAuth: ${statutoryAuth}`)
-      // this.hasDataBeenPassed = true; 
-  
-      if (buildingCla && buildingStd && statutoryAuth) {
-        this.recursiveLogginUser = this.apiService.getRecursiveUser();
-        this.apiService.projectDefinationOption(USER_CRED[0]?.MKEY, token, buildingCla, buildingStd, statutoryAuth).subscribe({
-          next: (gerAbbrRelData) => {
-            // this.projDefinationTable = gerAbbrRelData
-            console.log('gerAbbrRelData', gerAbbrRelData)
 
-           const check_TAsk_no =  gerAbbrRelData.forEach((task:any)=>{
-              console.log('check task no', task.TASK_NO)
-            })
-            console.log('TASk_no', check_TAsk_no)
 
-            const check = gerAbbrRelDataArr.push(gerAbbrRelData)
-            // console.log('check', gerAbbrRelDataArr.push(gerAbbrRelData))
-            this.getTree(gerAbbrRelData);
-          },
-          error: (error) => {
-            // console.log('error.status',error.error.status)
-            if(error.error && error.error.status === 404){
-              this.tostar.error('Classification of this combo is not available')
-            }
-            console.error('API Error:', error);
+    console.log(`buildingCla: ${buildingCla} buildingStd: ${buildingStd} statutoryAuth: ${statutoryAuth}`)
+    // this.hasDataBeenPassed = true; 
+
+    if (buildingCla && buildingStd && statutoryAuth) {
+      this.recursiveLogginUser = this.apiService.getRecursiveUser();
+      this.apiService.projectDefinationOption(USER_CRED[0]?.MKEY, token, buildingCla, buildingStd, statutoryAuth).subscribe({
+        next: (gerAbbrRelData) => {
+          // this.projDefinationTable = gerAbbrRelData
+          console.log('gerAbbrRelData', gerAbbrRelData)
+
+          const check_TAsk_no = gerAbbrRelData.forEach((task: any) => {
+            console.log('check task no', task.TASK_NO)
+          })
+          console.log('TASk_no', check_TAsk_no)
+
+          const check = gerAbbrRelDataArr.push(gerAbbrRelData)
+          // console.log('check gerAbbrRelData', gerAbbrRelData)
+          this.getTree(gerAbbrRelData);
+          this.isLoading = false;
+        },
+        error: (error) => {
+          // console.log('error.status',error.error.status)
+          if (error.error && error.error.status === 404) {
+            this.tostar.error('Classification of this combo is not available')
           }
-        });
-      } else {
-        this.tostar.error('Please select all classification');
-        return;
-      }       
+          console.error('API Error:', error);
+        }
+      });
+    } else {
+      this.tostar.error('Please select all classification');
+      return;
+    }
   }
 
 
 
-  selectedOptionList(){
+  selectedOptionList() {
 
-      // console.log('selectedOptionList come here')
-      const token = this.apiService.getRecursiveUser();
-      const USER_CRED = this.credentialService.getUser();
+    // console.log('selectedOptionList come here')
+    const token = this.apiService.getRecursiveUser();
+    const USER_CRED = this.credentialService.getUser();
 
-      const buildingCla = this.taskData.buildinG_CLASSIFICATION;
-      const buildingStd = this.taskData.buildinG_STANDARD;
-      const statutoryAuth = this.taskData.statutorY_AUTHORITY;
+    const buildingCla = this.taskData.buildinG_CLASSIFICATION;
+    const buildingStd = this.taskData.buildinG_STANDARD;
+    const statutoryAuth = this.taskData.statutorY_AUTHORITY;
 
-      // console.log('USER_CRED[0]?.MKEY', typeof USER_CRED[0]?.MKEY)
-      // console.log('Building', typeof buildingCla)
-      // console.log('Standard', typeof buildingStd)
-      // console.log('Statutoory', typeof statutoryAuth)
+    // console.log('USER_CRED[0]?.MKEY', typeof USER_CRED[0]?.MKEY)
+    // console.log('Building', typeof buildingCla)
+    // console.log('Standard', typeof buildingStd)
+    // console.log('Statutoory', typeof statutoryAuth)
 
-      if (buildingCla && buildingStd && statutoryAuth) {
-        this.recursiveLogginUser = this.apiService.getRecursiveUser();
-        this.apiService.projectDefinationOption(USER_CRED[0]?.MKEY, token, buildingCla, buildingStd, statutoryAuth).subscribe({
-          next: (gerAbbrRelData) => {
-          
-            console.log('Selected Project def data',gerAbbrRelData)
-            const newTasks = gerAbbrRelData.map((task: any) => {
-              const newTask = {
-                HEADER_MKEY: task.HEADER_MKEY,              
-                SEQ_NO: task.TASK_NO,
-                TASK_NO:task.TASK_NO,
-                MAIN_ABBR: task.MAIN_ABBR,
-                ABBR_SHORT_DESC: task.ABBR_SHORT_DESC,
-                DAYS_REQUIERD: task.DAYS_REQUIERD,
-                AUTHORITY_DEPARTMENT: task.AUTHORITY_DEPARTMENT,
-                END_RESULT_DOC: task.END_RESULT_DOC,
-                JOB_ROLE: task.JOB_ROLE,
-                SUBTASK_PARENT_ID: task.SUBTASK_PARENT_ID,
-                RESPOSIBLE_EMP_MKEY: task.RESPOSIBLE_EMP_MKEY,
-                LONG_DESCRIPTION: task.LONG_DESCRIPTION,
-                Status: task.Status,
-                Message: task.Message
-              };
-              return newTask;
-            });
-            
-            console.log('After looping of Proj Def',newTasks);
-            if (!this.isCleared) { // Only call getTree if not cleared
-              this.projDefinationTable = gerAbbrRelData
+    if (buildingCla && buildingStd && statutoryAuth) {
+      this.recursiveLogginUser = this.apiService.getRecursiveUser();
+      this.apiService.projectDefinationOption(USER_CRED[0]?.MKEY, token, buildingCla, buildingStd, statutoryAuth).subscribe({
+        next: (gerAbbrRelData) => {
 
-              this.getTree(gerAbbrRelData);
-            }
-          
-          },
-          error: (error:any) => {
-            console.log('error.status',error.error.status)
-            if(error.status === 404){
-              error.tostar('Classification of this combo is not available')
-            }
-            console.error('API Error:', error);
+          // console.log('Selected Project def data',gerAbbrRelData)
+          const newTasks = gerAbbrRelData.map((task: any) => {
+            const newTask = {
+              HEADER_MKEY: task.HEADER_MKEY,
+              SEQ_NO: task.TASK_NO,
+              TASK_NO: task.TASK_NO,
+              MAIN_ABBR: task.MAIN_ABBR,
+              ABBR_SHORT_DESC: task.ABBR_SHORT_DESC,
+              DAYS_REQUIERD: task.DAYS_REQUIERD,
+              AUTHORITY_DEPARTMENT: task.AUTHORITY_DEPARTMENT,
+              END_RESULT_DOC: task.END_RESULT_DOC,
+              JOB_ROLE: task.JOB_ROLE,
+              SUBTASK_PARENT_ID: task.SUBTASK_PARENT_ID,
+              RESPOSIBLE_EMP_MKEY: task.RESPOSIBLE_EMP_MKEY,
+              LONG_DESCRIPTION: task.LONG_DESCRIPTION,
+              Status: task.Status,
+              Message: task.Message
+            };
+            return newTask;
+          });
+
+          this.isLoading = false;
+
+          // console.log('After looping of Proj Def',newTasks);
+          if (!this.isCleared) { // Only call getTree if not cleared
+            this.projDefinationTable = gerAbbrRelData
+
+            // console.log('selectedOptionList', gerAbbrRelData)
+            this.getTree(gerAbbrRelData);
           }
-        });
-      } else {
-        this.tostar.error('Please select all classification');
-        return;
-      }    
+
+        },
+        error: (error: any) => {
+          console.log('error.status', error.error.status)
+          if (error.status === 404) {
+            error.tostar('Classification of this combo is not available')
+          }
+          console.error('API Error:', error);
+        }
+      });
+    } else {
+      this.tostar.error('Please select all classification');
+      return;
+    }
   }
 
 
@@ -936,11 +1016,11 @@ toggleSelection(task: any = []): void {
   }
 
   clear() {
-  
-      this.taskData.buildinG_CLASSIFICATION =  null,
-      this.taskData.buildinG_STANDARD = null,
-      this.taskData.statutorY_AUTHORITY = null
-    
+
+    // this.taskData.buildinG_CLASSIFICATION =  null,
+    // this.taskData.buildinG_STANDARD = null,
+    // this.taskData.statutorY_AUTHORITY = null
+
     this.subTasks = [];
     this.ValueList = [];
     this.selectedSeqArr = [];
@@ -949,13 +1029,14 @@ toggleSelection(task: any = []): void {
     this.isCleared = true; // Set clear flag
     console.log('Clear action executed.');
     this.tostar.success('Cleared successfully');
+    this.isLoading = true
   }
 
-  reset(){
+  reset() {
     window.location.reload();
   }
-  
-  
+
+
 
   sortTasksBySequence(tasks: any[]): any[] {
 
@@ -990,7 +1071,8 @@ toggleSelection(task: any = []): void {
     const task = this.selectedSeqArr.find(task => task.TASK_NO.TASK_NO === taskNo);
 
     if (task && Object.values(task).every(value => value !== undefined)) {
-      this.unFlatternArr = [task]; 
+      this.unFlatternArr = [task];
+
       this.newToggltSel(task)
 
     }
@@ -998,7 +1080,7 @@ toggleSelection(task: any = []): void {
   }
 
 
-  isSelectedNew(task:any):boolean{
+  isSelectedNew(task: any): boolean {
     return this.selectedTasksId.has(task.TASK_NO.TASK_NO);
   }
 
@@ -1012,16 +1094,16 @@ toggleSelection(task: any = []): void {
     if (this.isCleared) {
       return false;
     }
-  
+
     if (this.taskData?.approvalS_ABBR_LIST[0].status === 'Initiated' || this.taskData?.approvalS_ABBR_LIST[0].status === 'Ready to Initiate') {
       const savedTaskNos = this.taskData?.approvalS_ABBR_LIST.map((item: any) => item.maiN_ABBR);
-   
+
       return savedTaskNos.includes(task.TASK_NO?.maiN_ABBR);
     }
-  
+
     return false;
   }
-  
+
 
 
   filterCities() {
@@ -1038,7 +1120,7 @@ toggleSelection(task: any = []): void {
 
     this.apiService.getEmpDetailsNew(token).subscribe(
       (response: any) => {
-      
+
         response[0]?.data.forEach((emp: any) => {
           const fullName = emp.EMP_FULL_NAME;
           const MKEY = emp.MKEY;
@@ -1067,67 +1149,159 @@ toggleSelection(task: any = []): void {
     );
   }
 
-
-  convertTaskNo(tasks: Task[]): Task[] {
+  convertTaskNo(tasks: any[]): any[] {
     const parentTaskCount = new Map<number, number>();
     const taskNumbers = new Map<number, string>();
 
-
-    return tasks.map((task: any) => {
-      
-
-      // console.log('task', task)
-      let newTaskNo = '';
-
-      if (task.SUBTASK_PARENT_ID === 0) {
-        const count = parentTaskCount.get(0) || 0;
-        newTaskNo = (count + 1).toString();
-        parentTaskCount.set(0, count + 1);
-      } else {
-        const parentTaskNo = taskNumbers.get(task.SUBTASK_PARENT_ID);
-        if (parentTaskNo) {
-          const count = parentTaskCount.get(task.SUBTASK_PARENT_ID) || 0;
-          newTaskNo = `${parentTaskNo}.${count + 1}`;
-          parentTaskCount.set(task.SUBTASK_PARENT_ID, count + 1);
-        }
+    // Step 1: Organize tasks by parent ID
+    const taskMap = new Map<number, any[]>();
+    tasks.forEach((task) => {
+      if (!taskMap.has(task.SUBTASK_PARENT_ID)) {
+        taskMap.set(task.SUBTASK_PARENT_ID, []);
       }
-
-      task.TASK_NO = newTaskNo;
-
-      taskNumbers.set(task.HEADER_MKEY, newTaskNo);
-
-
-      return task;
+      taskMap.get(task.SUBTASK_PARENT_ID)?.push(task);
     });
+
+    // Step 2: Recursive function to assign TASK_NO, In this it will assign the 
+    function assignTaskNumbers(parentId: number, prefix = "") {
+      if (!taskMap.has(parentId)) return;
+
+      let count = 1;
+      for (const task of taskMap.get(parentId)!) {
+        const taskNo = prefix ? `${prefix}.${count}` : `${count}`;
+        task.TASK_NO = taskNo;
+        taskNumbers.set(task.HEADER_MKEY, taskNo);
+        parentTaskCount.set(task.HEADER_MKEY, 0);
+        count++;
+
+        // Recursively process subtasks
+        assignTaskNumbers(task.HEADER_MKEY, taskNo);
+      }
+    }
+
+    // Step 3: Assign numbers starting from top-level parents (SUBTASK_PARENT_ID = 0)
+    assignTaskNumbers(0);
+
+    // console.log("Check the task from convertTaskNo", tasks);
+    return tasks;
   }
+
+
+  // convertTaskNo(tasks: any[]): any[] {
+
+  //   const parentTaskCount = new Map<number, number>();
+  //   const taskNumbers = new Map<number, string>();
+
+
+  //   return tasks.map((task: any) => {
+
+
+  //     // console.log('task', task)
+  //     let newTaskNo = '';
+
+  //     if (task.SUBTASK_PARENT_ID === 0) {
+  //       const count = parentTaskCount.get(0) || 0;
+  //       newTaskNo = (count + 1).toString();
+  //       parentTaskCount.set(0, count + 1);
+  //     } else {
+  //       const parentTaskNo = taskNumbers.get(task.SUBTASK_PARENT_ID);
+
+  //       if (parentTaskNo) {
+
+  //         const count = parentTaskCount.get(task.SUBTASK_PARENT_ID) || 0;
+
+  //         newTaskNo = `${parentTaskNo}.${count + 1}`;
+  //         parentTaskCount.set(task.SUBTASK_PARENT_ID, count + 1);
+  //       }else{
+  //         newTaskNo = `${parentTaskNo}`;
+
+  //       }
+  //     }
+
+  //     task.TASK_NO = newTaskNo;
+
+  //     taskNumbers.set(task.HEADER_MKEY, newTaskNo);
+
+
+  //     return task;
+  //   });
+  // }
+
+  //   convertTaskNo(tasks: any[]): any[] {
+  //     const parentTaskCount = new Map<number, number>(); 
+  //     const taskNumbers = new Map<number, string>(); 
+  //     const processedTasks = new Set<number>(); 
+
+  //     tasks.sort((a, b) => a.SUBTASK_PARENT_ID - b.SUBTASK_PARENT_ID);
+
+  //     return tasks.map((task: any) => {
+  //         let newTaskNo = '';
+
+  //         // If task has no parent (parent task)
+  //         if (task.SUBTASK_PARENT_ID === 0) {
+  //             const count = parentTaskCount.get(0) || 0;
+  //             newTaskNo = (count + 1).toString();
+  //             parentTaskCount.set(0, count + 1);
+  //         } else {
+  //             // Ensure the parent task is processed before its children
+  //             let parentTaskNo = taskNumbers.get(task.SUBTASK_PARENT_ID);
+
+  //             console.log('parentTaskNo: ', parentTaskNo)
+  //             // If the parent task is not processed yet, return an empty task number for now
+  //             // In this if parent is not 0 then it will take the new parent_id instead of 0 or natural number
+  //             if (parentTaskNo) {
+  //                 const count = parentTaskCount.get(task.SUBTASK_PARENT_ID) || 0;
+  //                 newTaskNo = `${parentTaskNo}.${count + 1}`;
+  //                 parentTaskCount.set(task.SUBTASK_PARENT_ID, count + 1);
+  //             } else {
+  //                 // If parent task is not found, this could be an invalid or circular reference
+  //                 console.warn(`Parent task with ID ${task.SUBTASK_PARENT_ID} not found for task ${task.HEADER_MKEY}`);
+  //                 newTaskNo = `${parentTaskNo}`;
+  //             }
+  //         }
+
+  //         task.TASK_NO = newTaskNo;
+  //         taskNumbers.set(task.HEADER_MKEY, newTaskNo);
+  //         processedTasks.add(task.HEADER_MKEY);
+
+  //         return task;
+  //     });
+  // }
+
+
+
+
+
 
 
   removeDuplicates(array: any[]): any[] {
     // Remove duplicates using a Set or custom logic
     return Array.from(new Set(array.map(item => JSON.stringify(item)))).map(item => JSON.parse(item));
-}
+  }
 
- async getTree(optionList: any[] = [], _jobRoleList: any[] = [], _departmentList: any[] = []) {
+  async getTree(optionList: any[] = [], _jobRoleList: any[] = [], _departmentList: any[] = []) {
 
-  // console.log('optionList', optionList)
-    
-   
+    // console.log('optionList', optionList)
+
+
     this.recursiveLogginUser = this.apiService.getRecursiveUser();
 
     let department_new: any;
     let jobRole_new: any;
 
     try {
-        // First fetch department data
-        department_new = await this.apiService.getDepartmentDP(this.recursiveLogginUser).toPromise();
+      // First fetch department data
+      department_new = await this.apiService.getDepartmentDP(this.recursiveLogginUser).toPromise();
 
-        // Then fetch job role data
-        jobRole_new = await this.apiService.getJobRoleDP(this.recursiveLogginUser).toPromise();
+      // Then fetch job role data
+      jobRole_new = await this.apiService.getJobRoleDP(this.recursiveLogginUser).toPromise();
     } catch (error) {
-        console.error('Error fetching data:', error);
+      console.error('Error fetching data:', error);
     }
-    
-    this.convertTaskNo(optionList);
+
+    const check_convert_task = this.convertTaskNo(optionList);
+
+    // console.log('check_convert_task', check_convert_task)
 
     const jobRoleList = jobRole_new;
     const departmentList = department_new
@@ -1141,12 +1315,12 @@ toggleSelection(task: any = []): void {
 
 
     // this.taskData.approvalS_ABBR_LIST
-       const optionListArr = optionList
+    const optionListArr = optionList
       .filter((item: any) => item.tasK_NO !== null)
       .map((item: any) => {
-        
-        const jobRole = jobRoleList.find((role:any) => role.mkey === parseInt(item.JOB_ROLE));
-        const departmentRole = departmentList.find((department:any) => department.mkey === parseInt(item.AUTHORITY_DEPARTMENT))
+
+        const jobRole = jobRoleList.find((role: any) => role.mkey === parseInt(item.JOB_ROLE));
+        const departmentRole = departmentList.find((department: any) => department.mkey === parseInt(item.AUTHORITY_DEPARTMENT))
         const assignedEmployee = this.employees.find(employee => employee.MKEY === parseInt(item.RESPOSIBLE_EMP_MKEY));
 
         return {
@@ -1159,14 +1333,14 @@ toggleSelection(task: any = []): void {
           joB_ROLE_mkey: jobRole.mkey || 0,
           department: departmentRole ? departmentRole.typE_DESC : "Not found",
           department_mkey: departmentRole.mkey,
-          approvaL_MKEY:item.HEADER_MKEY,
+          approvaL_MKEY: item.HEADER_MKEY,
           // resposiblE_EMP: assignedEmployee.Assign_to,
           resposiblE_EMP_MKEY: item.RESPOSIBLE_EMP_MKEY
         }
       });
 
     this.loading = true;
-  
+
     const same_data = optionListArr;
 
     // console.log('optionListArr', optionListArr)
@@ -1185,7 +1359,7 @@ toggleSelection(task: any = []): void {
         return subtasks.map((subtask: any) => {
           const subtaskWithNestedTaskNo: any = {
             TASK_NO: subtask,
-            visible: true,
+            visible: false,
             subtask: buildSubtasks(subtask.TASK_NO, depth + 1)
           };
 
@@ -1215,7 +1389,7 @@ toggleSelection(task: any = []): void {
           ...rootTask,
           TASK_NO: rootTask.TASK_NO,
         },
-        visible: true,
+        visible: false,
         subtask: buildSubtasks(rootTask.TASK_NO, rootDepth)
       };
 
@@ -1243,6 +1417,7 @@ toggleSelection(task: any = []): void {
       }
     });
 
+    // console.log('subTasks from parents: ',this.subTasks)
 
     this.loading = false;
 
@@ -1280,7 +1455,7 @@ toggleSelection(task: any = []): void {
           };
           no_parent_arr.push(parentTask);
         } else {
-          // console.log(`Found Parent Task: ${parentTask.TASK_NO.TASK_NO}`);
+          console.log(`Found Parent Task: ${parentTask.TASK_NO.TASK_NO}`);
           parentTask.subtask.push(task);
         }
       }
@@ -1300,7 +1475,8 @@ toggleSelection(task: any = []): void {
     const filteredTasks = tasks.filter((task: any) => !subtasks.includes(task.TASK_NO.TASK_NO));
 
     this.subTasks = [...this.subTasks, ...filteredTasks];
-    
+    // console.log('filteredTasks', filteredTasks)
+
     // this.selectedSeqArr = [...this.subTasks]
 
   }
@@ -1310,24 +1486,24 @@ toggleSelection(task: any = []): void {
     task.visible = !task.visible;
   }
 
-  
+
 
   onSubmit() {
     const requiredControls: string[] = [];
     const requiredFields: string[] = [];
     const valid = this.projectDefForm.valid;
-  
+
     const addControlError = (message: string) => requiredControls.push(message);
-  
+
     const convertToTitleCase = (input: string) => {
       return input.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase()).trim() + ' is required';
     };
-  
+
     // Check for required form controls
     Object.keys(this.projectDefForm.controls).forEach(controlName => {
       const control = this.projectDefForm.get(controlName);
 
-  
+
       if (control?.errors?.required) {
         // Convert camelCase to Title Case
         const formattedControlName = convertToTitleCase(controlName);
@@ -1335,49 +1511,49 @@ toggleSelection(task: any = []): void {
         addControlError(formattedControlName);
       }
     });
-  
+
     if (requiredControls.length > 0) {
       const errorMessage = `${requiredControls.join(' , ')}`;
       this.tostar.error(errorMessage);
       return;  // Stop further processing
     }
-  
+
     // Check subtask list for missing dates
     const subTaskList = this.uniqList;
-  
+
     if (subTaskList && subTaskList.length > 0) {
       const invalidSubTask = subTaskList.find((subTask) => {
         return !subTask.tentativE_START_DATE || !subTask.tentativE_END_DATE;
       });
 
-  
-  
-      if (invalidSubTask) {
-        this.tostar.error('Missing tentative start or end date for a subtask');
-        return;
-      }
-  
+
+
+      // if (invalidSubTask) {
+      //   this.tostar.error('Missing tentative start or end date for a subtask');
+      //   return;
+      // }
+
       // const invalidDateSubTask = this.validateTaskDates(subTaskList);
-  
+
       // if (invalidDateSubTask) {
       //   return;  
       // }
     }
-  
+
     // console.log('subTaskList', subTaskList)
-  
+
     const selectedSeqArr = this.selectedSeqArr;
     const uniqList = this.uniqList;
     const flatList = this.breakToLinear(selectedSeqArr);
-  
+
     this.flatList = flatList
     console.log('uniqList', uniqList);
     console.log('flatList', flatList);
-  
-    if (uniqList.length === 0 && flatList.length > 0) {
-      this.tostar.error('Missing tentative start or end date for a subtask');
-      return;
-    }
+
+    // if (uniqList.length === 0 && flatList.length > 0) {
+    //   this.tostar.error('Missing tentative start or end date for a subtask');
+    //   return;
+    // }
 
     const invalidDateSubTask = subTaskList.some((task) => {
       const startDate = new Date(task.tentativE_START_DATE);
@@ -1391,33 +1567,33 @@ toggleSelection(task: any = []): void {
     });
 
     if (invalidDateSubTask) {
-      return;  
+      return;
     }
     return true;
   }
-  
+
   // validateTaskDates(subTaskList: any[]): boolean {
   //   console.log('subTaskList', subTaskList)
   //   subTaskList.sort((a, b) => a.tasK_NO.localeCompare(b.tasK_NO));
-  
+
   //   for (let i = 0; i < subTaskList.length; i++) {
   //     const task = subTaskList[i];
   //     const startDate = new Date(task.tentativE_START_DATE);
   //     const endDate = new Date(task.tentativE_END_DATE);
-  
+
   //     const isParent = !task.tasK_NO.includes('.');
   //     if (isParent) {
   //       const childTask = subTaskList.find(child => child.tasK_NO.startsWith(task.tasK_NO + '.') && new Date(child.tentativE_END_DATE) > endDate);
-  
+
   //       if (childTask) {
   //         this.tostar.error(`End date of parent task (${task.tasK_NO}) should be greater than child task (${childTask.tasK_NO})`);
   //         return true;  // Exit on first error
   //       }
   //     }
-      
+
   //     if (i === 0) {
   //       const position1EndDate = new Date(task.tentativE_END_DATE);
-  
+
   //       for (let j = 1; j < subTaskList.length; j++) {
   //         const otherTask = subTaskList[j];
   //         const otherEndDate = new Date(otherTask.tentativE_END_DATE);
@@ -1428,7 +1604,7 @@ toggleSelection(task: any = []): void {
   //       }
   //     }
   //   }
-  
+
   //   return false;  // All checks passed
   // }
 
@@ -1437,58 +1613,58 @@ toggleSelection(task: any = []): void {
 
     // Sort task list by task number using a numeric comparison (split by dots).
     subTaskList.sort((a, b) => {
-        const taskNoA = a.tasK_NO.split('.').map(Number);
-        const taskNoB = b.tasK_NO.split('.').map(Number);
+      const taskNoA = a.tasK_NO.split('.').map(Number);
+      const taskNoB = b.tasK_NO.split('.').map(Number);
 
-        for (let i = 0; i < Math.max(taskNoA.length, taskNoB.length); i++) {
-            if ((taskNoA[i] || 0) < (taskNoB[i] || 0)) return -1;
-            if ((taskNoA[i] || 0) > (taskNoB[i] || 0)) return 1;
-        }
-        return 0;
+      for (let i = 0; i < Math.max(taskNoA.length, taskNoB.length); i++) {
+        if ((taskNoA[i] || 0) < (taskNoB[i] || 0)) return -1;
+        if ((taskNoA[i] || 0) > (taskNoB[i] || 0)) return 1;
+      }
+      return 0;
     });
 
     // Iterate over each task
     for (let i = 0; i < subTaskList.length; i++) {
-        const task = subTaskList[i];
-        const startDate = new Date(task.tentativE_START_DATE);
-        const endDate = new Date(task.tentativE_END_DATE);
+      const task = subTaskList[i];
+      const startDate = new Date(task.tentativE_START_DATE);
+      const endDate = new Date(task.tentativE_END_DATE);
 
-        const isParent = !task.tasK_NO.includes('.'); // Check if the task is a parent task.
+      const isParent = !task.tasK_NO.includes('.'); // Check if the task is a parent task.
 
-        if (isParent) {
-            // Check for child task with a later end date than the parent task's end date
-            const childTask = subTaskList.find(child => 
-                child.tasK_NO.startsWith(task.tasK_NO + '.') && new Date(child.tentativE_END_DATE) > endDate
-            );
+      if (isParent) {
+        // Check for child task with a later end date than the parent task's end date
+        const childTask = subTaskList.find(child =>
+          child.tasK_NO.startsWith(task.tasK_NO + '.') && new Date(child.tentativE_END_DATE) > endDate
+        );
 
-            if (childTask) {
-                this.tostar.error(`End date of parent task (${task.tasK_NO}) should be greater than child task (${childTask.tasK_NO})`);
-                return true;  // Exit on first error
-            }
+        if (childTask) {
+          this.tostar.error(`End date of parent task (${task.tasK_NO}) should be greater than child task (${childTask.tasK_NO})`);
+          return true;  // Exit on first error
         }
+      }
 
-        // Additional validation for task date relationships (first task comparison)
-        if (i === 0) {
-            const position1EndDate = new Date(task.tentativE_END_DATE);
+      // Additional validation for task date relationships (first task comparison)
+      if (i === 0) {
+        const position1EndDate = new Date(task.tentativE_END_DATE);
 
-            for (let j = 1; j < subTaskList.length; j++) {
-                const otherTask = subTaskList[j];
-                const otherEndDate = new Date(otherTask.tentativE_END_DATE);
-                
-                if (otherEndDate > position1EndDate) {
-                    this.tostar.error(`End date of task (${task.tasK_NO}) should be greater than ${otherTask.tasK_NO}`);
-                    return true;  // Exit on first error
-                }
-            }
+        for (let j = 1; j < subTaskList.length; j++) {
+          const otherTask = subTaskList[j];
+          const otherEndDate = new Date(otherTask.tentativE_END_DATE);
+
+          if (otherEndDate > position1EndDate) {
+            this.tostar.error(`End date of task (${task.tasK_NO}) should be greater than ${otherTask.tasK_NO}`);
+            return true;  // Exit on first error
+          }
         }
+      }
     }
 
     return false;  // All checks passed
-}
+  }
 
 
-  
-  
+
+
 
   onAddProjDef() {
     const isValid = this.onSubmit();
@@ -1496,7 +1672,7 @@ toggleSelection(task: any = []): void {
     if (isValid) {
 
       this.addProjectDef();
-      this.tostar.success('Success', 'Template added successfuly')
+      // this.tostar.success('Success', 'Template added successfuly')
     } else {
       console.log('Form is invalid, cannot add template');
     }
@@ -1518,9 +1694,9 @@ toggleSelection(task: any = []): void {
 
   deleteTask() {
     const lastUpdatedBy = this.taskData.lasT_UPDATED_BY;
-    const headerMkey = this.taskData.mkey;    
+    const headerMkey = this.taskData.mkey;
     const jwtToken = 'your_jwt_token_here';
-  
+
     this.apiService.deleteProjectDefinationTask(lastUpdatedBy, headerMkey, jwtToken)
       .subscribe({
         next: (response) => {
@@ -1537,68 +1713,68 @@ toggleSelection(task: any = []): void {
 
 
 
-  newEmps(){
-    let employeesList:any
+  newEmps() {
+    let employeesList: any
     const token = this.apiService.getRecursiveUser();;
 
-    employeesList =  this.apiService.getEmpDetailsNew(token).toPromise();
+    employeesList = this.apiService.getEmpDetailsNew(token).toPromise();
 
     console.log('employeesList', employeesList)
 
-        employeesList.forEach((emp: any) => {
-            const fullName = emp.EMP_FULL_NAME;
-            const MKEY = emp.MKEY;
-            let capitalizedFullName = '';
-            const nameParts = fullName.split(' ');
+    employeesList.forEach((emp: any) => {
+      const fullName = emp.EMP_FULL_NAME;
+      const MKEY = emp.MKEY;
+      let capitalizedFullName = '';
+      const nameParts = fullName.split(' ');
 
-            // Format the employee name with initials
-            for (let i = 0; i < nameParts.length; i++) {
-                if (nameParts[i].length === 1 && i < nameParts.length - 1) {
-                    capitalizedFullName += nameParts[i].toUpperCase() + '.' + nameParts[i + 1].charAt(0).toUpperCase() + nameParts[i + 1].slice(1).toLowerCase();
-                    i++;
-                } else {
-                    capitalizedFullName += nameParts[i].charAt(0).toUpperCase() + nameParts[i].slice(1).toLowerCase();
-                }
-                if (i !== nameParts.length - 1) {
-                    capitalizedFullName += ' ';
-                }
-            }
+      // Format the employee name with initials
+      for (let i = 0; i < nameParts.length; i++) {
+        if (nameParts[i].length === 1 && i < nameParts.length - 1) {
+          capitalizedFullName += nameParts[i].toUpperCase() + '.' + nameParts[i + 1].charAt(0).toUpperCase() + nameParts[i + 1].slice(1).toLowerCase();
+          i++;
+        } else {
+          capitalizedFullName += nameParts[i].charAt(0).toUpperCase() + nameParts[i].slice(1).toLowerCase();
+        }
+        if (i !== nameParts.length - 1) {
+          capitalizedFullName += ' ';
+        }
+      }
 
-            this.new_emps.push({ Assign_to: capitalizedFullName, MKEY: MKEY });
-        });
+      this.new_emps.push({ Assign_to: capitalizedFullName, MKEY: MKEY });
+    });
 
   }
 
 
 
- async getTree_new() { 
+  async getTree_new() {
 
     this.convertTaskNo(this.taskData.approvalS_ABBR_LIST);
 
 
     let department_new: any;
-    let jobRole_new: any; 
+    let jobRole_new: any;
 
     try {
-        department_new = await this.apiService.getDepartmentDP(this.recursiveLogginUser).toPromise();
-        jobRole_new = await this.apiService.getJobRoleDP(this.recursiveLogginUser).toPromise();
-       
+      department_new = await this.apiService.getDepartmentDP(this.recursiveLogginUser).toPromise();
+      jobRole_new = await this.apiService.getJobRoleDP(this.recursiveLogginUser).toPromise();
+
     } catch (error) {
-        console.error('Error fetching data:', error);
-    } 
+      console.error('Error fetching data:', error);
+    }
 
     const jobRoleList = jobRole_new;
     const departmentList = department_new
 
 
     this.taskData.approvalS_ABBR_LIST
-       const optionListArr = this.taskData.approvalS_ABBR_LIST
+    const optionListArr = this.taskData.approvalS_ABBR_LIST
       .filter((item: any) => item.tasK_NO !== null)
       .map((item: any) => {
 
         // console.log("item.resposiblE_EMP_MKEY:", item.resposiblE_EMP_MKEY);
-        const jobRole = jobRoleList.find((role:any) => role.mkey === parseInt(item.joB_ROLE));
-        const departmentRole = departmentList.find((department:any) => department.mkey === parseInt(item.department));
+        const jobRole = jobRoleList.find((role: any) => role.mkey === parseInt(item.joB_ROLE));
+        const departmentRole = departmentList.find((department: any) => department.mkey === parseInt(item.department));
 
         return {
           TASK_NO: item.tasK_NO,
@@ -1610,10 +1786,10 @@ toggleSelection(task: any = []): void {
           joB_ROLE_mkey: jobRole.mkey || 0,
           department: departmentRole ? departmentRole.typE_DESC : "Not found",
           department_mkey: departmentRole.mkey,
-          start_date:item.tentativE_START_DATE,
-          end_date:item.tentativE_END_DATE,
-          approvaL_MKEY:item.approvaL_MKEY,
-          status:item.status,
+          start_date: item.tentativE_START_DATE,
+          end_date: item.tentativE_END_DATE,
+          approvaL_MKEY: item.approvaL_MKEY,
+          status: item.status,
           // resposiblE_EMP: assignedEmployee.Assign_to,
           resposiblE_EMP_MKEY: item.resposiblE_EMP_MKEY
         }
@@ -1640,10 +1816,10 @@ toggleSelection(task: any = []): void {
     });
 
     this.loading = false;
-  
+
 
     this.new_list_of_selectedSeqArr = this.subTasks
-
+    console.log('new_list_of_selectedSeqArr', this.new_list_of_selectedSeqArr)
     // this.selectedSeqArr = [...this.optionSubTASk]
 
     this.noParentTree_new(noSubParentTasks)
@@ -1659,7 +1835,7 @@ toggleSelection(task: any = []): void {
     const no_parent_arr = noParentTree.map((item: any) => ({
       TASK_NO: item,
       subtask: [],
-      visible: true
+      visible: false
     }));
 
 
@@ -1680,7 +1856,7 @@ toggleSelection(task: any = []): void {
           parentTask = {
             TASK_NO: { TASK_NO: parentTaskPrefix },
             subtask: [task],
-            visible: true
+            visible: false
           };
           no_parent_arr.push(parentTask);
         } else {
@@ -1695,19 +1871,10 @@ toggleSelection(task: any = []): void {
       return task.TASK_NO.maiN_ABBR != undefined || task.TASK_NO.maiN_ABBR != null;
     });
 
-
     const subtasks = tasks.flatMap((task: any) => task.subtask.map((sub: any) => sub.TASK_NO.TASK_NO));
-
     const filteredTasks = tasks.filter((task: any) => !subtasks.includes(task.TASK_NO.TASK_NO));
 
-
-
-
-    // this.subTasks = [...this.subTasks];
-    
-
-
-
+    this.subTasks = [...this.subTasks];
     this.selectedSeqArr = [...filteredTasks, ...this.subTasks];
 
     // console.log('selectedSeqArr noParentTree_new', this.selectedSeqArr)
@@ -1718,12 +1885,12 @@ toggleSelection(task: any = []): void {
   }
 
 
-  
-  
 
 
- 
-  
+
+
+
+
 
   ngOnDestroy(): void {
     console.log('Component is being destroyed');

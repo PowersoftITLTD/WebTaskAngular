@@ -23,11 +23,12 @@ export class ComplianceManagementComponent implements OnInit {
     selectedTab: string = 'actionable';
   
     filteredTaskList: any[] = [];
-    taskList: any[] = [];
+    complianceList: any[] = [];
 
   
     blurBackground: boolean = false;
     loadedActionableData: boolean = false;
+
   
     options: any[] = [];
     employees: any[] = [];
@@ -116,7 +117,7 @@ export class ComplianceManagementComponent implements OnInit {
     // this.filterType = value;
    if(value === 'creationDate' ){
       // this.taskList
-      this.taskList.sort((a, b) => {
+      this.complianceList.sort((a, b) => {
         const dateA = new Date(b.CREATION_DATE.split('/').reverse().join('-')); 
         const dateB = new Date(a.CREATION_DATE.split('/').reverse().join('-')); 
         return dateA.getTime() - dateB.getTime();
@@ -125,7 +126,7 @@ export class ComplianceManagementComponent implements OnInit {
 
     }else if(value === 'completionDate'){
 
-      this.taskList.sort((a, b) => {
+      this.complianceList.sort((a, b) => {
         const dateA = new Date(b.COMPLETION_DATE.split('/').reverse().join('-')); 
         const dateB = new Date(a.COMPLETION_DATE.split('/').reverse().join('-')); 
         return dateA.getTime() - dateB.getTime();
@@ -153,13 +154,14 @@ export class ComplianceManagementComponent implements OnInit {
           return selectedUserRes.assigneD_TO === mkey || selectedUserRes.createD_BY === mkey;
         });
 
-        this.taskList = response[0].Data
+        
+        this.complianceList = response[0].DATA
 
-        console.log('Task List', this.taskList)
-        console.log('Filtered Dashboard response:', filteredData);
+        // console.log('Compliance List', this.complianceList)
+        // console.log('Filtered Dashboard response:', filteredData);
       }
       // this.taskList = response;
-      this.mergeEmployeeNamesWithTasks();
+      // this.mergeEmployeeNamesWithTasks();
       this.mergingProjAndSubProjName();
     }, error => {
       console.error('Failed to fetch task details:', error);
@@ -187,8 +189,8 @@ mergingProjAndSubProjName() {
 
         const subProjectMap = new Map(this.sub_proj.map((sub: any) => [sub.MASTER_MKEY, sub.TYPE_DESC]));
     
-        if (this.taskList && this.taskList.length > 0) { 
-          this.taskList.forEach((task: any) => {
+        if (this.complianceList && this.complianceList.length > 0) { 
+          this.complianceList.forEach((task: any) => {
 
               task.project_Name = projectMap.get(task.projecT_ID) || '0';
               task.sub_project_Name = subProjectMap.get(task.suB_PROJECT_ID) || '0'; 
@@ -204,17 +206,22 @@ mergingProjAndSubProjName() {
 }
 
 
-mergeEmployeeNamesWithTasks() {
-    const employeeMap = new Map(this.employees.map(emp => [emp.MKEY, emp.Assign_to]));
+// mergeEmployeeNamesWithTasks() {
 
-    this.taskList.forEach(task => {
-      task.createD_BY_Name = employeeMap.get(task.createD_BY) || 'Unknown';
-      task.lasT_UPDATED_BY_name = employeeMap.get(task.lasT_UPDATED_BY) || 'Unknown';
-      task.assign_To_Name = employeeMap.get(task.RESPONSIBLE_PERSON) || 'NA'
-    });
+//   console.log('Employee List', this.employees)
+//     const employeeMap = new Map(this.employees.map(emp => [emp.MKEY, emp.Assign_to]));
 
-    // console.log('Merged Task List:', this.taskList);
-}
+//     console.log('EMP LIST', employeeMap)
+
+//     this.complianceList.forEach(task => {
+
+//       task.CREATED_BY_NAME = employeeMap.get(task.createD_BY) || 'Unknown';
+//       task.lasT_UPDATED_BY_name = employeeMap.get(task.lasT_UPDATED_BY) || 'Unknown';
+//       task.assign_To_Name = employeeMap.get(task.RESPONSIBLE_PERSON) || 'NA'
+//     });
+
+//     // console.log('Merged Task List:', this.taskList);
+// }
 
 
 toggleSortOrder(): void {
@@ -235,12 +242,19 @@ addCompliance(add_new_compliance:any){
 
 
 
+
+
+
 onFilterSelectionChange(option: string) {
   this.selectedOption = option;
 }
 
 openSelectedTask(data: any) {
   this.router.navigate(['compliance', 'add-compliance', { compliance_state: data.MKEY }], {state: { taskData: data }});
+}
+
+initiateCompliance(data:any, initiate:string){
+  this.router.navigate(['compliance', 'add-compliance', { compliance_state: data.MKEY, initiate:initiate }], {state: { taskData: data  }});
 }
 
 

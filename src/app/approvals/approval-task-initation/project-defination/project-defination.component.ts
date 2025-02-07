@@ -26,6 +26,7 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
   uniqueSubTask: any[] = []
   unFlatternArr: any[] = [];
   existingTaskA: any;
+  isLoading: boolean = false;
 
   formVisibleMap: boolean[] = [];
 
@@ -592,6 +593,9 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
 
 
   getOptionList() {
+
+  
+
     const token = this.apiService.getRecursiveUser();
     const USER_CRED = this.credentialService.getUser();
 

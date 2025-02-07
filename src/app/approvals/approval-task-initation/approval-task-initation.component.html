@@ -282,7 +282,7 @@
                       <label for="taskName">Start Date&nbsp;<small>*</small></label>
                       <input type="date"
                         [ngStyle]="isFieldDisabled ? { 'background-color': 'rgb(238 236 195)', 'color': '#11111', 'cursor': 'allowed' } : {}"
-                        formControlName="startDate" [min]="currentDate" maxlength="150" class="form-control" maxlength="150" />
+                        formControlName="startDate" [min]="currentDate" maxlength="150" class="form-control" (change)="calculateHeaderDate($event)"  maxlength="150" />
                     </div>
                   </div>
 
@@ -640,7 +640,7 @@
                                     </ng-container>
                                   </ng-template>
 
-                                  <ng-container *ngFor="let task of subTasks">
+                                  <ng-container *ngFor="let task of subTasks; trackBy: trackByTaskNo">
                                     <tr [ngClass]="{'highlight': formVisibleMap[task.TASK_NO.TASK_NO]}">
                                       <td>
                                         <div class="d-flex justify-content-end  mr-3">

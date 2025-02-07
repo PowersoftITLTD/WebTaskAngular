@@ -78,55 +78,63 @@
                                                     <div class="todo-items w-10" >
                                                         
                                                         <div id="dvMain_$index" 
-                                                            *ngFor="let t of taskList | taskFilter:_SearchText; let i = index"
+                                                            *ngFor="let t of complianceList | taskFilter:_SearchText; let i = index"
                                                             class="todo-item  py-4 ripple row no-gutters flex-wrap flex-sm-nowrap align-items-center" 
                                                               >  
-                                                            <!-- <button type="button" class="handle btn btn-icon mr-1">
-                                                                <img id="ImgStatusOfTask" *ngIf="t.CATEGORY!='PUBLIC'" src="../../../assets/Content/icons/PublicTask.png" class="avatar" />
-                                                                <img id="ImgStatusOfTask" *ngIf="t.CATEGORY=='PUBLIC'" src="../../../assets/Content/icons/PrivateTask.png" class="avatar" />
-                                                            </button> -->
+                                                     
                                                             
-                                                            <div class="info col px-4" type="button" (click)="openSelectedTask(t)"  >
+                                                            <div class="info col px-4" type="button"   >
                                                                 <div class="title" style="font-family: 'Muli', 'Helvetica Neue', 'Arial', sans-serif;font-weight:bold;float:left;width:100%">
                                                                     <span style="color:#328da8;">{{i+1}}</span>
                                                                     {{t.SHORT_DESCRIPTION}} <span style="float:right;color:#328da8;margin-left:154px;"></span>
                                                                     <!-- <span class="title" style="float:right">[Req By : {{t.START_DATE}}]</span> -->
                                                                 </div>                                       
-                                                                
-                                                                <!-- <div style="float: right;" >
-                                                                    <div class="tooltip_Mouse">
-                                                                        <br />
-                                                                        <img  style="float:right;width:4rem;height:4rem;display:block;"  />
-                                                                    </div>
-                                                                </div> -->
-                                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                                                                                                                                                                                         
                                                                 <br />
                                                                 <div class="notes mt-1" >                                                
                                                                     {{t.LONG_DESCRIPTION}}
                                                                 </div>
                                                                 
-                                                                <div class="tags">
+                                                                <div class="tags d-flex">
                                                                     <div class="tag badge mt-2 mr-1">
-                                                                        <div class="row no-gutters align-items-center">
-                                                                            <i class="fas fa-user small-icon pt-2 mb-1"></i>                                                 
-                                                                            <div class="tag-label">Created By: {{t.assign_To_Name}}</div>
+                                                                        <div class="row no-gutters align-items-center mt-1 mr-2">
+                                                                            <i class="fas fa-user small-icon pt-2 mb-1"></i>
+                                                                            <div class="tag-label">Created By: {{t.CREATED_BY_NAME}}</div>
                                                                         </div>
                                                                     </div>
-                                                                    
-                                                                    
-                                                                    <div class="tag badge mt-2 mr-1" style="margin-left:22px" >
-                                                                        <div class="row no-gutters align-items-center">
-                                                                            <div class="tag-color mr-2" style="background-color: #388E3C;"></div>
-                                                                            <div class="tag-label">{{t.STATUS}}</div>
+                                                                
+                                                                    <div class="tag badge mt-2 mr-1" style="margin-left: 22px;">
+                                                                        <div class="row no-gutters align-items-center mt-1 mr-2">
+                                                                            <div class="tag-color mt-3 mr-2 mb-3 ml-2" style="background-color: #388E3C;"></div>
+                                                                            <div class="tag-label">{{t.DISPLAY_STATUS}}</div>
+                                                                        </div>
+                                                                    </div>
+                                                                
+                                                                    <!-- Adjusted position for the "add" tag -->
+                                                                    <div class="ml-auto" >
+                                                                        
+                                                                        <div *ngIf="t.STATUS !== 'I'">
+                                                                            <button class="btn btn-info mr-2 mb-3" (click)="initiateCompliance(t, 'initiate_mode')">
+                                                                                Initiate
+                                                                            </button>
+                                                                            <!-- <button class="btn btn-primary"  style="width: 2px;" > -->
+                                                                              
+                                                                                <i class="fa fa-edit ml-4 mr-6" style="font-size:35px" (click)="openSelectedTask(t)"></i>
+
+                                                                                <i class="fa fa-close" style="font-size:38px; color: rgb(186, 70, 70);"></i>
+
+                                                                            <!-- </button> -->
                                                                         </div>
                                                                     </div>
                                                                 </div>
+                                                                
+                                                               
                                                             </div>
                                                         </div>
                                                         <div >
                                                             <table class="table table-striped">
                                                                 <tbody>
-                                                                    <tr *ngIf="taskList.length === 0 || ''" class="no-data" style="display: table-row;">
+                                                                    <tr *ngIf="complianceList.length === 0 || ''" class="no-data" style="display: table-row;">
                                                                         <td colspan="4" style="text-align:center;font-weight:900">No data</td>
                                                                     </tr>                                                
                                                                 </tbody>

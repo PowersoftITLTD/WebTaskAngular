@@ -31,10 +31,10 @@
                                     <div class="content side-bar-scroll">
                                         <div class="p-8">
                                             <button type="button" (click)="addTaskDetails()"
-                                                class="btn btn-secondary btn-block">ADD TASK</button>                                           
+                                                class="btn btn-secondary btn-block">ADD TASK</button>
                                         </div>
 
-                                       
+
                                         <ul class="nav flex-column">
 
                                             <li class="nav-item">
@@ -142,22 +142,33 @@
                                             </select>
                                             <div>
                                                 <select class="custom-select mb-2 mr-sm-2 mb-sm-0" placeholder="Order"
-                                                    (change)="onFilterTypeChange($event)"                                                   
-                                                    ng-model="selected">
-                                                    <option [value]="'creationDate'" [selected]="filterType === 'creationDate'">Creation Date</option>
-                                                    <option [value]="'completionDate'" [selected]="filterType === 'completionDate'">Completion Date</option>
+                                                    (change)="onFilterTypeChange($event)" ng-model="selected">
+                                                    <option [value]="'creationDate'"
+                                                        [selected]="filterType === 'creationDate'">Creation Date
+                                                    </option>
+                                                    <option [value]="'completionDate'"
+                                                        [selected]="filterType === 'completionDate'">Completion Date
+                                                    </option>
                                                 </select>
-                                                <button type="button" (click)="toggleSortOrder()" style="background-color: white;">
-                                                    <i class="fas fa-sort-amount-up-alt" [hidden]="!isAscending" [class.active]="isAscending"></i>
-                                                    <i class="fas fa-sort-amount-down-alt" [hidden]="isAscending" [class.active]="!isAscending"></i>
+                                                <button type="button" (click)="toggleSortOrder()"
+                                                    style="background-color: white;">
+                                                    <i class="fas fa-sort-amount-up-alt" [hidden]="!isAscending"
+                                                        [class.active]="isAscending"></i>
+                                                    <i class="fas fa-sort-amount-down-alt" [hidden]="isAscending"
+                                                        [class.active]="!isAscending"></i>
                                                 </button>
                                             </div>
                                         </div>
                                         <!-- / CONTENT TOOLBAR -->
                                         <div class="card">
-                                            <div class="side-bar-scroll">
+                                            <div class="side-bar-scroll" >
                                                 <div class="page-content-card"><!--style="height: 100%"-->
-                                                    <div class="todo-items w-10">
+                                                    <div *ngIf="loading" class="text-center py-3">
+                                                        <div class="spinner-border text-primary" role="status">
+                                                            <span class="sr-only">Loading...</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="todo-items w-10" *ngIf="!loading">
 
                                                         <div id="dvMain_$index"
                                                             class="todo-item  py-4 ripple row no-gutters flex-wrap flex-sm-nowrap align-items-center"
@@ -234,14 +245,14 @@
                                                         <div>
                                                             <table class="table table-striped">
                                                                 <tbody>
-                                                                    <tr *ngIf="taskList.length === 0 || ''"
+                                                                    <tr *ngIf="!loading && taskList.length === 0 || ''"
                                                                         class="no-data" style="display: table-row;">
                                                                         <td colspan="4"
                                                                             style="text-align:center;font-weight:900">No
                                                                             data</td>
                                                                     </tr>
                                                                 </tbody>
-                                                            </table>
+                                                            </table>                                                     
                                                         </div>
                                                     </div>
                                                 </div>

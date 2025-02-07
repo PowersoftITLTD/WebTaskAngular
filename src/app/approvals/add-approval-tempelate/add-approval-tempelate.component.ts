@@ -196,6 +196,7 @@ export class AddApprovalTempelateComponent implements OnInit {
       // sanctioningDept:['',Validators.required],      
       endResult: ['dummy_1, dummy_2'],
       tags: [''],
+      sequenceOrder:[''],
       rows: this.formBuilder.array([], [this.duplicateAbbrivationValidator()]),
       rows_new: this.formBuilder.array([])
     })
@@ -530,6 +531,7 @@ export class AddApprovalTempelateComponent implements OnInit {
       resposiblE_EMP_MKEY: employeeMKey,
       joB_ROLE: Number(this.approvalTempForm.get('jobRole')?.value),
       dayS_REQUIERD: Number(this.approvalTempForm.get('noOfDays')?.value),
+      seQ_ORDER:String(this.approvalTempForm.get('sequenceOrder')?.value),
       attributE1: userMKey.toString(),
       attributE2: "ADD FORM",
       attributE3: "SAVE BUTTON",
@@ -647,6 +649,7 @@ export class AddApprovalTempelateComponent implements OnInit {
       resposiblE_EMP_MKEY: assignedEmployeeMKey,
       joB_ROLE: Number(this.approvalTempForm.get('jobRole')?.value),
       dayS_REQUIERD: Number(this.approvalTempForm.get('noOfDays')?.value),
+      seQ_ORDER:String(this.approvalTempForm.get('sequenceOrder')?.value),
       attributE1: null,
       attributE2: "SAVE FORM",
       attributE3: "SAVE BUTTON",
@@ -995,6 +998,8 @@ export class AddApprovalTempelateComponent implements OnInit {
           // console.log(gerAbbrRelData);
           this.getRelAbbr = Array.isArray(gerAbbrRelData) ? gerAbbrRelData : [gerAbbrRelData];
 
+          console.log('getRelAbbr: ',this.getRelAbbr)
+
 
           if (this.getRelAbbr.length === 0) {
             this.tostar.error("Details of this combination is empty or missing");
@@ -1256,12 +1261,10 @@ export class AddApprovalTempelateComponent implements OnInit {
     // console.log('Rows:', formArrayVal);
     rowForm.get('abbrivation')?.setValue(selectedAbbr);
 
-
     const selectedRow = this.getRelAbbr.find(r => r.maiN_ABBR === selectedAbbr);
     const departmentList = this.departmentList
 
     // console.log('Department', departmentList)
-
     const matchedDepartment = departmentList.find(department => department.mkey === selectedRow.authoritY_DEPARTMENT);
 
     if (matchedDepartment) {
@@ -1291,13 +1294,8 @@ export class AddApprovalTempelateComponent implements OnInit {
       rowForm.get('authoritY_DEPARTMENT')?.setValue('');
       rowForm.get('subtasK_MKEY')?.setValue('');
       rowForm.get('SUBTASK_TAGS')?.setValue('');
-
-
     }
   }
-
-
-
 
 
   clearFields(row: any): void {

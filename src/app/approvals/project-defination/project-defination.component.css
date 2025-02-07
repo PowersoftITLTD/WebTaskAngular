@@ -366,6 +366,12 @@
   .sample-wrapper {
     width: 100%; /* Ensure the wrapper uses full width */
   }
+
+  .sticky {
+    position: sticky;
+    top: 0;
+    background: white; 
+}
   
   
   /*progress*/

@@ -12,6 +12,9 @@ import { PipeContentModule } from '../pipes/pipe-content.module';
 import { RecursiveTaskManagementComponent } from './recursive-task-management/recursive-task-management.component';
 import { ApprovalScreenComponent } from './approval-screen/approval-screen.component';
 import { ComplianceManagementComponent } from './compliance-management/compliance-management.component';
+import { MatTooltipModule } from '@angular/material/tooltip';
+
+
 // import { FilterCategoryPipePipe } from '../pipes/filter-category-pipe/filter-category-pipe.pipe';
 
 
@@ -36,6 +39,8 @@ import { ComplianceManagementComponent } from './compliance-management/complianc
     TaskManagementRoutingModule,
     SidePanelModule,
     PipeContentModule,
+    MatTooltipModule,
+    
   ],
   entryComponents: [
     SelectedTaskInfoComponent

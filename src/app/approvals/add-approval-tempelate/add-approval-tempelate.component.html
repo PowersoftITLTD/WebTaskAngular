@@ -267,7 +267,27 @@
                                                     </div>
                                                 </div>
 
-                                                <div class="col-xs-12 col-xl-4 col-md-12">
+                                                <div class="col-xs-12 col-xl-3 col-md-12">
+                                                    <div class="form-group">
+                                                        <label for="taskName">Sequence order</label>
+
+                                                        <ng-container *ngIf="taskData?.mkey">
+                                                            <input type="number" maxlength="150" appNumericOnly 
+                                                            formControlName="sequenceOrder" class="form-control"
+                                                            [(ngModel)]="taskData.seQ_ORDER"
+                                                            maxlength="150" /> <!--[(ngModel)]="taskData.sequenceOrder"-->
+                                                        </ng-container>
+
+                                                        <ng-container *ngIf="!taskData?.mkey">
+                                                            <input type="number" maxlength="150" appNumericOnly
+                                                            formControlName="sequenceOrder" class="form-control"
+                                                            maxlength="150" />
+                                                        </ng-container>
+                                                      
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-xs-12 col-xl-3 col-md-12">
                                                     <div class="form-group">
                                                         <label for="taskName">No. of Days Required</label>
 
@@ -285,6 +305,8 @@
                                                       
                                                     </div>
                                                 </div>
+
+                                               
 
                                                 <!-- <div class="col-xs-12 col-xl-4 col-md-12">
                                                     <div class="form-group">
@@ -331,7 +353,7 @@
                                                     </div>
                                                 </div> -->
 
-                                                <div class="col-xs-12 col-xl-8 col-md-8">
+                                                <div class="col-xs-12 col-xl-6 col-md-8">
                                                     <div class="form-group">
                                                         <label for="tags">Tags</label>
                                                         <ng-container *ngIf="taskData?.mkey">
@@ -627,10 +649,33 @@
                                                                             <input class="form-control" style="width: 15rem" placeholder="--SELECT--"
                                                                                 formControlName="abbrivation" type="text" readonly />
                                                                         </div>
-                                                                    </td>                                                        
+                                                                    </td>  
                                                                     <td>
+                                                                        <div class="input-container">
+                                                                            <select class="form-control mt-1" formControlName="shorT_DESCRIPTION"
+                                                                                (change)="onAbbrChange($event, row)">
+                                                                                <option value="" style="width: 15rem">
+                                                                                    --SELECT--</option>
+                                                                                <option *ngFor="let option of getRelAbbr" [value]="option.maiN_ABBR">{{
+                                                                                    option.shorT_DESCRIPTION }}
+                                                                                </option>
+                                                                            </select>
+                                                        
+                                                                            <select class="form-control mt-1" formControlName="shorT_DESCRIPTION"
+                                                                                (change)="onAbbrChange($event, row)">
+                                                                                <option value="" style="width: 15rem">
+                                                                                    --SELECT--</option>
+                                                                                <option *ngFor="let option of getRelAbbr" [value]="option.maiN_ABBR">{{
+                                                                                    option.shorT_DESCRIPTION }}
+                                                                                </option>
+                                                                            </select>
+                                                                            <input class="form-control" style="width: 15rem" placeholder="--SELECT--"
+                                                                                formControlName="shorT_DESCRIPTION" type="text" readonly />
+                                                                        </div>
+                                                                    </td>                                                       
+                                                                    <!-- <td>
                                                                         <input class="form-control" formControlName="shorT_DESCRIPTION" type="text" readonly />
-                                                                    </td>
+                                                                    </td> -->
                                                                     <td>
                                                                         <input class="form-control" formControlName="nO_DAYS_REQUIRED" type="number" readonly />
                                                                     </td>

@@ -76,7 +76,10 @@ export class TaskManagementComponent implements OnInit {
   completedForMee: number | any;
   cancelleed: number | any;
 
-
+  loading: boolean = true;  // Track if data is loading
+  pageNumber = 1;  // Start with the first page
+  pageSize = 10;   // Number of items per chunk
+  
   constructor(
     private router: Router,
     private apiService: ApiService,
@@ -206,7 +209,10 @@ export class TaskManagementComponent implements OnInit {
     this.apiService.getTaskManagementDetailsNew(mkey.toString(), option, token).subscribe(
       (response: any) => {
 
-        this.taskList = response[0]?.data;   
+
+        this.taskList = response[0]?.data;  
+        
+        this.loading = false
         // console.log(this.taskList)     
       },
       (error: ErrorHandler) => {
@@ -216,6 +222,7 @@ export class TaskManagementComponent implements OnInit {
   }
 
 
+  
   onFilterTypeChange(event: Event) {
     const value = (event.target as HTMLInputElement).value.trim();
 
@@ -294,6 +301,7 @@ export class TaskManagementComponent implements OnInit {
   myActionable() {
     this.selectedTab = 'actionable';
     const option = 'DEFAULT';
+    this.loading=true
     this.fetchTaskDetails(this.loggedInUser[0]?.MKEY, option);
     this.router.navigate([], {
       relativeTo: this.activatedRoute,
@@ -306,6 +314,7 @@ export class TaskManagementComponent implements OnInit {
   AllocatedToMe() {
     this.selectedTab = 'allocatedToMe';
     const option = 'ALLOCATEDTOME';
+    this.loading=true
     this.fetchTaskDetails(this.loggedInUser[0]?.MKEY, option);
     this.router.navigate([], {
       relativeTo: this.activatedRoute,
@@ -319,6 +328,7 @@ export class TaskManagementComponent implements OnInit {
   AllocatedByMe() {
     this.selectedTab = 'allocatedByMe';
     const option = 'ALLOCATEDBYME';
+    this.loading=true
     this.fetchTaskDetails(this.loggedInUser[0]?.MKEY, option);
     this.router.navigate([], {
       relativeTo: this.activatedRoute,
@@ -331,6 +341,7 @@ export class TaskManagementComponent implements OnInit {
   completedByMe() {
     this.selectedTab = 'completedByMe';
     const option = 'COMPLETEDBYME';
+    this.loading=true
     this.fetchTaskDetails(this.loggedInUser[0]?.MKEY, option);
     this.router.navigate([], {
       relativeTo: this.activatedRoute,
@@ -343,6 +354,7 @@ export class TaskManagementComponent implements OnInit {
   completedForMe() {
     this.selectedTab = 'completedForMe';
     const option = 'COMPLETEDFORME';
+    this.loading=true
     this.fetchTaskDetails(this.loggedInUser[0]?.MKEY, option);
     this.router.navigate([], {
       relativeTo: this.activatedRoute,
@@ -356,6 +368,7 @@ export class TaskManagementComponent implements OnInit {
   cancelled() {
     this.selectedTab = 'cancelled';
     const option = 'CANCELCLOSE';   
+    this.loading=true
     this.fetchTaskDetails(this.loggedInUser[0]?.MKEY, option);
     this.resetSource()
     this.router.navigate([], {

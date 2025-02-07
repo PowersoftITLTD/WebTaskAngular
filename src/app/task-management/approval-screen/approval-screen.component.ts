@@ -48,7 +48,7 @@ export class ApprovalScreenComponent implements OnInit {
   @Input() recursiveLogginUser: any = {};
   @Input() loggedInUser: any;
 
-
+  loading: boolean = false;
 
   selectedMKey: number | undefined;
 
@@ -366,7 +366,9 @@ getApprovalTempList(){
   this.apiService.getApprovalTemp(this.recursiveLogginUser).subscribe({
     next:(approval_temp_data) =>{
       
-      this.taskList = approval_temp_data.reverse();
+      this.taskList = approval_temp_data;
+
+      console.log('Approval List', this.taskList)
       this.fetchComboDetails()
       // console.log('approval_temp_data', approval_temp_data)
 
@@ -442,11 +444,11 @@ getApprovalTempList(){
     this.recursiveLogginUser = this.apiService.getRecursiveUser();
 
 
-    this.apiService.getDocumentryList( this.recursiveLogginUser, USER_CRED.MKEY).subscribe({
+    this.apiService.getDocumentryList( this.recursiveLogginUser.toString(), USER_CRED.MKEY).subscribe({
       next: (depositoryList) => {
         console.log('depositoryList', depositoryList)
 
-        this.taskList = depositoryList.reverse();
+        this.taskList = depositoryList[0].DATA.reverse();
       }, error: (error) => {
         if (error) {
           console.log('error', error)

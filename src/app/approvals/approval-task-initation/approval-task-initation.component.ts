@@ -1,10 +1,11 @@
-import { Component, ErrorHandler, Input, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, ErrorHandler, Input, OnDestroy, OnInit } from '@angular/core';
 import { CITIES, ICity } from './../add-approval-tempelate/cities';
 import { ApiService } from 'src/app/services/api/api.service';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CredentialService } from 'src/app/services/credential/credential.service';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
+import { Subscription } from 'rxjs';
 
 
 @Component({
@@ -22,11 +23,13 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
 
   allTags: any[] = [];
   selectedTags: string[] = []; 
+  private startDateSubscription: Subscription | undefined;
 
 
   taskDetails: any;
   loading: boolean = false;
 
+  startDateValue:Date | any;
   employees: any[] = [];
   appeInitForm: FormGroup | any;
   subTaskForm: FormGroup | any;
@@ -80,6 +83,8 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
   loginName: string = '';
   loginPassword: string = '';
 
+  initiatorName:string = ''
+
 
   public accordionItems = [
     { title: 'Sub Task', content: 'Some placeholder content for the second accordion panel.' },
@@ -91,7 +96,8 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
     private formBuilder: FormBuilder,
     private credentialService: CredentialService,
     private router: Router,
-    private tostar: ToastrService
+    private tostar: ToastrService,
+    private cdr:ChangeDetectorRef
   ) {
 
 
@@ -134,7 +140,8 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
     this.fetchEmployeeName();
     this.activeIndices = this.accordionItems.map((_, index) => index); // Set all indices to open
     this.initilizeApprInitiationForm();
-    this.subListForm();
+  
+    // this.subListForm();
     this.fetchProjectData();
   }
 
@@ -173,10 +180,14 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
 
 
   initilizeApprInitiationForm() {
+
+    const USER_CRED = this.credentialService.getUser();
+    console.log('this.initiatorName', USER_CRED[0].EMP_FULL_NAME)
+
     this.appeInitForm = this.formBuilder.group({
       property: [''],
       building: [''],
-      initiator: ['', Validators.required],
+      initiator: [USER_CRED[0].EMP_FULL_NAME || '', Validators.required],
       abbrivation: ['', ],
       // sanctioningAuth: [this.taskData.SANCTION_AUTHORITY_NAME ],
       // sanctioningDepartment: ['', ],
@@ -186,33 +197,117 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
       jobRole: ['', ],
       daysRequired: [''],
       tags:[''],
-      startDate:['', Validators.required],
+      startDate:[this.currentDate || '', Validators.required],
       endDate: ['', Validators.required],
       complitionDate:['',Validators.required],
       ProjectApprovalSrNo: [''],
       editRow: this.formBuilder.array([]),
       rows_new: this.formBuilder.array([])
     })
+
+
+    if (!this.taskData || !this.taskData.SUBTASK_LIST) {
+      console.error("No valid task data available.");
+      return;
+    }
+  
+    const check_start_date = this.appeInitForm.get('startDate')?.value
+
+    console.log('check_start_date', check_start_date)
+    // Sum up all the days from SUBTASK_LIST
+    const totalDays = this.taskData.SUBTASK_LIST.reduce((sum:number, task:any) => {
+      return sum + (task.DAYS_REQUIRED || 0);
+    }, 0);
+  
+    // Get current date
+    const currentDate = new Date();
+    
+    // Calculate the end date by adding totalDays
+    const endDate = new Date();
+    endDate.setDate(currentDate.getDate() + totalDays);
+  
+    // Format the end date using formatDate() method
+    const formattedEndDate = this.formatDate(endDate);
+
+    console.log('formattedEndDate', formattedEndDate)
+  
+    // Patch value to form
+    this.appeInitForm.patchValue({ endDate: [formattedEndDate] });
+    this.appeInitForm.patchValue({ complitionDate: [formattedEndDate] });
+
+  
+    console.log(`Total Days: ${totalDays}, Calculated End Date: ${formattedEndDate}`);
   }
 
 
-  subListForm(){
-    this.subTaskForm = this.formBuilder.group({ 
-      SubListAbbrivation: [''],
-      SubListShortDescription: [''],
-      SubListlongDescriotion: [''],
-      SubListDepartment: [''],
-      SubListresponsiblePerson: [''],
-      SubListJobRole: [''],
-      SubListTags:[''],
-      SubListStartDate:[''],
-      SubListEndDate: [''],
-      SubListComplitionDatee:[''],
-      subListDoc: [''],   
-    })
+  // subListForm(){
+  //   this.subTaskForm = this.formBuilder.group({ 
+  //     SubListAbbrivation: [''],
+  //     SubListShortDescription: [''],
+  //     SubListlongDescriotion: [''],
+  //     SubListDepartment: [''],
+  //     SubListresponsiblePerson: [''],
+  //     SubListJobRole: [''],
+  //     SubListTags:[''],
+  //     SubListStartDate:[''],
+  //     SubListEndDate: [''],
+  //     SubListComplitionDatee:[''],
+  //     subListDoc: [''],   
+  //   })
+  // }
+
+
+
+  calculateHeaderDate(event?: any) {
+    if (!this.taskData || !this.taskData.SUBTASK_LIST) {
+      console.error("No valid task data available.");
+      return;
+    }
+  
+    let startDateValue = this.appeInitForm.get('startDate')?.value;
+  
+    if (event && event.target.value) {
+      startDateValue = event.target.value;
+      this.startDateValue = startDateValue
+      this.appeInitForm.patchValue({ startDate: startDateValue });
+    }
+  
+    console.log('Selected start date:', this.startDateValue);
+  
+    if (!startDateValue) {
+      console.error("Start date is missing.");
+      return;
+    }
+  
+    const startDate = new Date(startDateValue);
+  
+    // Sum up all the days from SUBTASK_LIST
+    const totalDays = this.taskData.SUBTASK_LIST.reduce((sum: number, task: any) => {
+      return sum + (task.DAYS_REQUIRED || 0);
+    }, 0);
+  
+    // Calculate the end date by adding totalDays to the startDate
+    const endDate = new Date(startDate);
+    endDate.setDate(startDate.getDate() + totalDays);
+  
+    // Format the end date
+    const formattedEndDate = this.formatDate(endDate);
+  
+    console.log('Calculated End Date:', formattedEndDate);
+  
+    // Patch calculated dates to the form
+    this.appeInitForm.patchValue({ endDate: formattedEndDate });
+    this.appeInitForm.patchValue({ complitionDate: formattedEndDate });
+  
+    console.log(`Total Days: ${totalDays}, Updated End Date: ${formattedEndDate}`);
+
+    this.getTree(); 
+
+
+   this.subTasks = [];
   }
-
-
+  
+   
 
   addApprovalInitiation() {
 
@@ -297,8 +392,8 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
       SANCTION_AUTHORITY: this.taskData.SANCTION_AUTHORITY,
       SANCTION_DEPARTMENT: this.taskData.SANCTION_DEPARTMENT,
       TENTATIVE_START_DATE: this.appeInitForm.get('startDate')?.value,
-      TENTATIVE_END_DATE: this.appeInitForm.get('endDate')?.value,
-      COMPLITION_DATE: this.appeInitForm.get('complitionDate')?.value,
+      TENTATIVE_END_DATE: this.appeInitForm.get('endDate')?.value.toString(),
+      COMPLITION_DATE: this.appeInitForm.get('complitionDate')?.value.toString(),
       PROPERTY: PROJECT,
       BUILDING_MKEY: SUB_PROJ,
       CREATED_BY: USER_CRED[0].MKEY,
@@ -307,15 +402,15 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
     };
 
     console.log('addApprovalInitiation: ', addApprovalInitiation);
-    console.log('recursiveLogginUser', this.recursiveLogginUser)
+ 
 
     this.apiService.postApprovalInitiation(addApprovalInitiation, this.recursiveLogginUser).subscribe({
       next:(response)=>{
         console.log(response.message)
-        // if(response.status === 'Error'){
-        //   this.tostar.error(response.message)
-        //   return
-        // }
+        if(response.status === 'Error'){
+          this.tostar.error(response.message)
+          return
+        }
         this.router.navigate(['/task/task-management']);
 
         this.tostar.success('Success', 'Template added successfuly');
@@ -803,7 +898,9 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
 
 
   updatedTaskCheck(task: any, assignTo: any) {
-    console.log('assignTo', assignTo);
+    console.log('task ', task);
+
+    console.log('assignTo', assignTo)
   
     const matchedEmp = this.employees.find((employee: any) =>
       employee.Assign_to === assignTo
@@ -830,10 +927,15 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
         }
       }).join(',');
     }
+
+    console.log('check name', matchedEmp)
+
   
     const responsibleEmpMKey = (assignTo === null || assignTo === undefined || assignTo === '' || !matchedEmp) 
       ? task.resposiblE_EMP_MKEY
       : matchedEmp.MKEY;
+
+      console.log('responsibleEmpMKey: ', responsibleEmpMKey)
   
     const updateInitiationSubTask = {
       MKEY: this.taskData.HEADER_MKEY,
@@ -842,16 +944,15 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
       SHORT_DESCRIPTION: task.abbr_short_DESC,
       LONG_DESCRIPTION: task.abbR_SHORT_DESC,
       TAGS: tagsString,
-      resposiblE_EMP_MKEY: responsibleEmpMKey,
+      resposiblE_EMP_MKEY:responsibleEmpMKey,
+      RESPOSIBLE_EMP_NAME:matchedEmp.Assign_to || '',
       createD_BY: data[0].MKEY,
       lasT_UPDATED_BY: data[0].MKEY,
       TENTATIVE_START_DATE: task.start_date,
       TENTATIVE_END_DATE: task.end_date,
       DELETE_FLAG: 'N'
     };
-
     
-  
     console.log('updateInitiationSubTask', updateInitiationSubTask);
   
     this.apiService.subTaskPutApprovalInitiation(headerMkey, updateInitiationSubTask, token).subscribe({
@@ -1070,17 +1171,29 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
 
     const jobRoleList = this.jobRoleList;
     const departmentList = this.departmentList;
-    console.log('this.taskData.SUBTASK_LIST', this.taskData.SUBTASK_LIST)
+    const sortedTasks = [...this.taskData.SUBTASK_LIST].sort((a, b) =>
+      a.TASK_NO.localeCompare(b.TASK_NO, undefined, { numeric: true })
+    );
+  
+    const taskMap = new Map();
+
+    let lastEndDate = this.appeInitForm.get('startDate')?.value;
+    console.log('lastEndDate', lastEndDate)
 
 
-    const optionListArr = this.taskData.SUBTASK_LIST
+    const optionListArr = sortedTasks
       .filter((item: any) => item.TASK_NO !== null)
-      .map((item: any) => {
-
-
+      .map((item: any, index: number) => {
         const jobRole = jobRoleList.find((role: any) => role.mkey === item.JOB_ROLE);
         const departmentRole = departmentList.find((department: any) => department.mkey === item.DEPARTMENT);
-
+        const daysRequired = isNaN(item.DAYS_REQUIRED) ? 0 : Number(item.DAYS_REQUIRED);
+    
+        let startDate = new Date(lastEndDate);
+        let endDate = new Date(startDate);
+        endDate.setDate(startDate.getDate() + daysRequired);
+    
+        lastEndDate = new Date(endDate); // Update for the next task
+    
         return {
           TASK_NO: item.TASK_NO,
           maiN_ABBR: item.APPROVAL_ABBRIVATION,
@@ -1093,24 +1206,25 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
           joB_ROLE_mkey: jobRole ? jobRole.mkey : 0,
           department: departmentRole ? departmentRole.typE_DESC : "Not found",
           department_mkey: departmentRole ? departmentRole.mkey : 0,
-          start_date: item.TENTATIVE_START_DATE,
-          end_date: item.TENTATIVE_END_DATE,
-          RESPOSIBLE_EMP_NAME:item.RESPOSIBLE_EMP_NAME,
-          resposiblE_EMP_MKEY: item.RESPOSIBLE_EMP_MKEY,
-          status: item.STATUS
+          start_date: startDate.toISOString().split("T")[0],
+          end_date: endDate.toISOString().split("T")[0],
+          RESPOSIBLE_EMP_NAME: item.RESPOSIBLE_EMP_NAME,
+          resposiblE_EMP_MKEY: item.resposiblE_EMP_MKEY,
+          status: item.STATUS,
         };
-
       });
-
+     // this.cdr.detectChanges(); 
     this.loading = true;
 
     this.selectedAssignTo
     console.log('optionListArr', optionListArr)
-
-    
-
-
+  
     const same_data = optionListArr;
+
+    console.log('Building hierarchy with data:', JSON.stringify(same_data, null, 2));
+
+      console.log('same_data', same_data)
+    //this.cdr.detectChanges();
 
     const buildHierarchy = (tasks: any, rootTaskNo: any) => {
       const rootTask = tasks.find((task: any) => task.TASK_NO === rootTaskNo);
@@ -1152,8 +1266,9 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
       const rootHierarchy = {
         TASK_NO: {
           ...rootTask,
-          TASK_NO: rootTask.TASK_NO,
-        },
+          TASK_NO: rootTask.TASK_NO,         
+
+        },        
         visible: true,
         subtask: buildSubtasks(rootTask.TASK_NO, rootDepth)
       };
@@ -1161,7 +1276,9 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
       return rootHierarchy;
     };
 
+    //this.cdr.detectChanges();
     const taskNumbers = [...new Set(same_data.map((task: any) => task.TASK_NO.split('.')[0]))]; // Get unique root TASK_NO
+
     taskNumbers.forEach(taskNo => {
       const hierarchy = buildHierarchy(same_data, taskNo);
       if (hierarchy) {
@@ -1169,23 +1286,28 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
       }
     });
 
+    console.log("Updated this.subTasks:", JSON.stringify(this.subTasks, null, 2));
+    this.subTasks = [...this.subTasks]; 
+
+    this.cdr.detectChanges();
+
     const noSubParentTasks: any = []
 
     const allRootTaskNumbersInHierarchy = this.subTasks.map((subtask: any) => subtask.TASK_NO.TASK_NO.split('.')[0]);
 
-
     same_data.forEach((task: any) => {
 
-      const taskRootNo = task.TASK_NO.split('.')[0];
+    const taskRootNo = task.TASK_NO.split('.')[0];
       if (!allRootTaskNumbersInHierarchy.includes(taskRootNo)) {
         noSubParentTasks.push(task);
       }
     });
 
-    // console.log('subtask from parent', this.subTasks)
     this.loading = false;
     this.noParentTree(noSubParentTasks)
   }
+
+  
 
 
   noParentTree(noParentTree: any = []) {
@@ -1224,13 +1346,18 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
       return task.TASK_NO.maiN_ABBR !== undefined;
     });
 
+    console.log('subtasks',this.subTasks)
     const subtasks = tasks.flatMap((task: any) => task.subtask.map((sub: any) => sub.TASK_NO.TASK_NO));
     const filteredTasks = tasks.filter((task: any) => !subtasks.includes(task.TASK_NO.TASK_NO));
     this.subTasks = [...this.subTasks, ...filteredTasks];
 
-    this.selectedSeqArr = [...filteredTasks, ...this.subTasks];
+    // this.selectedSeqArr = [...filteredTasks, ...this.subTasks];
   }
 
+
+  trackByTaskNo(index: number, task: any) {
+    return task.TASK_NO;
+  }
 
   calculateIndentation(taskNo: string, baseIndent: number): number {
     return (taskNo.split('.').length - 1) * baseIndent;
@@ -1264,21 +1391,32 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
 
     const subTaskList =  this.taskData.SUBTASK_LIST;
 
-    console.log('this.taskData.SUBTASK_LIST', this.taskData.SUBTASK_LIST)
-    console.log('subTaskList', subTaskList)
+    // console.log('this.taskData.SUBTASK_LIST', this.taskData.SUBTASK_LIST)
+    // console.log('subTaskList', subTaskList)
   
-    if (subTaskList && subTaskList.length > 0) {
-      const invalidSubTasks = subTaskList.filter((subTask:any) => {
-        console.log('subTask', subTask)
-        return !subTask.RESPOSIBLE_EMP_MKEY; // Checks for 0, undefined, null, or empty string
-      });
+    // if (subTaskList && subTaskList.length > 0) {
+    //   const invalidSubTasks = subTaskList.filter((subTask:any) => {
+    //     console.log('subTask', subTask)
+    //     return !subTask.RESPOSIBLE_EMP_MKEY || !subTask.resposiblE_EMP_MKEY;  // Checks for 0, undefined, null, or empty string
+    //   });
     
-      if (invalidSubTasks.length > 0) {
-        this.tostar.error('Please add responsible person to the subtask/s');
-        return;
-      }
-    }
-  
+    //   if (invalidSubTasks.length > 0) {
+    //     this.tostar.error('Please add responsible person to the subtask/s');
+    //     return;
+    //   }
+    // }
+
+    // if (subTaskList && subTaskList.length > 0) {
+    //   const invalidSubTasks = subTaskList.filter((subTask: any) => {
+    //     return !(Number(subTask.RESPOSIBLE_EMP_MKEY) > 0 || Number(subTask.resposiblE_EMP_MKEY) > 0);
+    //   });
+    
+    //   if (invalidSubTasks.length > 0) {
+    //     this.tostar.error('Please add a responsible person to the subtask(s)');
+    //     return;
+    //   }
+    // }
+              
     if (requiredControls.length > 0) {
       const errorMessage = `${requiredControls.join(' , ')}`;
       this.tostar.error(errorMessage);
@@ -1291,7 +1429,6 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
 
   onAddInitiation(){
     const isValid =  this.onSubmit();
-
     if(isValid){
       this.addApprovalInitiation();
     }else {
@@ -1299,13 +1436,9 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
     }
   }
 
-
-
   onSubmitSubList(form:any, task:any = []){
     console.log('Coming to sublist submit form',form.value)
     console.log('Coming to form', task)
-
-
   }
 
   formatDate(date: Date): string {
@@ -1319,8 +1452,11 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     console.log('Component is being destroyed');
-
     sessionStorage.removeItem('task');
+    if (this.startDateSubscription) {
+      this.startDateSubscription.unsubscribe();
+    }
+  
   }
 
 }
