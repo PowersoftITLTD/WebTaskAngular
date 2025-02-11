@@ -230,15 +230,15 @@
                         <label for="category">Responsible Person&nbsp;<small>*</small></label>
 
                         <ng-container *ngIf="taskData?.MKEY">
-                          <input type="text" class="form-control" [(ngModel)]="taskData.emp_name" formControlName="responsiblePerson"
+                          <input type="text" class="form-control"  formControlName="responsiblePerson" [ngModel]="HeaderfullName[0]?.Assign_to"
                             (input)="filterEmployees($event)" appAlphabeticOnly
                             [ngStyle]="isFieldDisabled ? { 'background-color': 'rgb(238 236 195)', 'color': '#11111', 'cursor': 'allowed' } : {}" />
                         </ng-container>
 
-                        <ng-container *ngIf="!taskData?.MKEY">
+                        <!-- <ng-container *ngIf="!taskData?.MKEY">
                           <input type="text" class="form-control" formControlName="responsiblePerson"
                             (input)="filterEmployees($event)" appAlphabeticOnly />
-                        </ng-container>
+                        </ng-container> -->
 
                         <div style="width: 100%;" class="pr-10 mt-1">
                           <ul>
