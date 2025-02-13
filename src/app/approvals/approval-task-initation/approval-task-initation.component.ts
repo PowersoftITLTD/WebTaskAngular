@@ -321,30 +321,30 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
     this.recursiveLogginUser = this.apiService.getRecursiveUser();
 
 
+
     const PROJECT = this.appeInitForm.get('property')?.value || (this.appeInitForm.get('property')?.value === '' ? this.taskData?.PROPERTY : this.appeInitForm.get('property')?.value);
     const matchedProject = this.project.find((project: any) => project.TYPE_DESC === PROJECT);
 
     const SUB_PROJ = this.appeInitForm.get('building')?.value || (this.appeInitForm.get('building')?.value === '' ? this.taskData?.BUILDING_MKEY : this.appeInitForm.get('building')?.value);
     const SELECTED_PROJ = this.sub_proj.find((sub_proj: any) => sub_proj.TYPE_DESC === SUB_PROJ);
 
-    // console.log('property', PROJECT);
-    // console.log('building', SUB_PROJ);
-
     const assignedToValue = this.appeInitForm.get('responsiblePerson')?.value.trim();
-    const assignedEmployee = this.employees.find(employee => employee.Assign_to === assignedToValue);
 
-    const assignedToValueIni = this.appeInitForm.get('initiator')?.value.trim();
-    const assignedInitiator = this.employees.find(employee => employee.Assign_to === assignedToValueIni);
+    console.log('Check the assigning Employee', this.headerEmployee)
+    // this.headerEmployee.push({ Assign_to: capitalizedFullName, MKEY: MKEY });
+
+    const assignedEmployee = this.headerEmployee.find(employee => employee.Assign_to === assignedToValue);
 
     const USER_CRED = this.credentialService.getUser();
 
+
+    //const assignedToValueIni = this.appeInitForm.get('initiator')?.value.trim();
+    const assignedInitiator = USER_CRED[0].MKEY
+
+
     const property = this.appeInitForm.get('property')?.value;
     const building = this.appeInitForm.get('building')?.value;
-
-
-    // console.log('this.taskData?.PROPERTY', this.taskData?.PROPERTY);
-    // console.log('this.taskData?.BUILDING_MKEY', this.taskData?.BUILDING_MKEY);
-
+   
     let PROPERTY, BUILDING;
 
     if (this.taskData?.PROPERTY === property?.MASTER_MKEY || this.taskData?.BUILDING_MKEY === building?.MASTER_MKEY) {
@@ -356,11 +356,7 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
       PROPERTY = (property?.MASTER_MKEY === null || property?.MASTER_MKEY === undefined) ? this.taskData?.PROPERTY : property?.MASTER_MKEY;
       BUILDING = (building?.MASTER_MKEY === null || building?.MASTER_MKEY === undefined) ? this.taskData?.BUILDING_MKEY : building?.MASTER_MKEY;
     }
-
-
-    // console.log('PROPERTY', PROPERTY);
-    // console.log('BUILDING', BUILDING);
-
+   
     const tagsValue = this.appeInitForm.get('tags')?.value;
 
     let tagsString = '';
@@ -377,15 +373,13 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
       }).join(',');
     }
 
-    console.log('tagsString', tagsString)
-
     const addApprovalInitiation: any = {
 
       MKEY: this.taskData.MKEY,
       HEADER_MKEY: this.taskData.HEADER_MKEY,
       CAREGORY: 64,
       TAGS: tagsString,
-      INITIATOR: assignedInitiator?.MKEY,
+      INITIATOR: assignedInitiator,
       TASK_NO: this.taskData.TASK_NO,
       MAIN_ABBR: `${this.appeInitForm.get('abbrivation')?.value} / ${this.taskData.TASK_NO}`,
       SHORT_DESCRIPTION: this.appeInitForm.get('shortDescription')?.value,
@@ -1720,17 +1714,17 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
     //   }
     // }
 
-    if (subTaskList && subTaskList.length > 0) {
-      const invalidSubTasks = subTaskList.filter((subTask: any) => {
-        return !(Number(subTask.RESPOSIBLE_EMP_MKEY) > 0 || Number(subTask.resposiblE_EMP_MKEY) > 0);
-      });
+    // if (subTaskList && subTaskList.length > 0) {
+    //   const invalidSubTasks = subTaskList.filter((subTask: any) => {
+    //     return !(Number(subTask.RESPOSIBLE_EMP_MKEY) > 0 || Number(subTask.resposiblE_EMP_MKEY) > 0);
+    //   });
 
-      console.log('invalidSubTasks', invalidSubTasks);
-      if (invalidSubTasks.length > 0) {
-        this.tostar.error('Please add a responsible person to the subtask(s)');
-        return;
-      }
-    }
+    //   console.log('invalidSubTasks', invalidSubTasks);
+    //   if (invalidSubTasks.length > 0) {
+    //     this.tostar.error('Please add a responsible person/s to all subtask(s)');
+    //     return;
+    //   }
+    // }
 
     if (requiredControls.length > 0) {
       const errorMessage = `${requiredControls.join(' , ')}`;

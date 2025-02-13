@@ -22,6 +22,7 @@ export class HeaderBarComponent implements OnInit {
   selectedTab:string = '';
   isDialogOpen: boolean = false;
   isDialogClosing: boolean = false;
+  openSection: string | null = null;
 
 
   user:any = []
@@ -44,6 +45,11 @@ constructor(private loginService:CredentialService,
 //   openSidePanel() {
 //     this.dialog.open(TimeAndWeatherComponent);
 // }
+
+
+toggleSection(section: string): void {
+  this.openSection = this.openSection === section ? null : section;
+}
 
 
   openPanel(): void {
@@ -120,22 +126,87 @@ constructor(private loginService:CredentialService,
 
   navigateToDashboardProject() {    
     this.router.navigate(['dashboard/dashboard-page']);   
-    this.selectedTab = 'dashboard';
+    // this.selectedTab = 'dashboard';
   }
 
   navigateToTaskManagement(){
     this.router.navigate(['task/task-management'])
-    this.selectedTab = 'task-management'
+    // this.selectedTab = 'task-management'
   }
 
   navigateToUploadProject() {
     this.router.navigate(['project-uploader/upload-file'])
-    this.selectedTab = 'project-uploader'
+    // this.selectedTab = 'project-uploader'
   }
 
   navigateToRecTaskManagement(){
     this.router.navigate(['task/recursive-task']);
-    this.selectedTab = 'recursive-task-management'
+    // this.selectedTab = 'recursive-task-management'
+  }
+
+
+
+  navigateToCompliance(){
+    // this.selectedTab = 'add-compliance'
+    this.router.navigate(['task/compliance-management'])
+    // this.router.navigate(['compliance/add-compliance']);
+  }
+
+  navigateToApprovlTempelate() {
+    this.selectedTab = 'authority-tempelate';
+    this.router.navigate(['task/approval-screen'], {queryParams:{ source: 'authority-tempelate' }});
+  }
+
+  navigateToDocumentTempelate() {
+    this.selectedTab = 'document-tempelate';
+    this.router.navigate(['task/approval-screen'], {queryParams:{ source: 'document-tempelate' }});
+  }
+
+  navigateToProjectDefination() {
+    this.selectedTab = 'project-defination';
+    this.router.navigate(['task/approval-screen'], {queryParams:{ source: 'project-defination' }});
+  }
+
+
+  navigateToProjectDocDepository() {
+    this.selectedTab = 'project-document-depository';;
+    this.router.navigate(['task/approval-screen'], {queryParams:{ source: 'project-document-depository' }});
+  }
+
+  navigateToCategoryMaster(){
+    //this.router.navigate(['approvals/category-master']);
+    this.router.navigate(['task/approval-screen'], {queryParams:{ source: 'category-master' }});
+    this.selectedTab = 'category-master'
+
+  }
+
+  navigateToInstructionMaster(){
+    //this.router.navigate(['approvals/category-master']);
+    this.router.navigate(['task/approval-screen'], {queryParams:{ source: 'instruction-master' }});
+    this.selectedTab = 'instruction-master'
+
+  }
+
+
+ // this.router.navigate(['approvals/project-defination']);
+ // this.router.navigate(['approvals/document-tempelate']);
+
+
+  navigateToApprovedTempelate() {
+    this.router.navigate(['approvals/approved-tempelate'],{queryParams:{ source: 'approval_tempelate' }});
+    this.selectedTab = 'approved-tempelate';
+  }
+
+
+
+  navigateToProjectDD() {
+    this.router.navigate(['approvals/project-document-depository']);
+    this.selectedTab = 'project-document-depository';
+  }
+
+  navigateToProjectDS() {
+    this.router.navigate(['approvals/project-document-search']);
+    this.selectedTab = 'project-document-search';
   }
 
 

@@ -1,0 +1,49 @@
+.task-font {
+  font-size: xx-large !important;
+}
+
+.grid {
+  height: 500px !important;
+}
+
+.table-scroll-container {
+  max-height: calc(100vh - 200px);
+  overflow-y: auto;
+}
+
+.table-scroll-container::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.table-scroll-container::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 10px;
+}
+
+.table-scroll-container::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+@media (max-width: 767px) {
+
+  .table-scroll-container {
+    max-height: calc(100vh - 240px);
+    overflow-y: auto;
+  }
+
+
+  .side-bar-hover {
+    padding-left: 0 !important;
+  }
+
+  .grid {
+    height: auto !important;
+  }
+
+  .col-12,
+  .col-sm-6,
+  .col-xl-3 {
+    width: 100% !important;
+    margin-bottom: 15px !important;
+  }
+}

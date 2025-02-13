@@ -1,0 +1,136 @@
+/* @import url('../../../../../assets/css/main.css'); */
+
+
+
+.ag-theme-quartz .ag-paging-panel {
+    display: block !important;
+}
+
+
+.left-corner {
+    text-align: left;
+}
+
+.right-corner {
+    text-align: right;
+}
+
+.top-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    width: 100%;
+}
+
+.member-header {
+  cursor: pointer;
+  background-color: #f0f0f0;
+  padding: 5px;
+  margin-bottom: 5px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.toggle-icon {
+  font-size: 12px;
+}
+
+.member-details-content {
+  background-color: #fafafa;
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+.side-bar-scroll {
+    max-height: calc(100vh - 200px); 
+    overflow-y: auto; 
+  }
+  
+  .side-bar-scroll::-webkit-scrollbar {
+    width: 2px; 
+  }
+  
+  .side-bar-scroll::-webkit-scrollbar-track {
+    background-color: transparent; 
+  }
+  
+  .side-bar-scroll::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.3); 
+    border-radius: 4px; 
+  }
+  
+  .side-bar-scroll::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+
+
+  .table-container {
+    max-height: 500px;
+    overflow-y: auto; 
+    border: 1px solid #ddd;
+  }
+
+  .table-container::-webkit-scrollbar {
+    width: 0px; 
+  }
+  
+  .task-table {
+    width: 100%;
+    border-collapse: collapse;
+    border-spacing: 0;
+  }
+  
+  .task-table th, .task-table td {
+    padding: 50px;
+    text-align: left;
+  }
+  
+  .task-table th {
+    background-color: #f2f2f2;
+    text-align: center;
+  }
+  
+  .task-table thead {
+    position: sticky;
+    top: 0; 
+    background-color: #f9f9f9; 
+    z-index: 999; 
+    border-bottom: 2px solid #ddd;
+  }
+
+  
+  
+  table.task-table {
+    width: 100%; 
+  }
+  
+
+  .table-body-container {
+    max-height: 400px; 
+    overflow-y: auto; 
+    display: block;
+  }
+  
+  table.task-table th,
+  table.task-table td {
+    padding: 3px; 
+    border-right: 1px solid #ddd;      
+  }
+  
+
+
+  #status{
+    text-align: center; 
+    text-decoration: underline; 
+    font-weight: bold; 
+  }
+  
+
+  @media only screen and (max-width: 767px) {
+    .side-bar-scroll {
+      max-height: calc(100vh - 230px); 
+      overflow-y: auto; 
+    }
+  }

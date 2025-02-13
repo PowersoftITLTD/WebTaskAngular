@@ -1,0 +1,113 @@
+<div class="tab-pane fade show" id="ProgressTab" role="tabpanel" aria-labelledby="product-images-tab" >
+    <div class="card p-6">
+      
+        <div>
+            <div *ngIf="loading" class="text-center">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-group">
+                    <form [formGroup]="progressForm" (ngSubmit)="saveActionable()" style="width: 100%;"  >
+                        <div class="input-group mb-8" id="TakeAction" [class.hidden]="!shouldDisableSelect()">
+                            <div class="container-fluid">
+                                <div class="row">
+                        
+                                    <span class="pt-5 mob-perc">%</span>
+
+                                    <div class="form-group pro-left">
+
+                                        <input type="number" id="txtProgress" [ngClass]="{ 'disabled-field': disable }" formControlName="progress" class="form-control" aria-label="Progress" />
+                                        <br>
+                                        <label>Progress <span class="pt-5">%</span></label>
+
+                                    </div>
+                                    
+                                    <span class="pt-2 mr-3"></span>
+                        
+                                    <div class="form-group remark-width">
+                                        <input type="text" maxlength="250" formControlName="remark" class="form-control" aria-label="Remarks"/>
+                                        <br>
+                                        <label>Remarks</label>
+                                    </div>
+                        
+                                    <span class="pt-4 mr-3"></span>
+                        
+                                    <div class="form-group select-width">
+                                        <label><small>Status</small></label>
+                                        <select class="form-control status" formControlName="status" (change)="onStatusChange($event)"> 
+                                            <option *ngFor="let s of status" [value]="s.TYPE_DESC">{{ s.TYPE_DESC }}</option>
+                                        </select>
+                                    </div>      
+
+                                    <span class="pt-4"></span>
+
+                                    <div class="attachment form-group">
+                                        <div class="source-preview-wrapper">
+                                            <div class="preview">
+                                                <div class="preview-elements">
+                                                    <div class="custom-file">
+                                                        <input type="file" class="custom-file-input" formControlName="file" (change)="onFileSelected($event)" id="TaskProgressFile">
+                                                        <label class="custom-file-label mr-3" for="customFile" id="TaskAttachmentDetails">Attachment if any:</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                        
+                                    <span class="pt-4 mr-3"></span>
+                        
+                                    <div class="form-group save-btn">
+                                        <button type="submit" class="btn btn-light fuse-ripple-ready">
+                                            <span class="fa fa-save"></span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>                                                 
+                        </div>
+                    </form>
+                </div>
+                   
+
+                <!-- <app-progress-details></app-progress-details> -->
+                 <app-progress-tab></app-progress-tab>
+
+                <!-- <div class="input-group mb-16">
+
+                    <div style="width:100% !important" *ngIf="!loading">                   
+                        <table id="tblHistory" class="table" style="width:100%;">
+                            <thead>
+                                <tr>
+                                    <th><b>History Date</b></th>
+                                    <th><b>Progress %</b></th>
+                                    <th><b>Status</b></th>
+                                    <th><b>Comment</b></th>
+                                    <th><b>File Name</b></th>
+                                </tr>
+                            </thead>
+                            <tbody >
+                                <br>
+                                <tr *ngFor="let details of currentStatus">
+                                    <td>{{details?.CREATION_DATE}}</td>
+                                    <td>{{details?.PROGRESS_PERC}}</td>
+                                    <td>{{details?.STATUS}}</td>
+                                    <td>{{details?.COMMENT}}</td>
+                                    <td>
+                                        <a [href]="fileUrl(details.FILE_PATH)" target="_blank" *ngIf="details.FILE_PATH">
+                                            <i class="fa fa-download" style="font-size: 14px" aria-hidden="true"></i>
+                                            <td>{{details?.FILE_NAME}}</td>  
+                                        </a>  
+                                    </td>                                                                                        
+                                </tr>
+                            </tbody>                        
+                        </table>     
+                        <div *ngIf="currentStatus.length === 0 || ''" style="text-align: center; padding: 20px;">
+                            No data available in table
+                        </div>                                  
+                    </div>
+                </div> -->
+            </div>
+        </div>        
+    </div>
+</div>

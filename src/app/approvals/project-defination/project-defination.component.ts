@@ -486,6 +486,11 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
     this.apiService.postProjectDefination(addProjectDefination, this.recursiveLogginUser).subscribe({
       next: (addData: any) => {
         console.log('Data added successfully', addData)
+
+        if(addData.status === 'Error'){
+          this.tostar.error('This project is already exist for same property and building');
+          return;
+        }
         this.tostar.success('Success', 'Template added successfuly')
         this.router.navigate(['task/approval-screen'], { queryParams: { source: 'project-defination' } });
 
@@ -563,15 +568,15 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
     };
 
     console.log(addProjectDefination);
-    this.apiService.putProjectDefination(addProjectDefination, headerMkey, this.recursiveLogginUser).subscribe({
-      next: (addData: any) => {
-        console.log('Data added successfully', addData)
-        this.tostar.success('Success', 'Template added successfuly')
-        this.router.navigate(['task/approval-screen'], { queryParams: { source: 'project-defination' } });
-      }, error: (error: ErrorHandler) => {
-        console.log('Unable to get data', error)
-      }
-    });
+    // this.apiService.putProjectDefination(addProjectDefination, headerMkey, this.recursiveLogginUser).subscribe({
+    //   next: (addData: any) => {
+    //     console.log('Data added successfully', addData)
+    //     this.tostar.success('Success', 'Template added successfuly')
+    //     this.router.navigate(['task/approval-screen'], { queryParams: { source: 'project-defination' } });
+    //   }, error: (error: ErrorHandler) => {
+    //     console.log('Unable to get data', error)
+    //   }
+    // });
   }
 
 
@@ -1608,62 +1613,59 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
   //   return false;  // All checks passed
   // }
 
-  validateTaskDates(subTaskList: any[]): boolean {
-    console.log('subTaskList', subTaskList);
+  // validateTaskDates(subTaskList: any[]): boolean {
+  //   console.log('subTaskList', subTaskList);
 
-    // Sort task list by task number using a numeric comparison (split by dots).
-    subTaskList.sort((a, b) => {
-      const taskNoA = a.tasK_NO.split('.').map(Number);
-      const taskNoB = b.tasK_NO.split('.').map(Number);
+  //   // Sort task list by task number using a numeric comparison (split by dots).
+  //   subTaskList.sort((a, b) => {
+  //     const taskNoA = a.tasK_NO.split('.').map(Number);
+  //     const taskNoB = b.tasK_NO.split('.').map(Number);
 
-      for (let i = 0; i < Math.max(taskNoA.length, taskNoB.length); i++) {
-        if ((taskNoA[i] || 0) < (taskNoB[i] || 0)) return -1;
-        if ((taskNoA[i] || 0) > (taskNoB[i] || 0)) return 1;
-      }
-      return 0;
-    });
+  //     for (let i = 0; i < Math.max(taskNoA.length, taskNoB.length); i++) {
+  //       if ((taskNoA[i] || 0) < (taskNoB[i] || 0)) return -1;
+  //       if ((taskNoA[i] || 0) > (taskNoB[i] || 0)) return 1;
+  //     }
+  //     return 0;
+  //   });
 
-    // Iterate over each task
-    for (let i = 0; i < subTaskList.length; i++) {
-      const task = subTaskList[i];
-      const startDate = new Date(task.tentativE_START_DATE);
-      const endDate = new Date(task.tentativE_END_DATE);
+  //   // Iterate over each task
+  //   for (let i = 0; i < subTaskList.length; i++) {
+  //     const task = subTaskList[i];
+  //     const startDate = new Date(task.tentativE_START_DATE);
+  //     const endDate = new Date(task.tentativE_END_DATE);
 
-      const isParent = !task.tasK_NO.includes('.'); // Check if the task is a parent task.
+  //     const isParent = !task.tasK_NO.includes('.'); // Check if the task is a parent task.
 
-      if (isParent) {
-        // Check for child task with a later end date than the parent task's end date
-        const childTask = subTaskList.find(child =>
-          child.tasK_NO.startsWith(task.tasK_NO + '.') && new Date(child.tentativE_END_DATE) > endDate
-        );
+  //     if (isParent) {
+  //       // Check for child task with a later end date than the parent task's end date
+  //       const childTask = subTaskList.find(child =>
+  //         child.tasK_NO.startsWith(task.tasK_NO + '.') && new Date(child.tentativE_END_DATE) > endDate
+  //       );
 
-        if (childTask) {
-          this.tostar.error(`End date of parent task (${task.tasK_NO}) should be greater than child task (${childTask.tasK_NO})`);
-          return true;  // Exit on first error
-        }
-      }
+  //       if (childTask) {
+  //         this.tostar.error(`End date of parent task (${task.tasK_NO}) should be greater than child task (${childTask.tasK_NO})`);
+  //         return true;  // Exit on first error
+  //       }
+  //     }
 
-      // Additional validation for task date relationships (first task comparison)
-      if (i === 0) {
-        const position1EndDate = new Date(task.tentativE_END_DATE);
+  //     // Additional validation for task date relationships (first task comparison)
+  //     if (i === 0) {
+  //       const position1EndDate = new Date(task.tentativE_END_DATE);
 
-        for (let j = 1; j < subTaskList.length; j++) {
-          const otherTask = subTaskList[j];
-          const otherEndDate = new Date(otherTask.tentativE_END_DATE);
+  //       for (let j = 1; j < subTaskList.length; j++) {
+  //         const otherTask = subTaskList[j];
+  //         const otherEndDate = new Date(otherTask.tentativE_END_DATE);
 
-          if (otherEndDate > position1EndDate) {
-            this.tostar.error(`End date of task (${task.tasK_NO}) should be greater than ${otherTask.tasK_NO}`);
-            return true;  // Exit on first error
-          }
-        }
-      }
-    }
+  //         if (otherEndDate > position1EndDate) {
+  //           this.tostar.error(`End date of task (${task.tasK_NO}) should be greater than ${otherTask.tasK_NO}`);
+  //           return true;  // Exit on first error
+  //         }
+  //       }
+  //     }
+  //   }
 
-    return false;  // All checks passed
-  }
-
-
-
+  //   return false;  // All checks passed
+  // }
 
 
   onAddProjDef() {

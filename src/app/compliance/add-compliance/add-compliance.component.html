@@ -36,10 +36,10 @@
 
                   <ng-container *ngIf="initiate">
                     <button type="button" class="btn btn-light" (click)="onSubmit()" id="btnSaveTask">
-                        Initiate
+                      Initiate
                     </button>
                   </ng-container>
-            
+
                 </div>
               </div>
 
@@ -51,25 +51,22 @@
 
                     <div class="row">
 
-                    
+
                       <div class="col-xs-12 col-xl-6 col-md-4">
                         <div class="form-group">
 
                           <ng-container *ngIf="taskData?.MKEY">
                             <label for="project">Property<small>*</small></label>
 
-                            <select 
-                            class="h6 custom-select cate" 
-                            [ngStyle]="isFieldDisabled && initiate !== null ? { 'background-color': 'rgb(238 236 195)', 'color': '#11111', 'cursor': 'allowed' } : {}" 
-                            formControlName="property" 
-                            #projectSelect
-                            (change)="onProjectSelect(projectSelect)">
-                            <option value="" selected>Select</option>
-                            <option *ngFor="let p of project" [ngValue]="p"
-                            [selected]="p.TYPE_DESC === taskData.PROPERTY_NAME"
-                            >{{ p.TYPE_DESC }}</option>
-                          </select>
-                          
+                            <select class="h6 custom-select cate"
+                              [class.disabled]="!taskData || initiate === 'initiate_mode'"
+                              [attr.disabled]="!taskData || initiate === 'initiate_mode' ? true : null"
+                              formControlName="property" #projectSelect (change)="onProjectSelect(projectSelect)">
+                              <option value="0" selected>Select</option>
+                              <option *ngFor="let p of project" [ngValue]="p"
+                                [selected]="p.TYPE_DESC === taskData.PROPERTY_NAME">{{ p.TYPE_DESC }}</option>
+                            </select>
+
                           </ng-container>
 
                           <ng-container *ngIf="!taskData?.MKEY">
@@ -77,7 +74,7 @@
 
                             <select class="h6 custom-select cate" formControlName="property" #projectSelect
                               (change)="onProjectSelect(projectSelect)">
-                              <option value="" selected>Select</option>
+                              <option value="0" selected>Select</option>
                               <option *ngFor="let p of project" [ngValue]="p">{{ p.TYPE_DESC }}</option>
                             </select>
                           </ng-container>
@@ -89,37 +86,37 @@
                       <div class="col-xs-12 col-xl-6 col-md-4">
 
                         <ng-container *ngIf="taskData?.MKEY">
-                        <div class="form-group">
-                          <label for="subProject">Building<small>*</small></label>
-                          <select class="h6 custom-select cate"                           
-                            formControlName="building"  (change)="raisedAtListCheck()"                             
-                            [ngStyle]="isFieldDisabled && initiate !== null ? { 'background-color': 'rgb(238 236 195)', 'color': '#11111', 'cursor': 'allowed' } : {}">
-                            <option value="" selected>Select</option>
-                            <option *ngFor="let s of sub_proj" [ngValue]="s"
-                            [selected]="s.TYPE_DESC === taskData.BUILDING_NAME"
-                            >{{ s.TYPE_DESC }}</option>
-                          </select>
-                        </div>
+                          <div class="form-group">
+                            <label for="subProject">Building<small>*</small></label>
+                            <select class="h6 custom-select cate" formControlName="building"
+                              (change)="raisedAtListCheck()"
+                              [class.disabled]="!taskData || initiate === 'initiate_mode'"
+                              [attr.disabled]="!taskData || initiate === 'initiate_mode' ? true : null">
+                              <option value="0" selected>Select</option>
+                              <option *ngFor="let s of sub_proj" [ngValue]="s"
+                                [selected]="s.TYPE_DESC === taskData.BUILDING_NAME">{{ s.TYPE_DESC }}</option>
+                            </select>
+                          </div>
                         </ng-container>
 
                         <ng-container *ngIf="!taskData?.MKEY">
                           <div class="form-group">
                             <label for="subProject">Building</label>
-                            <select class="h6 custom-select cate" 
-                            formControlName="building" (change)="raisedAtListCheck()" >
-                              <option value="" selected>Select</option>
-                              <option *ngFor="let s of sub_proj" [ngValue]="s" >{{ s.TYPE_DESC }}</option>
+                            <select class="h6 custom-select cate" formControlName="building"
+                              (change)="raisedAtListCheck()">
+                              <option value="0" selected>Select</option>
+                              <option *ngFor="let s of sub_proj" [ngValue]="s">{{ s.TYPE_DESC }}</option>
 
                             </select>
                           </div>
-                          </ng-container>
+                        </ng-container>
                       </div>
 
-                      
+
                     </div>
 
                     <br>
-                   
+
 
 
                     <div class="row description">
@@ -129,9 +126,10 @@
 
                           <ng-container *ngIf="taskData?.MKEY">
                             <label for="taskName">Short Description<small>*</small></label>
-                            <input type="text" maxlength="150" [ngStyle]="isFieldDisabled && initiate !== null ? { 'background-color': 'rgb(238 236 195)', 'color': '#11111', 'cursor': 'allowed' } : {}"
-                             [(ngModel)]="taskData.SHORT_DESCRIPTION"
-                              class="form-control" maxlength="150" formControlName="shortDescription">
+                            <input type="text" maxlength="150"
+                              [ngStyle]="isFieldDisabled && initiate !== null ? { 'background-color': 'rgb(238 236 195)', 'color': '#11111', 'cursor': 'allowed' } : {}"
+                              [(ngModel)]="taskData.SHORT_DESCRIPTION" class="form-control" maxlength="150"
+                              formControlName="shortDescription">
                           </ng-container>
 
                           <ng-container *ngIf="!taskData?.MKEY">
@@ -149,11 +147,10 @@
 
                           <ng-container *ngIf="taskData?.MKEY">
                             <label for="longDescription">Long Description<small>*</small></label>
-                            <textarea class="form-control" 
-                            [ngStyle]="isFieldDisabled && initiate !== null ? { 'background-color': 'rgb(238 236 195)', 'color': '#11111', 'cursor': 'allowed' } : {}"
-                            [(ngModel)]="taskData.LONG_DESCRIPTION"
-                              aria-describedby="task description" rows="3" maxlength="200"
-                              formControlName="longDescription"></textarea>
+                            <textarea class="form-control"
+                              [ngStyle]="isFieldDisabled && initiate !== null ? { 'background-color': 'rgb(238 236 195)', 'color': '#11111', 'cursor': 'allowed' } : {}"
+                              [(ngModel)]="taskData.LONG_DESCRIPTION" aria-describedby="task description" rows="3"
+                              maxlength="200" formControlName="longDescription"></textarea>
                           </ng-container>
 
                           <ng-container *ngIf="!taskData?.MKEY">
@@ -165,21 +162,21 @@
                           <div *ngIf="descriptionMaxLength()">Max 1000 Characters</div>
                         </div>
                       </div>
-                    </div>            
+                    </div>
 
 
                     <div class="row">
 
-                    
+
 
                       <div class="col-xs-12 col-xl-4 col-md-4">
                         <div class="form-group">
 
                           <ng-container *ngIf="taskData?.MKEY">
                             <label for="subProject">Responsible Department<small>*</small></label>
-                            <select 
-                              class="h6 custom-select cate" 
-                              [ngStyle]="isFieldDisabled && initiate !== null ? { 'background-color': 'rgb(238 236 195)', 'color': '#11111', 'cursor': 'allowed' } : {}"
+                            <select class="h6 custom-select cate"
+                              [class.disabled]="!taskData || initiate === 'initiate_mode'"
+                              [attr.disabled]="!taskData || initiate === 'initiate_mode' ? true : null"
                               formControlName="responsibleDepartment">
                               <option value="">--SELECT--</option>
                               <option *ngFor="let dept of departmentList" [ngValue]="dept.mkey">
@@ -187,7 +184,7 @@
                               </option>
                             </select>
                           </ng-container>
-                          
+
 
                           <ng-container *ngIf="!taskData?.MKEY">
                             <label for="subProject">Responsible Department</label>
@@ -197,20 +194,36 @@
                               </option>
                             </select>
                           </ng-container>
-                    
+
                         </div>
                       </div>
 
                       <div class="col-xs-12 col-xl-4 col-md-4">
                         <div class="form-group">
-                          <label for="project">Job Role</label>
-                          <select class="h6 custom-select cate"
-                          [ngStyle]="isFieldDisabled && initiate !== null ? { 'background-color': 'rgb(238 236 195)', 'color': '#11111', 'cursor': 'allowed' } : {}"
-                          formControlName="jobRole">
-                            <option value="" selected>Select</option>
-                            <option *ngFor="let jobRole of jobRoleList" [ngValue]="jobRole.mkey">{{ jobRole.typE_DESC }}
-                            </option>
-                          </select>
+
+                          <ng-container *ngIf="taskData?.MKEY">
+                            <label for="project">Job Role</label>
+                            <select class="h6 custom-select cate"
+                              [class.disabled]="!taskData || initiate === 'initiate_mode'"
+                              [attr.disabled]="!taskData || initiate === 'initiate_mode' ? true : null"
+                              formControlName="jobRole">
+                              <option value="" selected>Select</option>
+                              <option *ngFor="let jobRole of jobRoleList" [ngValue]="jobRole.mkey">{{ jobRole.typE_DESC
+                                }}
+                              </option>
+                            </select>
+                          </ng-container>
+
+                          <ng-container *ngIf="!taskData?.MKEY">
+                            <label for="project">Job Role</label>
+                            <select class="h6 custom-select cate" formControlName="jobRole">
+                              <option value="" selected>Select</option>
+                              <option *ngFor="let jobRole of jobRoleList" [ngValue]="jobRole.mkey">{{ jobRole.typE_DESC
+                                }}
+                              </option>
+                            </select>
+                          </ng-container>
+
                         </div>
                       </div>
 
@@ -220,7 +233,7 @@
 
                           <ng-container *ngIf="taskData?.MKEY">
                             <input type="text" class="form-control" [(ngModel)]="taskData.emp_name"
-                            [ngStyle]="isFieldDisabled && initiate !== null ? { 'background-color': 'rgb(238 236 195)', 'color': '#11111', 'cursor': 'allowed' } : {}"
+                              [ngStyle]="isFieldDisabled && initiate !== null ? { 'background-color': 'rgb(238 236 195)', 'color': '#11111', 'cursor': 'allowed' } : {}"
                               formControlName="responsiblePerson" (input)="filterEmployees($event)" appAlphabeticOnly />
                           </ng-container>
 
@@ -238,33 +251,41 @@
                             </ul>
                           </div>
                         </div>
-                      </div>                  
+                      </div>
                     </div>
 
-
-
-
-                 
                     <br>
                     <div class="row">
-                      
 
                       <div class="col-xs-12 col-xl-3 col-md-4">
                         <div class="form-group">
-                          <label for="project">Raised At</label>
-                          <select class="h6 custom-select cate" 
-                          [ngStyle]="isFieldDisabled && initiate !== null ? { 'background-color': 'rgb(238 236 195)', 'color': '#11111', 'cursor': 'allowed' } : {}"
-                          formControlName="raisedAt">
-                            <option value="" selected>Select</option>
-                            <option *ngFor="let r of raisedAtList" [ngValue]="r.MKEY">{{ r.TYPE_DESC }}</option>
-                          </select>
+
+                          <ng-container *ngIf="taskData?.MKEY">
+                            <label for="project">Raised At</label>
+                            <select class="h6 custom-select cate"
+                              [class.disabled]="!taskData || initiate === 'initiate_mode'"
+                              [attr.disabled]="!taskData || initiate === 'initiate_mode' ? true : null"
+                              formControlName="raisedAt">
+                              <!-- <option value="" selected>Select</option> -->
+                              <option *ngFor="let r of raisedAtList" [ngValue]="r.SEQ_NO">{{ r.TYPE_DESC }}</option>
+                            </select>
+                          </ng-container>
+
+                          <ng-container *ngIf="!taskData?.MKEY">
+                            <label for="project">Raised At</label>
+                            <select class="h6 custom-select cate" formControlName="raisedAt">
+                              <!-- <option value="" selected>Select</option> -->
+                              <option *ngFor="let r of raisedAtList" [ngValue]="r.SEQ_NO">{{ r.TYPE_DESC }}</option>
+                            </select>
+                          </ng-container>
+
                         </div>
                       </div>
 
                       <div class="col-xs-12 col-xl-6 col-md-8">
                         <div class="form-group">
                           <label for="tags">Tags</label>
-                          <tag-input [addOnBlur]="true" [formControl]="complianceForm.get('tags')">
+                          <tag-input [addOnBlur]="true" [(ngModel)]="selectedTags" [formControl]="complianceForm.get('tags')">
                             <tag-input-dropdown [autocompleteItems]="allTags" [showDropdownIfEmpty]="true"
                               [dynamicUpdate]="true"></tag-input-dropdown>
                           </tag-input>
@@ -274,73 +295,69 @@
                       <div class="col-xs-12 col-xl-3 col-md-4">
                         <div class="form-group">
                           <label for="category">Status </label>
-                          <select
-                            class="h6 custom-select cate"
-                            formControlName="status"
+                          <select class="h6 custom-select cate" formControlName="status"
                             [class.disabled]="!taskData || initiate === 'initiate_mode'"
-                            [attr.disabled]="!taskData || initiate === 'initiate_mode' ? true : null"
-                          >
+                            [attr.disabled]="!taskData || initiate === 'initiate_mode' ? true : null">
                             <option *ngFor="let c of complianceStatus" [ngValue]="c.TYPE_DESC">
                               {{ c.TYPE_DESC }}
                             </option>
                           </select>
                         </div>
                       </div>
-                      
 
-                    
+
+
                     </div>
 
-                 
 
-                     <br>
-                     <fieldset>
+
+                    <br>
+                    <fieldset>
                       <legend><b>To be completed by:</b></legend>
 
                       <div class="row" style="background-color: rgb(220, 227, 227); height: 10rem;">
-    
-                          <div class="col-xs-12 col-xl-4 col-md-4">
-                            <div class="form-group mt-2">
-                              <label for="taskName">No of Days</label>
-    
-                              <ng-container *ngIf="taskData?.MKEY">
-                                <input type="number" maxlength="150" [(ngModel)]="taskData.NO_DAYS"
-                                  formControlName="noOfDays" class="form-control" maxlength="150">
-                              </ng-container>
-    
-                              <ng-container *ngIf="!taskData?.MKEY">
-                                <input type="number" maxlength="150" formControlName="noOfDays" class="form-control"
-                                  maxlength="150">
-                              </ng-container>
-    
-                            </div>
+
+                        <div class="col-xs-12 col-xl-4 col-md-4">
+                          <div class="form-group mt-2">
+                            <label for="taskName">No of Days</label>
+
+                            <ng-container *ngIf="taskData?.MKEY">
+                              <input type="number" maxlength="150" [(ngModel)]="taskData.NO_DAYS"
+                                formControlName="noOfDays" class="form-control" maxlength="150">
+                            </ng-container>
+
+                            <ng-container *ngIf="!taskData?.MKEY">
+                              <input type="number" maxlength="150" formControlName="noOfDays" class="form-control"
+                                maxlength="150">
+                            </ng-container>
+
                           </div>
-  
-                          <div class="col-xs-12 col-xl-4 col-md-4">
-                            <div class="form-group">
-                              <label for="completionDate">Completion Date </label>
-                              <input type="date" class="form-control" formControlName="toBeCompletedBy"
-                                aria-describedby="depth" />
-                            </div>
+                        </div>
+
+                        <div class="col-xs-12 col-xl-4 col-md-4">
+                          <div class="form-group">
+                            <label for="completionDate">Completion Date </label>
+                            <input type="date" class="form-control" formControlName="toBeCompletedBy"
+                              aria-describedby="depth" />
                           </div>
-  
-  
-                          <div class="col-xs-12 col-xl-4 col-md-4">
-                            <div class="form-group">
-                              <label for="project">Task Approval At</label>
-                              <select class="h6 custom-select cate" 
-                                 [ngStyle]="{'background-color': 'rgb(220, 227, 227)'}"
-                                 formControlName="raisedBefore">
-                                <option value="" selected>Select</option>
-                                <option *ngFor="let r of raisedBefore" [ngValue]="r.mkey">{{ r.TYPE_DESC }}</option>
-                              </select>
-                            </div>
+                        </div>
+
+
+                        <div class="col-xs-12 col-xl-4 col-md-4">
+                          <div class="form-group">
+                            <label for="project">Task Approval At</label>
+                            <select class="h6 custom-select cate" [ngStyle]="{'background-color': 'rgb(220, 227, 227)'}"
+                              formControlName="raisedBefore">
+                              <option value="" selected>Select</option>
+                              <option *ngFor="let r of raisedBefore" [ngValue]="r.SEQ_NO">{{ r.TYPE_DESC }}</option>
+                            </select>
                           </div>
-  
+                        </div>
+
                         <!-- </div> -->
                       </div>
-                     </fieldset>
-                    
+                    </fieldset>
+
 
                   </form>
                 </div>
@@ -352,4 +369,3 @@
     </div>
   </main>
 </body>
-

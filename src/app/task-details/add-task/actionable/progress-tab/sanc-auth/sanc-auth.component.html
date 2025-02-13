@@ -1,0 +1,47 @@
+<div *ngIf="loading" class="text-center">
+  <div class="spinner-border text-primary" role="status">
+      <span class="sr-only">Loading...</span>
+  </div>
+</div> 
+<div *ngIf="!loading" class="sample-wrapper" style="margin-bottom: 4rem;">
+  <form [formGroup]="sancAuthForm">
+    <table class="table" style="width: 90rem;">
+      <thead>
+        <tr>
+          <th>Sr No.</th>
+          <th>Level</th>
+          <th>Sanctioning Department</th>
+          <th>Sanctioning Authority</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody formArrayName="rows_new">
+        <ng-container *ngIf="rowsNew && rowsNew.controls.length > 0; else noData">
+          <tr *ngFor="let row of rowsNew.controls; let i = index" [formGroupName]="i">
+            <td>{{ row.get('srNo')?.value }}</td>
+            <td>{{ row.get('level')?.value }}</td>
+            <td>{{ row.get('sanctioningDept')?.value }}</td>
+            <td>{{ row.get('sanctioningAuth')?.value }}</td>
+            <td>
+              <select id="select" class="form-control" formControlName="status" (change)="onStatusChange(i)">
+                <option value="Select">--Select--</option>
+                <option value="In-Progress">In Progress</option>
+                <option value="Completed">Completed</option>
+              </select>
+            </td>
+          </tr>
+        </ng-container>
+      
+        <!-- No Data Message -->
+        <ng-template #noData>
+          <tr>
+            <td colspan="5" style="text-align: center; font-weight: bold; color: gray;">
+              No data available
+            </td>
+          </tr>
+        </ng-template>
+      </tbody>
+      
+    </table>
+  </form>
+</div>

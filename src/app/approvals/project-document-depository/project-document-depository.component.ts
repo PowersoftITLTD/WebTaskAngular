@@ -240,7 +240,7 @@ export class ProjectDocumentDepositoryComponent implements OnInit {
 
     console.log('updateDocDepository', addDocDepository)
 
-    this.apiService.putProjectDocument(this.recursiveLogginUser, formData).subscribe(
+    this.apiService.postProjectDocument(this.recursiveLogginUser, formData).subscribe(
       (response) => {
         console.log('API response:', response);
         this.tostar.success('success', `Your request added successfully`);

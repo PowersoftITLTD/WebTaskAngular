@@ -1,0 +1,48 @@
+<div class="mb-3">
+  <div class="row justify-content-between">
+    <div class="col-12 col-md-6">
+      <div class="form-group">
+        <label for="category" class="doc_label">Document</label>
+        <div class="sample-wrapper">
+          <div class="pl-4 combo-section">
+            <!-- Search Input -->
+            <input type="text" class="search-input" [(ngModel)]="searchQuery"
+              (ngModelChange)="updateFilteredChecklist()" placeholder="Search documents " />
+
+            <!-- Dropdown List -->
+            <div *ngIf="loading" class="text-center">
+              <div class="spinner-border text-primary" role="status">
+                <span class="sr-only">Loading...</span>
+              </div>
+            </div>
+            <div *ngIf="!loading && checkList.length > 0; else noData" class="dropdown bg-light p-3 rounded shadow">
+
+              <ul class="dropdown-list">
+                <ng-container *ngFor="let docItem of filteredChecklist">
+                  <div class="category-header justify-content-center" style="color: rgb(216, 87, 87);">
+                    <b>{{ docItem.DOCUMENT_NAME }}</b>
+                  </div>
+                  <li (click)="toggleSelection(docItem)" [class.selected]="isSelected(docItem)"
+                    style="display: flex; justify-content: space-between;">
+                    {{ docItem.TYPE_DESC || 'No Description Available' }}
+                    <input type="checkbox" class="checkbox" [checked]="isSelected(docItem)"
+                      (click)="onCheckboxChange($event, docItem)" />
+                  </li>
+                </ng-container>
+              </ul>
+
+            </div>
+
+            <!-- No Data Message -->
+            <ng-template #noData>
+              <div class="no-data-message text-center text-muted">
+                No data available.
+              </div>
+            </ng-template>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

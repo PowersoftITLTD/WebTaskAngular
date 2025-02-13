@@ -28,14 +28,14 @@ export class DocumentTempelateComponent implements OnInit {
 
 
   selectedMonth: string | any;
-  USER_CRED:any;
-  baseURL:string | any
+  USER_CRED: any;
+  baseURL: string | any
 
   get_Months_from_multiselect: any;
 
   //Form 
   recursiveTaskForm: FormGroup | any;
-  selectedTermChange:any;
+  selectedTermChange: any;
 
   //tags
   tags: any[] = [];
@@ -48,7 +48,7 @@ export class DocumentTempelateComponent implements OnInit {
   sub_proj: any = [];
 
   docTypeList: any[] = [];
-  docCatList:any[] = [];
+  docCatList: any[] = [];
 
   filteredEmployees: any[] = [];
 
@@ -80,7 +80,7 @@ export class DocumentTempelateComponent implements OnInit {
 
   selectedMonthDay: any
 
-  createdOrUpdatedUserName:any
+  createdOrUpdatedUserName: any
 
 
   selectedRadio: string = 'never';
@@ -101,10 +101,10 @@ export class DocumentTempelateComponent implements OnInit {
   constructor(private formBuilder: FormBuilder,
     private tostar: ToastrService,
     private credentialService: CredentialService,
-    private apiService:ApiService,
+    private apiService: ApiService,
     private router: Router,
 
-  ) { 
+  ) {
 
 
     this.dt = new Date() || this.taskData.enD_DATE;
@@ -115,7 +115,7 @@ export class DocumentTempelateComponent implements OnInit {
     if (navigation?.extras.state) {
       const RecursiveTaskData: any = navigation.extras.state.taskData;
       this.taskData = RecursiveTaskData;
-      console.log('RecursiveTaskData',RecursiveTaskData)
+      console.log('RecursiveTaskData', RecursiveTaskData)
 
       // if(RecursiveTaskData){
       //   this._getSelectedTaskDetails();
@@ -134,7 +134,7 @@ export class DocumentTempelateComponent implements OnInit {
       if (RecursiveTaskData) {
         try {
           this.taskData = JSON.parse(RecursiveTaskData);
-          console.log('Check task data',this.taskData)
+          console.log('Check task data', this.taskData)
           if (!isNewTemp) {
             this.updatedDetails = this.taskData.mkey ? true : false;
           }
@@ -161,30 +161,30 @@ export class DocumentTempelateComponent implements OnInit {
       validityApplied: ['N', Validators.required],
       documentDateApplicable: ['N', Validators.required],
       attachmentApplicable: ['N', Validators.required],
-      category:['',Validators.required],
-      documentName:['', Validators.required]
+      category: ['', Validators.required],
+      documentName: ['', Validators.required]
     })
   }
 
 
-  onLogin() {   
+  onLogin() {
 
     this.credentialService.validateUser(this.loginName, this.loginPassword);
 
     const data = this.credentialService.getUser();
 
-    this.createdOrUpdatedUserName = data[0]?.FIRST_NAME,    
+    this.createdOrUpdatedUserName = data[0]?.FIRST_NAME,
 
-    console.log('onLogin data')
+      console.log('onLogin data')
 
-    const USER_CRED = {    
-      EMAIL_ID_OFFICIAL: data[0]?.EMAIL_ID_OFFICIAL, 
-      PASSWORD:atob(data[0]?.LOGIN_PASSWORD)
-    }; 
+    const USER_CRED = {
+      EMAIL_ID_OFFICIAL: data[0]?.EMAIL_ID_OFFICIAL,
+      PASSWORD: atob(data[0]?.LOGIN_PASSWORD)
+    };
 
     this.apiService.login(USER_CRED.EMAIL_ID_OFFICIAL, USER_CRED.PASSWORD).subscribe({
       next: (response) => {
-        if(response.jwtToken){
+        if (response.jwtToken) {
           this.fetchData();
           // this.fetchTaskDetails();
         }
@@ -196,7 +196,7 @@ export class DocumentTempelateComponent implements OnInit {
   }
 
 
-  private fetchData(){
+  private fetchData() {
     this.recursiveLogginUser = this.apiService.getRecursiveUser();
 
     this.apiService.getDocCategory(this.recursiveLogginUser).subscribe({
@@ -229,20 +229,35 @@ export class DocumentTempelateComponent implements OnInit {
   addDocumentTemplate() {
 
     const data = this.credentialService.getUser();
-    this.recursiveLogginUser = this.apiService.getRecursiveUser();
-    
+    this.recursiveLogginUser = this.apiService.getRecursiveUser();   
 
+    const doc_num_feild_name = this.docTempForm.get('documentNumberFieldName')?.value;
+    const doc_date_feild_name = this.docTempForm.get('documentDateFieldName')?.value;
 
-    const today = new Date();
+    const doc_not_app_flag = this.docTempForm.get('documentNotApplied')?.value;
+    const doc_date_app_flag = this.docTempForm.get('documentDateApplicable')?.value;
 
-    const USER_CRED = {
-      MKEY: data[0]?.MKEY,
-      EMAIL_ID_OFFICIAL: data[0]?.EMAIL_ID_OFFICIAL,
-      PASSWORD: atob(data[0]?.LOGIN_PASSWORD),
-      COMPANY_ID: data[0]?.COMPANY_ID
-    };
+    if (
+      ((doc_num_feild_name === '' || doc_num_feild_name === undefined || doc_num_feild_name === null) && doc_not_app_flag === 'Y') &&
+      ((doc_date_feild_name === '' || doc_date_feild_name === undefined || doc_date_feild_name === null) && doc_date_app_flag === 'Y')
+    ) {
+      this.tostar.error(`Please set Document No. and Document Date Applicable to 'Yes'`);
+      return;
+    } else if ((doc_num_feild_name === '' || doc_num_feild_name === undefined || doc_num_feild_name === null) && doc_not_app_flag === 'Y') {
+      this.tostar.error(`Please set Document No. Applicable to 'Yes'`);
+      return;
+    } else if ((doc_date_feild_name === '' || doc_date_feild_name === undefined || doc_date_feild_name === null) && doc_date_app_flag === 'Y') {
+      this.tostar.error(`Please set Document Date Applicable to 'No' if feild is not required`);
+      return;
+    } else if (doc_not_app_flag === 'N' && (doc_num_feild_name !== '' && doc_num_feild_name !== undefined && doc_num_feild_name !== null)) {
+      this.tostar.error(`Document No. should be empty when Document No. Applicable is 'No'`);
+      return;
+    } else if (doc_date_app_flag === 'N' && (doc_date_feild_name !== '' && doc_date_feild_name !== undefined && doc_date_feild_name !== null)) {
+      this.tostar.error(`Document Date should be empty when Document Date Applicable is 'No'`);
+      return;
+    }
 
-    const addTmpDoc:any = {
+    const addTmpDoc: any = {
       doC_ABBR: this.docTempForm.get('documentAbbrivation')?.value,
       doC_NUM_FIELD_NAME: this.docTempForm.get('documentNumberFieldName')?.value,
       doC_NUM_DATE_NAME: this.docTempForm.get('documentDateFieldName')?.value,
@@ -257,65 +272,66 @@ export class DocumentTempelateComponent implements OnInit {
       attributE3: "",
       attributE4: "",
       createD_BY: data[0]?.MKEY,
-      // creatioN_DATE: this.formatDateForInput(today),
       lasT_UPDATED_BY: data[0]?.MKEY,
-      companY_ID:data[0]?.COMPANY_ID,
-      // lasT_UPDATE_DATE: this.formatDateForInput(today),
+      companY_ID: data[0]?.COMPANY_ID,
       deletE_FLAG: "N"
     }
 
 
     console.log('addTmpDoc', addTmpDoc)
 
-    // this.apiService.postDocumentTempelate(addTmpDoc, this.recursiveLogginUser).subscribe({
-    //   next:(addTemplateDate:any)=>{
-    //     this.router.navigate(['task/approval-screen'], {queryParams:{ source: 'document-tempelate' }});
+    this.apiService.postDocumentTempelate(addTmpDoc, this.recursiveLogginUser).subscribe({
+      next: (addTemplateDate: any) => {
+        this.router.navigate(['task/approval-screen'], { queryParams: { source: 'document-tempelate' } });
+        this.tostar.success('Successfully!!', 'document added successfully');
 
-    //     console.log('Data added successfully', addTemplateDate)
+        console.log('Data added successfully', addTemplateDate)
 
-    //   }, error:(error)=>{
-    //     if(error){
-    //       console.error('Error updating task', error)
-    //     }
-    //   }
-    // })
-    
+      }, error: (error) => {
+        if (error) {
+          console.error('Error updating task', error)
+        }
+      }
+    })
+
   }
 
 
 
-  updateDocTemplate(){
+  updateDocTemplate() {
 
     const data = this.credentialService.getUser();
     const token = this.apiService.getRecursiveUser();
-    const doc_temp_key = this.taskData.mkey
+    const doc_temp_key = this.taskData.mkey;
 
-    const doc_num_feild_name = this.docTempForm.get('documentNumberFieldName')?.value
-    const doc_date_feild_name = this.docTempForm.get('documentDateFieldName')?.value
+    const doc_num_feild_name = this.docTempForm.get('documentNumberFieldName')?.value;
+    const doc_date_feild_name = this.docTempForm.get('documentDateFieldName')?.value;
 
-    const doc_not_app = this.docTempForm.get('documentNotApplied')?.value
-    const doc_date_app =  this.docTempForm.get('documentDateApplicable')?.value
+    const doc_not_app = this.docTempForm.get('documentNotApplied')?.value;
+    const doc_date_app = this.docTempForm.get('documentDateApplicable')?.value; 
 
-    console.log('doc_num_feild_name', doc_num_feild_name)
-    console.log('doc_date_feild_name', doc_date_feild_name)
-
-    console.log('doc_not_app', doc_not_app)
-    console.log('doc_date_app', doc_date_app)
-
-
-    if ((doc_num_feild_name === '' || doc_num_feild_name === undefined || doc_num_feild_name === null) && doc_not_app !== 'N') {
+    if (
+      ((doc_num_feild_name === '' || doc_num_feild_name === undefined || doc_num_feild_name === null) && doc_not_app === 'Y') &&
+      ((doc_date_feild_name === '' || doc_date_feild_name === undefined || doc_date_feild_name === null) && doc_date_app === 'Y')
+    ) {
+      this.tostar.error(`Please set Document No. and Document Date Applicable to 'Yes'`);
+      return;
+    } else if ((doc_num_feild_name === '' || doc_num_feild_name === undefined || doc_num_feild_name === null) && doc_not_app === 'Y') {
       this.tostar.error(`Please set Document No. Applicable to 'Yes'`);
+      return;
+    } else if ((doc_date_feild_name === '' || doc_date_feild_name === undefined || doc_date_feild_name === null) && doc_date_app === 'Y') {
+      this.tostar.error(`Please set Document Date Applicable to 'Yes'`);
+      return;
+    } else if (doc_not_app === 'N' && (doc_num_feild_name !== '' && doc_num_feild_name !== undefined && doc_num_feild_name !== null)) {
+      this.tostar.error(`Document No. should be empty when Document No. Applicable is 'No'`);
+      return;
+    } else if (doc_date_app === 'N' && (doc_date_feild_name !== '' && doc_date_feild_name !== undefined && doc_date_feild_name !== null)) {
+      this.tostar.error(`Document Date should be empty when Document Date Applicable is 'No'`);
+      return;
     }
-    
-    
-    
-    console.log(
-      "Condition Check:",
-      doc_num_feild_name === '' || doc_num_feild_name === undefined || doc_num_feild_name === null,
-      "AND",
-      doc_not_app === 'Y'
-    );
-    
+
+
+
     const updateDocTemp = {
       mkey: this.taskData.mkey,
       doC_CATEGORY: Number(this.docTempForm.get('category')?.value),
@@ -334,20 +350,18 @@ export class DocumentTempelateComponent implements OnInit {
       attributE5: "string",
       createD_BY: data[0]?.MKEY,
       lasT_UPDATED_BY: data[0]?.MKEY,
-      companY_ID:data[0]?.COMPANY_ID
-      // status": "string",
-      // message": "string"
+      companY_ID: data[0]?.COMPANY_ID
     }
 
-    console.log(updateDocTemp)
 
-    this.apiService.putDocumentTempelate(updateDocTemp, doc_temp_key,token).subscribe({
-      next:(update_doc)=>{
-        this.router.navigate(['task/approval-screen'], {queryParams:{ source: 'document-tempelate' }});
+    this.apiService.putDocumentTempelate(updateDocTemp, doc_temp_key, token).subscribe({
+      next: (update_doc) => {
+        this.router.navigate(['task/approval-screen'], { queryParams: { source: 'document-tempelate' } });
+        this.tostar.success('Successfully!!', 'Document updated successfully!');
 
-        console.log('Doc updated successfully',update_doc )
-      },error:(error)=>{
-        console.log('Error occured',error)
+        console.log('Doc updated successfully', update_doc)
+      }, error: (error) => {
+        console.log('Error occured', error)
       }
     })
   }
@@ -381,79 +395,52 @@ export class DocumentTempelateComponent implements OnInit {
     return `${year}-${month}-${day}`;
   }
 
- 
+
   onSubmit(): boolean {
     const requiredControls: string[] = [];
     const requiredFields: string[] = [];
-    // const formValues = this.docTempForm.value;
-  
+
     const addControlError = (message: string) => requiredControls.push(message);
-    // const addFieldError = (message: string) => requiredFields.push(message);
-  
+
     const convertToTitleCase = (input: string) => {
       const titleCase = input.replace(/([A-Z])/g, ' $1').replace(/^./, function (str) { return str.toUpperCase(); });
       return titleCase + ' is required';
     };
-  
+
     Object.keys(this.docTempForm.controls).forEach(controlName => {
       const control = this.docTempForm.get(controlName);
 
-      // console.log('CHECK documentDateApplicable', this.docTempForm.get('documentDateApplicable')?.value)
-  
       if (control?.errors?.required) {
-       if(
-        (controlName === 'documentNumberFieldName' && this.docTempForm.get('documentNotApplied')?.value === 'Y') ||
-        (controlName === 'documentDateFieldName' && this.docTempForm.get('documentDateApplicable')?.value === 'Y') ||
-        controlName === 'documentName' ||
-        controlName === 'category' ||
-        controlName === 'documentAbbrivation' ||
-        controlName === 'attachmentApplicable'||
-        controlName === 'validityApplied' ||
-        controlName === 'documentDateApplicable' ||
-        controlName === 'documentNotApplied'
-       ){
-        const formattedControlName = convertToTitleCase(controlName);
-        addControlError(formattedControlName);
-        } 
-   
+        if (
+          (controlName === 'documentNumberFieldName' && this.docTempForm.get('documentNotApplied')?.value === 'Y') ||
+          (controlName === 'documentDateFieldName' && this.docTempForm.get('documentDateApplicable')?.value === 'Y') ||
+          controlName === 'documentName' ||
+          controlName === 'category' ||
+          controlName === 'documentAbbrivation' ||
+          controlName === 'attachmentApplicable' ||
+          controlName === 'validityApplied' ||
+          controlName === 'documentDateApplicable' ||
+          controlName === 'documentNotApplied'
+        ) {
+          const formattedControlName = convertToTitleCase(controlName);
+          addControlError(formattedControlName);
+        }
+
       }
     });
 
-
-    const check_field_num_name = this.docTempForm.get('documentNumberFieldName')?.value
-    const check_field_date_name = this.docTempForm.get('documentDateFieldName')?.value
-
-    const doc_num_applicable = this.docTempForm.get('documentNotApplied')?.value
-    const doc_date_applicable = this.docTempForm.get('documentDateApplicable')?.value
-
-    console.log('doc_num_applicable', doc_num_applicable)
-    console.log('doc_date_applicable', doc_date_applicable)
-
-
-    if (doc_num_applicable === 'Y' && (check_field_num_name ==='' || check_field_num_name === undefined || check_field_num_name === null)) {
-      this.tostar.error(`Please set 'Document No. Applicable' to 'Yes' if field is required`);
-      return false;
-    }
-
-    if (doc_date_applicable === 'Y' && (check_field_date_name ==='' || check_field_date_name === undefined || check_field_date_name === null)) {
-      this.tostar.error(`Please set 'Document Date Applicable' to 'Yes' if field is required`);
-      return false;
-    }
-
-    console.log('check_field_name', check_field_num_name)
-    console.log('check_field_date_name', check_field_date_name)
     if (requiredControls.length > 0) {
       const m = `${requiredControls.join(' , ')}`;
       this.tostar.error(`${m}`);
-      return false;  
+      return false;
     }
-  
+
     if (requiredFields.length > 0) {
       const m = `${requiredFields.join(' , ')}`;
       this.tostar.error(`${m}`);
-      return false;  
+      return false;
     }
-  
+
     return true;
   }
 
@@ -466,7 +453,6 @@ export class DocumentTempelateComponent implements OnInit {
       };
 
       if (sendSuccessMessage) {
-        this.tostar.success('Successfully!!', sendSuccessMessage['message']);
         this.addDocumentTemplate();
       }
     }
@@ -482,7 +468,6 @@ export class DocumentTempelateComponent implements OnInit {
       }
 
       if (sendSuccessMessage) {
-        this.tostar.success('Successfully!!', sendSuccessMessage['message']);
         this.updateDocTemplate();
       }
     }

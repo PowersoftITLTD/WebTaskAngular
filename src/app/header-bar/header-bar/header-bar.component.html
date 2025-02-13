@@ -63,12 +63,64 @@
 
 <div class="menu-2" [class.active]="isSidePanelOpen">
     <ul>
-        <li type="button" (click)="navigateToDashboardProject()"><a><i class="icon s-4 icon-tile-four"></i> Dashboard</a></li>
-        <li type="button" (click)="navigateToTaskManagement()"><a><i class="icon s-4 icon-checkbox-marked"></i>Task Management</a></li>
-        <li type="button" (click)="navigateToRecTaskManagement()"><a><i class="icon s-4 icon-checkbox-marked"></i>Recursive Task</a></li>
-        <li type="button" (click)="navigateToUploadProject()"><a><i class="icon s-4 icon-checkbox-marked"></i> Project Uploader</a></li>
+        <li type="button" (click)="toggleSection('dashboard')">
+            <a><i class="icon s-4 icon-tile-four"></i> <b>Dashboard</b></a>
+        </li>
+        <li *ngIf="openSection === 'dashboard'" type="button" (click)="navigateToDashboardProject()">
+            <a>Dashboard</a>
+        </li>    
+    </ul>
+
+    <ul>
+        <li type="button" (click)="toggleSection('taskManagement')">
+            <a><i class="icon s-4 icon-checkbox-marked"></i> <b>Task Management</b></a>
+        </li>
+        <li *ngIf="openSection === 'taskManagement'" type="button" (click)="navigateToTaskManagement()">
+            <a>Task Management</a>
+        </li>
+        <li *ngIf="openSection === 'taskManagement'" type="button" (click)="navigateToRecTaskManagement()">
+            <a>Recursive Task</a>
+        </li>
+    </ul>
+
+    <ul>
+        <li type="button" (click)="toggleSection('templates')">
+            <a><i class="icon s-4 icon-checkbox-marked"></i><b>Templates</b></a>
+        </li>
+        <li *ngIf="openSection === 'templates'" type="button" (click)="navigateToCategoryMaster()">
+            <a>Category Master</a>
+        </li>
+        <li *ngIf="openSection === 'templates'" type="button" (click)="navigateToInstructionMaster()">
+            <a>Instruction Master</a>
+        </li>
+        <li *ngIf="openSection === 'templates'" type="button" (click)="navigateToDocumentTempelate()">
+            <a>Document Template</a>
+        </li>
+        <li *ngIf="openSection === 'templates'" type="button" (click)="navigateToApprovlTempelate()">
+            <a>Approval Template</a>
+        </li>
+    </ul>
+
+    <ul>
+        <li type="button" (click)="toggleSection('projects')">
+            <a><i class="icon s-4 icon-checkbox-marked"></i><b>Projects</b></a>
+        </li>
+        <li *ngIf="openSection === 'projects'" type="button" (click)="navigateToProjectDefination()">
+            <a>Project Definition</a>
+        </li>
+        <li *ngIf="openSection === 'projects'" type="button" (click)="navigateToProjectDocDepository()">
+            <a>Project Document Depository</a>
+        </li>
+        <li *ngIf="openSection === 'projects'" type="button" (click)="navigateToUploadProject()">
+            <a>Project Document Search</a>
+        </li>
+        <li *ngIf="openSection === 'projects'" type="button" (click)="navigateToCompliance()">
+            <a>Compliance</a>
+        </li>
     </ul>
 </div>
+
+
 
 
 

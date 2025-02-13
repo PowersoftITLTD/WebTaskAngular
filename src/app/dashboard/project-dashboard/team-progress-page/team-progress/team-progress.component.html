@@ -1,0 +1,509 @@
+<body
+  class="layout layout-vertical layout-left-navigation layout-below-toolbar layout-below-footer component-adjustment">
+  <main>
+    <div id="wrapper">
+
+      <div class="content-wrapper">
+
+        <div class="content custom-scrollbar">
+          <div id="e-commerce-products" class="page-layout carded full-width mt-5">
+            <div class="page-content-wrapper">
+              <div>
+
+                <div class="card side-bar-scroll">
+                  <br>
+                  <div class="col-lg-4 col-md-12">
+
+                  </div>
+
+                  <div class="widget-header px-5 row no-gutters align-items-center justify-content-between">
+                    <div class="top-section">
+                      <div class="search-member">
+                        <label>Search Member Name</label>
+                        <input type="text" class="form-control" placeholder="Search Member Name"
+                          [(ngModel)]="searchTerm">
+                      </div>
+                      <div class="task-select">
+                        <select id="widget6-option-select" class="h6 custom-select"
+                          (change)="onFilterTypeChange($event)">
+                          <option [value]="'directReportee'" [selected]="filterType === 'directReportee'">Direct
+                            Reportee</option>
+                          <option [value]="'all'" [selected]="filterType === 'all'">All</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+
+                  <table class="task-table">
+
+                    <thead>
+                      <tr>
+                        <th rowspan="2">Member Name</th>
+                        <th colspan="3">Department Task</th>
+                        <th colspan="3">Inter-Department Task</th>
+                      </tr>
+                      <tr>
+                        <th>Today</th>
+                        <th>Overdue</th>
+                        <th>Future</th>
+                        <th>Today</th>
+                        <th>Overdue</th>
+                        <th>Future</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <ng-container *ngFor="let member of rowData2 | memberSearch: searchTerm; let i = index">
+                        <tr>
+                          <td>
+                            &nbsp;
+                            <ng-container
+                              *ngIf="member.subordinates && member.subordinates.length > 0 && filterType === 'all'"
+                              (click)="toggleSubordinates(member)">
+                              <span style="cursor: pointer;">
+                                <mat-icon (click)="toggleSubordinates(member)">
+                                  <img
+                                    src="../../../../assets/Content/images/{{ member.showSubordinates ? 'collapse.png' : 'expand.png' }}">
+                                </mat-icon>
+                              </span>
+                            </ng-container>
+                            {{ member.MEMBER_NAME }}
+                          </td>
+                          <td id="status" (click)="onCellClicked($event, member, 'DEPTTODAY')">
+                            <div type="button">{{ member.DEPTTODAY }}</div>
+                          </td>
+                          <td id="status" (click)="onCellClicked($event, member, 'DEPTOVERDUE')">
+                            <div type="button">{{ member.DEPTOVERDUE }}</div>
+                          </td>
+                          <td id="status" (click)="onCellClicked($event, member, 'INTERDEPTTODAY')">
+                            <div type="button">{{ member.INTERDEPTTODAY }}</div>
+                          </td>
+                          <td id="status" (click)="onCellClicked($event, member, 'INTERDEPTOVERDUE')">
+                            <div type="button">{{ member.INTERDEPTOVERDUE }}</div>
+                          </td>
+                          <td id="status" (click)="onCellClicked($event, member, 'INTERDEPTFUTURE')">
+                            <div type="button">{{ member.INTERDEPTFUTURE }}</div>
+                          </td>
+                          <td id="status" (click)="onCellClicked($event, member, 'DEPTFUTURE')">
+                            <div type="button">{{ member.DEPTFUTURE }}</div>
+                          </td>
+                        </tr>
+                        <ng-container *ngIf="member.showSubordinates">
+                          <ng-container *ngFor="let subordinate of member.subordinates; let i = index">
+                            <tr>
+                              <td>
+                                <div style="margin-left: 7rem;">
+                                  {{ subordinate.MEMBER_NAME }} 1
+                                  <ng-container *ngIf="subordinate.subordinates && subordinate.subordinates.length > 0"
+                                    (click)="toggleSubordinates(subordinate)">
+                                    <span style="cursor: pointer;">
+                                      <mat-icon (click)="toggleSubordinates(subordinate)">
+                                        <img
+                                          src="../../../../assets/Content/images/{{ subordinate.showSubordinates ? 'collapse.png' : 'expand.png' }}">
+                                      </mat-icon>
+                                    </span>
+                                  </ng-container>
+                                </div>
+                              </td>
+                              <td id="status" (click)="onCellClicked($event, subordinate, 'DEPTTODAY')">
+                                <div type="button">{{ subordinate.DEPTTODAY }}</div>
+                              </td>
+                              <td id="status" (click)="onCellClicked($event, subordinate, 'DEPTOVERDUE')">
+                                <div type="button">{{ subordinate.DEPTOVERDUE }}</div>
+                              </td>
+                              <td id="status" (click)="onCellClicked($event, subordinate, 'DEPTFUTURE')">
+                                <div type="button">{{ subordinate.DEPTFUTURE }}</div>
+                              </td>
+                              <td id="status" (click)="onCellClicked($event, subordinate, 'INTERDEPTTODAY')">
+                                <div type="button">{{ subordinate.INTERDEPTTODAY }}</div>
+                              </td>
+                              <td id="status" (click)="onCellClicked($event, subordinate, 'INTERDEPTOVERDUE')">
+                                <div type="button">{{ subordinate.INTERDEPTOVERDUE }}</div>
+                              </td>
+                              <td id="status" (click)="onCellClicked($event, subordinate, 'DEPTINTERDEPTFUTURETODAY')">
+                                <div type="button">{{ subordinate.INTERDEPTFUTURE }}</div>
+                              </td>
+                            </tr>
+
+                            <ng-container *ngIf="subordinate.showSubordinates">
+                              <ng-container *ngFor="let subordinate1 of subordinate.subordinates">
+                                <tr>
+                                  <td>
+                                    <div style="margin-left: 14rem;">
+                                      {{ subordinate1.MEMBER_NAME }} 2
+                                      <ng-container
+                                        *ngIf="subordinate1.subordinates && subordinate1.subordinates.length > 0"
+                                        (click)="toggleSubordinates(subordinate1)">
+                                        <span style="cursor: pointer;">
+                                          <mat-icon (click)="toggleSubordinates(subordinate1)">
+                                            <img
+                                              src="../../../../assets/Content/images/{{ subordinate1.showSubordinates ? 'collapse.png' : 'expand.png' }}">
+                                          </mat-icon>
+                                        </span>
+                                      </ng-container>
+                                    </div>
+                                  </td>
+                                  <td id="status" (click)="onCellClicked($event, subordinate1, 'DEPTTODAY')">
+                                    <div type="button">{{ subordinate1.DEPTTODAY }}</div>
+                                  </td>
+                                  <td id="status" (click)="onCellClicked($event, subordinate1, 'DEPTOVERDUE')">
+                                    <div type="button">{{ subordinate1.DEPTOVERDUE }}</div>
+                                  </td>
+                                  <td id="status" (click)="onCellClicked($event, subordinate1, 'DEPTFUTURE')">
+                                    <div type="button">{{ subordinate1.DEPTFUTURE }}</div>
+                                  </td>
+                                  <td id="status" (click)="onCellClicked($event, subordinate1, 'INTERDEPTTODAY')">
+                                    <div type="button">{{ subordinate1.INTERDEPTTODAY }}</div>
+                                  </td>
+                                  <td id="status" (click)="onCellClicked($event, subordinate1, 'INTERDEPTOVERDUE')">
+                                    <div type="button">{{ subordinate1.INTERDEPTOVERDUE }}</div>
+                                  </td>
+                                  <td id="status" (click)="onCellClicked($event, subordinate1, 'INTERDEPTFUTURE')">
+                                    <div type="button">{{ subordinate1.INTERDEPTFUTURE }}</div>
+                                  </td>
+                                </tr>
+
+                                <ng-container *ngIf="subordinate1.showSubordinates">
+                                  <ng-container *ngFor="let subordinate2 of subordinate1.subordinates">
+                                    <tr>
+                                      <td>
+                                        <div style="margin-left: 21rem;">
+                                          {{ subordinate2.MEMBER_NAME }} 3
+                                          <ng-container
+                                            *ngIf="subordinate2.subordinates && subordinate2.subordinates.length > 0"
+                                            (click)="toggleSubordinates(subordinate2)">
+                                            <span style="cursor: pointer;">
+                                              <mat-icon (click)="toggleSubordinates(subordinate2)">
+                                                <img
+                                                  src="../../../../assets/Content/images/{{ subordinate2.showSubordinates ? 'collapse.png' : 'expand.png' }}">
+                                              </mat-icon>
+                                            </span>
+                                          </ng-container>
+                                        </div>
+                                      </td>
+                                      <td id="status" (click)="onCellClicked($event, subordinate2, 'DEPTTODAY')">
+                                        <div type="button">{{ subordinate2.DEPTTODAY }}</div>
+                                      </td>
+                                      <td id="status" (click)="onCellClicked($event, subordinate2, 'DEPTOVERDUE')">
+                                        <div type="button">{{ subordinate2.DEPTOVERDUE }}</div>
+                                      </td>
+                                      <td id="status" (click)="onCellClicked($event, subordinate2, 'DEPTFUTURE')">
+                                        <div type="button">{{ subordinate2.DEPTFUTURE }}</div>
+                                      </td>
+                                      <td id="status" (click)="onCellClicked($event, subordinate2, 'INTERDEPTTODAY')">
+                                        <div type="button">{{ subordinate2.INTERDEPTTODAY }}</div>
+                                      </td>
+                                      <td id="status" (click)="onCellClicked($event, subordinate2, 'INTERDEPTOVERDUE')">
+                                        <div type="button">{{ subordinate2.INTERDEPTOVERDUE }}</div>
+                                      </td>
+                                      <td id="status" (click)="onCellClicked($event, subordinate2, 'INTERDEPTFUTURE')">
+                                        <div type="button">{{ subordinate2.INTERDEPTFUTURE }}</div>
+                                      </td>
+                                    </tr>
+
+                                    <ng-container *ngIf="subordinate2.showSubordinates">
+                                      <ng-container *ngFor="let subordinate3 of subordinate2.subordinates">
+                                        <tr>
+                                          <td>
+                                            <div style="margin-left: 28rem;">
+                                              {{ subordinate3.MEMBER_NAME }} 4
+                                              <ng-container
+                                                *ngIf="subordinate3.subordinates && subordinate3.subordinates.length > 0"
+                                                (click)="toggleSubordinates(subordinate3)">
+                                                <span style="cursor: pointer;">
+                                                  <mat-icon (click)="toggleSubordinates(subordinate3)">
+                                                    <img
+                                                      src="../../../../assets/Content/images/{{ subordinate3.showSubordinates ? 'collapse.png' : 'expand.png' }}">
+                                                  </mat-icon>
+                                                </span>
+                                              </ng-container>
+                                            </div>
+                                          </td>
+                                          <td id="status" (click)="onCellClicked($event, subordinate3, 'DEPTTODAY')">
+                                            <div type="button">{{ subordinate3.DEPTTODAY }}</div>
+                                          </td>
+                                          <td id="status" (click)="onCellClicked($event, subordinate3, 'DEPTOVERDUE')">
+                                            <div type="button">{{ subordinate3.DEPTOVERDUE }}</div>
+                                          </td>
+                                          <td id="status" (click)="onCellClicked($event, subordinate3, 'DEPTFUTURE')">
+                                            <div type="button">{{ subordinate3.DEPTFUTURE }}</div>
+                                          </td>
+                                          <td id="status"
+                                            (click)="onCellClicked($event, subordinate3, 'INTERDEPTTODAY')">
+                                            <div type="button">{{ subordinate3.INTERDEPTTODAY }}</div>
+                                          </td>
+                                          <td id="status"
+                                            (click)="onCellClicked($event, subordinate3, 'INTERDEPTOVERDUE')">
+                                            <div type="button">{{ subordinate3.INTERDEPTOVERDUE }}</div>
+                                          </td>
+                                          <td id="status"
+                                            (click)="onCellClicked($event, subordinate3, 'INTERDEPTFUTURE')">
+                                            <div type="button">{{ subordinate3.INTERDEPTFUTURE }}</div>
+                                          </td>
+                                        </tr>
+                                        <ng-container *ngIf="subordinate3.showSubordinates">
+                                          <ng-container *ngFor="let subordinate4 of subordinate3.subordinates">
+                                            <tr>
+                                              <td>
+                                                <div style="margin-left: 35rem;">
+                                                  {{ subordinate4.MEMBER_NAME }} 5
+                                                  <ng-container
+                                                    *ngIf="subordinate4.subordinates && subordinate4.subordinates.length > 0"
+                                                    (click)="toggleSubordinates(subordinate4)">
+                                                    <span style="cursor: pointer;">
+                                                      <mat-icon (click)="toggleSubordinates(subordinate4)">
+                                                        <img
+                                                          src="../../../../assets/Content/images/{{ subordinate4.showSubordinates ? 'collapse.png' : 'expand.png' }}">
+                                                      </mat-icon>
+                                                    </span>
+                                                  </ng-container>
+                                                </div>
+                                              </td>
+                                              <td id="status"
+                                                (click)="onCellClicked($event, subordinate4, 'DEPTTODAY')">
+                                                <div type="button">{{ subordinate4.DEPTTODAY }}</div>
+                                              </td>
+                                              <td id="status"
+                                                (click)="onCellClicked($event, subordinate4, 'DEPTOVERDUE')">
+                                                <div type="button">{{ subordinate4.DEPTOVERDUE }}</div>
+                                              </td>
+                                              <td id="status"
+                                                (click)="onCellClicked($event, subordinate4, 'DEPTFUTURE')">
+                                                <div type="button">{{ subordinate4.DEPTFUTURE }}</div>
+                                              </td>
+                                              <td id="status"
+                                                (click)="onCellClicked($event, subordinate4, 'INTERDEPTTODAY')">
+                                                <div type="button">{{ subordinate4.INTERDEPTTODAY }}</div>
+                                              </td>
+                                              <td id="status"
+                                                (click)="onCellClicked($event, subordinate4, 'INTERDEPTOVERDUE')">
+                                                <div type="button">{{ subordinate4.INTERDEPTOVERDUE }}</div>
+                                              </td>
+                                              <td id="status"
+                                                (click)="onCellClicked($event, subordinate4, 'INTERDEPTFUTURE')">
+                                                <div type="button">{{ subordinate4.INTERDEPTFUTURE }}</div>
+                                              </td>
+                                            </tr>
+                                            <ng-container *ngIf="subordinate4.showSubordinates">
+                                              <ng-container *ngFor="let subordinate5 of subordinate4.subordinates">
+                                                <tr>
+                                                  <td>
+                                                    <div style="margin-left: 42rem;">
+
+                                                      {{ subordinate5.MEMBER_NAME }} 6
+                                                      <ng-container
+                                                        *ngIf="subordinate5.subordinates && subordinate5.subordinates.length > 0"
+                                                        (click)="toggleSubordinates(subordinate5)">
+                                                        <span style="cursor: pointer;">
+                                                          <mat-icon (click)="toggleSubordinates(subordinate5)">
+                                                            <img
+                                                              src="../../../../assets/Content/images/{{ subordinate5.showSubordinates ? 'collapse.png' : 'expand.png' }}">
+                                                          </mat-icon>
+                                                        </span>
+                                                      </ng-container>
+                                                    </div>
+                                                  </td>
+                                                  <td id="status"
+                                                    (click)="onCellClicked($event, subordinate5, 'DEPTTODAY')">
+                                                    <div type="button">{{ subordinate5.DEPTTODAY }}</div>
+                                                  </td>
+                                                  <td id="status"
+                                                    (click)="onCellClicked($event, subordinate5, 'DEPTOVERDUE')">
+                                                    <div type="button">{{ subordinate5.DEPTOVERDUE }}</div>
+                                                  </td>
+                                                  <td id="status"
+                                                    (click)="onCellClicked($event, subordinate5, 'DEPTFUTURE')">
+                                                    <div type="button">{{ subordinate5.DEPTFUTURE }}</div>
+                                                  </td>
+                                                  <td id="status"
+                                                    (click)="onCellClicked($event, subordinate5, 'INTERDEPTTODAY')">
+                                                    <div type="button">{{ subordinate5.INTERDEPTTODAY }}</div>
+                                                  </td>
+                                                  <td id="status"
+                                                    (click)="onCellClicked($event, subordinate5, 'INTERDEPTOVERDUE')">
+                                                    <div type="button">{{ subordinate5.INTERDEPTOVERDUE }}</div>
+                                                  </td>
+                                                  <td id="status"
+                                                    (click)="onCellClicked($event, subordinate5, 'INTERDEPTFUTURE')">
+                                                    <div type="button">{{ subordinate5.INTERDEPTFUTURE }}</div>
+                                                  </td>
+                                                </tr>
+                                                <ng-container *ngIf="subordinate5.showSubordinates">
+                                                  <ng-container *ngFor="let subordinate6 of subordinate5.subordinates">
+                                                    <tr>
+                                                      <td>
+                                                        <div style="margin-left: 49rem;">
+
+                                                          {{ subordinate6.MEMBER_NAME }} 7
+                                                          <ng-container
+                                                            *ngIf="subordinate6.subordinates && subordinate6.subordinates.length > 0"
+                                                            (click)="toggleSubordinates(subordinate6)">
+                                                            <span style="cursor: pointer;">
+                                                              <mat-icon (click)="toggleSubordinates(subordinate6)">
+                                                                <img
+                                                                  src="../../../../assets/Content/images/{{ subordinate6.showSubordinates ? 'collapse.png' : 'expand.png' }}">
+                                                              </mat-icon>
+                                                            </span>
+                                                          </ng-container>
+                                                        </div>
+                                                      </td>
+                                                      <td id="status"
+                                                        (click)="onCellClicked($event, subordinate6, 'DEPTTODAY')">
+                                                        <div type="button">{{ subordinate6.DEPTTODAY }}</div>
+                                                      </td>
+                                                      <td id="status"
+                                                        (click)="onCellClicked($event, subordinate6, 'DEPTOVERDUE')">
+                                                        <div type="button">{{ subordinate6.DEPTOVERDUE }}</div>
+                                                      </td>
+                                                      <td id="status"
+                                                        (click)="onCellClicked($event, subordinate6, 'DEPTFUTURE')">
+                                                        <div type="button">{{ subordinate6.DEPTFUTURE }}</div>
+                                                      </td>
+                                                      <td id="status"
+                                                        (click)="onCellClicked($event, subordinate6, 'INTERDEPTTODAY')">
+                                                        <div type="button">{{ subordinate6.INTERDEPTTODAY }}</div>
+                                                      </td>
+                                                      <td id="status"
+                                                        (click)="onCellClicked($event, subordinate6, 'INTERDEPTOVERDUE')">
+                                                        <div type="button">{{ subordinate6.INTERDEPTOVERDUE }}</div>
+                                                      </td>
+                                                      <td id="status"
+                                                        (click)="onCellClicked($event, subordinate6, 'INTERDEPTFUTURE')">
+                                                        <div type="button">{{ subordinate6.INTERDEPTFUTURE }}</div>
+                                                      </td>
+                                                    </tr>
+                                                    <ng-container *ngIf="subordinate6.showSubordinates">
+                                                      <ng-container
+                                                        *ngFor="let subordinate7 of subordinate6.subordinates">
+                                                        <tr>
+                                                          <td>
+                                                            <div style="margin-left: 49rem;">
+
+                                                              {{ subordinate7.MEMBER_NAME }} 8
+                                                              <ng-container
+                                                                *ngIf="subordinate7.subordinates && subordinate7.subordinates.length > 0"
+                                                                (click)="toggleSubordinates(subordinate7)">
+                                                                <span style="cursor: pointer;">
+                                                                  <mat-icon (click)="toggleSubordinates(subordinate7)">
+                                                                    <img
+                                                                      src="../../../../assets/Content/images/{{ subordinate7.showSubordinates ? 'collapse.png' : 'expand.png' }}">
+                                                                  </mat-icon>
+                                                                </span>
+                                                              </ng-container>
+                                                            </div>
+                                                          </td>
+                                                          <td id="status"
+                                                            (click)="onCellClicked($event, subordinate7, 'DEPTTODAY')">
+                                                            <div type="button">{{ subordinate7.DEPTTODAY }}</div>
+                                                          </td>
+                                                          <td id="status"
+                                                            (click)="onCellClicked($event, subordinate7, 'DEPTOVERDUE')">
+                                                            <div type="button">{{ subordinate7.DEPTOVERDUE }}</div>
+                                                          </td>
+                                                          <td id="status"
+                                                            (click)="onCellClicked($event, subordinate7, 'DEPTFUTURE')">
+                                                            <div type="button">{{ subordinate7.DEPTFUTURE }}</div>
+                                                          </td>
+                                                          <td id="status"
+                                                            (click)="onCellClicked($event, subordinate7, 'INTERDEPTTODAY')">
+                                                            <div type="button">{{ subordinate7.INTERDEPTTODAY }}</div>
+                                                          </td>
+                                                          <td id="status"
+                                                            (click)="onCellClicked($event, subordinate7, 'INTERDEPTOVERDUE')">
+                                                            <div type="button">{{ subordinate7.INTERDEPTOVERDUE }}</div>
+                                                          </td>
+                                                          <td id="status"
+                                                            (click)="onCellClicked($event, subordinate7, 'INTERDEPTFUTURE')">
+                                                            <div type="button">{{ subordinate7.INTERDEPTFUTURE }}</div>
+                                                          </td>
+                                                        </tr>
+                                                        <ng-container *ngIf="subordinate7.showSubordinates">
+                                                          <ng-container
+                                                            *ngFor="let subordinate8 of subordinate7.subordinates">
+                                                            <tr>
+                                                              <td>
+                                                                <div style="margin-left: 49rem;">
+
+                                                                  {{ subordinate8.MEMBER_NAME }} 9
+                                                                  <ng-container
+                                                                    *ngIf="subordinate8.subordinates && subordinate8.subordinates.length > 0"
+                                                                    (click)="toggleSubordinates(subordinate8)">
+                                                                    <span style="cursor: pointer;">
+                                                                      <mat-icon
+                                                                        (click)="toggleSubordinates(subordinate8)">
+                                                                        <img
+                                                                          src="../../../../assets/Content/images/{{ subordinate8.showSubordinates ? 'collapse.png' : 'expand.png' }}">
+                                                                      </mat-icon>
+                                                                    </span>
+                                                                  </ng-container>
+                                                                </div>
+                                                              </td>
+                                                              <td id="status"
+                                                                (click)="onCellClicked($event, subordinate8, 'DEPTTODAY')">
+                                                                <div type="button">{{ subordinate8.DEPTTODAY }}</div>
+                                                              </td>
+                                                              <td id="status"
+                                                                (click)="onCellClicked($event, subordinate8, 'DEPTTODAY')">
+                                                                <div type="button">{{ subordinate8.DEPTOVERDUE }}</div>
+                                                              </td>
+                                                              <td id="status"
+                                                                (click)="onCellClicked($event, subordinate8, 'DEPTTODAY')">
+                                                                <div type="button">{{ subordinate8.DEPTFUTURE }}</div>
+                                                              </td>
+                                                              <td id="status"
+                                                                (click)="onCellClicked($event, subordinate8, 'DEPTTODAY')">
+                                                                <div type="button">{{ subordinate8.INTERDEPTTODAY }}
+                                                                </div>
+                                                              </td>
+                                                              <td id="status"
+                                                                (click)="onCellClicked($event, subordinate8, 'DEPTTODAY')">
+                                                                <div type="button">{{ subordinate8.INTERDEPTOVERDUE }}
+                                                                </div>
+                                                              </td>
+                                                              <td id="status"
+                                                                (click)="onCellClicked($event, subordinate8, 'DEPTTODAY')">
+                                                                <div type="button">{{ subordinate8.INTERDEPTFUTURE }}
+                                                                </div>
+                                                              </td>
+                                                            </tr>
+                                                            <!-- Continue nesting further if needed -->
+                                                          </ng-container>
+                                                        </ng-container>
+                                                      </ng-container>
+                                                    </ng-container>
+                                                  </ng-container>
+                                                </ng-container>
+                                              </ng-container>
+                                            </ng-container>
+                                          </ng-container>
+                                        </ng-container>
+                                      </ng-container>
+                                    </ng-container>
+                                  </ng-container>
+                                </ng-container>
+                              </ng-container>
+                            </ng-container>
+                          </ng-container>
+                        </ng-container>
+                      </ng-container>
+                    </tbody>
+                  </table>
+                  <div *ngIf="!loading && rowData2.length === 0"
+                    class="no-data py-3 d-flex justify-content-center align-items-center">
+                    No members available
+                  </div>
+
+                  <div *ngIf="loading" class="text-center py-3">
+                    <div class="spinner-border text-primary" role="status">
+                      <span class="sr-only">Loading...</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <br>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</body>

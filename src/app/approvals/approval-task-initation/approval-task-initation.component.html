@@ -95,8 +95,10 @@
                     <div class="col-xs-12 col-xl-4 col-md-12">
                       <div class="form-group">
                         <label for="taskName">Initiator&nbsp;<small>*</small></label>
-                        <input type="text" formControlName="initiator" maxlength="150" (input)="filterEmployeesInitiator($event)"
-                          [ngStyle]="isFieldDisabled ? { 'background-color': 'rgb(238 236 195)', 'color': '#11111', 'cursor': 'allowed' } : {}"
+                        <input type="text" formControlName="initiator" maxlength="150"
+                          [disabled]="isFieldDisabled"
+                          (input)="filterEmployeesInitiator($event)"
+                          [ngStyle]="isFieldDisabled ? { 'background-color': '#e0e0e0', 'color': '#a1a1a1', 'cursor': 'not-allowed' } : {}"
                           class="form-control" maxlength="150" />
                       </div>
                       <div style="width: 100%;" class="pr-10 mt-1">
@@ -202,7 +204,7 @@
                       </div>
                     </div> -->
 
-                   
+
 
                     <!-- <div class="col-xs-12 col-xl-3 col-md-12">
                       <div class="form-group">
@@ -230,8 +232,8 @@
                         <label for="category">Responsible Person&nbsp;<small>*</small></label>
 
                         <ng-container *ngIf="taskData?.MKEY">
-                          <input type="text" class="form-control"  formControlName="responsiblePerson" [ngModel]="HeaderfullName[0]?.Assign_to"
-                            (input)="filterEmployees($event)" appAlphabeticOnly
+                          <input type="text" class="form-control" formControlName="responsiblePerson"
+                            [ngModel]="HeaderfullName[0]?.Assign_to" (input)="filterEmployees($event)" appAlphabeticOnly
                             [ngStyle]="isFieldDisabled ? { 'background-color': 'rgb(238 236 195)', 'color': '#11111', 'cursor': 'allowed' } : {}" />
                         </ng-container>
 
@@ -254,8 +256,8 @@
                     <div class="col-xs-12 col-xl-4 col-md-12">
                       <div class="form-group">
                         <label for="category">Job Role</label>
-                        <select class="h6 form-control" [class.disabled]="true"
-                          [attr.disabled]="true" [disabled]="isFieldDisabled">
+                        <select class="h6 form-control" [class.disabled]="true" [attr.disabled]="true"
+                          [disabled]="isFieldDisabled">
                           <option value="">--SELECT--</option>
                           <option *ngFor="let jobRole of jobRoleList" [value]="jobRole.mkey"
                             [selected]="jobRole.typE_DESC === taskData.JOB_ROLE_NAME">{{jobRole.typE_DESC}}</option>
@@ -276,52 +278,53 @@
                       </div>
                     </div>
 
-              
-                   <div class="col-xs-12 col-xl-4 col-md-12">
-                    <div class="form-group">
-                      <label for="taskName">Start Date&nbsp;<small>*</small></label>
-                      <input type="date"
-                        [ngStyle]="isFieldDisabled ? { 'background-color': 'rgb(238 236 195)', 'color': '#11111', 'cursor': 'allowed' } : {}"
-                        formControlName="startDate" [min]="currentDate" maxlength="150" class="form-control" (change)="calculateHeaderDate($event)"  maxlength="150" />
-                    </div>
-                  </div>
 
-                  <div class="col-xs-12 col-xl-4 col-md-12">
-                    <div class="form-group">
-                      <label for="taskName">End Date&nbsp;<small>*</small></label>
-                      <input type="date"
-                        [ngStyle]="isFieldDisabled ? { 'background-color': 'rgb(238 236 195)', 'color': '#11111', 'cursor': 'allowed' } : {}"
-                        formControlName="endDate" [min]="currentDate" maxlength="150" class="form-control" maxlength="150" />
+                    <div class="col-xs-12 col-xl-4 col-md-12">
+                      <div class="form-group">
+                        <label for="taskName">Start Date&nbsp;<small>*</small></label>
+                        <input type="date"
+                          [ngStyle]="isFieldDisabled ? { 'background-color': 'rgb(238 236 195)', 'color': '#11111', 'cursor': 'allowed' } : {}"
+                          formControlName="startDate" [min]="currentDate" maxlength="150" class="form-control"
+                          (change)="calculateHeaderDate($event)" maxlength="150" />
+                      </div>
                     </div>
-                  </div>
 
-                   <div class="col-xs-12 col-xl-4 col-md-12">
-                    <div class="form-group">
-                      <label for="taskName">Complition Date&nbsp;<small>*</small></label>
-                      <input type="date"
-                        [ngStyle]="isFieldDisabled ? { 'background-color': 'rgb(238 236 195)', 'color': '#11111', 'cursor': 'allowed' } : {}"
-                        formControlName="complitionDate" [min]="currentDate" maxlength="150" class="form-control" maxlength="150" />
+                    <div class="col-xs-12 col-xl-4 col-md-12">
+                      <div class="form-group">
+                        <label for="taskName">End Date&nbsp;<small>*</small></label>
+                        <input type="date"
+                          [ngStyle]="isFieldDisabled ? { 'background-color': 'rgb(238 236 195)', 'color': '#11111', 'cursor': 'allowed' } : {}"
+                          formControlName="endDate" [min]="currentDate" maxlength="150" class="form-control"
+                          maxlength="150" />
+                      </div>
                     </div>
-                  </div>
 
-                  <div class="col-xs-12 col-xl-12 col-md-12">
-                    <div class="form-group">
-                      <label for="tags">Tags</label>
-                        <tag-input [addOnBlur]="true"
-                            [formControl]="appeInitForm.get('tags')">
-                            <tag-input-dropdown [autocompleteItems]="allTags"
-                                [showDropdownIfEmpty]="true"
-                                [dynamicUpdate]="true"></tag-input-dropdown>
+                    <div class="col-xs-12 col-xl-4 col-md-12">
+                      <div class="form-group">
+                        <label for="taskName">Complition Date&nbsp;<small>*</small></label>
+                        <input type="date"
+                          [ngStyle]="isFieldDisabled ? { 'background-color': 'rgb(238 236 195)', 'color': '#11111', 'cursor': 'allowed' } : {}"
+                          formControlName="complitionDate" [min]="currentDate" maxlength="150" class="form-control"
+                          maxlength="150" />
+                      </div>
+                    </div>
+
+                    <div class="col-xs-12 col-xl-12 col-md-12">
+                      <div class="form-group">
+                        <label for="tags">Tags</label>
+                        <tag-input [addOnBlur]="true" [formControl]="appeInitForm.get('tags')">
+                          <tag-input-dropdown [autocompleteItems]="allTags" [showDropdownIfEmpty]="true"
+                            [dynamicUpdate]="true"></tag-input-dropdown>
                         </tag-input>
-                  </div>
-                  </div>
+                      </div>
+                    </div>
 
-                  <br>
-                  <br>
-                  <br>
-                  <br>
-                  <br>
-                  <!-- <div class="sample-wrapper">
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    <!-- <div class="sample-wrapper">
                     <table class="table">
                         <thead>
                             <tr>
@@ -374,7 +377,7 @@
                         </tbody>
                     </table>                 
                  </div> -->
-                  
+
 
 
                   </div>
@@ -391,256 +394,35 @@
 
                     <div class="accordion-body" [class.show]="activeIndices.includes(i)">
                       <!--[class.show]="activeIndices.includes(i)"-->
-              
-                        <div class="mb-3" *ngIf="i === 0">
 
-                          <!-- For accordion 2 -->
-                          <div *ngIf="!loading" class="progress-details">
-                            <div class="table-scroll-container mx-2">
-                              <table class="table table-active">
+                      <div class="mb-3" *ngIf="i === 0">
 
-                                <thead class="table-header">
-                                  <tr>
-                                    <th><i class="fas fa-edit"></i></th>
-                                    <th>Sr No</th>
-                                    <th>Abbrivation</th>
-                                    <th class="truncate-date">Approved Description</th>
-                                    <th class="truncate-date">Short Description</th>
-                                    <th>Days Required</th>
-                                    <th>Department</th>
-                                    <th>Job Role</th>
-                                    <th>Responsible Person</th>
-                                    <th>Output Document</th>
-                                    <th>Tentative Start Date</th>
-                                    <th>Tentative End Date</th>
-                                    <th>Status</th>
-                                  </tr>
-                                </thead>
+                        <!-- For accordion 2 -->
+                        <div *ngIf="!loading" class="progress-details">
+                          <div class="table-scroll-container mx-2">
+                            <table class="table table-active">
 
-                                <tbody>
-                                  <ng-template #recursiveTaskTemplate let-tasks>
-                                    <ng-container *ngFor="let task of tasks">
-                                      <tr [ngClass]="{'highlight': formVisibleMap[task.TASK_NO.TASK_NO]}">
-                                        <td>
-                                          <div class="d-flex justify-content-end  mr-3">
-                                            <i class="fa fa-pencil" style="font-size:15px" type="button"
-                                              (click)="toggleFormVisibility_main(task.TASK_NO.TASK_NO, task)"></i>
-                                          </div>
-                                        </td>
-                                        <td style="min-width: 300px;">
+                              <thead class="table-header">
+                                <tr>
+                                  <th><i class="fas fa-edit"></i></th>
+                                  <th>Sr No</th>
+                                  <th>Abbrivation</th>
+                                  <th class="truncate-date">Approved Description</th>
+                                  <th class="truncate-date">Short Description</th>
+                                  <th>Days Required</th>
+                                  <th>Department</th>
+                                  <th>Job Role</th>
+                                  <th>Responsible Person</th>
+                                  <th>Output Document</th>
+                                  <th>Tentative Start Date</th>
+                                  <th>Tentative End Date</th>
+                                  <th>Status</th>
+                                </tr>
+                              </thead>
 
-                                          <ng-container *ngIf="task.TASK_NO.TASK_NO">
-                                            <span
-                                              [style.marginLeft.px]="calculateIndentation(task.TASK_NO.TASK_NO, task.subtask && task.subtask.length > 0 ? 15 : 30)">
-                                              <mat-icon *ngIf="task.subtask && task.subtask.length > 0"
-                                                (click)="toggleVisibility(task)" style="cursor: pointer;">
-                                                <img
-                                                  src="../../../../assets/Content/images/{{ task.visible ? 'collapse.png' : 'expand.png' }}">
-                                              </mat-icon>
-                                              {{ task.TASK_NO.TASK_NO }}
-                                            </span>
-                                          </ng-container>
-                                        </td>
-                                        <td class="truncate-text" matTooltip="{{ task.TASK_NO?.maiN_ABBR }}">{{ task.TASK_NO?.maiN_ABBR }}</td>
-                                        <td class="truncate-text" matTooltip="{{ task.TASK_NO?.abbr_short_DESC }}">{{ task.TASK_NO?.abbr_short_DESC }}</td>
-                                        <td class="truncate-text" matTooltip="{{ task.TASK_NO?.abbR_SHORT_DESC }}">{{ task.TASK_NO?.abbR_SHORT_DESC }}</td>
-                                        <td class="truncate-text" matTooltip="{{ task.TASK_NO?.dayS_REQUIERD }}">{{ task.TASK_NO?.dayS_REQUIERD }}</td>
-                                        <td class="truncate-text" matTooltip="{{ task.TASK_NO?.department }}">{{ task.TASK_NO?.department }}</td>
-                                        <td class="truncate-text" matTooltip="{{ task.TASK_NO?.joB_ROLE }}">{{ task.TASK_NO?.joB_ROLE }}</td>
-                                        <!-- <td class="truncate-text">{{ task.TASK_NO?.Responsible_Person }}</td> -->
-                                        <td class="truncate-text" matTooltip="{{ task.TASK_NO?.RESPOSIBLE_EMP_NAME }}">{{ task.TASK_NO?.RESPOSIBLE_EMP_NAME }}</td>
-  
-                                        <td class="truncate-text" matTooltip="{{ task.TASK_NO?.enD_RESULT_DOC }}">{{ task.TASK_NO?.enD_RESULT_DOC }}</td>
-
-                                        <td>
-                                          <input type="date" class="form-control"
-                                            (ngModelChange)="task.TASK_NO.start_date = $event"
-                                            [ngModel]="task.TASK_NO.start_date | date: 'yyyy-MM-dd'"
-                                            [ngModelOptions]="{standalone: true}" name="staDate_new_{{task.TASK_NO}}" />
-                                        </td>
-
-                                        <td>
-                                          <input type="date" class="form-control"
-                                            (ngModelChange)="task.TASK_NO.end_date = $event"
-                                            [ngModel]="task.TASK_NO.end_date | date: 'yyyy-MM-dd'"
-                                            [ngModelOptions]="{standalone: true}" name="endDate_new" />
-                                        </td>
-
-                                        <td class="truncate-text">{{ task.TASK_NO?.status }}</td>
-                                      </tr>
-                                      <tr *ngIf="formVisibleMap[task.TASK_NO.TASK_NO]">
-                                        <td colspan="12">
-                                          <form > <!--[formGroup]="subTaskForm" (ngSubmit)="onSubmitSubList(subTaskForm, task)"-->
-                                            <div class="">
-                                              <div class="classification-border" style="margin-right:50rem">
-  
-                                                <div class="row pl-3">
-  
-                                                  <div class="col-xs-12 col-xl-3 col-md-12">
-                                                    <div class="form-group d-flex justify-content-between">
-                                                      <label class="abbr-label" for="abbreviation">Abbreviation</label>
-                                                      <input  type="text" class="abbr-input form-control" maxlength="150"
-                                                        [value]="task.TASK_NO?.maiN_ABBR" [class.disabled]="true"
-                                                        [attr.disabled]="true" [disabled]="isFieldDisabled" />
-                                                    </div>
-  
-                                                    <div class="form-group d-flex justify-content-between">
-                                                      <label class="abbr-label" for="abbreviation">Start
-                                                        Date</label>
-                                                      <input type="date" class="form-control"
-                                                        
-                                                        [ngStyle]="isFieldDisabled ? { 'background-color': 'rgb(238 236 195)', 'color': '#11111', 'cursor': 'allowed' } : {}"
-                                                        (ngModelChange)="task.TASK_NO.start_date = $event"
-                                                        [ngModel]="task.TASK_NO.start_date | date: 'yyyy-MM-dd'"                                                        
-                                                        name="staDate_new_{{task.TASK_NO}}" />
-  
-                                                    </div>
-                                                  </div>
-  
-                                                  <div class="col-xs-12 col-xl-3 col-md-12">
-                                                    <div class="form-group d-flex justify-content-between">
-                                                      <label class="days-label" for="taskName">Short Description</label>
-                                                      <input
-                                                      [ngModelOptions]="{standalone: true}" (ngModelChange)="task.TASK_NO.abbr_short_DESC = $event" [ngModel]="task.TASK_NO?.abbr_short_DESC" 
-                                                        [ngStyle]="isFieldDisabled ? { 'background-color': 'rgb(238 236 195)', 'color': '#11111', 'cursor': 'allowed' } : {}"
-                                                        type="text" class="abbr-input form-control" maxlength="150" />
-                                                    </div>
-  
-  
-                                                    <div class="form-group d-flex justify-content-between">
-                                                      <label class="abbr-label" for="abbreviation">End
-                                                        Date</label>
-                                                      <input type="date" class="form-control"
-                                                        
-                                                        [ngStyle]="isFieldDisabled ? { 'background-color': 'rgb(238 236 195)', 'color': '#11111', 'cursor': 'allowed' } : {}"
-                                                        (ngModelChange)="task.TASK_NO.end_date = $event"
-                                                        [ngModel]="task.TASK_NO.end_date | date: 'yyyy-MM-dd'"
-                                                         name="endDate_new" />
-                                                    </div>
-                                                  </div>
-  
-                                                  <div class="col-xs-12 col-xl-6 col-md-12">
-  
-                                                    <div class="form-group d-flex justify-content-between">
-                                                      <label class="abbr-label" for="abbreviation">Long
-                                                        Description</label>
-                                                      <textarea class="form-control" style="height: 2rem;"                                                    
-                                                        [ngStyle]="isFieldDisabled ? { 'background-color': 'rgb(238 236 195)', 'color': '#11111', 'cursor': 'allowed' } : {}"                                                      
-                                                        rows="4" [ngModelOptions]="{standalone: true}" (ngModelChange)="task.TASK_NO.abbR_SHORT_DESC = $event" [ngModel]="task.TASK_NO?.abbR_SHORT_DESC"></textarea>
-                                                    </div>
-                                                  </div>
-  
-                                                </div>
-  
-                                                <div class="row pl-3">
-  
-                                                  <div class="col-xs-12 col-xl-3 col-md-12">
-                                                    <div class="form-group d-flex justify-content-between">
-                                                      <label class="abbr-label" for="abbreviation">Responsible
-                                                        Person</label>
-                                                      <input type="text" class="abbr-input form-control"                                                       
-                                                        [ngStyle]="isFieldDisabled ? { 'background-color': 'rgb(238 236 195)', 'color': '#11111', 'cursor': 'allowed' } : {}"
-                                                        maxlength="150" [(ngModel)]="selectedAssignTo" placeholder="{{task.TASK_NO?.RESPOSIBLE_EMP_NAME}}"  [ngModelOptions]="{standalone: true}"  (input)="SubfilterEmployeesInitiator($event, task.TASK_NO?.TASK_NO)" />
-                                                        <div style="width: 100%;" class="pr-10 mt-1">
-                                                          <ul>
-                                                            <li *ngFor="let event of subListFilteredEmp; let i = index;" class="active" type="button"
-                                                              [class.inactive]="subListFilteredEmp" (click)="selectEmpSubList(event);">
-                                                              {{ event.Assign_to }}
-                                                            </li>
-                                                          </ul>
-                                                       </div>
-                                                     </div>
-                                                   </div>
-  
-  
-                                                  <div class="col-xs-12 col-xl-3 col-md-12">
-                                                    <div class="form-group d-flex justify-content-between">
-                                                      <label class="dept-label" for="department">Departrment</label>
-                                                      <select class="dept-select form-control" [class.disabled]="true"                                                      
-                                                        [attr.disabled]="true" [disabled]="isFieldDisabled">
-                                                        <option value=""> --SELECT--</option>
-                                                        <option *ngFor="let dept of departmentList" [value]="dept.mkey"
-                                                          [selected]="dept.typE_DESC === task.TASK_NO?.department">
-                                                          {{dept.typE_DESC}}
-                                                        </option>
-                                                      </select>
-                                                    </div>
-                                                  </div>
-  
-                                                  <div class="col-xs-12 col-xl-3 col-md-12">
-                                                    <div class="form-group d-flex justify-content-between">
-                                                      <label class="jobrole-label" for="jobRole">Job Role</label>
-                                                      <select class="dept-select form-control" [class.disabled]="true"                                                     
-                                                        [attr.disabled]="true" [disabled]="isFieldDisabled">
-                                                        <option value=""> --SELECT--</option>
-                                                        <option *ngFor="let jobRole of jobRoleList"
-                                                          [value]="jobRole.mkey"
-                                                          [selected]="jobRole.typE_DESC === task.TASK_NO?.joB_ROLE">
-                                                          {{ jobRole.typE_DESC }}
-                                                        </option>
-                                                      </select>
-                                                    </div>
-                                                  </div>
-  
-                                                  <div class="col-xs-12 col-xl-3 col-md-12">
-                                                    <div class="form-group d-flex justify-content-between">
-                                                      <label class="days-label" for="taskName">Output Document</label>
-                                                      <input type="text" [value]="task.TASK_NO?.enD_RESULT_DOC"  
-                                                        [class.disabled]="true" [attr.disabled]="true"
-                                                        [disabled]="isFieldDisabled" class="days-input form-control"
-                                                        maxlength="150" />
-                                                    </div>
-                                                  </div> 
-                                                  
-                                                  <div class="col-xs-12 col-xl-12 col-md-8">
-                                                    <div class="form-group">
-                                                        <label class="tags-label" for="tags">Tags</label>
-                                                          <tag-input [addOnBlur]="true"
-                                                          [(ngModel)]="selectedTags" 
-                                                          [ngModelOptions]="{standalone: true}"
-                                                              >
-                                                              <tag-input-dropdown [autocompleteItems]="allTags"
-                                                                  [showDropdownIfEmpty]="true"
-                                                                  [dynamicUpdate]="true"></tag-input-dropdown>
-                                                          </tag-input>
-                                                    </div>
-                                                 </div>
-  
-                                                 <!-- <div class="col-xs-12 col-xl-4 col-md-8">
-                                                  <div class="form-group d-flex justify-content-between">
-                                                    <label class="abbr-label" for="abbreviation">Complition
-                                                      Date</label>
-                                                    <input type="date" class="form-control"                                                                                                       
-                                                      [ngStyle]="isFieldDisabled ? { 'background-color': 'rgb(238 236 195)', 'color': '#11111', 'cursor': 'allowed' } : {}"                                                  
-                                                      name="endDate_new" />
-                                                  </div>
-                                                </div> -->
-                                                </div>
-                                                <div class="row mt-2 justify-content-center">
-                                                  <div class="col-xs-2">
-                                                    <div class="btn btn-info d-flex justify-content-center" (click)="updatedTaskCheck(task.TASK_NO, selectedAssignTo)">Update
-                                                    </div>
-                                                  </div>
-                                                  <div class="col-xs-2">
-                                                    <div class="btn btn-light d-flex justify-content-center" (click)="toggleFormVisibility_main(task.TASK_NO.TASK_NO, task)">Cancel
-                                                    </div>
-                                                  </div>                                                 
-                                                </div>
-  
-                                              </div>
-                                            </div>
-  
-                                          </form>
-                                        </td>
-                                      </tr>
-                                      <ng-container *ngIf="task.visible && task.subtask && task.subtask.length > 0">
-                                        <ng-container
-                                          *ngTemplateOutlet="recursiveTaskTemplate; context: { $implicit: task.subtask }"></ng-container>
-                                      </ng-container>
-                                    </ng-container>
-                                  </ng-template>
-
-                                  <ng-container *ngFor="let task of subTasks; trackBy: trackByTaskNo">
+                              <tbody>
+                                <ng-template #recursiveTaskTemplate let-tasks>
+                                  <ng-container *ngFor="let task of tasks">
                                     <tr [ngClass]="{'highlight': formVisibleMap[task.TASK_NO.TASK_NO]}">
                                       <td>
                                         <div class="d-flex justify-content-end  mr-3">
@@ -648,10 +430,11 @@
                                             (click)="toggleFormVisibility_main(task.TASK_NO.TASK_NO, task)"></i>
                                         </div>
                                       </td>
-                                      <td style="width: 300px;">
+                                      <td style="min-width: 300px;">
+
                                         <ng-container *ngIf="task.TASK_NO.TASK_NO">
                                           <span
-                                            [style.marginLeft.px]="calculateIndentation(task.TASK_NO.TASK_NO, task.subtask && task.subtask.length > 0 ? 20 : 17)">
+                                            [style.marginLeft.px]="calculateIndentation(task.TASK_NO.TASK_NO, task.subtask && task.subtask.length > 0 ? 15 : 30)">
                                             <mat-icon *ngIf="task.subtask && task.subtask.length > 0"
                                               (click)="toggleVisibility(task)" style="cursor: pointer;">
                                               <img
@@ -661,17 +444,24 @@
                                           </span>
                                         </ng-container>
                                       </td>
-                                      <td class="truncate-text" matTooltip="{{ task.TASK_NO?.maiN_ABBR }}">{{ task.TASK_NO?.maiN_ABBR }}</td>
-                                      <td class="truncate-text" matTooltip="{{ task.TASK_NO?.abbr_short_DESC }}">{{ task.TASK_NO?.abbr_short_DESC }}</td>
-                                      <td class="truncate-text" matTooltip="{{ task.TASK_NO?.abbR_SHORT_DESC }}">{{ task.TASK_NO?.abbR_SHORT_DESC }}</td>
-                                      <td class="truncate-text" matTooltip="{{ task.TASK_NO?.dayS_REQUIERD }}">{{ task.TASK_NO?.dayS_REQUIERD }}</td>
-                                      <td class="truncate-text" matTooltip="{{ task.TASK_NO?.department }}">{{ task.TASK_NO?.department }}</td>
-                                      <td class="truncate-text" matTooltip="{{ task.TASK_NO?.joB_ROLE }}">{{ task.TASK_NO?.joB_ROLE }}</td>
+                                      <td class="truncate-text" matTooltip="{{ task.TASK_NO?.maiN_ABBR }}">{{
+                                        task.TASK_NO?.maiN_ABBR }}</td>
+                                      <td class="truncate-text" matTooltip="{{ task.TASK_NO?.abbr_short_DESC }}">{{
+                                        task.TASK_NO?.abbr_short_DESC }}</td>
+                                      <td class="truncate-text" matTooltip="{{ task.TASK_NO?.abbR_SHORT_DESC }}">{{
+                                        task.TASK_NO?.abbR_SHORT_DESC }}</td>
+                                      <td class="truncate-text" matTooltip="{{ task.TASK_NO?.dayS_REQUIERD }}">{{
+                                        task.TASK_NO?.dayS_REQUIERD }}</td>
+                                      <td class="truncate-text" matTooltip="{{ task.TASK_NO?.department }}">{{
+                                        task.TASK_NO?.department }}</td>
+                                      <td class="truncate-text" matTooltip="{{ task.TASK_NO?.joB_ROLE }}">{{
+                                        task.TASK_NO?.joB_ROLE }}</td>
                                       <!-- <td class="truncate-text">{{ task.TASK_NO?.Responsible_Person }}</td> -->
-                                      <td class="truncate-text" matTooltip="{{ task.TASK_NO?.RESPOSIBLE_EMP_NAME }}">{{ task.TASK_NO?.RESPOSIBLE_EMP_NAME }}</td>
+                                      <td class="truncate-text" matTooltip="{{ task.TASK_NO?.RESPOSIBLE_EMP_NAME }}">{{
+                                        task.TASK_NO?.RESPOSIBLE_EMP_NAME }}</td>
 
-                                      <td class="truncate-text" matTooltip="{{ task.TASK_NO?.enD_RESULT_DOC }}">{{ task.TASK_NO?.enD_RESULT_DOC }}</td>
-                                      <!-- <td class="truncate-text">{{ task.TASK_NO?.STATUS }}</td> -->
+                                      <td class="truncate-text" matTooltip="{{ task.TASK_NO?.enD_RESULT_DOC }}">{{
+                                        task.TASK_NO?.enD_RESULT_DOC }}</td>
 
                                       <td>
                                         <input type="date" class="form-control"
@@ -691,7 +481,8 @@
                                     </tr>
                                     <tr *ngIf="formVisibleMap[task.TASK_NO.TASK_NO]">
                                       <td colspan="12">
-                                        <form > <!--[formGroup]="subTaskForm" (ngSubmit)="onSubmitSubList(subTaskForm, task)"-->
+                                        <form>
+                                          <!--[formGroup]="subTaskForm" (ngSubmit)="onSubmitSubList(subTaskForm, task)"-->
                                           <div class="">
                                             <div class="classification-border" style="margin-right:50rem">
 
@@ -700,7 +491,7 @@
                                                 <div class="col-xs-12 col-xl-3 col-md-12">
                                                   <div class="form-group d-flex justify-content-between">
                                                     <label class="abbr-label" for="abbreviation">Abbreviation</label>
-                                                    <input  type="text" class="abbr-input form-control" maxlength="150"
+                                                    <input type="text" class="abbr-input form-control" maxlength="150"
                                                       [value]="task.TASK_NO?.maiN_ABBR" [class.disabled]="true"
                                                       [attr.disabled]="true" [disabled]="isFieldDisabled" />
                                                   </div>
@@ -709,10 +500,9 @@
                                                     <label class="abbr-label" for="abbreviation">Start
                                                       Date</label>
                                                     <input type="date" class="form-control"
-                                                      
                                                       [ngStyle]="isFieldDisabled ? { 'background-color': 'rgb(238 236 195)', 'color': '#11111', 'cursor': 'allowed' } : {}"
                                                       (ngModelChange)="task.TASK_NO.start_date = $event"
-                                                      [ngModel]="task.TASK_NO.start_date | date: 'yyyy-MM-dd'"                                                        
+                                                      [ngModel]="task.TASK_NO.start_date | date: 'yyyy-MM-dd'"
                                                       name="staDate_new_{{task.TASK_NO}}" />
 
                                                   </div>
@@ -721,8 +511,9 @@
                                                 <div class="col-xs-12 col-xl-3 col-md-12">
                                                   <div class="form-group d-flex justify-content-between">
                                                     <label class="days-label" for="taskName">Short Description</label>
-                                                    <input
-                                                    [ngModelOptions]="{standalone: true}" (ngModelChange)="task.TASK_NO.abbr_short_DESC = $event" [ngModel]="task.TASK_NO?.abbr_short_DESC" 
+                                                    <input [ngModelOptions]="{standalone: true}"
+                                                      (ngModelChange)="task.TASK_NO.abbr_short_DESC = $event"
+                                                      [ngModel]="task.TASK_NO?.abbr_short_DESC"
                                                       [ngStyle]="isFieldDisabled ? { 'background-color': 'rgb(238 236 195)', 'color': '#11111', 'cursor': 'allowed' } : {}"
                                                       type="text" class="abbr-input form-control" maxlength="150" />
                                                   </div>
@@ -732,11 +523,10 @@
                                                     <label class="abbr-label" for="abbreviation">End
                                                       Date</label>
                                                     <input type="date" class="form-control"
-                                                      
                                                       [ngStyle]="isFieldDisabled ? { 'background-color': 'rgb(238 236 195)', 'color': '#11111', 'cursor': 'allowed' } : {}"
                                                       (ngModelChange)="task.TASK_NO.end_date = $event"
                                                       [ngModel]="task.TASK_NO.end_date | date: 'yyyy-MM-dd'"
-                                                       name="endDate_new" />
+                                                      name="endDate_new" />
                                                   </div>
                                                 </div>
 
@@ -745,31 +535,38 @@
                                                   <div class="form-group d-flex justify-content-between">
                                                     <label class="abbr-label" for="abbreviation">Long
                                                       Description</label>
-                                                    <textarea class="form-control" style="height: 2rem;"                                                    
-                                                      [ngStyle]="isFieldDisabled ? { 'background-color': 'rgb(238 236 195)', 'color': '#11111', 'cursor': 'allowed' } : {}"                                                      
-                                                      rows="4" [ngModelOptions]="{standalone: true}" (ngModelChange)="task.TASK_NO.abbR_SHORT_DESC = $event" [ngModel]="task.TASK_NO?.abbR_SHORT_DESC"></textarea>
+                                                    <textarea class="form-control" style="height: 2rem;"
+                                                      [ngStyle]="isFieldDisabled ? { 'background-color': 'rgb(238 236 195)', 'color': '#11111', 'cursor': 'allowed' } : {}"
+                                                      rows="4" [ngModelOptions]="{standalone: true}"
+                                                      (ngModelChange)="task.TASK_NO.abbR_SHORT_DESC = $event"
+                                                      [ngModel]="task.TASK_NO?.abbR_SHORT_DESC"></textarea>
                                                   </div>
                                                 </div>
 
                                               </div>
 
                                               <div class="row pl-3">
+
                                                 <div class="col-xs-12 col-xl-3 col-md-12">
                                                   <div class="form-group d-flex justify-content-between">
                                                     <label class="abbr-label" for="abbreviation">Responsible
                                                       Person</label>
                                                     <input type="text" class="abbr-input form-control"
-                                                     
                                                       [ngStyle]="isFieldDisabled ? { 'background-color': 'rgb(238 236 195)', 'color': '#11111', 'cursor': 'allowed' } : {}"
-                                                      maxlength="150" [(ngModel)]="selectedAssignTo" placeholder="{{task.TASK_NO?.RESPOSIBLE_EMP_NAME}}" [ngModelOptions]="{standalone: true}"  (input)="SubfilterEmployeesInitiator($event, task.TASK_NO?.TASK_NO)" />
-                                                      <div style="width: 100%;" class="pr-10 mt-1">
-                                                        <ul>
-                                                          <li *ngFor="let event of subListFilteredEmp; let i = index;" class="active" type="button"
-                                                            [class.inactive]="subListFilteredEmp" (click)="selectEmpSubList(event);">
-                                                            {{ event.Assign_to }}
-                                                          </li>
-                                                        </ul>
-                                                      </div>
+                                                      maxlength="150" [(ngModel)]="selectedAssignTo"
+                                                      placeholder="{{task.TASK_NO?.RESPOSIBLE_EMP_NAME}}"
+                                                      [ngModelOptions]="{standalone: true}"
+                                                      (input)="SubfilterEmployeesInitiator($event, task.TASK_NO?.TASK_NO)" />
+                                                    <div style="width: 100%;" class="pr-10 mt-1">
+                                                      <ul>
+                                                        <li *ngFor="let event of subListFilteredEmp; let i = index;"
+                                                          class="active" type="button"
+                                                          [class.inactive]="subListFilteredEmp"
+                                                          (click)="selectEmpSubList(event);">
+                                                          {{ event.Assign_to }}
+                                                        </li>
+                                                      </ul>
+                                                    </div>
                                                   </div>
                                                 </div>
 
@@ -777,7 +574,7 @@
                                                 <div class="col-xs-12 col-xl-3 col-md-12">
                                                   <div class="form-group d-flex justify-content-between">
                                                     <label class="dept-label" for="department">Departrment</label>
-                                                    <select class="dept-select form-control" [class.disabled]="true"                                                      
+                                                    <select class="dept-select form-control" [class.disabled]="true"
                                                       [attr.disabled]="true" [disabled]="isFieldDisabled">
                                                       <option value=""> --SELECT--</option>
                                                       <option *ngFor="let dept of departmentList" [value]="dept.mkey"
@@ -791,11 +588,10 @@
                                                 <div class="col-xs-12 col-xl-3 col-md-12">
                                                   <div class="form-group d-flex justify-content-between">
                                                     <label class="jobrole-label" for="jobRole">Job Role</label>
-                                                    <select class="dept-select form-control" [class.disabled]="true"                                                     
+                                                    <select class="dept-select form-control" [class.disabled]="true"
                                                       [attr.disabled]="true" [disabled]="isFieldDisabled">
                                                       <option value=""> --SELECT--</option>
-                                                      <option *ngFor="let jobRole of jobRoleList"
-                                                        [value]="jobRole.mkey"
+                                                      <option *ngFor="let jobRole of jobRoleList" [value]="jobRole.mkey"
                                                         [selected]="jobRole.typE_DESC === task.TASK_NO?.joB_ROLE">
                                                         {{ jobRole.typE_DESC }}
                                                       </option>
@@ -806,46 +602,47 @@
                                                 <div class="col-xs-12 col-xl-3 col-md-12">
                                                   <div class="form-group d-flex justify-content-between">
                                                     <label class="days-label" for="taskName">Output Document</label>
-                                                    <input type="text" [value]="task.TASK_NO?.enD_RESULT_DOC"  
+                                                    <input type="text" [value]="task.TASK_NO?.enD_RESULT_DOC"
                                                       [class.disabled]="true" [attr.disabled]="true"
                                                       [disabled]="isFieldDisabled" class="days-input form-control"
                                                       maxlength="150" />
                                                   </div>
-                                                </div> 
-                                                
+                                                </div>
+
                                                 <div class="col-xs-12 col-xl-12 col-md-8">
                                                   <div class="form-group">
-                                                      <label class="tags-label" for="tags">Tags</label>
-                                                        <tag-input [addOnBlur]="true"
-                                                          [(ngModel)]="selectedTags" 
-                                                          [ngModelOptions]="{standalone: true}"
-                                                            >
-                                                            <tag-input-dropdown [autocompleteItems]="allTags"
-                                                                [showDropdownIfEmpty]="true"
-                                                                [dynamicUpdate]="true"></tag-input-dropdown>
-                                                        </tag-input>
+                                                    <label class="tags-label" for="tags">Tags</label>
+                                                    <tag-input [addOnBlur]="true" [(ngModel)]="selectedTags"
+                                                      [ngModelOptions]="{standalone: true}">
+                                                      <tag-input-dropdown [autocompleteItems]="allTags"
+                                                        [showDropdownIfEmpty]="true"
+                                                        [dynamicUpdate]="true"></tag-input-dropdown>
+                                                    </tag-input>
                                                   </div>
-                                               </div>
-
-                                               <!-- <div class="col-xs-12 col-xl-4 col-md-8">
-                                                <div class="form-group d-flex justify-content-between">
-                                                  <label class="abbr-label" for="abbreviation">Complition
-                                                    Date</label>
-                                                  <input type="date" class="form-control"                                                                                                       
-                                                    [ngStyle]="isFieldDisabled ? { 'background-color': 'rgb(238 236 195)', 'color': '#11111', 'cursor': 'allowed' } : {}"                                                  
-                                                    name="endDate_new" />
                                                 </div>
-                                              </div> -->
+
+                                                <!-- <div class="col-xs-12 col-xl-4 col-md-8">
+                                                  <div class="form-group d-flex justify-content-between">
+                                                    <label class="abbr-label" for="abbreviation">Complition
+                                                      Date</label>
+                                                    <input type="date" class="form-control"                                                                                                       
+                                                      [ngStyle]="isFieldDisabled ? { 'background-color': 'rgb(238 236 195)', 'color': '#11111', 'cursor': 'allowed' } : {}"                                                  
+                                                      name="endDate_new" />
+                                                  </div>
+                                                </div> -->
                                               </div>
                                               <div class="row mt-2 justify-content-center">
                                                 <div class="col-xs-2">
-                                                  <div class="btn btn-info d-flex justify-content-center" (click)="updatedTaskCheck(task.TASK_NO, selectedAssignTo)">Update
+                                                  <div class="btn btn-info d-flex justify-content-center"
+                                                    (click)="updatedTaskCheck(task.TASK_NO, selectedAssignTo)">Update
                                                   </div>
                                                 </div>
                                                 <div class="col-xs-2">
-                                                  <div class="btn btn-light d-flex justify-content-center" (click)="toggleFormVisibility_main(task.TASK_NO.TASK_NO, task)">Cancel
+                                                  <div class="btn btn-light d-flex justify-content-center"
+                                                    (click)="toggleFormVisibility_main(task.TASK_NO.TASK_NO, task)">
+                                                    Cancel
                                                   </div>
-                                                </div>                                                 
+                                                </div>
                                               </div>
 
                                             </div>
@@ -859,14 +656,256 @@
                                         *ngTemplateOutlet="recursiveTaskTemplate; context: { $implicit: task.subtask }"></ng-container>
                                     </ng-container>
                                   </ng-container>
-                                </tbody>
+                                </ng-template>
 
+                                <ng-container *ngFor="let task of subTasks; trackBy: trackByTaskNo">
+                                  <tr [ngClass]="{'highlight': formVisibleMap[task.TASK_NO.TASK_NO]}">
+                                    <td>
+                                      <div class="d-flex justify-content-end  mr-3">
+                                        <i class="fa fa-pencil" style="font-size:15px" type="button"
+                                          (click)="toggleFormVisibility_main(task.TASK_NO.TASK_NO, task)"></i>
+                                      </div>
+                                    </td>
+                                    <td style="width: 300px;">
+                                      <ng-container *ngIf="task.TASK_NO.TASK_NO">
+                                        <span
+                                          [style.marginLeft.px]="calculateIndentation(task.TASK_NO.TASK_NO, task.subtask && task.subtask.length > 0 ? 20 : 17)">
+                                          <mat-icon *ngIf="task.subtask && task.subtask.length > 0"
+                                            (click)="toggleVisibility(task)" style="cursor: pointer;">
+                                            <img
+                                              src="../../../../assets/Content/images/{{ task.visible ? 'collapse.png' : 'expand.png' }}">
+                                          </mat-icon>
+                                          {{ task.TASK_NO.TASK_NO }}
+                                        </span>
+                                      </ng-container>
+                                    </td>
+                                    <td class="truncate-text" matTooltip="{{ task.TASK_NO?.maiN_ABBR }}">{{
+                                      task.TASK_NO?.maiN_ABBR }}</td>
+                                    <td class="truncate-text" matTooltip="{{ task.TASK_NO?.abbr_short_DESC }}">{{
+                                      task.TASK_NO?.abbr_short_DESC }}</td>
+                                    <td class="truncate-text" matTooltip="{{ task.TASK_NO?.abbR_SHORT_DESC }}">{{
+                                      task.TASK_NO?.abbR_SHORT_DESC }}</td>
+                                    <td class="truncate-text" matTooltip="{{ task.TASK_NO?.dayS_REQUIERD }}">{{
+                                      task.TASK_NO?.dayS_REQUIERD }}</td>
+                                    <td class="truncate-text" matTooltip="{{ task.TASK_NO?.department }}">{{
+                                      task.TASK_NO?.department }}</td>
+                                    <td class="truncate-text" matTooltip="{{ task.TASK_NO?.joB_ROLE }}">{{
+                                      task.TASK_NO?.joB_ROLE }}</td>
+                                    <!-- <td class="truncate-text">{{ task.TASK_NO?.Responsible_Person }}</td> -->
+                                    <td class="truncate-text" matTooltip="{{ task.TASK_NO?.RESPOSIBLE_EMP_NAME }}">{{
+                                      task.TASK_NO?.RESPOSIBLE_EMP_NAME }}</td>
+
+                                    <td class="truncate-text" matTooltip="{{ task.TASK_NO?.enD_RESULT_DOC }}">{{
+                                      task.TASK_NO?.enD_RESULT_DOC }}</td>
+                                    <!-- <td class="truncate-text">{{ task.TASK_NO?.STATUS }}</td> -->
+
+                                    <td>
+                                      <input type="date" class="form-control"
+                                        (ngModelChange)="task.TASK_NO.start_date = $event"
+                                        [ngModel]="task.TASK_NO.start_date | date: 'yyyy-MM-dd'"
+                                        [ngModelOptions]="{standalone: true}" name="staDate_new_{{task.TASK_NO}}" />
+                                    </td>
+
+                                    <td>
+                                      <input type="date" class="form-control"
+                                        (ngModelChange)="task.TASK_NO.end_date = $event"
+                                        [ngModel]="task.TASK_NO.end_date | date: 'yyyy-MM-dd'"
+                                        [ngModelOptions]="{standalone: true}" name="endDate_new" />
+                                    </td>
+
+                                    <td class="truncate-text">{{ task.TASK_NO?.status }}</td>
+                                  </tr>
+                                  <tr *ngIf="formVisibleMap[task.TASK_NO.TASK_NO]">
+                                    <td colspan="12">
+                                      <form>
+                                        <!--[formGroup]="subTaskForm" (ngSubmit)="onSubmitSubList(subTaskForm, task)"-->
+                                        <div class="">
+                                          <div class="classification-border" style="margin-right:50rem">
+
+                                            <div class="row pl-3">
+
+                                              <div class="col-xs-12 col-xl-3 col-md-12">
+                                                <div class="form-group d-flex justify-content-between">
+                                                  <label class="abbr-label" for="abbreviation">Abbreviation</label>
+                                                  <input type="text" class="abbr-input form-control" maxlength="150"
+                                                    [value]="task.TASK_NO?.maiN_ABBR" [class.disabled]="true"
+                                                    [attr.disabled]="true" [disabled]="isFieldDisabled" />
+                                                </div>
+
+                                                <div class="form-group d-flex justify-content-between">
+                                                  <label class="abbr-label" for="abbreviation">Start
+                                                    Date</label>
+                                                  <input type="date" class="form-control"
+                                                    [ngStyle]="isFieldDisabled ? { 'background-color': 'rgb(238 236 195)', 'color': '#11111', 'cursor': 'allowed' } : {}"
+                                                    (ngModelChange)="task.TASK_NO.start_date = $event"
+                                                    [ngModel]="task.TASK_NO.start_date | date: 'yyyy-MM-dd'"
+                                                    name="staDate_new_{{task.TASK_NO}}" />
+
+                                                </div>
+                                              </div>
+
+                                              <div class="col-xs-12 col-xl-3 col-md-12">
+                                                <div class="form-group d-flex justify-content-between">
+                                                  <label class="days-label" for="taskName">Short Description</label>
+                                                  <input [ngModelOptions]="{standalone: true}"
+                                                    (ngModelChange)="task.TASK_NO.abbr_short_DESC = $event"
+                                                    [ngModel]="task.TASK_NO?.abbr_short_DESC"
+                                                    [ngStyle]="isFieldDisabled ? { 'background-color': 'rgb(238 236 195)', 'color': '#11111', 'cursor': 'allowed' } : {}"
+                                                    type="text" class="abbr-input form-control" maxlength="150" />
+                                                </div>
+
+
+                                                <div class="form-group d-flex justify-content-between">
+                                                  <label class="abbr-label" for="abbreviation">End
+                                                    Date</label>
+                                                  <input type="date" class="form-control"
+                                                    [ngStyle]="isFieldDisabled ? { 'background-color': 'rgb(238 236 195)', 'color': '#11111', 'cursor': 'allowed' } : {}"
+                                                    (ngModelChange)="task.TASK_NO.end_date = $event"
+                                                    [ngModel]="task.TASK_NO.end_date | date: 'yyyy-MM-dd'"
+                                                    name="endDate_new" />
+                                                </div>
+                                              </div>
+
+                                              <div class="col-xs-12 col-xl-6 col-md-12">
+
+                                                <div class="form-group d-flex justify-content-between">
+                                                  <label class="abbr-label" for="abbreviation">Long
+                                                    Description</label>
+                                                  <textarea class="form-control" style="height: 2rem;"
+                                                    [ngStyle]="isFieldDisabled ? { 'background-color': 'rgb(238 236 195)', 'color': '#11111', 'cursor': 'allowed' } : {}"
+                                                    rows="4" [ngModelOptions]="{standalone: true}"
+                                                    (ngModelChange)="task.TASK_NO.abbR_SHORT_DESC = $event"
+                                                    [ngModel]="task.TASK_NO?.abbR_SHORT_DESC"></textarea>
+                                                </div>
+                                              </div>
+
+                                            </div>
+
+                                            <div class="row pl-3">
+                                              <div class="col-xs-12 col-xl-3 col-md-12">
+                                                <div class="form-group d-flex justify-content-between">
+                                                  <label class="abbr-label" for="abbreviation">Responsible
+                                                    Person</label>
+                                                  <input type="text" class="abbr-input form-control"
+                                                    [ngStyle]="isFieldDisabled ? { 'background-color': 'rgb(238 236 195)', 'color': '#11111', 'cursor': 'allowed' } : {}"
+                                                    maxlength="150" [(ngModel)]="selectedAssignTo"
+                                                    placeholder="{{task.TASK_NO?.RESPOSIBLE_EMP_NAME}}"
+                                                    [ngModelOptions]="{standalone: true}"
+                                                    (input)="SubfilterEmployeesInitiator($event, task.TASK_NO?.TASK_NO)" />
+                                                  <div style="width: 100%;" class="pr-10 mt-1">
+                                                    <ul>
+                                                      <li *ngFor="let event of subListFilteredEmp; let i = index;"
+                                                        class="active" type="button"
+                                                        [class.inactive]="subListFilteredEmp"
+                                                        (click)="selectEmpSubList(event);">
+                                                        {{ event.Assign_to }}
+                                                      </li>
+                                                    </ul>
+                                                  </div>
+                                                </div>
+                                              </div>
+
+
+                                              <div class="col-xs-12 col-xl-3 col-md-12">
+                                                <div class="form-group d-flex justify-content-between">
+                                                  <label class="dept-label" for="department">Departrment</label>
+                                                  <select class="dept-select form-control" [class.disabled]="true"
+                                                    [attr.disabled]="true" [disabled]="isFieldDisabled">
+                                                    <option value=""> --SELECT--</option>
+                                                    <option *ngFor="let dept of departmentList" [value]="dept.mkey"
+                                                      [selected]="dept.typE_DESC === task.TASK_NO?.department">
+                                                      {{dept.typE_DESC}}
+                                                    </option>
+                                                  </select>
+                                                </div>
+                                              </div>
+
+                                              <div class="col-xs-12 col-xl-3 col-md-12">
+                                                <div class="form-group d-flex justify-content-between">
+                                                  <label class="jobrole-label" for="jobRole">Job Role</label>
+                                                  <select class="dept-select form-control" [class.disabled]="true"
+                                                    [attr.disabled]="true" [disabled]="isFieldDisabled">
+                                                    <option value=""> --SELECT--</option>
+                                                    <option *ngFor="let jobRole of jobRoleList" [value]="jobRole.mkey"
+                                                      [selected]="jobRole.typE_DESC === task.TASK_NO?.joB_ROLE">
+                                                      {{ jobRole.typE_DESC }}
+                                                    </option>
+                                                  </select>
+                                                </div>
+                                              </div>
+
+                                              <div class="col-xs-12 col-xl-3 col-md-12">
+                                                <div class="form-group d-flex justify-content-between">
+                                                  <label class="days-label" for="taskName">Output Document</label>
+                                                  <input type="text" [value]="task.TASK_NO?.enD_RESULT_DOC"
+                                                    [class.disabled]="true" [attr.disabled]="true"
+                                                    [disabled]="isFieldDisabled" class="days-input form-control"
+                                                    maxlength="150" />
+                                                </div>
+                                              </div>
+
+                                              <div class="col-xs-12 col-xl-12 col-md-8">
+                                                <div class="form-group">
+                                                  <label class="tags-label" for="tags">Tags</label>
+                                                  <tag-input [addOnBlur]="true" [(ngModel)]="selectedTags"
+                                                    [ngModelOptions]="{standalone: true}">
+                                                    <tag-input-dropdown [autocompleteItems]="allTags"
+                                                      [showDropdownIfEmpty]="true"
+                                                      [dynamicUpdate]="true"></tag-input-dropdown>
+                                                  </tag-input>
+                                                </div>
+                                              </div>
+
+                                              <!-- <div class="col-xs-12 col-xl-4 col-md-8">
+                                                <div class="form-group d-flex justify-content-between">
+                                                  <label class="abbr-label" for="abbreviation">Complition
+                                                    Date</label>
+                                                  <input type="date" class="form-control"                                                                                                       
+                                                    [ngStyle]="isFieldDisabled ? { 'background-color': 'rgb(238 236 195)', 'color': '#11111', 'cursor': 'allowed' } : {}"                                                  
+                                                    name="endDate_new" />
+                                                </div>
+                                              </div> -->
+                                            </div>
+                                            <div class="row mt-2 justify-content-center">
+                                              <div class="col-xs-2">
+                                                <div class="btn btn-info d-flex justify-content-center"
+                                                  (click)="updatedTaskCheck(task.TASK_NO, selectedAssignTo)">Update
+                                                </div>
+                                              </div>
+                                              <div class="col-xs-2">
+                                                <div class="btn btn-light d-flex justify-content-center"
+                                                  (click)="toggleFormVisibility_main(task.TASK_NO.TASK_NO, task)">Cancel
+                                                </div>
+                                              </div>
+                                            </div>
+
+                                          </div>
+                                        </div>
+
+                                      </form>
+                                    </td>
+                                  </tr>
+                                  <ng-container *ngIf="task.visible && task.subtask && task.subtask.length > 0">
+                                    <ng-container
+                                      *ngTemplateOutlet="recursiveTaskTemplate; context: { $implicit: task.subtask }"></ng-container>
+                                  </ng-container>
+                                </ng-container>
+                              </tbody>
+
+                            </table>
+                            <div class="d-flex justify-content-center align-items-center" style="height: 100%;" *ngIf="subTasks.length === 0">
+                              <table class="mx-auto">
+                                <tr>
+                                  <td><b>No more subtask</b></td>
+                                </tr>
                               </table>
                             </div>
-
+                            
                           </div>
+
                         </div>
-                  
+                      </div>
+
                     </div>
                   </div>
                 </div>

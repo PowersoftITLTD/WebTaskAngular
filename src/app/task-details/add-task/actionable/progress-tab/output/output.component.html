@@ -1,0 +1,134 @@
+<div *ngIf="loading" class="text-center">
+    <div class="spinner-border text-primary" role="status">
+        <span class="sr-only">Loading...</span>
+    </div>
+</div>
+<table *ngIf="!loading" class="table table-active">
+    <thead>
+        <tr>
+            <th *ngIf="columns[0].visible">{{ columns[0].header }}</th>
+            <th *ngIf="columns[1].visible">{{ columns[1].header }}</th>
+            <th *ngIf="columns[2].visible">{{ columns[2].header }}</th>
+            <th *ngIf="columns[3].visible">{{ columns[3].header }}</th>
+            <th *ngIf="columns[4].visible">{{ columns[4].header }}</th>
+            <th *ngIf="columns[5].visible">{{ columns[5].header }}</th>
+            <th *ngIf="columns[6].visible">{{ columns[6].header }}</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngIf="outputList.length === 0">
+            <td colspan="7" class="text-center">No data available</td>
+        </tr>
+        <tr *ngFor="let document of outputList; let i = index">
+            <td style="padding-left: 2rem;">{{ document.SR_NO || i + 1 }}</td>
+            <td *ngIf="columns[1].visible">{{ document.ATTRIBUTE2 }}</td>
+            <td *ngIf="columns[2].visible">{{ document.DOC_NUMBER }}</td>
+            <td *ngIf="columns[3].visible">{{ document.TYPE_DESC }}</td>
+            <td *ngIf="columns[4].visible">{{ document.DOC_DATE | date: 'dd/MM/yyyy' }}</td>
+            <td *ngIf="columns[5].visible">{{ document.VALIDITY_DATE | date: 'dd/MM/yyyy' }}</td>
+            <td>
+                <button type="button" class="d-btn" style="font-size: 14px;" (click)="openModal(document)">
+                    Details
+                </button>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+
+<!-- Modal -->    
+<div *ngIf="isModalOpen" class="modal-backdrop">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title">{{ selectedDocument?.TYPE_DESC || 'Document Details' }}</h5>
+            <button type="button" class="close" (click)="closeModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="row justify-content-between">
+                <!-- Property Dropdown -->
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="project">Property</label>
+                        <select class="h6 custom-select cate" formControlName="project" #projectSelect
+                            (change)="onProjectSelect(projectSelect)" style="width: 100%;">
+                            <option value="0" [selected]="taskDetails[0].PROJECT === 0">Select
+                            </option>
+                            <option *ngFor="let p of project" [selected]="p.TYPE_DESC === taskDetails[0].PROJECT">
+                                {{ p.TYPE_DESC }}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Building Dropdown -->
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="subProject">Building</label>
+                        <select class="h6 custom-select cate" formControlName="subProject"
+                            [(ngModel)]="taskDetails[0].Sub_PROJECT" formControlName="subProject" style="width: 100%;">
+                            <option value="0" [selected]="taskDetails[0].Sub_PROJECT">Select
+                            </option>
+                            <option *ngFor="let s of sub_proj" [selected]="s.TYPE_DESC === taskDetails[0].Sub_PROJECT">
+                                {{ s.TYPE_DESC }}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Document Number -->
+                <div class="col-md-6" *ngIf="selectedDocument.DOC_NUM_APP_FLAG === 'Y'">
+                    <div class="form-group">
+                        <label for="docNumber">Document Number</label>
+                        <input type="text" id="docNumber" class="form-control"
+                            [(ngModel)]="selectedDocument.DOC_NUMBER">
+                    </div>
+                </div>
+
+                <!-- Document Date -->
+                <div class="col-md-6" *ngIf="selectedDocument.DOC_NUM_DATE_APP_FLAG === 'Y'">
+                    <div class="form-group">
+                        <label for="docDate">Document Date</label>
+                        <input type="date" id="docDate" class="form-control" [(ngModel)]="selectedDocument.DOC_DATE">
+                    </div>
+                </div>
+
+                <!-- Validity Date -->
+                <div class="col-md-6" *ngIf="selectedDocument.DOC_NUM_VALID_FLAG === 'Y'">
+                    <div class="form-group">
+                        <label for="validityDate">Validity Date</label>
+                        <input type="date" id="validityDate" class="form-control"
+                            [(ngModel)]="selectedDocument.VALIDITY_DATE">
+                    </div>
+                </div>
+
+                <!-- Attach Document Field -->
+                <div class="col-6" *ngIf="selectedDocument.DOC_ATTACH_APP_FLAG === 'Y'">
+                    <div class="form-group" style="margin-top: 23px;">
+                        <div class="custom-file d-flex align-items-center">
+                            <input type="file" class="custom-file-input" id="customFile" [disabled]="hasFile()"
+                                (change)="onFileSelected($event)">
+
+                            <label class="custom-file-label flex-grow-1 text-truncate" for="customFile">
+                                {{ selectedFileName() }}
+                            </label>
+
+                            <div *ngIf="hasFile()" class="file-actions d-flex align-items-center ms-2"
+                                style="z-index: 1000; margin-left: -15rem; margin-top: 3px; gap: 4px;">
+                                <a [href]="getDownloadUrl()" download>
+                                    <i class="fa fa-download" aria-hidden="true"></i>
+                                </a>
+                                <button (click)="removeFile()">
+                                    <i class="fa fa-trash" aria-hidden="true"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" (click)="closeModal()">Close</button>
+            <button type="button" class="btn btn-primary" (click)="saveChanges()">Save Changes</button>
+        </div>
+    </div>
+</div>
