@@ -31,6 +31,7 @@ export class CheckListComponent implements OnInit {
   selectedDocs: { key: string; DOCUMENT_CATEGORY: number; MKEY: number }[] = [];
   @Input() task: any;
   taskDetails: any;
+  groupedChecklist: { DOCUMENT_NAME: string; DOCUMENTS: ChecklistItem[] }[] = [];
   
   constructor(
     private apiService: ApiService,
@@ -105,18 +106,30 @@ export class CheckListComponent implements OnInit {
     });
   }
   
-
   updateFilteredChecklist(): void {
     console.log('Updating filtered checklist');
-    console.log('Search Query:', this.searchQuery); // Check if the search query is populated
-    this.filteredChecklist = this.searchQuery
-      ? this.checkList.filter(item =>
-        item.DOCUMENT_NAME.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
-        item.DOCUMENT_CATEGORY.toString().toLowerCase().includes(this.searchQuery.toLowerCase()) ||
-        (item.TYPE_DESC && item.TYPE_DESC.toLowerCase().includes(this.searchQuery.toLowerCase())) // Include TYPE_DESC in the search
-      )
-      : [...this.checkList];
+    console.log('Search Query:', this.searchQuery);
+  
+    const searchQueryLower = this.searchQuery.toLowerCase().trim();
+    
+    const groupedData: { [key: string]: { DOCUMENT_NAME: string; DOCUMENTS: ChecklistItem[] } } = {};
+  
+    this.checkList.forEach(item => {
+      const matchesSearch = 
+        item.DOCUMENT_NAME.toLowerCase().includes(searchQueryLower) || 
+        (item.TYPE_DESC && item.TYPE_DESC.toLowerCase().includes(searchQueryLower));
+  
+      if (matchesSearch) {
+        if (!groupedData[item.DOCUMENT_NAME]) {
+          groupedData[item.DOCUMENT_NAME] = { DOCUMENT_NAME: item.DOCUMENT_NAME, DOCUMENTS: [] };
+        }
+        groupedData[item.DOCUMENT_NAME].DOCUMENTS.push(item);
+      }
+    });
+  
+    this.groupedChecklist = Object.values(groupedData);
   }
+  
 
   toggleSelection(item: ChecklistItem): void {
     const docKey = `${item.MKEY}-${item.DOCUMENT_CATEGORY}`;

@@ -6,13 +6,13 @@
 <table *ngIf="!loading" class="table table-active">
     <thead>
         <tr>
-            <th *ngIf="columns[0].visible">{{ columns[0].header }}</th>
+            <th *ngIf="columns[0].visible" style="text-align: center;">{{ columns[0].header }}</th>
             <th *ngIf="columns[1].visible">{{ columns[1].header }}</th>
             <th *ngIf="columns[2].visible">{{ columns[2].header }}</th>
             <th *ngIf="columns[3].visible">{{ columns[3].header }}</th>
             <th *ngIf="columns[4].visible">{{ columns[4].header }}</th>
             <th *ngIf="columns[5].visible">{{ columns[5].header }}</th>
-            <th *ngIf="columns[6].visible">{{ columns[6].header }}</th>
+            <th *ngIf="columns[6].visible" style="text-align: center;">{{ columns[6].header }}</th>
         </tr>
     </thead>
     <tbody>
@@ -20,13 +20,13 @@
             <td colspan="7" class="text-center">No data available</td>
         </tr>
         <tr *ngFor="let document of outputList; let i = index">
-            <td style="padding-left: 2rem;">{{ document.SR_NO || i + 1 }}</td>
+            <td style="text-align: center;">{{ document.SR_NO || i + 1 }}</td>
             <td *ngIf="columns[1].visible">{{ document.ATTRIBUTE2 }}</td>
             <td *ngIf="columns[2].visible">{{ document.DOC_NUMBER }}</td>
             <td *ngIf="columns[3].visible">{{ document.TYPE_DESC }}</td>
             <td *ngIf="columns[4].visible">{{ document.DOC_DATE | date: 'dd/MM/yyyy' }}</td>
             <td *ngIf="columns[5].visible">{{ document.VALIDITY_DATE | date: 'dd/MM/yyyy' }}</td>
-            <td>
+            <td style="text-align: center;">
                 <button type="button" class="d-btn" style="font-size: 14px;" (click)="openModal(document)">
                     Details
                 </button>

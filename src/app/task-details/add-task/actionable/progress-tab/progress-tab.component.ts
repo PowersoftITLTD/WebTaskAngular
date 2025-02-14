@@ -12,7 +12,7 @@ import { HistoryComponent } from './history/history.component';
   styleUrls: ['./progress-tab.component.css'],
 })
 export class ProgressTabComponent implements OnInit {
-  selectedTab: string = 'checkList';
+  selectedTab: string = 'subTask';
 
   tabs = [
     { key: 'subTask', label: 'Sub Task', component: ProgressDetailsComponent },

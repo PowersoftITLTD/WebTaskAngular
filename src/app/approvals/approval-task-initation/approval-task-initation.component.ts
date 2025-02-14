@@ -402,22 +402,22 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
     console.log('addApprovalInitiation: ', addApprovalInitiation);
 
 
-    // this.apiService.postApprovalInitiation(addApprovalInitiation, this.recursiveLogginUser).subscribe({
-    //   next: (response) => {
-    //     console.log(response.message)
-    //     if (response.status === 'Error') {
-    //       this.tostar.error(response.message)
-    //       return
-    //     }
-    //     this.router.navigate(['/task/task-management']);
+    this.apiService.postApprovalInitiation(addApprovalInitiation, this.recursiveLogginUser).subscribe({
+      next: (response) => {
+        console.log(response.message)
+        if (response.status === 'Error') {
+          this.tostar.error(response.message)
+          return
+        }
+        this.router.navigate(['/task/task-management']);
 
-    //     this.tostar.success('Success', 'Template added successfuly');
+        this.tostar.success('Success', 'Template added successfuly');
 
-    //     console.log('Project task initiation', response)
-    //   }, error: (error) => {
-    //     console.error('Login failed:', error);
-    //   }
-    // })
+        console.log('Project task initiation', response)
+      }, error: (error) => {
+        console.error('Login failed:', error);
+      }
+    })
   }
 
 

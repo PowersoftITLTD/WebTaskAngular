@@ -253,7 +253,6 @@ export class OutputComponent implements OnInit {
   }
 
   saveChanges(): void {
-    console.log('this.selectedDocument.MKEY', this.selectedDocument.MKEY)
     const token = this.apiService.getRecursiveUser();
     const formData = new FormData();
     formData.append('PROJECT_DOC_FILES', this.selectedDocument.TASK_OUTPUT_ATTACHMENT[0] || "null");

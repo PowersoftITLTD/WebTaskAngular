@@ -18,18 +18,27 @@
             <div *ngIf="!loading && checkList.length > 0; else noData" class="dropdown bg-light p-3 rounded shadow">
 
               <ul class="dropdown-list">
-                <ng-container *ngFor="let docItem of filteredChecklist">
+                <ng-container *ngFor="let group of groupedChecklist">
+                  <!-- Document Name Header -->
                   <div class="category-header justify-content-center" style="color: rgb(216, 87, 87);">
-                    <b>{{ docItem.DOCUMENT_NAME }}</b>
+                    <b>{{ group.DOCUMENT_NAME }}</b>
                   </div>
-                  <li (click)="toggleSelection(docItem)" [class.selected]="isSelected(docItem)"
-                    style="display: flex; justify-content: space-between;">
-                    {{ docItem.TYPE_DESC || 'No Description Available' }}
-                    <input type="checkbox" class="checkbox" [checked]="isSelected(docItem)"
-                      (click)="onCheckboxChange($event, docItem)" />
-                  </li>
+              
+                  <!-- Document Descriptions -->
+                  <ng-container *ngFor="let docItem of group.DOCUMENTS">
+                    <li (click)="toggleSelection(docItem)" 
+                        [class.selected]="isSelected(docItem)"
+                        style="display: flex; justify-content: space-between;">
+                      {{ docItem.TYPE_DESC || 'No Description Available' }}
+                      <input type="checkbox" class="checkbox" 
+                             [checked]="isSelected(docItem)" 
+                             (click)="onCheckboxChange($event, docItem)" />
+                    </li>
+                  </ng-container>
                 </ng-container>
               </ul>
+              
+              
 
             </div>
 

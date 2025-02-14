@@ -262,6 +262,17 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
       );
     };
 
+
+    const subtask_len = this.subTasks.length;
+    const seq_len =  this.selectedSeqArr.length;
+    const remaining = subtask_len - seq_len
+    const real_len = subtask_len - remaining
+    console.log('subtask_len: ',subtask_len);
+    console.log('real_len: ',real_len)
+
+    if(subtask_len !== real_len){
+    }
+
     // Remove parent tasks that exist in subtasks
     const removeParentTaskIfInSubtasks = (tasks: any[]): any[] => {
       return tasks.filter((task: any) => !hasMatchingSubtask(task, tasks));
@@ -723,6 +734,7 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
 
       if (task.subtask && task.subtask.length > 0) {
         task.subtask.forEach((innerTask: any) => {
+          // console.log('innerTask', innerTask)
           updateTaskSelection(innerTask, isChecked);
         });
       }
@@ -732,6 +744,8 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
       updateTaskSelection(task, this.selectAllChecked);
       this.toggleSelection(task);
     });
+
+   
   }
 
 

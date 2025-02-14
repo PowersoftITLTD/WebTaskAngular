@@ -362,7 +362,7 @@
                                       <ul class="dropdown-list" style="height:40rem">
                                         <li class="sticky" *ngIf="!isLoading">
                                           <span class="select-all-container">
-                                            <input type="checkbox" class="task-item" (change)="selectAll()"
+                                            <input type="checkbox" class="task-item" [checked]="subTasks.length !== selectedSeqArr.length" (change)="selectAll()"
                                             >
                                           </span> 
                                         </li> 

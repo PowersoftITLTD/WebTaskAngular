@@ -54,7 +54,6 @@ export class SancAuthComponent implements OnInit {
       (response: any) => {
         this.propertyMKey = response[0].data;
         this.sancAuthForm.patchValue({ category: 'Project' });
-        console.log('Property MKey:', this.propertyMKey);
       },
       (error: ErrorHandler) => {
         console.log(error, 'Error Occurred while fetching categories');
