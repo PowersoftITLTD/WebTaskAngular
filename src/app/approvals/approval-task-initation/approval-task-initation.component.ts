@@ -125,7 +125,6 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
       if (RecursiveTaskData) {
         try {
           this.taskData = JSON.parse(RecursiveTaskData);
-          console.log('Check task data', this.taskData)
           if (!isNewTemp) {
             this.updatedDetails = this.taskData.mkey ? true : false;
           }
@@ -470,7 +469,6 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
     this.apiService.getBuildingClassificationDP(this.recursiveLogginUser).subscribe({
       next: (list: any) => {
         this.buildingList = list;
-        console.log('Building Classification List:', this.buildingList);
       },
       error: (error: any) => {
         console.error('Unable to fetch Building Classification List', error);
@@ -526,7 +524,6 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
     this.apiService.getDepartmentDP(this.recursiveLogginUser).subscribe({
       next: (list: any) => {
         this.departmentList = list
-        console.log('Department List', this.departmentList);
         this.setDepartmentName();
 
       }, error: (error: ErrorHandler) => {
@@ -538,9 +535,7 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
     this.apiService.getSanctoningAuthDP(this.recursiveLogginUser).subscribe({
       next: (list: any) => {
         this.SanctoningAuthList = list
-        this.setSenctoningAuthorityName();
-
-        console.log('Document Type List SanctoningAuthList:', this.SanctoningAuthList);
+        this.setSenctoningAuthorityName();        
       }, error: (error: any) => {
         console.error('Unable to fetch Document Type List', error);
 
@@ -723,7 +718,6 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
         // console.log("Employee data:", data);
         // const _data = data;
                    
-        console.log( 'Check the responsible person',response[0]?.data)
 
         response[0]?.data.forEach((emp: any) => {
           const fullName = emp.EMP_FULL_NAME;
@@ -751,8 +745,9 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
         });
         console.log('this.employees', this.employees);    
       },
-      (error: ErrorHandler) => {
+      (error: ErrorHandler|any) => {
         console.error('Error fetching employee details:', error);
+        this.tostar.error(error)
       }
     );
   }
@@ -819,6 +814,10 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
       return fullName.includes(filterValue);
     });
 
+    if(this.filteredEmployees.length === 0){
+      this.tostar.error('No employee available')
+    }
+
     this.inputHasValue = value.trim().length > 0;
 
   }
@@ -858,9 +857,9 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
 
     console.log('check emp',  this.employees)
 
-    // if(this.employees = []){
-    //   this.tostar.error('No responsible person available')
-    // }
+    if(this.employees.length === 0){
+      this.tostar.error('No employee available')
+    }
 
     this.subListFilteredEmp = this.employees.filter(emp => {
       const fullName = emp.Assign_to.toLowerCase();
@@ -906,6 +905,9 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
     if (assignedTo) {
       this.subListFilteredEmp = []; // Clear the list (or do any other actions you need)
     }
+
+  
+
   }
 
 
@@ -1101,8 +1103,9 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
     console.log('task ', task);
     console.log('assignTo', assignTo);
 
+    console.log('Check employees name',this.employees)
     const matchedEmp = this.employees.find((employee: any) =>
-      employee.Assign_to === assignTo
+      employee.Assign_to.toLowerCase() === assignTo.toLowerCase()
     );
 
     console.log('matchedEmp from update subtask', matchedEmp?.MKEY);
@@ -1312,7 +1315,7 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
 
     const flatten = (task: any) => {
 
-      // console.log('task from breakToLinear',task)
+      console.log('task.TASK_NO.resposiblE_EMP_MKEY: ',task.TASK_NO.resposiblE_EMP_MKEY)
 
       result.push({
         TASK_NO: task.TASK_NO.TASK_NO.trim(),
@@ -1481,12 +1484,11 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
       a.TASK_NO.localeCompare(b.TASK_NO, undefined, { numeric: true })
     );
 
-    const taskMap = new Map();
+    // const taskMap = new Map();
 
-    let lastEndDate = this.appeInitForm.get('startDate')?.value;
-    console.log('lastEndDate', lastEndDate)
+    let lastEndDate = this.appeInitForm.get('startDate')?.value;  
 
-
+    let modified_start_date = new Date(lastEndDate)
     const optionListArr = sortedTasks
       .filter((item: any) => item.TASK_NO !== null)
       .map((item: any, index: number) => {
@@ -1494,7 +1496,11 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
         const departmentRole = departmentList.find((department: any) => department.mkey === item.DEPARTMENT);
         const daysRequired = isNaN(item.DAYS_REQUIRED) ? 0 : Number(item.DAYS_REQUIRED);
 
-        let startDate = new Date(lastEndDate);
+        //let startDate = new Date(lastEndDate);
+        let startDate = modified_start_date;
+        console.log('startDate startDate',startDate)
+        console.log('lastEndDate lastEndDate', lastEndDate)
+
         let endDate = new Date(startDate);
         endDate.setDate(startDate.getDate() + daysRequired);
 
@@ -1523,13 +1529,11 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
     this.loading = true;
 
     this.selectedAssignTo
-    console.log('optionListArr', optionListArr)
 
     const same_data = optionListArr;
 
     // console.log('Building hierarchy with data:', JSON.stringify(same_data, null, 2));
 
-    console.log('same_data', same_data)
     //this.cdr.detectChanges();
 
     const buildHierarchy = (tasks: any, rootTaskNo: any) => {
@@ -1714,17 +1718,20 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
     //   }
     // }
 
-    // if (subTaskList && subTaskList.length > 0) {
-    //   const invalidSubTasks = subTaskList.filter((subTask: any) => {
-    //     return !(Number(subTask.RESPOSIBLE_EMP_MKEY) > 0 || Number(subTask.resposiblE_EMP_MKEY) > 0);
-    //   });
+    console.log('subTaskList: ', subTaskList)
 
-    //   console.log('invalidSubTasks', invalidSubTasks);
-    //   if (invalidSubTasks.length > 0) {
-    //     this.tostar.error('Please add a responsible person/s to all subtask(s)');
-    //     return;
-    //   }
-    // }
+    if (subTaskList && subTaskList.length > 0) {
+      const invalidSubTasks = subTaskList.filter((subTask: any) => {
+        console.log('subTask well', subTask)
+        return !(Number(subTask.RESPOSIBLE_EMP_MKEY) > 0 || Number(subTask.resposiblE_EMP_MKEY) > 0);
+      });
+
+      console.log('invalidSubTasks', invalidSubTasks);
+      if (invalidSubTasks.length > 0) {
+        this.tostar.error('Please add a responsible person/s to all subtask(s)');
+        return;
+      }
+    }
 
     if (requiredControls.length > 0) {
       const errorMessage = `${requiredControls.join(' , ')}`;

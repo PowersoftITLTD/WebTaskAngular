@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ErrorHandler, Input, OnDestroy, OnInit } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, ErrorHandler, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { ApiService } from 'src/app/services/api/api.service';
@@ -19,7 +19,7 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
 
   isLoading: boolean = true; // Hide the button when clicked
   disableChilCheckBox: boolean = false;
-
+  isAllSelectedCheck:boolean = false;
   receivedUser: string | any;
   taskDetails: any;
   loading: boolean = false;
@@ -31,6 +31,8 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
   existingTaskA: any;
   selectAllChecked: boolean = false;
   flatList: any
+  subtask_len:any = [];
+  real_len:any = [];
 
   formVisibleMap: boolean[] = [];
 
@@ -46,7 +48,7 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
   selectedTasksId: Set<any> = new Set();
   selectedTasksId_new: Set<any> = new Set();
   selectedTasks: Set<any> = new Set();
-  selectedTaskTable: Set<any> = new Set();
+  // selectedTaskTable: Set<any> = new Set();
   tableData: Set<any> = new Set();
 
   buildingList: any[] = [];
@@ -100,7 +102,8 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
     private apiService: ApiService,
     private tostar: ToastrService,
     private router: Router,
-    private credentialService: CredentialService
+    private credentialService: CredentialService,
+    private cdRef: ChangeDetectorRef
   ) {
 
     const navigation: any = this.router.getCurrentNavigation();
@@ -188,6 +191,9 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
 
 
   toggleSelection(task: any = []): void {
+
+    console.log('Check',task)
+
     const taskId = task?.TASK_NO?.TASK_NO;
 
     // Safely check and toggle selection state
@@ -216,10 +222,11 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
       };
 
       const filterUniqueTasks = (tasks: any[]): any[] => {
-        return tasks
+        console.log('filterUniqueTasks: ',tasks)
+        return tasks        
           .filter((task: any) => abbrCount.get(task?.TASK_NO?.maiN_ABBR) === 1)
-          .map((task: any) => ({
-            ...task,
+          .map((task: any) => ({            
+            ...task,          
             subtask: filterUniqueTasks(task.subtask || []), // Recursive filtering
           }));
       };
@@ -248,12 +255,13 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
     }
 
 
-    console.log(this.selectedSeqArr)
+    console.log('selectedTasksArray: ', selectedTasksArray);
 
     // Function to check if task exists as a subtask
     const hasMatchingSubtask = (task: any, tasks: any[]): boolean => {
       return tasks.some((parentTask) =>
         parentTask.subtask?.some((subtask: any) => {
+   
           if (subtask?.TASK_NO?.TASK_NO.trim() === task?.TASK_NO?.TASK_NO.trim()) {
             return true;
           }
@@ -262,17 +270,7 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
       );
     };
 
-
-    const subtask_len = this.subTasks.length;
-    const seq_len =  this.selectedSeqArr.length;
-    const remaining = subtask_len - seq_len
-    const real_len = subtask_len - remaining
-    console.log('subtask_len: ',subtask_len);
-    console.log('real_len: ',real_len)
-
-    if(subtask_len !== real_len){
-    }
-
+ 
     // Remove parent tasks that exist in subtasks
     const removeParentTaskIfInSubtasks = (tasks: any[]): any[] => {
       return tasks.filter((task: any) => !hasMatchingSubtask(task, tasks));
@@ -281,8 +279,36 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
     // Filter tasks to exclude duplicates in subtasks
     const updatedTasksArray = removeParentTaskIfInSubtasks(selectedTasksArray);
 
+
     // Sort tasks by sequence
     this.selectedSeqArr = this.sortTasksBySequence(updatedTasksArray);
+
+    const subtask_len = this.subTasks.length;
+    const seq_len =  this.selectedSeqArr.length;
+    const remaining = subtask_len - seq_len
+    const real_len = subtask_len - remaining
+
+
+    this.subtask_len = subtask_len;
+    this.real_len = real_len;
+
+    // if(subtask_len === real_len){
+    //   this.isAllSelectedCheck = true;
+    //   // this.isAllSelectedCheck = this.selectAllChecked
+    //   console.log("Checkbox should be unchecked:", this.isAllSelectedCheck);
+  
+    //   setTimeout(() => {
+    //     this.cdRef.detectChanges();
+    //   });
+    // }else{
+
+    //   this.isAllSelectedCheck = false;
+    //   // this.isAllSelectedCheck = this.selectAllChecked
+    //   console.log("Checkbox should be unchecked:", this.isAllSelectedCheck);
+    //   setTimeout(() => {
+    //     this.cdRef.detectChanges();
+    //   });
+    // }
 
 
 
@@ -306,9 +332,29 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
 
     // Update the uniqueSubTask property
     this.uniqueSubTask = uniqueTasks;
+    // this.updateSelectAllState();
   }
 
+  updateSelectAllState() {
+    this.selectAllChecked = !this.selectAllChecked;
 
+    console.log('selectAll checkbox',this.selectAllChecked)
+    
+    const updateTaskSelection = (task: any, isChecked: boolean) => {
+        task.checked = isChecked;
+
+        if (task.subtask && task.subtask.length > 0) {
+            task.subtask.forEach((innerTask: any) => {
+                updateTaskSelection(innerTask, isChecked);
+            });
+        }
+    };
+
+    this.subTasks.forEach(task => {
+        updateTaskSelection(task, this.selectAllChecked);
+        // this.toggleSelection(task);
+    });
+}
 
   isTaskDisabled(task: any): boolean {
 
@@ -396,18 +442,24 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
   }
 
 
+  hasInitiatedTasks(): boolean {
+    return this.taskData?.approvalS_ABBR_LIST?.some((task: any) => 
+        task.status?.toLowerCase() === 'initiated' || task.status?.toLowerCase() === 'ready to initiate'
+    );
+}
 
+
+hasDisabledClear(): boolean {
+  return this.taskData?.approvalS_ABBR_LIST?.some((task: any) => 
+      task.status?.toLowerCase() === 'initiated'
+  );
+}
 
 
   breakToLinear(selectedSeq: any) {
 
-
     // console.log('breakToLinear selectedSeq',selectedSeq)
-
     const result: any[] = [];
-    const USER_CRED = this.credentialService.getUser();
-
-
     const flatten = (task: any) => {
 
       // console.log('task from breakToLinear',task)
@@ -445,8 +497,6 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
         });
       }
 
-
-
       if (task.subtask && task.subtask.length > 0) {
         task.subtask.forEach(flatten);
       }
@@ -471,7 +521,7 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
     const subTaskList = this.flatList
 
     console.log('uniq list',this.uniqList)
-    console.log('flatList list',this.flatList)
+    console.log('flatList list from add',this.flatList)
 
     console.log('PROJECT', PROJECT)
     console.log('SUB_PROJECT', SUB_PROJECT)
@@ -537,28 +587,34 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
 
 
     let subTaskList = this.uniqList;
+    subTaskList = this.breakToLinear(this.selectedSeqArr);
 
+    // const linear_arr = this.breakToLinear(this.selectedSeqArr);
+    // const linear_sub = this.removeDuplicates(subTaskList);
+    // console.log('subTaskList',  linear_arr)
+    // console.log('linear_sub', linear_sub)
 
-    if (!this.isCleared) {
-      subTaskList = subTaskList.filter((task, index, self) => {
-        // Check if task is not "Ready to Initiate" and is not a duplicate task with status "created"
-        const isDuplicate = self.findIndex(t => t.tasK_NO === task.tasK_NO) !== index;
+    // if (!this.isCleared) {
+    //   console.log('Coming to non clear')
+    //   // subTaskList = subTaskList.filter((task, index, self) => {
+    //   //   // Check if task is not "Ready to Initiate" and is not a duplicate task with status "created"
+    //   //   const isDuplicate = self.findIndex(t => t.tasK_NO === task.tasK_NO) !== index;
+    //   //   console.log('isDuplicate', isDuplicate)
+    //   //   // Keep tasks that are either "Ready to Initiate" or "created" and if it is the first occurrence (or not a duplicate with status "created")
+    //   //   return (task.status === "Ready to Initiate" || task.status === "created" || task.status === "Initiated") &&
+    //   //     (!isDuplicate || task.status === "Ready to Initiate") || (!isDuplicate || task.status === "Initiated");
+    //   // });
+    //   subTaskList = this.breakToLinear(this.selectedSeqArr);
+    //   console.log('subTaskList', subTaskList)
+    // } else   {
+    //   console.log('Coming to clear')
+    //   subTaskList = this.flatList
+    //   console.log('subTaskList', this.subTasks )
+    //   // Otherwise, remove "Ready to Initiate" tasks
+    //   // subTaskList = subTaskList.filter(task => task.status !== "Ready to Initiate");
+    // }
 
-        // Keep tasks that are either "Ready to Initiate" or "created" and if it is the first occurrence (or not a duplicate with status "created")
-        return (task.status === "Ready to Initiate" || task.status === "created" || task.status === "Initiated") &&
-          (!isDuplicate || task.status === "Ready to Initiate") || (!isDuplicate || task.status === "Initiated");
-      });
-    } else {
-
-      subTaskList = this.flatList
-      // console.log('subTaskList', subTaskList )
-      // Otherwise, remove "Ready to Initiate" tasks
-      // subTaskList = subTaskList.filter(task => task.status !== "Ready to Initiate");
-
-    }
-
-
-    console.log('Filtered Sub Task List:', subTaskList);
+    // console.log('Filtered Sub Task List:', subTaskList);
 
     const addProjectDefination = {
       mkey: this.taskData.mkey,
@@ -579,15 +635,15 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
     };
 
     console.log(addProjectDefination);
-    // this.apiService.putProjectDefination(addProjectDefination, headerMkey, this.recursiveLogginUser).subscribe({
-    //   next: (addData: any) => {
-    //     console.log('Data added successfully', addData)
-    //     this.tostar.success('Success', 'Template added successfuly')
-    //     this.router.navigate(['task/approval-screen'], { queryParams: { source: 'project-defination' } });
-    //   }, error: (error: ErrorHandler) => {
-    //     console.log('Unable to get data', error)
-    //   }
-    // });
+    this.apiService.putProjectDefination(addProjectDefination, headerMkey, this.recursiveLogginUser).subscribe({
+      next: (addData: any) => {
+        console.log('Data added successfully', addData)
+        this.tostar.success('Success', 'Template added successfuly')
+        this.router.navigate(['task/approval-screen'], { queryParams: { source: 'project-defination' } });
+      }, error: (error: ErrorHandler) => {
+        console.log('Unable to get data', error)
+      }
+    });
   }
 
 
@@ -726,27 +782,56 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
   //   // this.cdr.detectChanges();
   // }
 
+  // selectAll() {
+  //   this.selectAllChecked = !this.selectAllChecked;
+    
+  //   console.log('selectAllChecked', this.selectAllChecked)
+  //   const updateTaskSelection = (task: any, isChecked: boolean) => {
+  //     task.checked = isChecked;
+
+  //     if (task.subtask && task.subtask.length > 0) {
+  //       task.subtask.forEach((innerTask: any) => {
+  //         console.log('innerTask', innerTask)
+  //         updateTaskSelection(innerTask, isChecked);
+  //       });
+  //     }
+  //   };
+
+  //   this.subTasks.forEach(task => {
+  //     console.log('Understand task', task)
+  //     updateTaskSelection(task, this.selectAllChecked);
+  //     this.toggleSelection(task);
+  //   });
+
+
+  // // Force UI update
+  // this.cdRef.detectChanges();
+
+   
+  // }
   selectAll() {
     this.selectAllChecked = !this.selectAllChecked;
 
+    console.log('selectAll checkbox',this.selectAllChecked)
+    
     const updateTaskSelection = (task: any, isChecked: boolean) => {
-      task.checked = isChecked;
+        task.checked = isChecked;
 
-      if (task.subtask && task.subtask.length > 0) {
-        task.subtask.forEach((innerTask: any) => {
-          // console.log('innerTask', innerTask)
-          updateTaskSelection(innerTask, isChecked);
-        });
-      }
+        if (task.subtask && task.subtask.length > 0) {
+            task.subtask.forEach((innerTask: any) => {
+                updateTaskSelection(innerTask, isChecked);
+            });
+        }
     };
 
     this.subTasks.forEach(task => {
-      updateTaskSelection(task, this.selectAllChecked);
-      this.toggleSelection(task);
+        updateTaskSelection(task, this.selectAllChecked);
+        this.toggleSelection(task);
     });
 
-   
-  }
+    this.cdRef.detectChanges();
+}
+
 
 
   fetchData(): void {
@@ -966,12 +1051,7 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
     const buildingCla = this.taskData.buildinG_CLASSIFICATION;
     const buildingStd = this.taskData.buildinG_STANDARD;
     const statutoryAuth = this.taskData.statutorY_AUTHORITY;
-
-    // console.log('USER_CRED[0]?.MKEY', typeof USER_CRED[0]?.MKEY)
-    // console.log('Building', typeof buildingCla)
-    // console.log('Standard', typeof buildingStd)
-    // console.log('Statutoory', typeof statutoryAuth)
-
+   
     if (buildingCla && buildingStd && statutoryAuth) {
       this.recursiveLogginUser = this.apiService.getRecursiveUser();
       this.apiService.projectDefinationOption(USER_CRED[0]?.MKEY, token, buildingCla, buildingStd, statutoryAuth).subscribe({
@@ -1533,6 +1613,7 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
 
     if (requiredControls.length > 0) {
       const errorMessage = `${requiredControls.join(' , ')}`;
+      console.log('errorMessage: ', errorMessage)
       this.tostar.error(errorMessage);
       return;  // Stop further processing
     }
@@ -1578,10 +1659,10 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
       const startDate = new Date(task.tentativE_START_DATE);
       const endDate = new Date(task.tentativE_END_DATE);
 
-      if (startDate > endDate) {
-        this.tostar.error(`Task ${task.tasK_NO}: Start date cannot be greater than end date.`);
-        return true;
-      }
+      // if (startDate > endDate) {
+      //   this.tostar.error(`Task ${task.tasK_NO}: Start date cannot be greater than end date.`);
+      //   return true;
+      // }
       return false;
     });
 
@@ -1701,7 +1782,7 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
     if (isValid) {
 
       this.updateProjectDef();
-      this.tostar.success('Success', 'Template added successfuly')
+      // this.tostar.success('Success', 'Template added successfuly')
     } else {
       console.log('Form is invalid, cannot add template');
     }

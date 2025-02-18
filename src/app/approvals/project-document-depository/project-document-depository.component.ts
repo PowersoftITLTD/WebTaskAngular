@@ -89,6 +89,7 @@ export class ProjectDocumentDepositoryComponent implements OnInit {
       sessionStorage.removeItem('add_new_task');
     } else {
       const RecursiveTaskData = sessionStorage.getItem('task');
+      console.log('RecursiveTaskData', RecursiveTaskData)
       if (RecursiveTaskData) {
         try {
           this.taskData = JSON.parse(RecursiveTaskData);
@@ -224,6 +225,7 @@ export class ProjectDocumentDepositoryComponent implements OnInit {
     Object.keys(addDocDepository).forEach((key) => {
       if (key === "PROJECT_DOC_FILES" && Array.isArray(addDocDepository[key])) {
         addDocDepository[key].forEach((file: File | any, index: number) => {
+          console.log('file.file file',file)
           formData.append(`${key}`, file.file);
         });
       } else if (key !== "PROJECT_DOC_FILES") {

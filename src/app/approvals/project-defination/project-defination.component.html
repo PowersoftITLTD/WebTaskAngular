@@ -49,8 +49,8 @@
                       <div class="form-group">
                         <ng-container *ngIf="taskData?.mkey">
                           <label for="taskName">Project Abbrivation</label>
-                          <input type="text" formControlName="projectAbbr" [(ngModel)]="taskData.projecT_ABBR" maxlength="150" class="form-control"
-                            maxlength="150" />
+                          <input type="text" formControlName="projectAbbr" [(ngModel)]="taskData.projecT_ABBR"
+                            maxlength="150" class="form-control" maxlength="150" />
                         </ng-container>
 
                         <ng-container *ngIf="!taskData?.mkey">
@@ -66,22 +66,23 @@
                       <div class="form-group">
                         <ng-container *ngIf="taskData?.mkey">
                           <label for="taskName">Property</label>
-                          <select class="form-control" formControlName="property" [(ngModel)]="taskData.property" 
-                                  #projectSelect (change)="onProjectSelect(projectSelect)">
+                          <select class="form-control" formControlName="property" 
+                            [attr.disabled]="hasInitiatedTasks() ? true : null"
+                            [(ngModel)]="taskData.property"
+                            #projectSelect (change)="onProjectSelect(projectSelect)">
                             <option value="0">Select</option>
-                            <option *ngFor="let p of project" 
-                                    [ngValue]="p" 
-                                    [selected]="p.TYPE_DESC === taskData.project_Name">
+                            <option *ngFor="let p of project" [ngValue]="p"
+                              [selected]="p.TYPE_DESC === taskData.project_Name">
                               {{ p.TYPE_DESC }}
                             </option>
                           </select>
-                                                 
+
                         </ng-container>
 
                         <ng-container *ngIf="!taskData?.mkey">
-                          <label for="taskName">Property</label>                   
-                          <select class="form-control " formControlName="property"
-                            #projectSelect (change)="onProjectSelect(projectSelect)">
+                          <label for="taskName">Property</label>
+                          <select class="form-control " formControlName="property" #projectSelect
+                            (change)="onProjectSelect(projectSelect)">
                             <option value="" selected>Select</option>
                             <option *ngFor="let p of project" [ngValue]="p">{{ p.TYPE_DESC }}</option>
                           </select>
@@ -94,23 +95,27 @@
                       <div class="form-group">
                         <ng-container *ngIf="taskData?.mkey">
                           <label for="category">Building</label>
-                            <select class="form-control" formControlName="subProject" name="subProject">
-                              <option value="0">Select</option>
-                              <option *ngFor="let s of sub_proj" [selected]="s.TYPE_DESC === taskData.sub_proj_name">
-                                {{ s.TYPE_DESC }}
-                              </option>
-                            </select>
+                          <select class="form-control" formControlName="subProject"
+                            [attr.disabled]="hasInitiatedTasks() ? true : null"
+                            [(ngModel)]="taskData.sub_proj_name"
+                            name="subProject">
+                            <option value="0">Select</option>
+                            <option *ngFor="let s of sub_proj" [selected]="s.TYPE_DESC === taskData.sub_proj_name">
+                              {{ s.TYPE_DESC }}
+                            </option>
+                          </select>
                         </ng-container>
 
                         <ng-container *ngIf="!taskData?.mkey">
                           <label for="category">Building</label>
-                          <select class="form-control" formControlName="subProject">
+                          <select class="form-control" formControlName="subProject"
+                          >
                             <option value="0">Select</option>
-                            <option *ngFor="let s of sub_proj" [ngValue]="s" >
+                            <option *ngFor="let s of sub_proj" [ngValue]="s">
                               {{ s.TYPE_DESC }}
                             </option>
                           </select>
-                        </ng-container>                       
+                        </ng-container>
                       </div>
                     </div>
                   </div>
@@ -119,13 +124,13 @@
 
                     <div class="col-xs-12 col-xl-4 col-md-12 ">
                       <div class="form-group">
-                        <ng-container *ngIf="taskData?.mkey">  
+                        <ng-container *ngIf="taskData?.mkey">
                           <label for="taskName">Legal Entity</label>
-                          <input type="text" maxlength="150" formControlName="legalEntity" [(ngModel)]="taskData.legaL_ENTITY" class="form-control"
-                            maxlength="150" />
+                          <input type="text" maxlength="150" formControlName="legalEntity"
+                            [(ngModel)]="taskData.legaL_ENTITY" class="form-control" maxlength="150" />
                         </ng-container>
 
-                        <ng-container *ngIf="!taskData?.mkey">  
+                        <ng-container *ngIf="!taskData?.mkey">
                           <label for="taskName">Legal Entity</label>
                           <input type="text" maxlength="150" formControlName="legalEntity" class="form-control"
                             maxlength="150" />
@@ -136,40 +141,22 @@
                     <div class="col-xs-12 col-xl-8 col-md-12">
                       <div class="form-group">
 
-                        <ng-container *ngIf="taskData?.mkey">  
+                        <ng-container *ngIf="taskData?.mkey">
                           <label for="taskName">Project Address</label>
-                          <textarea type="text" maxlength="" [(ngModel)]="taskData.projecT_ADDRESS" formControlName="projAddress" class="form-control"
-                            rows="5" maxlength=""> </textarea>                        
+                          <textarea type="text" maxlength="" [(ngModel)]="taskData.projecT_ADDRESS"
+                            formControlName="projAddress" class="form-control" rows="5" maxlength=""> </textarea>
                         </ng-container>
 
-                        <ng-container *ngIf="!taskData?.mkey">  
+                        <ng-container *ngIf="!taskData?.mkey">
                           <label for="taskName">Project Address</label>
                           <textarea type="text" maxlength="150" formControlName="projAddress" class="form-control"
-                            rows="5" maxlength="150"> </textarea>                        
+                            rows="5" maxlength="150"> </textarea>
                         </ng-container>
-                     
+
                       </div>
                     </div>
                   </div>
                   <div class="classification-border px-2 py-2 mt-2">
-
-                    <div class="d-flex justify-content-end mt-2 mr-3">
-                      <i class="fa-solid plus btn mr-2" type="button" *ngIf="isLoading" (click)="getOptionList()" ><small>Get
-                          List</small></i>
-
-                     <div >
-                        <button *ngIf="!isCleared && updatedDetails" class="fa-solid plus btn mr-2" type="button" [disabled]="disableClear" (click)="confirmClear()">
-                          <small>Clear</small>
-                        </button>
-                      
-                        <!-- Reset Button -->
-                        <i *ngIf="isCleared || !updatedDetails" class="fa-solid plus btn" type="button" (click)="reset()">
-                          <small>Reset</small>
-                        </i>    
-                     </div>
-                                    
-                    </div>
-                    
 
                     <div class="row pl-3">
                       <div class="col-xs-12 col-xl-4 col-md-12">
@@ -178,9 +165,13 @@
                           <label for="category">Building Classification</label>
 
                           <ng-container *ngIf="taskData?.mkey">
-                            <select class="h6 form-control" formControlName="bldCla" [(ngModel)]="taskData.buildinG_CLASSIFICATION">
+                            <select class="h6 form-control" formControlName="bldCla"                                                            
+                              [attr.disabled]="hasInitiatedTasks() ? true : null"
+                              [(ngModel)]="taskData.buildinG_CLASSIFICATION">
                               <option value=""> --SELECT--</option>
-                              <option *ngFor="let building of buildingList" [selected]="building.typE_DESC === taskData.buildingName" [value]="building.mkey">{{building.typE_DESC}}
+                              <option *ngFor="let building of buildingList"
+                                [selected]="building.typE_DESC === taskData.buildingName" [value]="building.mkey">
+                                {{building.typE_DESC}}
                               </option>
                             </select>
                           </ng-container>
@@ -189,11 +180,12 @@
                             <!-- <label for="category">Building Classification</label> -->
                             <select class="h6 form-control" formControlName="bldCla">
                               <option value=""> --SELECT--</option>
-                              <option *ngFor="let building of buildingList"  [value]="building.mkey">{{building.typE_DESC}}
+                              <option *ngFor="let building of buildingList" [value]="building.mkey">
+                                {{building.typE_DESC}}
                               </option>
                             </select>
                           </ng-container>
-                        
+
                         </div>
                       </div>
 
@@ -202,9 +194,13 @@
 
                           <ng-container *ngIf="taskData?.mkey">
                             <label for="category">Building Standard</label>
-                            <select class="h6 form-control" formControlName="blsStandard" [(ngModel)]="taskData.buildinG_STANDARD">
+                            <select class="h6 form-control" formControlName="blsStandard"
+                              [attr.disabled]="hasInitiatedTasks() ? true : null"
+                              [(ngModel)]="taskData.buildinG_STANDARD">
                               <option value=""> --SELECT--</option>
-                              <option *ngFor="let standard of standardList" [selected]="standard.typE_DESC === taskData.standardName" [value]="standard.mkey">{{standard.typE_DESC}}
+                              <option *ngFor="let standard of standardList"
+                                [selected]="standard.typE_DESC === taskData.standardName" [value]="standard.mkey">
+                                {{standard.typE_DESC}}
                               </option>
                             </select>
                           </ng-container>
@@ -213,11 +209,12 @@
                             <label for="category">Building Standard</label>
                             <select class="h6 form-control" formControlName="blsStandard">
                               <option value=""> --SELECT--</option>
-                              <option *ngFor="let standard of standardList" [value]="standard.mkey">{{standard.typE_DESC}}
+                              <option *ngFor="let standard of standardList" [value]="standard.mkey">
+                                {{standard.typE_DESC}}
                               </option>
                             </select>
                           </ng-container>
-                        
+
                         </div>
                       </div>
 
@@ -226,9 +223,13 @@
 
                           <ng-container *ngIf="taskData?.mkey">
                             <label for="category">Statutory Authority</label>
-                            <select class="h6 form-control" formControlName="statutoryAuth" [(ngModel)]="taskData.statutorY_AUTHORITY">
+                            <select class="h6 form-control" formControlName="statutoryAuth"
+                              [attr.disabled]="hasInitiatedTasks() ? true : null"
+                              [(ngModel)]="taskData.statutorY_AUTHORITY">
                               <option value=""> --SELECT--</option>
-                              <option *ngFor="let statutoryAuth of statutoryAuthList" [selected]="statutoryAuth.typE_DESC === taskData.authorityName" [value]="statutoryAuth.mkey">
+                              <option *ngFor="let statutoryAuth of statutoryAuthList"
+                                [selected]="statutoryAuth.typE_DESC === taskData.authorityName"
+                                [value]="statutoryAuth.mkey">
                                 {{statutoryAuth.typE_DESC}}
                               </option>
                             </select>
@@ -238,13 +239,32 @@
                             <label for="category">Statutory Authority</label>
                             <select class="h6 form-control" formControlName="statutoryAuth">
                               <option value=""> --SELECT--</option>
-                              <option *ngFor="let statutoryAuth of statutoryAuthList"  [value]="statutoryAuth.mkey">
+                              <option *ngFor="let statutoryAuth of statutoryAuthList" [value]="statutoryAuth.mkey">
                                 {{statutoryAuth.typE_DESC}}
                               </option>
                             </select>
                           </ng-container>
-                          
+
                         </div>
+                      </div>
+                    </div>
+                    <div class="d-flex justify-content-center mt-2 mr-3">
+                      <i class="fa-solid plus btn mr-2" type="button" *ngIf="isLoading"
+                        (click)="getOptionList()" style="background-color: rgb(196, 147, 82);"><small>Get
+                          List</small></i>
+
+                      <div>
+                        <button *ngIf="!isCleared && updatedDetails" class="fa-solid plus btn mr-2" type="button"
+                          [disabled]="disableClear || hasDisabledClear()"
+                          (click)="confirmClear()">
+                          <small>Clear</small>
+                        </button>
+
+                        <!-- Reset Button -->
+                        <i *ngIf="isCleared || !updatedDetails" class="fa-solid plus btn" type="button"
+                          (click)="reset()">
+                          <small>Reset</small>
+                        </i>
                       </div>
                     </div>
                   </div>
@@ -270,154 +290,33 @@
                                 <div>
                                   <!-- <input type="text" (input)="filterCities()" placeholder="Search Project"
                                     class="search-input" /> -->
-                                    
-                                    <ng-container *ngIf="taskData?.mkey">
-                               
-                                      <ul class="dropdown-list" style="height:40rem">
-                                        <li class="sticky">
-                                          <span class="select-all-container">
-                                            <input type="checkbox" class="task-item" (change)="selectAll()"
-                                            >
-                                          </span> 
-                                        </li> 
-                                        <hr>
-                                        <ng-template #recursiveTaskTemplate let-tasks>
-                                       
-                                          <ng-container *ngFor="let task of tasks">
-                                                                                     
-                                            <li class="task-item" [ngClass]="{'selected': isSelected(task)}">
-                                              <ng-container *ngIf="task.TASK_NO?.TASK_NO">
-                                                
-                                                <div class="task-details">
-                                                  <span class="select-all-container" >
-                                                    <input type="checkbox" class="task-item"   
-                                                    *ngIf="!disableChilCheckBox"                                                 
-                                                    [checked]="task.checked" 
-                                                    (click)="isTaskDisabled(task) ? null : toggleSelection(task)"
-                                                    [ngClass]="{'selected': isSelected(task) || isTaskInSavedList(task), 'disabled': isTaskDisabled(task)}"
-                                                    [attr.disabled]="isTaskDisabled(task) ? '' : null"                                                    
-                                                    >
-                                                  </span>
-                                                  <span class="task-number"
-                                                    [style.marginLeft.px]="calculateIndentation(task.TASK_NO.TASK_NO, task.subtask && task.subtask.length > 15 ? 15 : 30,  task.TASK_NO.start_date, task.TASK_NO.end_date)">
-                                                    <mat-icon (click)="toggleVisibility(task)" style="cursor: pointer;">
-                                                      <img *ngIf="task.subtask && task.subtask.length > 0"
-                                                        src="../../../../assets/Content/images/{{ task.visible ? 'collapse.png' : 'expand.png' }}">
-                                                    </mat-icon>
-                                                    {{ task.TASK_NO.TASK_NO }}
-                                                  </span>
-                                                  <div class="task-detail">{{ task.TASK_NO?.maiN_ABBR }}</div>
 
-                                                  <div class="task-detail">{{ task.TASK_NO?.abbR_SHORT_DESC }}</div>
-                                                </div>
-                                              </ng-container>
-                                            </li>
-  
-                                            <ng-container *ngIf="task.visible && task.subtask && task.subtask.length > 0">
-                                              <ng-container
-                                                *ngTemplateOutlet="recursiveTaskTemplate; context: { $implicit: task.subtask }"></ng-container>
-                                            </ng-container>
+                                  <ng-container *ngIf="taskData?.mkey">
 
-                                          </ng-container>
+                                    <ul class="dropdown-list" style="height:40rem">
+                                      <li class="sticky">
+                                        <span class="select-all-container">
+                                          <input type="checkbox" class="task-item" (change)="selectAll()"
+                                            [checked]="isAllSelectedCheck">
+                                        </span>
+                                      </li>
 
-                                        </ng-template>
-  
-                                        <ng-container *ngFor="let task of subTasks">
+                                      <hr>
+                                      <ng-template #recursiveTaskTemplate let-tasks>
+
+                                        <ng-container *ngFor="let task of tasks">
+
                                           <li class="task-item" [ngClass]="{'selected': isSelected(task)}">
                                             <ng-container *ngIf="task.TASK_NO?.TASK_NO">
+
                                               <div class="task-details">
                                                 <span class="select-all-container">
-                                                  <input type="checkbox" class="task-item" 
-                                                  [ngClass]="{'selected': isSelected(task) || isTaskInSavedList(task), 'disabled': isTaskDisabled(task)}"
-                                                  [attr.disabled]="isTaskDisabled(task) ? '' : null"
-                                                  [checked]="task.checked"                                                 
-                                                  (click)="isTaskDisabled(task) ? null : toggleSelection(task)"><!--[attr.disabled]="disableChilCheckBox ? '' : null"-->
-                                                </span>                                           
-                                                <span class="task-number"
-                                                  [style.marginLeft.px]="calculateIndentation(task.TASK_NO.TASK_NO, task.subtask && task.subtask.length > 15 ? 15 : 30,  task.TASK_NO.start_date, task.TASK_NO.end_date)">
-                                                  <mat-icon (click)="toggleVisibility(task)" style="cursor: pointer;">
-                                                    <img *ngIf="task.subtask && task.subtask.length > 0"
-                                                      src="../../../../assets/Content/images/{{ task.visible ? 'collapse.png' : 'expand.png' }}">
-                                                  </mat-icon>
-                                                  {{ task.TASK_NO.TASK_NO }}
-                                                </span>
-                                                <div class="task-detail">{{ task.TASK_NO?.maiN_ABBR }}</div>
-
-                                                <div class="task-detail">{{ task.TASK_NO?.abbR_SHORT_DESC }}</div>
-                                              </div>
-                                            </ng-container>
-                                          </li>
-  
-                                          <ng-container *ngIf="task.visible && task.subtask && task.subtask.length > 0">
-                                            <ng-container
-                                              *ngTemplateOutlet="recursiveTaskTemplate; context: { $implicit: task.subtask }"></ng-container>
-                                          </ng-container>
-                                        </ng-container>
-                                      </ul>
-                                    </ng-container>
-  
-  
-                                    <ng-container *ngIf="!taskData?.mkey">
-                               
-                                      <ul class="dropdown-list" style="height:40rem">
-                                        <li class="sticky" *ngIf="!isLoading">
-                                          <span class="select-all-container">
-                                            <input type="checkbox" class="task-item" [checked]="subTasks.length !== selectedSeqArr.length" (change)="selectAll()"
-                                            >
-                                          </span> 
-                                        </li> 
-                                        <hr>
-
-                                        <ng-template #recursiveTaskTemplate let-tasks>
-                                       
-                                          <ng-container *ngFor="let task of tasks">
-                                                                                     
-                                            <li class="task-item" >
-                                              <ng-container *ngIf="task.TASK_NO?.TASK_NO">
-                                                
-                                                <div class="task-details">
-                                                  <span class="select-all-container" >
-                                                    <input type="checkbox" class="task-item"   
-                                                    *ngIf="!disableChilCheckBox"                                                 
-                                                    [checked]="task.checked"                                                 
+                                                  <input type="checkbox" class="task-item" *ngIf="!disableChilCheckBox"
+                                                    [checked]="task.checked"
                                                     (click)="isTaskDisabled(task) ? null : toggleSelection(task)"
                                                     [ngClass]="{'selected': isSelected(task) || isTaskInSavedList(task), 'disabled': isTaskDisabled(task)}"
-                                                    [attr.disabled]="isTaskDisabled(task) ? '' : null"                                                    
-                                                    >
-                                                  </span>
-                                                  <span class="task-number"
-                                                    [style.marginLeft.px]="calculateIndentation(task.TASK_NO.TASK_NO, task.subtask && task.subtask.length > 15 ? 15 : 30,  task.TASK_NO.start_date, task.TASK_NO.end_date)">
-                                                    <mat-icon (click)="toggleVisibility(task)" style="cursor: pointer;">
-                                                      <img *ngIf="task.subtask && task.subtask.length > 0"
-                                                        src="../../../../assets/Content/images/{{ task.visible ? 'collapse.png' : 'expand.png' }}">
-                                                    </mat-icon>
-                                                    {{ task.TASK_NO.TASK_NO }}
-                                                  </span>
-                                                  <div class="task-detail">{{ task.TASK_NO?.maiN_ABBR }}</div>
-
-                                                  <div class="task-detail">{{ task.TASK_NO?.abbR_SHORT_DESC }}</div>
-                                                </div>
-                                              </ng-container>
-                                            </li>
-  
-                                            <ng-container *ngIf="task.visible && task.subtask && task.subtask.length > 0">
-                                              <ng-container
-                                                *ngTemplateOutlet="recursiveTaskTemplate; context: { $implicit: task.subtask }"></ng-container>
-                                            </ng-container>
-                                          </ng-container>
-                                        </ng-template>
-  
-                                        <ng-container *ngFor="let task of subTasks">
-                                          <li class="task-item" >
-                                            <ng-container *ngIf="task.TASK_NO?.TASK_NO">
-                                              <div class="task-details">
-                                                <span class="select-all-container">
-                                                  <input type="checkbox" class="task-item" 
-                                                  [ngClass]="{'selected': isSelected(task) || isTaskInSavedList(task), 'disabled': isTaskDisabled(task)}"
-                                                  [attr.disabled]="isTaskDisabled(task) ? '' : null"
-                                                  [checked]="task.checked"                                                 
-                                                  (click)="isTaskDisabled(task) ? null : toggleSelection(task)"><!--[attr.disabled]="disableChilCheckBox ? '' : null"-->
-                                                </span>                                           
+                                                    [attr.disabled]="isTaskDisabled(task) ? '' : null">
+                                                </span>
                                                 <span class="task-number"
                                                   [style.marginLeft.px]="calculateIndentation(task.TASK_NO.TASK_NO, task.subtask && task.subtask.length > 15 ? 15 : 30,  task.TASK_NO.start_date, task.TASK_NO.end_date)">
                                                   <mat-icon (click)="toggleVisibility(task)" style="cursor: pointer;">
@@ -432,14 +331,132 @@
                                               </div>
                                             </ng-container>
                                           </li>
-  
+
+                                          <ng-container *ngIf="task.visible && task.subtask && task.subtask.length > 0">
+                                            <ng-container
+                                              *ngTemplateOutlet="recursiveTaskTemplate; context: { $implicit: task.subtask }"></ng-container>
+                                          </ng-container>
+
+                                        </ng-container>
+
+                                      </ng-template>
+
+                                      <ng-container *ngFor="let task of subTasks">
+                                        <li class="task-item" [ngClass]="{'selected': isSelected(task)}">
+                                          <ng-container *ngIf="task.TASK_NO?.TASK_NO">
+                                            <div class="task-details">
+                                              <span class="select-all-container">
+                                                <input type="checkbox" class="task-item"
+                                                  [ngClass]="{'selected': isSelected(task) || isTaskInSavedList(task), 'disabled': isTaskDisabled(task)}"
+                                                  [attr.disabled]="isTaskDisabled(task) ? '' : null"
+                                                  [checked]="task.checked"
+                                                  (click)="isTaskDisabled(task) ? null : toggleSelection(task)"><!--[attr.disabled]="disableChilCheckBox ? '' : null"-->
+                                              </span>
+                                              <span class="task-number"
+                                                [style.marginLeft.px]="calculateIndentation(task.TASK_NO.TASK_NO, task.subtask && task.subtask.length > 15 ? 15 : 30,  task.TASK_NO.start_date, task.TASK_NO.end_date)">
+                                                <mat-icon (click)="toggleVisibility(task)" style="cursor: pointer;">
+                                                  <img *ngIf="task.subtask && task.subtask.length > 0"
+                                                    src="../../../../assets/Content/images/{{ task.visible ? 'collapse.png' : 'expand.png' }}">
+                                                </mat-icon>
+                                                {{ task.TASK_NO.TASK_NO }}
+                                              </span>
+                                              <div class="task-detail">{{ task.TASK_NO?.maiN_ABBR }}</div>
+
+                                              <div class="task-detail">{{ task.TASK_NO?.abbR_SHORT_DESC }}</div>
+                                            </div>
+                                          </ng-container>
+                                        </li>
+
+                                        <ng-container *ngIf="task.visible && task.subtask && task.subtask.length > 0">
+                                          <ng-container
+                                            *ngTemplateOutlet="recursiveTaskTemplate; context: { $implicit: task.subtask }"></ng-container>
+                                        </ng-container>
+                                      </ng-container>
+                                    </ul>
+                                  </ng-container>
+
+
+                                  <ng-container *ngIf="!taskData?.mkey">
+
+                                    <ul class="dropdown-list" style="height:40rem">
+                                      <li class="sticky" *ngIf="!isLoading">
+                                        <span class="select-all-container">
+                                          <input type="checkbox" class="task-item" [checked]="isAllSelectedCheck"
+                                            (change)="selectAll()">
+                                        </span>
+                                      </li>
+                                      <hr>
+
+                                      <ng-template #recursiveTaskTemplate let-tasks>
+
+                                        <ng-container *ngFor="let task of tasks">
+
+                                          <li class="task-item">
+                                            <ng-container *ngIf="task.TASK_NO?.TASK_NO">
+
+                                              <div class="task-details">
+                                                <span class="select-all-container">
+                                                  <input type="checkbox" class="task-item" *ngIf="!disableChilCheckBox"
+                                                    [checked]="task.checked"
+                                                    (click)="isTaskDisabled(task) ? null : toggleSelection(task)"
+                                                    [ngClass]="{'selected': isSelected(task) || isTaskInSavedList(task), 'disabled': isTaskDisabled(task)}"
+                                                    [attr.disabled]="isTaskDisabled(task) ? '' : null">
+                                                </span>
+                                                <span class="task-number"
+                                                  [style.marginLeft.px]="calculateIndentation(task.TASK_NO.TASK_NO, task.subtask && task.subtask.length > 15 ? 15 : 30,  task.TASK_NO.start_date, task.TASK_NO.end_date)">
+                                                  <mat-icon (click)="toggleVisibility(task)" style="cursor: pointer;">
+                                                    <img *ngIf="task.subtask && task.subtask.length > 0"
+                                                      src="../../../../assets/Content/images/{{ task.visible ? 'collapse.png' : 'expand.png' }}">
+                                                  </mat-icon>
+                                                  {{ task.TASK_NO.TASK_NO }}
+                                                </span>
+                                                <div class="task-detail">{{ task.TASK_NO?.maiN_ABBR }}</div>
+
+                                                <div class="task-detail">{{ task.TASK_NO?.abbR_SHORT_DESC }}</div>
+                                              </div>
+                                            </ng-container>
+                                          </li>
+
                                           <ng-container *ngIf="task.visible && task.subtask && task.subtask.length > 0">
                                             <ng-container
                                               *ngTemplateOutlet="recursiveTaskTemplate; context: { $implicit: task.subtask }"></ng-container>
                                           </ng-container>
                                         </ng-container>
-                                      </ul>
-                                    </ng-container>     
+                                      </ng-template>
+
+                                      <ng-container *ngFor="let task of subTasks">
+                                        <li class="task-item">
+                                          <ng-container *ngIf="task.TASK_NO?.TASK_NO">
+                                            <div class="task-details">
+                                              <span class="select-all-container">
+                                                <input type="checkbox" class="task-item"
+                                                  [ngClass]="{'selected': isSelected(task) || isTaskInSavedList(task), 'disabled': isTaskDisabled(task)}"
+                                                  [attr.disabled]="isTaskDisabled(task) ? '' : null"
+                                                  [checked]="task.checked"
+                                                  (click)="isTaskDisabled(task) ? null : toggleSelection(task)"><!--[attr.disabled]="disableChilCheckBox ? '' : null"-->
+                                              </span>
+                                              <span class="task-number"
+                                                [style.marginLeft.px]="calculateIndentation(task.TASK_NO.TASK_NO, task.subtask && task.subtask.length > 15 ? 15 : 30,  task.TASK_NO.start_date, task.TASK_NO.end_date)">
+                                                <mat-icon (click)="toggleVisibility(task)" style="cursor: pointer;">
+                                                  <img *ngIf="task.subtask && task.subtask.length > 0"
+                                                    src="../../../../assets/Content/images/{{ task.visible ? 'collapse.png' : 'expand.png' }}">
+                                                </mat-icon>
+                                                {{ task.TASK_NO.TASK_NO }}
+                                              </span>
+                                              <div class="task-detail">{{ task.TASK_NO?.maiN_ABBR }}</div>
+
+                                              <div class="task-detail">{{ task.TASK_NO?.abbR_SHORT_DESC }}</div>
+                                            </div>
+                                          </ng-container>
+                                        </li>
+
+                                        <ng-container *ngIf="task.visible && task.subtask && task.subtask.length > 0">
+                                          <ng-container
+                                            *ngTemplateOutlet="recursiveTaskTemplate; context: { $implicit: task.subtask }"></ng-container>
+                                        </ng-container>
+                                      </ng-container>
+                                    </ul>
+                                  </ng-container>
 
                                 </div>
                               </div>
@@ -513,13 +530,20 @@
                                           </span>
                                         </ng-container>
                                       </td>
-                                      <td class="truncate-text" matTooltip="{{ task.TASK_NO?.maiN_ABBR }}">{{ task.TASK_NO?.maiN_ABBR }}</td>
-                                      <td class="truncate-text" matTooltip="{{ task.TASK_NO?.abbR_SHORT_DESC }}">{{ task.TASK_NO?.abbR_SHORT_DESC }}</td>
-                                      <td class="truncate-text" matTooltip="{{ task.TASK_NO?.dayS_REQUIERD }}">{{ task.TASK_NO?.dayS_REQUIERD }}</td>
-                                      <td class="truncate-text" matTooltip="{{ task.TASK_NO?.department }}">{{ task.TASK_NO?.department }}</td>
-                                      <td class="truncate-text"  matTooltip="{{ task.TASK_NO?.joB_ROLE }}">{{ task.TASK_NO?.joB_ROLE }}</td>
-                                      <td class="truncate-text" matTooltip="{{ task.TASK_NO?.resposiblE_EMP }}">{{ task.TASK_NO?.resposiblE_EMP }}</td>
-                                      <td class="truncate-text"  matTooltip="{{ task.TASK_NO?.enD_RESULT_DOC }}">{{ task.TASK_NO?.enD_RESULT_DOC }}</td>
+                                      <td class="truncate-text" matTooltip="{{ task.TASK_NO?.maiN_ABBR }}">{{
+                                        task.TASK_NO?.maiN_ABBR }}</td>
+                                      <td class="truncate-text" matTooltip="{{ task.TASK_NO?.abbR_SHORT_DESC }}">{{
+                                        task.TASK_NO?.abbR_SHORT_DESC }}</td>
+                                      <td class="truncate-text" matTooltip="{{ task.TASK_NO?.dayS_REQUIERD }}">{{
+                                        task.TASK_NO?.dayS_REQUIERD }}</td>
+                                      <td class="truncate-text" matTooltip="{{ task.TASK_NO?.department }}">{{
+                                        task.TASK_NO?.department }}</td>
+                                      <td class="truncate-text" matTooltip="{{ task.TASK_NO?.joB_ROLE }}">{{
+                                        task.TASK_NO?.joB_ROLE }}</td>
+                                      <td class="truncate-text" matTooltip="{{ task.TASK_NO?.resposiblE_EMP }}">{{
+                                        task.TASK_NO?.resposiblE_EMP }}</td>
+                                      <td class="truncate-text" matTooltip="{{ task.TASK_NO?.enD_RESULT_DOC }}">{{
+                                        task.TASK_NO?.enD_RESULT_DOC }}</td>
                                       <td>
                                         <ng-container *ngIf="taskData?.mkey">
                                           <input type="date" [ngClass]="{'disabled': isTaskDisabled(task)}"
@@ -573,7 +597,8 @@
                                       <td
                                         style="max-width:100rem; position: sticky; right: 0; background: white; z-index: 1;">
                                         <div *ngIf="task.TASK_NO?.status === 'Ready to Initiate'">
-                                          <i class="fa fa-trash ml-6" type="button" style="font-size: small; color: rgb(0, 110, 255)"></i>
+                                          <i class="fa fa-trash ml-6" type="button"
+                                            style="font-size: small; color: rgb(0, 110, 255)"></i>
                                           <!-- <button type="button" class="badge badge-pill badge ml-1">Delete</button> -->
                                         </div>
                                       </td>
@@ -599,7 +624,8 @@
                                       <ng-container *ngIf="task.TASK_NO.TASK_NO">
                                         <span
                                           [style.marginLeft.px]="calculateIndentation(task.TASK_NO.TASK_NO, task.subtask && task.subtask.length > 0 ? 15 : 30, task.TASK_NO.start_date, task.TASK_NO.end_date)">
-                                          <mat-icon (click)="toggleVisibility(task)" style="cursor: pointer;" *ngIf="task.subtask && task.subtask.length > 0">
+                                          <mat-icon (click)="toggleVisibility(task)" style="cursor: pointer;"
+                                            *ngIf="task.subtask && task.subtask.length > 0">
                                             <img *ngIf="task.subtask && task.subtask.length > 0"
                                               src="../../../../assets/Content/images/{{ task.visible ? 'collapse.png' : 'expand.png' }}">
                                           </mat-icon>
@@ -607,13 +633,20 @@
                                         </span>
                                       </ng-container>
                                     </td>
-                                    <td class="truncate-text" matTooltip="{{ task.TASK_NO?.maiN_ABBR }}">{{ task.TASK_NO?.maiN_ABBR }}</td>
-                                    <td class="truncate-text" matTooltip="{{ task.TASK_NO?.abbR_SHORT_DESC }}">{{ task.TASK_NO?.abbR_SHORT_DESC }}</td>
-                                    <td class="truncate-text" matTooltip="{{ task.TASK_NO?.dayS_REQUIERD }}">{{ task.TASK_NO?.dayS_REQUIERD }}</td>
-                                    <td class="truncate-text" matTooltip="{{ task.TASK_NO?.department }}">{{ task.TASK_NO?.department }}</td>
-                                    <td class="truncate-text" matTooltip="{{ task.TASK_NO?.joB_ROLE }}">{{ task.TASK_NO?.joB_ROLE }}</td>
-                                    <td class="truncate-text" matTooltip="{{ task.TASK_NO?.resposiblE_EMP }}">{{ task.TASK_NO?.resposiblE_EMP }}</td>
-                                    <td class="truncate-text" matTooltip="{{ task.TASK_NO?.enD_RESULT_DOC }}">{{ task.TASK_NO?.enD_RESULT_DOC }}</td>
+                                    <td class="truncate-text" matTooltip="{{ task.TASK_NO?.maiN_ABBR }}">{{
+                                      task.TASK_NO?.maiN_ABBR }}</td>
+                                    <td class="truncate-text" matTooltip="{{ task.TASK_NO?.abbR_SHORT_DESC }}">{{
+                                      task.TASK_NO?.abbR_SHORT_DESC }}</td>
+                                    <td class="truncate-text" matTooltip="{{ task.TASK_NO?.dayS_REQUIERD }}">{{
+                                      task.TASK_NO?.dayS_REQUIERD }}</td>
+                                    <td class="truncate-text" matTooltip="{{ task.TASK_NO?.department }}">{{
+                                      task.TASK_NO?.department }}</td>
+                                    <td class="truncate-text" matTooltip="{{ task.TASK_NO?.joB_ROLE }}">{{
+                                      task.TASK_NO?.joB_ROLE }}</td>
+                                    <td class="truncate-text" matTooltip="{{ task.TASK_NO?.resposiblE_EMP }}">{{
+                                      task.TASK_NO?.resposiblE_EMP }}</td>
+                                    <td class="truncate-text" matTooltip="{{ task.TASK_NO?.enD_RESULT_DOC }}">{{
+                                      task.TASK_NO?.enD_RESULT_DOC }}</td>
                                     <td>
                                       <ng-container *ngIf="taskData?.mkey">
                                         <input type="date" [min]="currentDate" class="form-control"
@@ -645,9 +678,9 @@
                                     <td class="truncate-text"
                                       style="max-width:100rem; position: sticky; right: 0; background: white; z-index: 1;">
                                       <div
-                                      *ngIf="task.TASK_NO?.status !== 'Ready to Initiate' && task.TASK_NO?.status !== 'Initiated'">
-                                      Created
-                                    </div>
+                                        *ngIf="task.TASK_NO?.status !== 'Ready to Initiate' && task.TASK_NO?.status !== 'Initiated'">
+                                        Created
+                                      </div>
                                       <div *ngIf="taskData?.mkey">
                                         {{task.TASK_NO?.status}}
                                         <span *ngIf="task.TASK_NO?.status === 'Ready to Initiate'" type="button"
@@ -660,7 +693,8 @@
                                     <td
                                       style="max-width:100rem; position: sticky; right: 0; background: white; z-index: 1;">
                                       <div *ngIf="task.TASK_NO?.status === 'Ready to Initiate'">
-                                        <i class="fa fa-trash ml-6" type="button" style="font-size: small; color: rgb(0, 110, 255)"></i>
+                                        <i class="fa fa-trash ml-6" type="button"
+                                          style="font-size: small; color: rgb(0, 110, 255)"></i>
                                         <!-- <button type="button" class="badge badge-pill badge ml-1">Delete</button> -->
                                       </div>
                                     </td>
