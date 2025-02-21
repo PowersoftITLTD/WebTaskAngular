@@ -53,22 +53,14 @@ export class AddInstructionDialogComponent implements OnInit {
       COMPANY_ID: USER_CRED.COMPANY_ID
     };
 
-
-    console.log('addInstruction', addInstruction)
-
     this.apiService.postInstructionDetails(JSON.stringify(addInstruction), token).subscribe({
       next: (response) => {
-
-        console.log('Instruction added successfully', response);
         if (response.Status === 'Ok' && response.Message === 'Inserted Successfully') {
           this.tostar.success('Instruction added successfully');
-          this.dialogRef.close(response.data);
-          // this.categoryForm.reset();
-          // this.router.navigate(['task/approval-screen'], { queryParams: { source: 'category-master' } });
+          this.dialogRef.close(response.data);    
         } else if (response.Status === 'Error' && response.Message === 'Category already exists!!!') {
           this.tostar.warning('This Instruction is already exist');
         }
-
       },
       error: (err) => {
         console.error(err);
@@ -93,7 +85,6 @@ export class AddInstructionDialogComponent implements OnInit {
       COMPANY_ID: USER_CRED.COMPANY_ID
     };
 
-    console.log('addInstruction', addInstruction)
 
     this.apiService.postInstructionDetails(JSON.stringify(addInstruction), token).subscribe({
       next: (response) => {
@@ -122,7 +113,6 @@ export class AddInstructionDialogComponent implements OnInit {
   onActionButtonClick(field: string, isUpdate: boolean = false) {
     console.log('onActionButtonClick', field, '&', isUpdate);
 
-    // Set the action type (add or update) based on the button clicked
     if (field === 'category') {
         this.isCategoryUpdate = isUpdate;  // Update category flag
         this.isInstructionUpdate = false;  // Reset instruction flag
@@ -136,52 +126,7 @@ export class AddInstructionDialogComponent implements OnInit {
     console.log('Instruction Update Flag:', this.isInstructionUpdate);
 }
 
-
-// onsubmit(flag?: string) {
-
-// console.log('Come to submit')
-//   console.log('this.isCategoryUpdate', this.isCategoryUpdate);
-//   console.log('this.isInstructionUpdate', this.isInstructionUpdate);
-
-//   // if (this.isCategoryUpdate) {
-//   //   if (this.categoryForm.value.category === '' || this.categoryForm.value.category === null || this.categoryForm.value.category === undefined) {
-//   //     this.tostar.error('Please update the category');
-//   //   } else if (!this.taskData || !this.taskData?.mkey) {
-//   //     this.addCategoryForDocSort();
-//   //   } else {
-//   //     if (flag === 'Y') {
-//   //       this.updateCategoryForDocSort('Y');
-//   //     } else {
-//   //       this.updateCategoryForDocSort('N');
-//   //     }
-//   //   }
-//   //}
-//   if (this.isInstructionUpdate) {
-//     if (this.categoryForm.value.instruction === '' || this.categoryForm.value.instruction === null || this.categoryForm.value.instruction === undefined) {
-//       this.tostar.error('Please update the Instruction');
-//     } else  {
-//       console.log('Come to add details')
-
-//       this.addINSTR();
-//     } 
-    
-//     // else {
-//     //   if (flag === 'Y') {
-//     //     // this.updateCategoryForDocSort('Y');
-//     //   } else {
-//     //     console.log('sdkjh');
-
-//     //     // this.updateCategoryForDocSort('N');
-//     //   }
-//     // }
-//   }
-
-// }
-
 onsubmit(flag?: string) {
-  console.log('Come to submit');
-  console.log('this.isCategoryUpdate', this.isCategoryUpdate);
-  console.log('this.isInstructionUpdate', this.isInstructionUpdate);
 
   // if (this.isInstructionUpdate) {
     if (this.categoryForm.value.instruction === '' || this.categoryForm.value.instruction === null || this.categoryForm.value.instruction === undefined) {

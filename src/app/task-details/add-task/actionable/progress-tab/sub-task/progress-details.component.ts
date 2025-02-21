@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { ApiService } from '../../../../../services/api/api.service';
+import { ApiService } from 'src/app/services/api/api.service';
 import { ActivatedRoute } from '@angular/router';
 
 @Component({
@@ -17,7 +17,7 @@ export class ProgressDetailsComponent implements OnInit {
 
 
   constructor(
-    private apiService:ApiService,
+    private apiService: ApiService,
     private route: ActivatedRoute,
   ) { }
 

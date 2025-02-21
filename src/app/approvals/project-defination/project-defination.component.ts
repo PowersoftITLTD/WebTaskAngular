@@ -68,7 +68,7 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
   sub_proj: any = [];
   selectedSeqArr: any[] = [];
   new_list_of_selectedSeqArr: any[] = [];
-  projDefinationTable: any[] = []
+  projDefinationTable: any[] = [];
   uniqList: any[] = [];
 
 
@@ -555,9 +555,10 @@ hasDisabledClear(): boolean {
         this.tostar.success('Success', 'Template added successfuly')
         this.router.navigate(['task/approval-screen'], { queryParams: { source: 'project-defination' } });
 
-      }, error: (error: ErrorHandler) => {
-
-        console.log('Unable to get data', error)
+      }, error: (error: ErrorHandler|any) => {
+        const errorData = error.error.errors;
+        const errorMessage = Object.values(errorData).flat().join(' , ');
+        this.tostar.error(errorMessage, 'Error Occured in server') 
       }
     });
   }
@@ -640,8 +641,10 @@ hasDisabledClear(): boolean {
         console.log('Data added successfully', addData)
         this.tostar.success('Success', 'Template added successfuly')
         this.router.navigate(['task/approval-screen'], { queryParams: { source: 'project-defination' } });
-      }, error: (error: ErrorHandler) => {
-        console.log('Unable to get data', error)
+      }, error: (error: ErrorHandler|any) => {
+        const errorData = error.error.errors;
+        const errorMessage = Object.values(errorData).flat().join(' , ');
+        this.tostar.error(errorMessage, 'Error Occured in server')
       }
     });
   }
@@ -664,9 +667,10 @@ hasDisabledClear(): boolean {
           this.navigateToApprovalInitiation(response.data);
         }
       },
-      error: (error) => {
-
-        console.error('Login failed:', error);
+      error: (error:ErrorHandler | any) => {
+        const errorData = error.error.errors;
+        const errorMessage = Object.values(errorData).flat().join(' , ');
+        this.tostar.error(errorMessage, 'Error Occured in server') 
       }
     })
   }
@@ -1242,8 +1246,11 @@ hasDisabledClear(): boolean {
           this.employees.push({ Assign_to: capitalizedFullName, MKEY: MKEY });
         });
       },
-      (error: ErrorHandler) => {
+      (error: ErrorHandler| any) => {
         console.error('Error fetching employee details:', error);
+        const errorData = error.error.errors;
+        const errorMessage = Object.values(errorData).flat().join(' , ');
+        this.tostar.error(errorMessage, 'Error Occured in server') 
       }
     );
   }

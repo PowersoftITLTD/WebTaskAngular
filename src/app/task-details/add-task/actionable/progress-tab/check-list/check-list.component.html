@@ -7,7 +7,7 @@
           <div class="pl-4 combo-section">
             <!-- Search Input -->
             <input type="text" class="search-input" [(ngModel)]="searchQuery"
-              (ngModelChange)="updateFilteredChecklist()" placeholder="Search documents " />
+              (ngModelChange)="updateFilteredChecklist()" placeholder="Search documents" />
 
             <!-- Dropdown List -->
             <div *ngIf="loading" class="text-center">
@@ -23,7 +23,7 @@
                   <div class="category-header justify-content-center" style="color: rgb(216, 87, 87);">
                     <b>{{ group.DOCUMENT_NAME }}</b>
                   </div>
-              
+
                   <!-- Document Descriptions -->
                   <ng-container *ngFor="let docItem of group.DOCUMENTS">
                     <li (click)="toggleSelection(docItem)" 
@@ -37,8 +37,6 @@
                   </ng-container>
                 </ng-container>
               </ul>
-              
-              
 
             </div>
 

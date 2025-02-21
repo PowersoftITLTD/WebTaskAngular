@@ -217,9 +217,7 @@ export class ProjectDocumentDepositoryComponent implements OnInit {
       CREATED_BY: USER_CRED[0]?.MKEY,
       DELETE_FLAG: 'N',
       PROJECT_DOC_FILES: this.myFiles
-
     }
-
 
     console.log('Check files from ADD and Updated model: ', this.myFiles)
     Object.keys(addDocDepository).forEach((key) => {
@@ -248,8 +246,11 @@ export class ProjectDocumentDepositoryComponent implements OnInit {
         this.tostar.success('success', `Your request added successfully`);
         this.router.navigate(['task/approval-screen'], { queryParams: { source: 'project-document-depository' } });
       },
-      (error) => {
-        console.error('Error:', error);
+      (error: ErrorHandler | any) => {
+        // console.error('Error:', error);
+        const errorData = error.error.errors;
+        const errorMessage = Object.values(errorData).flat().join(' , ');
+        this.tostar.error(errorMessage, 'Error Occured in server') 
       }
     );
   }
@@ -287,8 +288,10 @@ export class ProjectDocumentDepositoryComponent implements OnInit {
         response => {
           console.log('Upload successful:', response);
         },
-        error => {
-          console.error('Upload failed:', error);
+        (error:ErrorHandler|any) => {
+          const errorData = error.error.errors;
+          const errorMessage = Object.values(errorData).flat().join(' , ');
+          this.tostar.error(errorMessage, 'Error Occured in server') 
         }
       );
     } else {
@@ -399,9 +402,10 @@ export class ProjectDocumentDepositoryComponent implements OnInit {
         this.project = response[0].data;
         // console.log("Project", this.project);
       },
-      (error: ErrorHandler) => {
-        console.log(error, 'Error Occurred while fetching projects');
-      }
+      (error: ErrorHandler | any) => {
+        const errorData = error.error.errors;
+        const errorMessage = Object.values(errorData).flat().join(' , ');
+        this.tostar.error(errorMessage, 'Error Occured in server')       }
     );
   }
 
@@ -423,9 +427,10 @@ export class ProjectDocumentDepositoryComponent implements OnInit {
           // this.raisedAtListCheck()
 
         },
-        (error: ErrorHandler) => {
-          console.log(error, 'Error Occurred while fetching sub-projects');
-        }
+        (error: ErrorHandler | any) => {
+          const errorData = error.error.errors;
+          const errorMessage = Object.values(errorData).flat().join(' , ');
+          this.tostar.error(errorMessage, 'Error Occured in server')         }
       );
     }
   }
@@ -442,9 +447,10 @@ export class ProjectDocumentDepositoryComponent implements OnInit {
         this.setProjectNameToTaskData();
 
       },
-      (error: ErrorHandler) => {
-        console.log(error, 'Error Occurred while fetching sub-projects');
-      }
+      (error: ErrorHandler | any) => {
+        const errorData = error.error.errors;
+        const errorMessage = Object.values(errorData).flat().join(' , ');
+        this.tostar.error(errorMessage, 'Error Occured in server')       }
     );
   }
 

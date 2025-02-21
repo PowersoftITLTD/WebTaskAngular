@@ -3,40 +3,44 @@
         <span class="sr-only">Loading...</span>
     </div>
 </div>
-<table *ngIf="!loading" class="table table-active">
-    <thead>
-        <tr>
-            <th *ngIf="columns[0].visible" style="text-align: center;">{{ columns[0].header }}</th>
-            <th *ngIf="columns[1].visible">{{ columns[1].header }}</th>
-            <th *ngIf="columns[2].visible">{{ columns[2].header }}</th>
-            <th *ngIf="columns[3].visible">{{ columns[3].header }}</th>
-            <th *ngIf="columns[4].visible">{{ columns[4].header }}</th>
-            <th *ngIf="columns[5].visible">{{ columns[5].header }}</th>
-            <th *ngIf="columns[6].visible" style="text-align: center;">{{ columns[6].header }}</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr *ngIf="outputList.length === 0">
-            <td colspan="7" class="text-center">No data available</td>
-        </tr>
-        <tr *ngFor="let document of outputList; let i = index">
-            <td style="text-align: center;">{{ document.SR_NO || i + 1 }}</td>
-            <td *ngIf="columns[1].visible">{{ document.ATTRIBUTE2 }}</td>
-            <td *ngIf="columns[2].visible">{{ document.DOC_NUMBER }}</td>
-            <td *ngIf="columns[3].visible">{{ document.TYPE_DESC }}</td>
-            <td *ngIf="columns[4].visible">{{ document.DOC_DATE | date: 'dd/MM/yyyy' }}</td>
-            <td *ngIf="columns[5].visible">{{ document.VALIDITY_DATE | date: 'dd/MM/yyyy' }}</td>
-            <td style="text-align: center;">
-                <button type="button" class="d-btn" style="font-size: 14px;" (click)="openModal(document)">
-                    Details
-                </button>
-            </td>
-        </tr>
-    </tbody>
-</table>
+<div class="table-wrapper">
+    <table *ngIf="!loading" class="table table-active">
+        <thead>
+            <tr>
+                <th *ngIf="columns[0].visible" style="text-align: center;">{{ columns[0].header }}</th>
+                <th *ngIf="columns[1].visible">{{ columns[1].header }}</th>
+                <th *ngIf="columns[2].visible">{{ columns[2].header }}</th>
+                <th *ngIf="columns[3].visible">{{ columns[3].header }}</th>
+                <th *ngIf="columns[4].visible">{{ columns[4].header }}</th>
+                <th *ngIf="columns[5].visible">{{ columns[5].header }}</th>
+                <th *ngIf="columns[6].visible" style="text-align: center;">{{ columns[6].header }}</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngIf="outputList.length === 0">
+                <td colspan="7" class="text-center">No data available</td>
+            </tr>
+            <tr *ngFor="let document of outputList; let i = index">
+                <td style="text-align: center;">{{ document.SR_NO || i + 1 }}</td>
+                <td *ngIf="columns[1].visible">{{ document.ATTRIBUTE2 }}</td>
+                <td *ngIf="columns[2].visible">{{ document.DOC_NUMBER }}</td>
+                <td *ngIf="columns[3].visible">{{ document.TYPE_DESC }}</td>
+                <td *ngIf="columns[4].visible">{{ document.DOC_DATE | date: 'dd/MM/yyyy' }}</td>
+                <td *ngIf="columns[5].visible">{{ document.VALIDITY_DATE | date: 'dd/MM/yyyy' }}</td>
+                <td style="text-align: center;">
+                    <button type="button" class="d-btn" style="font-size: 14px;" (click)="openModal(document)">
+                        Details
+                    </button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
 
 
-<!-- Modal -->    
+
+
+<!-- Modal -->
 <div *ngIf="isModalOpen" class="modal-backdrop">
     <div class="modal-content">
         <div class="modal-header">
@@ -49,8 +53,8 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="project">Property</label>
-                        <select class="h6 custom-select cate" formControlName="project" #projectSelect
-                            (change)="onProjectSelect(projectSelect)" style="width: 100%;">
+                        <select class="h6 custom-select cate" #projectSelect (change)="onProjectSelect(projectSelect)"
+                            style="width: 100%;">
                             <option value="0" [selected]="taskDetails[0].PROJECT === 0">Select
                             </option>
                             <option *ngFor="let p of project" [selected]="p.TYPE_DESC === taskDetails[0].PROJECT">
@@ -64,8 +68,8 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="subProject">Building</label>
-                        <select class="h6 custom-select cate" formControlName="subProject"
-                            [(ngModel)]="taskDetails[0].Sub_PROJECT" formControlName="subProject" style="width: 100%;">
+                        <select class="h6 custom-select cate" [(ngModel)]="taskDetails[0].Sub_PROJECT"
+                            style="width: 100%;">
                             <option value="0" [selected]="taskDetails[0].Sub_PROJECT">Select
                             </option>
                             <option *ngFor="let s of sub_proj" [selected]="s.TYPE_DESC === taskDetails[0].Sub_PROJECT">
@@ -103,9 +107,9 @@
 
                 <!-- Attach Document Field -->
                 <div class="col-6" *ngIf="selectedDocument.DOC_ATTACH_APP_FLAG === 'Y'">
-                    <div class="form-group" style="margin-top: 23px;">
+                    <div class="form-group" id="customFile" style="margin-top: 23px;">
                         <div class="custom-file d-flex align-items-center">
-                            <input type="file" class="custom-file-input" id="customFile" [disabled]="hasFile()"
+                            <input type="file" class="custom-file-input" [disabled]="hasFile()"
                                 (change)="onFileSelected($event)">
 
                             <label class="custom-file-label flex-grow-1 text-truncate" for="customFile">

@@ -1,4 +1,4 @@
-/*accordation*/
+/* General Layout Styles */
 .mb-3 {
   margin-left: -20rem;
 }
@@ -15,6 +15,7 @@
   background-color: white;
 }
 
+/* Accordion */
 .doc_label {
   display: flex;
   margin: 1rem 2rem;
@@ -22,25 +23,19 @@
 
 .icon-container {
   margin-right: 8px;
-  /* Adjust as necessary */
 }
 
-/* Make the .fa-solid icon circular and small */
+/* Icon Styles */
 .fa-solid {
   display: inline-flex;
   justify-content: center;
   align-items: center;
-  width: 2px;
+  width: 24px;
   height: 24px;
   color: white;
   font-size: 14px;
-  text-align: center;
   cursor: pointer;
   transition: background-color 0.3s;
-}
-
-.fa-plus {
-  background-color: #333;
 }
 
 .fa-plus {
@@ -49,35 +44,26 @@
 
 .fa-solid:hover {
   background-color: #0056b3;
-  /* Change background color on hover */
 }
 
+/* Table */
 #table-sub-list {
   width: 70%;
 }
 
-/*dropdown*/
+/* Dropdown */
 .dropdown {
   max-height: 400px;
   overflow-y: auto;
   border: 1px solid #ddd;
   background-color: white;
   z-index: 1000;
-  max-height: 1500px;
-
 }
 
 .dropdown-list {
   padding: 0;
   margin: 0;
   list-style-type: none;
-
-}
-
-.country-header {
-  font-size: 1.2em;
-  margin: 10px 0;
-  padding: 5px;
 }
 
 .dropdown-list li {
@@ -94,58 +80,63 @@
   background-color: rgba(216, 87, 87, 0.2);
 }
 
-.sample-wrapper {
-  width: 100%;
-  /* Ensure the wrapper uses full width */
+/* Scrollable Container */
+.scrollable-container {
+  max-height: 400px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 15px;
+  border: 1px solid #ddd;
+  margin-bottom: 15px;
 }
 
-
-/*progress*/
-.progress {
-  background: #bebfbf;
-  border-radius: 20px;
-  margin: 0;
+.scrollable-container::-webkit-scrollbar {
+  width: 1px;
 }
 
-.progress .progress-bar {
-  border-radius: 20px;
-  box-shadow: none;
-  animation: animate-positive 2s;
+.scrollable-container::-webkit-scrollbar-thumb {
+  background-color: #888;
+  border-radius: 10px;
 }
 
-
-.app-side-panel-wrapper {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 0rem;
-  height: 100%;
+.scrollable-container::-webkit-scrollbar-track {
   background-color: #f1f1f1;
 }
 
-.tab-content {
-  max-height: calc(100vh - 138px);
-  overflow-x: auto;
+/* Table container with scrollable body */
+.table-wrapper {
+  margin-top: 2rem;
+  max-height: 400px;
+  /* Adjust as necessary */
   overflow-y: auto;
+  display: block;
 }
 
-.tab-content::-webkit-scrollbar {
-  width: 8px;
+.table-wrapper thead,
+.table-wrapper th {
+  position: sticky;
+  top: 0;
+  background-color: white;
+  z-index: 1;
 }
 
-.tab-content::-webkit-scrollbar-track {
-  background-color: transparent;
+/* Table styles */
+.table {
+  width: 100%;
+  border-collapse: collapse;
 }
 
-.tab-content::-webkit-scrollbar-thumb {
-  background-color: rgba(0, 0, 0, 0.3);
-  border-radius: 4px;
+.table th,
+.table td {
+  padding: 8px;
+  text-align: center;
+  border: 1px solid #ddd;
 }
 
-.tab-content::-webkit-scrollbar-thumb:hover {
-  background-color: rgba(0, 0, 0, 0.5);
+/* Optional - to style the table header background */
+.table thead {
+  background-color: #f2f2f2;
 }
-
 
 .scrollable-container {
   max-height: 400px;
@@ -169,68 +160,103 @@
   background-color: #f1f1f1;
 }
 
-#select-week {
-  display: inline-block;
-  margin-right: 5px;
+
+/* Progress Bar */
+.progress {
+  background: #bebfbf;
+  border-radius: 20px;
+  margin: 0;
 }
 
-
-.select-term {
-  width: 100%;
-  text-align: center;
+.progress .progress-bar {
+  border-radius: 20px;
+  box-shadow: none;
+  animation: animate-positive 2s;
 }
 
-
-.input-container {
-  position: relative;
-}
-
-.input-container select {
-  position: absolute;
+/* Modal Styles */
+.modal-backdrop {
+  position: fixed;
   top: 0;
-  left: 0;
+  left: 10%;
   width: 100%;
-  display: none;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-.input-container input {
-  width: 100%;
-  display: block;
+.modal-content {
+  background: white;
+  border-radius: 8px;
+  width: 70%;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  animation: fadeIn 0.3s ease-in-out;
+  z-index: 1001;
 }
 
-.input-container:hover select {
-  display: block;
+.modal-header,
+.modal-footer {
+  padding: 16px;
+  border-bottom: 1px solid #ddd;
 }
 
-.input-container:hover input {
-  display: none;
+.modal-footer {
+  border-top: 1px solid #ddd;
+  text-align: right;
 }
 
+.modal-body {
+  padding: 16px;
+}
 
+/* Close Button */
+.close {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+/* Button Styles */
+.btn {
+  padding: 2px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.btn-secondary {
+  background: #6c757d;
+  color: white;
+}
+
+.btn-primary {
+  background: #007bff;
+  color: white;
+}
+
+/* Fade-in Animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+/* Responsive Styles */
 @media only screen and (max-width: 992px) {
   body {
     padding-left: 0;
   }
 
-  .cate {
-    width: 100%;
-  }
-
-  .description {
-    margin-top: 10rem;
-  }
-
+  .cate,
   .custom-select {
     width: 100%;
-  }
-
-
-  .display-start-end_1 {
-    display: none;
-  }
-
-  .display-start-end_2 {
-    display: block;
   }
 
   .month_class {
@@ -238,8 +264,7 @@
   }
 }
 
-
-@media only screen and (max-width:380px) {
+@media only screen and (max-width: 380px) {
   .truncate-date {
     min-width: 50px;
     max-width: 75px;
@@ -247,22 +272,75 @@
     text-overflow: ellipsis;
     white-space: nowrap;
   }
-
-  .month_class {
-    width: 0rem;
-  }
 }
 
-@media only screen and (max-width: 992px) and (min-width:767px) {
+@media only screen and (max-width: 992px) and (min-width: 767px) {
   .description {
     margin-top: 1rem;
   }
-
-  .month_class {
-    width: 0rem;
-  }
 }
 
+@media (max-width: 768px) {
+
+  .form-group label {
+    font-size: 0.7em;
+  }
+
+  .table-wrapper {
+    margin-top: 2rem;
+    max-height: 400px;
+    /* Adjust as necessary */
+    overflow-y: auto;
+    display: block;
+    max-width: 360px;
+    font-size: 0.7em;
+  }
+
+  .modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .modal-content {
+    max-height: 400px;
+    /* Adjust as necessary */
+    overflow-y: auto;
+    background: white;
+    width: 70%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    animation: fadeIn 0.3s ease-in-out;
+    z-index: 1001;
+  }
+
+  #customFile {
+    width: 23.5rem;
+  }
+
+  .modal-header,
+  .modal-footer {
+    padding: 4px;
+    border-bottom: 1px solid #ddd;
+  }
+
+  .modal-footer {
+    border-top: 1px solid #ddd;
+    text-align: right;
+  }
+
+  .modal-body {
+    padding: 16px;
+  }
+  .btn, .d-btn{
+    font-size: 0.7em !important;
+  }
+}
 
 .combo-section {
   position: relative;
@@ -276,27 +354,15 @@
   margin-bottom: 5px;
 }
 
-.dropdown {
-  position: relative;
-  width: max-content;
-}
-
 .dropdown-list {
   max-height: 500px;
   margin-top: 5px;
   width: 40rem;
-  height: auto;
 }
 
 .dropdown-list li {
   list-style: none;
   padding: 10px;
-}
-
-.dropdown-list label {
-  cursor: pointer;
-  display: flex;
-  align-items: center;
 }
 
 .dropdown-list input[type="checkbox"] {
@@ -334,93 +400,14 @@
   padding: 5px 10px;
   font-size: 14px;
   color: #333;
-  min-width: 60rem;
 }
 
-.d-btn{
+.d-btn {
   background-color: #007bff;
   color: white;
   border: none;
   border-radius: 4px;
   cursor: pointer;
   padding: 4px 15px;
-  margin-left: -5px ;
+  margin-left: -5px;
 }
-
-/* Backdrop styling */
-.modal-backdrop {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding-left: 25rem;
-}
-
-/* Modal content styling */
-.modal-content {
-  background: white;
-  border-radius: 8px;
-  width: 80%;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  animation: fadeIn 0.3s ease-in-out;
-  z-index: 1001; /* Ensure it is above the backdrop */
-}
-
-/* Modal header and footer */
-.modal-header,
-.modal-footer {
-  padding: 16px;
-  border-bottom: 1px solid #ddd;
-}
-
-.modal-footer {
-  border-top: 1px solid #ddd;
-  text-align: right;
-}
-
-.modal-body {
-  padding: 16px;
-}
-
-/* Close button styling */
-.close {
-  background: none;
-  border: none;
-  font-size: 20px;
-  cursor: pointer;
-}
-
-/* Button styling */
-.btn {
-  padding: 2px 16px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.btn-secondary {
-  background: #6c757d;
-  color: white;
-}
-
-.btn-primary {
-  background: #007bff;
-  color: white;
-}
-
-/* Fade-in animation */
-@keyframes fadeIn {
-  from {
-      opacity: 0;
-  }
-  to {
-      opacity: 1;
-  }
-}
-
-

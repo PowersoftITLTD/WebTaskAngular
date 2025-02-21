@@ -300,8 +300,6 @@ export class AddApprovalTempelateComponent implements OnInit {
       next: (list: any) => {
         this.instruDetailsList = list
 
-        console.log('Check Instruction List', this.instruDetailsList)
-
         if (this.taskData && this.taskData.mkey) {
           this.mappedSelectedEndList();
           this.mappedSelectedCheckList();
@@ -485,8 +483,8 @@ export class AddApprovalTempelateComponent implements OnInit {
     console.log('addApprovalTemplate', addApprovalTemplate);
 
     try {
-      const addApprlTempData = await this.apiService.postApprovalTemp(addApprovalTemplate, this.recursiveLogginUser).toPromise();
-      console.log('Data added successfully', addApprlTempData);
+      // const addApprlTempData = await this.apiService.postApprovalTemp(addApprovalTemplate, this.recursiveLogginUser).toPromise();
+      // console.log('Data added successfully', addApprlTempData);
     } catch (error) {
       console.error('Error updating task', error);
       addFieldError('Error updating task');
@@ -1251,17 +1249,32 @@ export class AddApprovalTempelateComponent implements OnInit {
   }
 
 
-  onAbbrChange(event: Event, rowForm: FormGroup) {
+  onAbbrChange(event: Event, rowForm: FormGroup, rowIndex?: number|any) {
+
+    
+ 
     const selectElement = event.target as HTMLSelectElement; // Cast to HTMLSelectElement
 
     const selectedAbbr = selectElement.value; // Now TypeScript knows 'value' exists
-    // console.log('selectedAbbr',selectedAbbr)
+    // console.log('selectedAbbr',selectedAbbr)    
 
     const formArrayVal = (this.approvalTempForm.get('rows') as FormArray).controls;
     // console.log('Rows:', formArrayVal);
     rowForm.get('abbrivation')?.setValue(selectedAbbr);
 
     const selectedRow = this.getRelAbbr.find(r => r.maiN_ABBR === selectedAbbr);
+  
+    const header_no_of_days = Number(this.approvalTempForm.get('noOfDays')?.value);
+    const subtas_no_of_days = selectedRow.dayS_REQUIERD
+    console.log('header_no_of_days', header_no_of_days);  
+    console.log('subtas_no_of_days', subtas_no_of_days)
+    if(header_no_of_days < subtas_no_of_days && selectedRow){
+      this.tostar.error(`approval session 'No. of Days' should be greater then ${selectedAbbr}`);
+      const formArray = this.approvalTempForm.get('rows') as FormArray;
+      formArray.removeAt(rowIndex);
+      // return;
+    }
+    
     const departmentList = this.departmentList
 
     // console.log('Department', departmentList)
@@ -1295,6 +1308,8 @@ export class AddApprovalTempelateComponent implements OnInit {
       rowForm.get('subtasK_MKEY')?.setValue('');
       rowForm.get('SUBTASK_TAGS')?.setValue('');
     }
+
+    // return true;
   }
 
 

@@ -93,3 +93,14 @@ table.task-table td {
 .table-scroll-container::-webkit-scrollbar-thumb:hover {
   background: #555;
 }
+
+
+@media (max-width: 768px) {
+  .table-scroll-container {
+    max-height: 500px;
+    overflow-y: auto;
+    max-width: 300px;
+  }
+}
+
+

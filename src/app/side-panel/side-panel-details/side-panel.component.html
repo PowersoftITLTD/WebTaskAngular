@@ -34,7 +34,7 @@
 
             <li class="nav-item" role="tab">
               <a class="nav-link ripple with-arrow btn" (click)="toggleTaskDropdown()">
-                <i class="icon s-4 icon-checkbox-marked"></i>
+                <i class="icon s-4 fa fa-sitemap"></i>
                 <span>Task Management</span>
               </a>
               <ul class="nav flex-column" *ngIf="isTaskDropdownOpen">
@@ -72,7 +72,7 @@
             <li class="nav-item" role="tab">
               <a class="nav-link ripple with-arrow btn" 
                 (click)="toggleComplianceDropdown()">
-                <i class="icon s-4 icon-tile-four"></i>
+                <i class="icon s-4 fa fa-file-alt"></i>
                 <span>Templates</span>
               </a>
               <ul class="nav flex-column" *ngIf="isComplianceDropdown">
@@ -80,7 +80,7 @@
                 <li class="nav-item">
                   <a class="nav-link ripple btn"  [ngClass]="{ 'active': selectedTab === 'category-master' }" (click)="navigateToCategoryMaster()">
                     <div class="py-2">
-                      <i class="icon s-4 icon-checkbox-marked"></i>
+                      <i class="icon s-4 fa fa-layer-group"></i>
                       <span><small>Category Master</small></span>
                     </div>                  
                   </a>
@@ -90,7 +90,7 @@
                 <li class="nav-item">
                   <a class="nav-link ripple btn"  [ngClass]="{ 'active': selectedTab === 'instruction-master' }" (click)="navigateToInstructionMaster()">
                     <div class="py-2">
-                      <i class="icon s-4 icon-checkbox-marked"></i>
+                      <i class="icon s-4 fa fa-book"></i>
                       <span><small>Instruction Master</small></span>
                     </div>                  
                   </a>
@@ -99,7 +99,7 @@
                 <li class="nav-item">
                   <a class="nav-link ripple btn"  [ngClass]="{ 'active': selectedTab === 'document-tempelate' }" (click)="navigateToDocumentTempelate()">
                     <div class="py-2">
-                      <i class="icon s-4 icon-checkbox-marked"></i>
+                      <i class="icon s-4 fa fa-folder"></i>
                       <span><small>Document Tempelate</small></span>
                     </div>                  
                   </a>
@@ -127,7 +127,7 @@
 
             <li class="nav-item" role="tab" *ngIf="selectedUserAccess()">
               <a class="nav-link ripple with-arrow btn" (click)="toggleApprovalDropdown()">
-                <i class="icon s-4 icon-checkbox-marked"></i>
+                <i class="icon s-4 fa fa-chart-line"></i>
                 <span>Projects</span>
               </a>
               <ul class="nav flex-column" *ngIf="isApprovalDropdown">
@@ -135,7 +135,7 @@
                 <li class="nav-item">
                   <a class="nav-link ripple btn" [ngClass]="{ 'active': selectedTab === 'project-defination' }" (click)="navigateToProjectDefination()">
                     <div class="py-2">
-                      <i class="icon s-4 icon-checkbox-marked"></i>
+                      <i class="icon s-4 fa fa-clipboard-list"></i>
                       <span><small>Project Defination</small></span>
                     </div>                  
                   </a>
@@ -144,7 +144,7 @@
                 <li class="nav-item">
                   <a class="nav-link ripple btn" [ngClass]="{ 'active': selectedTab === 'project-document-depository' }" (click)="navigateToProjectDocDepository()">
                     <div class="mt-2">
-                      <i class="icon s-4 icon-checkbox-marked"></i>
+                      <i class="icon s-4 fa fa-folder-closed"></i>
                       <span><small>Project Document Depository</small> </span>                     
                     </div>                  
                   </a>
@@ -163,7 +163,7 @@
                 <li class="nav-item ">
                   <a class="nav-link ripple btn" [ngClass]="{ 'active': selectedTab === 'add-compliance' }" (click)="navigateToCompliance()">
                     <div class="py-2">
-                      <i class="icon s-4 icon-checkbox-marked"></i>
+                      <i class="icon s-4 fa fa-certificate"></i>
                       <span>Compliance</span>
                     </div>                    
                   </a>

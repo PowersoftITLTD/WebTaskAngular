@@ -1,0 +1,101 @@
+/* General Styles */
+.card {
+    padding: 1.5rem;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+/* Form Elements */
+.input-group {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.form-group {
+    flex: 1;
+    min-width: 200px;
+}
+
+input, select {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+button {
+    padding: 10px 15px;
+    border: none;
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+/* Responsive Design */
+@media screen and (max-width: 992px) {
+    .row {
+        flex-direction: column;
+    }
+
+    .form-group {
+        width: 100%;
+    }
+
+    .save-btn button {
+        width: 100%;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    th, td {
+        font-size: 12px;
+        overflow-y: auto;
+        max-width: 72px;
+        overflow-x: auto;
+    }
+    .table {
+        display: block;
+        overflow-y: auto;
+        max-width: 72px;
+    }
+}
+
+@media screen and (max-width: 576px) {
+    .input-group {
+        flex-direction: column;
+    }
+
+    .attachment, .save-btn {
+        text-align: center;
+    }
+
+    label {
+        font-size: 14px;
+    }
+
+    .table-wrapper {
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .table {
+        min-width: 600px;
+    }
+}

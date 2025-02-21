@@ -1,77 +1,98 @@
 .sample-wrapper {
-    padding: 1rem;
-    background-color: #f9f9f9;
-    border-radius: 8px;
-    margin-top: 1rem;
-    overflow-x: auto;
-  }
-  
+  padding: 1rem;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  margin-top: 1rem;
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #fff;
+  font-size: 14px;
+}
+
+.table th,
+.table td {
+  padding: 0.75rem;
+  text-align: left;
+}
+
+.table th {
+  background-color: #f1f1f1;
+  font-weight: bold;
+}
+
+.table tbody tr:nth-child(even) {
+  background-color: #f8f8f8;
+}
+
+.form-control {
+  width: 100%;
+  padding: 0.5rem;
+  font-size: 14px;
+  border-radius: 4px;
+}
+
+.form-control:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 4px rgba(0, 123, 255, 0.5);
+}
+
+button.log-btn {
+  margin-top: 1rem;
+  padding: 0.5rem 1rem;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+button.log-btn:hover {
+  background-color: #0056b3;
+}
+
+.btn-primary {
+  font-size: 14px;
+  padding: 5px 10px;
+}
+
+.fa-plus {
+  margin-right: 5px;
+}
+
+.fa-trash {
+  font-size: 16px;
+  color: red;
+}
+
+#select {
+  margin-top: -0.8rem;
+  padding-bottom: 0.1rem;
+  width: 10rem;
+}
+
+@media (max-width: 768px) {
+
   .table {
     width: 100%;
     border-collapse: collapse;
     background-color: #fff;
-    font-size: 14px;
+    font-size: 12px;
   }
-  
-  .table th,
-  .table td {
-    padding: 0.75rem;
-    text-align: left;
-  }
-  
-  .table th {
-    background-color: #f1f1f1;
-    font-weight: bold;
-  }
-  
-  .table tbody tr:nth-child(even) {
-    background-color: #f8f8f8;
-  }
-  
-  .form-control {
-    width: 100%;
-    padding: 0.5rem;
-    font-size: 14px;
-    border-radius: 4px;
-  }
-  
-  .form-control:focus {
-    border-color: #007bff;
-    box-shadow: 0 0 4px rgba(0, 123, 255, 0.5);
-  }
-  
-  button.log-btn {
+
+  .sample-wrapper {
+    padding: 1rem;
+    background-color: #f9f9f9;
+    border-radius: 8px;
     margin-top: 1rem;
-    padding: 0.5rem 1rem;
-    background-color: #007bff;
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-  
-  button.log-btn:hover {
-    background-color: #0056b3;
+    overflow-y: auto;
+    max-width: 340px;
   }
 
-  .btn-primary {
-    font-size: 14px;
-    padding: 5px 10px;
+  .form-control {
+    font-size: 12px;
   }
-  
-  .fa-plus {
-    margin-right: 5px;
-  }
-  
-  .fa-trash {
-    font-size: 16px;
-    color: red;
-  }
-
-  #select {
-    margin-top: -0.8rem;
-    padding-bottom: 0.1rem;
-    width: 10rem;
-  }
-  
-  
+}

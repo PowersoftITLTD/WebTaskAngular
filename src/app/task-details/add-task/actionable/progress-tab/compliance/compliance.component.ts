@@ -29,10 +29,13 @@ export class ComplianceComponent implements OnInit {
     this.route.params.subscribe(params => {
       if (params['Task_Num']) {
         this.task = JSON.parse(params['Task_Num']);
+
+        console.log('check task',this.task)
         const token = this.apiService.getRecursiveUser();
 
         this.getSelectedTaskDetails(this.task.toString(), token).subscribe((response: any) => {
           this.taskDetails = response[0]?.data;
+          console.log('taskDetails', this.taskDetails)
           this.fetchComplianceList(response[0]?.data);
         });
       }
@@ -94,11 +97,31 @@ export class ComplianceComponent implements OnInit {
     });
   }
 
-  addCompliance(data: any, taskCompliance: any): void {    
+  addCompliance(data: any, taskCompliance: any): void {
+
+    console.log('task data', this.taskDetails)
+
+    console.log('this.taskDetails:', this.taskDetails);
+    console.log('PROJECT_MKEY:', this.taskDetails?.PROJECT_MKEY);
+    console.log('BUILDING_MKEY:', this.taskDetails?.BUILDING_MKEY);
+
+
+    if (!Array.isArray(data) || data.length === 0) {
+      data = [
+        {
+          MKEY: 90,
+          PROPERTY_MKEY: Number(this.taskDetails[0]?.PROJECT_MKEY),
+          BUILDING_MKEY: this.taskDetails[0]?.BUILDING_MKEY
+        }
+      ]
+    }
+  console.log('data[0].MKEY', data);
+
     this.router.navigate(['compliance', 'add-compliance', { compliance_state: data[0].MKEY, taskCompliance: taskCompliance }], {state: { taskData: data[0] }});
   }
 
   initiateCompliance(data:any, initiate:string){
+ 
     this.router.navigate(['compliance', 'add-compliance', { compliance_state: data.MKEY, initiate:initiate }], {state: { taskData: data  }});
   }
 

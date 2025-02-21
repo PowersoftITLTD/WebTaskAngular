@@ -19,6 +19,8 @@ export class OutputComponent implements OnInit {
   selectedTags: [] = [];
   taskData: any;
   outputList: any[] = [];
+  myFiles: { file: File; name: string }[] = [];
+
   @Input() task: any;
   taskDetails: any;
   selectedDocument: any = null;
@@ -64,6 +66,7 @@ export class OutputComponent implements OnInit {
 
         this.getSelectedTaskDetails(this.task.toString(), token).subscribe((response: any) => {
           this.taskDetails = response[0]?.data;
+          console.log('Task check: ',this.taskDetails)
           this.fetchOutputList(response[0]?.data);
         });
       }
@@ -169,11 +172,12 @@ export class OutputComponent implements OnInit {
     this.loading = true;
     const token = this.apiService.getRecursiveUser();
     const user = this.credentialService.getUser();
-
+    // debugger;
     this.apiService.getOutputList(taskDetails[0].BUILDING_MKEY, taskDetails[0].PROJECT_MKEY, user[0].ROLE_ID, this.task.toString(), token).subscribe(
       (response: any) => {
         if (response[0].DATA && response[0].DATA.length > 0) {
           this.outputList = response[0].DATA;
+          console.log('check output list',this.outputList)
           this.columns.forEach(col => {
             if (col.field !== 'srNo' && col.field !== 'action') {
               this.checkColumnVisibility(col);
@@ -215,9 +219,16 @@ export class OutputComponent implements OnInit {
 
 
   openModal(document: any): void {
+    console.log('Check document from model: ', document)
     this.isModalOpen = true;
     setTimeout(() => {
       this.selectedDocument = document;
+      document.TASK_OUTPUT_ATTACHMENT.forEach((docFile:any)=>{
+        this.myFiles.push({
+          name: docFile.FILE_NAME,
+          file: docFile.FILE_PATH,
+        })
+      })
     });
   }
 
@@ -250,23 +261,69 @@ export class OutputComponent implements OnInit {
     if (file) {
       this.selectedDocument.TASK_OUTPUT_ATTACHMENT = [file];
     }
+    const inputElement = event.target as HTMLInputElement;
+    if (inputElement.files && inputElement.files.length > 0) {
+      Array.from(inputElement.files).forEach((file: File) => {
+        // Push an object with file and its name to myFiles array
+        this.myFiles.push({
+          file: file,
+          name: file.name,
+        });
+      });
+
+      console.log('Check files', this.myFiles);
+
+      const labelElement = document.getElementById('AttachmentDetails');
+      if (labelElement) {
+        // Join file names for display
+        const fileNames = this.myFiles.map((item: any) => item.name).join(', ');
+        labelElement.textContent = fileNames;
+      }
+    }
   }
 
   saveChanges(): void {
-    const token = this.apiService.getRecursiveUser();
-    const formData = new FormData();
-    formData.append('PROJECT_DOC_FILES', this.selectedDocument.TASK_OUTPUT_ATTACHMENT[0] || "null");
-    formData.append('DOC_MKEY', this.selectedDocument.DOC_MKEY.toString());
-    formData.append('PROPERTY_MKEY', this.selectedDocument.PROPERTY_MKEY);
-    formData.append('BUILDING_MKEY', this.selectedDocument.BUILDING_MKEY);
-    formData.append('VALIDITY_DATE', this.selectedDocument.VALIDITY_DATE);
-    formData.append('CREATED_BY', this.selectedDocument.CREATED_BY_ID);
-    formData.append('DOC_NUMBER', this.selectedDocument.DOC_NUMBER);
-    formData.append('DOC_DATE', this.selectedDocument.DOC_DATE);
-    formData.append('SR_NO', this.selectedDocument.SR_NO);
-    formData.append('MKEY', this.selectedDocument.MKEY);
-    formData.append('DELETE_FLAG', "N");
 
+    console.log(this.myFiles)
+    const token = this.apiService.getRecursiveUser();    
+    const formData:any = new FormData();
+
+    const documentData:any = {
+      PROJECT_DOC_FILES: this.myFiles,
+      DOC_MKEY: this.selectedDocument.DOC_MKEY.toString(),
+      PROPERTY_MKEY: this.selectedDocument.PROPERTY_MKEY,
+      BUILDING_MKEY: this.selectedDocument.BUILDING_MKEY,
+      VALIDITY_DATE: this.selectedDocument.VALIDITY_DATE,
+      CREATED_BY: this.selectedDocument.CREATED_BY_ID,
+      DOC_NUMBER: this.selectedDocument.DOC_NUMBER,
+      DOC_DATE: this.selectedDocument.DOC_DATE,
+      SR_NO: this.selectedDocument.SR_NO,
+      MKEY: this.selectedDocument.MKEY,
+      DELETE_FLAG: "N"
+  };
+
+  console.log('documentData check: ', documentData)
+  
+  // Populate FormData using the object model
+  Object.keys(documentData).forEach((key) => {
+    if (key === "PROJECT_DOC_FILES" && Array.isArray(documentData[key])) {
+      documentData[key].forEach((file: File | any, index: number) => {
+        console.log('file.file file',file)
+        formData.append(`${key}`, file.file);
+      });
+    } else if (key !== "PROJECT_DOC_FILES") {
+      const value = documentData[key] !== undefined ? documentData[key] : "";
+      formData.append(key, value);
+    }
+  });
+
+  console.log("Form Data Contents:");
+  for (const [key, value] of formData.entries()) {
+    console.log(`${key}:`, value);
+  }
+  Object.entries(documentData).forEach(([key, value]) => {
+    formData.append(key, value);
+    });
     this.apiService.updateOutputDetails(formData, token).subscribe(
       (response: any) => {
         if (response[0].DATA?.length) {
@@ -285,6 +342,7 @@ export class OutputComponent implements OnInit {
 
   removeFile(): void {
     this.selectedDocument.TASK_OUTPUT_ATTACHMENT = [];
+    this.myFiles = [];
   }
 
   ngOnDestroy(): void {

@@ -146,6 +146,7 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
 
     // this.subListForm();
     this.fetchProjectData();
+    this.getTags();
   }
 
 
@@ -423,12 +424,8 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
   getTags() {
     this.loggedInUser = this.credentialService.getUser();
     const token = this.apiService.getRecursiveUser();
-
-    console.log('getTagDetailss1', token);
-
     this.apiService.getTagDetailss1(this.loggedInUser[0]?.MKEY.toString(), token).subscribe((response: any) => {
-      this.allTags = response[0].data.map((item: { name: string }) => item.name);
-
+      this.allTags = response[0].data.map((item: { name: string }) => item.name); 
     });
   }
 
@@ -1486,9 +1483,6 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
 
     // const taskMap = new Map();
 
-    let lastEndDate = this.appeInitForm.get('startDate')?.value;  
-
-    let modified_start_date = new Date(lastEndDate)
     const optionListArr = sortedTasks
       .filter((item: any) => item.TASK_NO !== null)
       .map((item: any, index: number) => {
@@ -1497,11 +1491,12 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
         const daysRequired = isNaN(item.DAYS_REQUIRED) ? 0 : Number(item.DAYS_REQUIRED);
 
         //let startDate = new Date(lastEndDate);
-        let startDate = modified_start_date;
-        console.log('startDate startDate',startDate)
-        console.log('lastEndDate lastEndDate', lastEndDate)
-
+        
+        let lastEndDate = this.appeInitForm.get('startDate')?.value;  
+        let modified_start_date = new Date(lastEndDate)
+        let startDate = modified_start_date;   
         let endDate = new Date(startDate);
+        
         endDate.setDate(startDate.getDate() + daysRequired);
 
         lastEndDate = new Date(endDate); // Update for the next task
@@ -1728,7 +1723,7 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
 
       console.log('invalidSubTasks', invalidSubTasks);
       if (invalidSubTasks.length > 0) {
-        this.tostar.error('Please add a responsible person/s to all subtask(s)');
+        this.tostar.error('Please add responsible person/s to all subtask(s)');
         return;
       }
     }
@@ -1757,13 +1752,12 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
     console.log('Coming to form', task)
   }
 
-  formatDate(date: Date): string {
-    console.log('date', date);
+  formatDate(date: Date): string {  
     const dateObj = new Date(date);
-    const day = String(dateObj.getDate()).padStart(2, '0');  // Ensure the day is two digits
-    const month = String(dateObj.getMonth() + 1).padStart(2, '0');  // Ensure the month is two digits
-    const year = dateObj.getFullYear();  // Get the full year
-    return `${year}-${month}-${day}`;  // Return in YYYY-MM-DD format
+    const day = String(dateObj.getDate()).padStart(2, '0'); 
+    const month = String(dateObj.getMonth() + 1).padStart(2, '0'); 
+    const year = dateObj.getFullYear();  
+    return `${year}-${month}-${day}`;  
   }
 
   ngOnDestroy(): void {
