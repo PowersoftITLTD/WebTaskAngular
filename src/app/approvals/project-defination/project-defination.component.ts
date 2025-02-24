@@ -832,9 +832,36 @@ hasDisabledClear(): boolean {
         updateTaskSelection(task, this.selectAllChecked);
         this.toggleSelection(task);
     });
+    this.selectedSeqArr
+    // this.getTree(this.subTasks)
+    const subTaskList = this.breakToLinear(this.selectedSeqArr);
+    this.getTree(subTaskList);
 
+    console.log('selectAll(): ',subTaskList);
+    
     this.cdRef.detectChanges();
 }
+
+
+clearAllProjects() {
+  const clearTaskSelection = (task: any) => {
+      task.checked = false;
+
+      if (task.subtask && task.subtask.length > 0) {
+          task.subtask.forEach(clearTaskSelection);
+      }
+  };
+
+  this.subTasks.forEach(task => {
+      clearTaskSelection(task);
+      this.toggleSelection(task);
+  });
+
+  // this.selectAllChecked = false;
+  this.cdRef.detectChanges();
+  // this.selectedSeqArr = [];
+}
+
 
 
 

@@ -298,9 +298,9 @@
                                         <span class="select-all-container">
                                           <input type="checkbox" class="task-item" (change)="selectAll()"
                                             [checked]="isAllSelectedCheck">
-                                        </span>
+                                        </span>                                                                               
                                       </li>
-
+                                   
                                       <hr>
                                       <ng-template #recursiveTaskTemplate let-tasks>
 
@@ -385,6 +385,13 @@
                                             (change)="selectAll()">
                                         </span>
                                       </li>
+                                      <!-- <li class="sticky">
+                                        <span class="select-all-container">
+                                          <input type="checkbox" class="task-item" (change)="selectAll()"
+                                            [checked]="!isAllSelectedCheck">
+                                        </span>
+                                                                               
+                                      </li> -->
                                       <hr>
 
                                       <ng-template #recursiveTaskTemplate let-tasks>

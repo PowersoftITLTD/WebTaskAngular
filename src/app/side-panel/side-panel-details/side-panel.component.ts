@@ -261,7 +261,6 @@ selectedUserAccess(): boolean{
 
   setActiveTab() {
     let currentRoute = this.router.url.split('?')[0]; // Remove query parameters
-    console.log('currentRoute:', currentRoute);
   
     // Using an array of mappings to allow duplicates and enforce order
     const tabMappings = [
@@ -281,8 +280,6 @@ selectedUserAccess(): boolean{
   
     // Find the first matching entry in the ordered array
     const match:any = tabMappings.find(mapping => currentRoute.includes(mapping.key));
-
-    console.log('match', match.value)
   
     // Set the selected tab based on the first match found
     this.selectedTab = match.value ;

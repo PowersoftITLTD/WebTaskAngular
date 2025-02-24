@@ -165,7 +165,6 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
       completionDate: this.completionDate
     };
 
-    console.log('formData', formData)
 
   }
 
@@ -186,7 +185,6 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
   initilizeApprInitiationForm() {
 
     const USER_CRED = this.credentialService.getUser();
-    console.log('this.initiatorName', USER_CRED[0].EMP_FULL_NAME)
 
     this.appeInitForm = this.formBuilder.group({
       property: [''],
@@ -215,9 +213,7 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const check_start_date = this.appeInitForm.get('startDate')?.value
 
-    console.log('check_start_date', check_start_date)
     // Sum up all the days from SUBTASK_LIST
     const totalDays = this.taskData.SUBTASK_LIST.reduce((sum: number, task: any) => {
       return sum + (task.DAYS_REQUIRED || 0);
@@ -233,14 +229,12 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
     // Format the end date using formatDate() method
     const formattedEndDate = this.formatDate(endDate);
 
-    console.log('formattedEndDate', formattedEndDate)
 
     // Patch value to form
     this.appeInitForm.patchValue({ endDate: [formattedEndDate] });
     this.appeInitForm.patchValue({ complitionDate: [formattedEndDate] });
 
 
-    console.log(`Total Days: ${totalDays}, Calculated End Date: ${formattedEndDate}`);
   }
 
 
@@ -276,7 +270,6 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
       this.appeInitForm.patchValue({ startDate: startDateValue });
     }
 
-    console.log('Selected start date:', this.startDateValue);
 
     if (!startDateValue) {
       console.error("Start date is missing.");
@@ -297,13 +290,11 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
     // Format the end date
     const formattedEndDate = this.formatDate(endDate);
 
-    console.log('Calculated End Date:', formattedEndDate);
 
     // Patch calculated dates to the form
     this.appeInitForm.patchValue({ endDate: formattedEndDate });
     this.appeInitForm.patchValue({ complitionDate: formattedEndDate });
 
-    console.log(`Total Days: ${totalDays}, Updated End Date: ${formattedEndDate}`);
 
     this.getTree();
 
@@ -330,7 +321,6 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
 
     const assignedToValue = this.appeInitForm.get('responsiblePerson')?.value.trim();
 
-    console.log('Check the assigning Employee', this.headerEmployee)
     // this.headerEmployee.push({ Assign_to: capitalizedFullName, MKEY: MKEY });
 
     const assignedEmployee = this.headerEmployee.find(employee => employee.Assign_to === assignedToValue);
@@ -1696,8 +1686,7 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
 
     const subTaskList = this.taskData.SUBTASK_LIST;
 
-    console.log('this.taskData.SUBTASK_LIST', this.taskData.SUBTASK_LIST)
-    console.log('subTaskList', subTaskList)
+
 
     // if (subTaskList && subTaskList.length > 0) {
     //   const invalidSubTasks = subTaskList.filter((subTask:any) => {
@@ -1713,7 +1702,6 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
     //   }
     // }
 
-    console.log('subTaskList: ', subTaskList)
 
     if (subTaskList && subTaskList.length > 0) {
       const invalidSubTasks = subTaskList.filter((subTask: any) => {
