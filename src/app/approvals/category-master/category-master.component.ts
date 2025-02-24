@@ -39,7 +39,6 @@ export class CategoryMasterComponent implements OnInit, OnDestroy {
     if (navigation?.extras.state) {
       const RecursiveTaskData: any = navigation.extras.state.taskData;
       this.taskData = RecursiveTaskData;
-      console.log('RecursiveTaskData', RecursiveTaskData);
 
       if (RecursiveTaskData.mkey) {
         this.updatedDetails = !isNewTemp; // Don't update if adding a new task
@@ -54,7 +53,6 @@ export class CategoryMasterComponent implements OnInit, OnDestroy {
       if (RecursiveTaskData) {
         try {
           this.taskData = JSON.parse(RecursiveTaskData);
-          console.log('Check task data', this.taskData);
           if (!isNewTemp) {
             this.updatedDetails = this.taskData.mkey ? true : false;
           }
@@ -226,7 +224,6 @@ export class CategoryMasterComponent implements OnInit, OnDestroy {
   }
 
   onActionButtonClick(field: string, isUpdate: boolean = false) {
-    console.log('onActionButtonClick', field, '&', isUpdate);
 
     // Set the action type (add or update) based on the button clicked
     if (field === 'category') {
@@ -237,20 +234,14 @@ export class CategoryMasterComponent implements OnInit, OnDestroy {
         this.isCategoryUpdate = false;  // Reset category flag
     }
 
-    // Log the updated flags for debugging
-    console.log('Category Update Flag:', this.isCategoryUpdate);
-    console.log('Instruction Update Flag:', this.isInstructionUpdate);
-}
+  }
 
   
 
 
 
   onsubmit(flag?: string) {
-
-
-    console.log('this.isCategoryUpdate', this.isCategoryUpdate);
-    console.log('this.isInstructionUpdate', this.isInstructionUpdate);
+ 
 
     if (this.isCategoryUpdate) {
       if (this.categoryForm.value.category === '' || this.categoryForm.value.category === null || this.categoryForm.value.category === undefined) {
@@ -282,6 +273,10 @@ export class CategoryMasterComponent implements OnInit, OnDestroy {
 
   }
 
+  navigateToCategoryMaster(){
+    this.router.navigate(['task/approval-screen'], {queryParams:{ source: 'category-master' }});
+
+  }
 
 
   ngOnDestroy(): void {

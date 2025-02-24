@@ -125,7 +125,6 @@ export class AddApprovalTempelateComponent implements OnInit {
     if (navigation?.extras.state) {
       const RecursiveTaskData: any = navigation.extras.state.taskData;
       this.taskData = RecursiveTaskData;
-      console.log('RecursiveTaskData', RecursiveTaskData)
 
       if (RecursiveTaskData.mkey) {
         this.updatedDetails = !isNewTemp; // Don't update if adding a new task
@@ -140,7 +139,6 @@ export class AddApprovalTempelateComponent implements OnInit {
       if (RecursiveTaskData) {
         try {
           this.taskData = JSON.parse(RecursiveTaskData);
-          console.log('Check task data', this.taskData)
           if (!isNewTemp) {
             this.updatedDetails = this.taskData.mkey ? true : false;
           }
@@ -986,8 +984,6 @@ export class AddApprovalTempelateComponent implements OnInit {
     if (buildingType && buildingStandard && statutoryAuthority) {
       this.recursiveLogginUser = this.apiService.getRecursiveUser();
 
-      console.log(`buildingType ${buildingType} buildingStandard ${buildingStandard} statutoryAuthority ${statutoryAuthority}`);
-
       // API call to fetch abbreviation and other data
       this.apiService.GetAbbrAndShortAbbr(buildingType, buildingStandard, statutoryAuthority, this.recursiveLogginUser).subscribe({
         next: (gerAbbrRelData) => {
@@ -995,9 +991,6 @@ export class AddApprovalTempelateComponent implements OnInit {
 
           // console.log(gerAbbrRelData);
           this.getRelAbbr = Array.isArray(gerAbbrRelData) ? gerAbbrRelData : [gerAbbrRelData];
-
-          console.log('getRelAbbr: ',this.getRelAbbr)
-
 
           if (this.getRelAbbr.length === 0) {
             this.tostar.error("Details of this combination is empty or missing");
@@ -1232,7 +1225,6 @@ export class AddApprovalTempelateComponent implements OnInit {
   checkValueForNewRow_1() {
     const formArray_new_1 = this.approvalTempForm.get('rows_new') as FormArray;
     // console.log('formArray_new_1', formArray_new_1);
-    console.log('this.taskData.sanctioninG_DEPARTMENT_LIST', this.taskData.sanctioninG_DEPARTMENT_LIST);
 
     formArray_new_1.clear();
 
@@ -1510,6 +1502,10 @@ export class AddApprovalTempelateComponent implements OnInit {
 
   ngOnDestroy(): void {
     sessionStorage.removeItem('task');
+  }
+
+  navigateToApprovlTempelate() {
+    this.router.navigate(['task/approval-screen'], {queryParams:{ source: 'authority-tempelate' }});
   }
 
   formatDate(date: string): string {

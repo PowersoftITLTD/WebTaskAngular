@@ -39,7 +39,6 @@ export class InstructionMasterComponent implements OnInit {
       if (navigation?.extras.state) {
         const RecursiveTaskData: any = navigation.extras.state.taskData;
         this.taskData = RecursiveTaskData;
-        console.log('RecursiveTaskData', RecursiveTaskData);
   
         if (RecursiveTaskData.mkey) {
           this.updatedDetails = !isNewTemp; // Don't update if adding a new task
@@ -54,7 +53,6 @@ export class InstructionMasterComponent implements OnInit {
         if (RecursiveTaskData) {
           try {
             this.taskData = JSON.parse(RecursiveTaskData);
-            console.log('Check task data', this.taskData);
             if (!isNewTemp) {
               this.updatedDetails = this.taskData.mkey ? true : false;
             }
@@ -254,12 +252,7 @@ export class InstructionMasterComponent implements OnInit {
   
   
   
-    onsubmit(flag?: string) {
-  
-      console.log('Check flag: ',flag)
-  
-      console.log('this.isCategoryUpdate', this.isCategoryUpdate);
-      console.log('this.isInstructionUpdate', this.isInstructionUpdate);
+    onsubmit(flag?: string) {      
   
       if (this.isInstructionUpdate) {
         if (this.categoryForm.value.instruction === '' || this.categoryForm.value.instruction === null || this.categoryForm.value.instruction === undefined) {
@@ -295,6 +288,10 @@ export class InstructionMasterComponent implements OnInit {
     }
   
   
+    navigateToInstructionMaster(){
+      this.router.navigate(['task/approval-screen'], {queryParams:{ source: 'instruction-master' }});
+  
+    }
   
     ngOnDestroy(): void {
       console.log('Component is being destroyed');

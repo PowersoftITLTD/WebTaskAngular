@@ -26,8 +26,14 @@
                                 </ng-container>
 
                                 <ng-container *ngIf="taskData?.mkey">
-                                    <button type="button" *ngIf="updatedDetails" class="btn btn-light" (click)="onUpdateDOcTemp()" id="btnSaveTask">
+                                    <button type="button" *ngIf="updatedDetails" class="btn btn-light mr-2" (click)="onUpdateDOcTemp()" id="btnSaveTask">
                                         SAVE
+                                    </button>
+                                </ng-container>
+
+                                <ng-container >
+                                    <button type="button" class="btn btn-light" (click)="navigateToDocumentTempelate()" id="btnSaveTask">
+                                        BACK
                                     </button>
                                 </ng-container>
                                                             

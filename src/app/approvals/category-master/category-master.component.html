@@ -31,6 +31,10 @@
                                                     <button class="btn btn-info mt-2" type="submit" [disabled]="categoryForm.invalid" (click)="onActionButtonClick('category', true)">
                                                         {{ taskData?.mkey ? 'Update' : 'Save' }}
                                                     </button>
+
+                                                    <button class="btn btn-warning mt-2 ml-1" (click)="navigateToCategoryMaster()">
+                                                        BACK
+                                                    </button>
                                             
                                                     <div *ngIf="taskData?.mkey" class="ml-6">
                                                         <i class="fa fa-trash mt-4" type="submit" (click)="onDeleteClick()" style="font-size: large; color: rgb(204, 73, 36); cursor: pointer;"></i>

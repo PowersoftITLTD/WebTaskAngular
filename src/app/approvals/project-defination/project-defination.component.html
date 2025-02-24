@@ -18,7 +18,7 @@
               </div>
 
               <div class="flex-grow-1"></div>
-              <div class="mr-8">
+              <div class="d-flex mr-8">
                 <div *ngIf="!taskData?.mkey">
                   <button type="submit" class="btn btn-light mr-2" (click)="onAddProjDef()" id="btnSaveTask">
                     ADD
@@ -31,12 +31,10 @@
                   </button>
                 </div>
 
-                <!-- <div *ngIf="taskData?.mkey && taskData.approvalS_ABBR_LIST[0].status !== 'Initiated'">
-                  <button type="submit" class="btn btn-light mr-2" (click)="onUpdateProjDef()" id="btnSaveTask">
-                    SAVE
-                  </button>
-                </div> -->
-
+                
+                  <button class="btn btn-light mr-2" (click)="navigateToProjectDefination()" id="btnSaveTask">
+                    BACK
+                  </button>                
               </div>
 
             </div>

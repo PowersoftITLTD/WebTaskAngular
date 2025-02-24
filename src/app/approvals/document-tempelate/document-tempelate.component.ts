@@ -473,6 +473,9 @@ export class DocumentTempelateComponent implements OnInit {
     }
   }
 
+  navigateToDocumentTempelate() {
+    this.router.navigate(['task/approval-screen'], {queryParams:{ source: 'document-tempelate' }});
+  }
 
   ngOnDestroy(): void {
     sessionStorage.removeItem('task');

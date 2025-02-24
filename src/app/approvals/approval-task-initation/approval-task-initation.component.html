@@ -20,9 +20,13 @@
               <div class="flex-grow-1"></div>
 
               <div *ngIf="taskData?.MKEY">
-                <button type="submit" class="btn btn-light mr-6" (click)="onAddInitiation()" id="btnSaveTask">
+                <button type="submit" class="btn btn-light mr-2" (click)="onAddInitiation()" id="btnSaveTask">
                   SAVE
                 </button>
+
+                <button class="btn btn-light mx-2" (click)="navigateToProjectDefination()" id="btnSaveTask">
+                  BACK
+                </button>   
               </div>
 
             </div>

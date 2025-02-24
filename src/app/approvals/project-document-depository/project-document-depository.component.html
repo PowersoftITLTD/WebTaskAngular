@@ -22,7 +22,7 @@
                                 <div class="flex-grow-1 ">
 
                                 </div>
-                                <div class="mr-8 ">
+                                <div class="mr-8 d-flex">
 
                                     <div>
                                         <button type="button" class="btn btn-light" (click)="onSubmit()"
@@ -30,6 +30,9 @@
                                             {{ taskData?.MKEY ? 'Update' : 'Save' }}
                                         </button>
                                     </div>
+                                    <button class="btn btn-light mx-2" (click)="navigateToProjectDocDepository()" id="btnSaveTask">
+                                        BACK
+                                    </button>   
                                 </div>
                             </div>
                             <form [formGroup]="docDepositoryForm" (ngSubmit)="createData()">

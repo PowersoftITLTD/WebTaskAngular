@@ -684,4 +684,9 @@ export class ProjectDocumentDepositoryComponent implements OnInit {
     sessionStorage.removeItem('task');
   }
 
+
+  navigateToProjectDocDepository() {
+    this.router.navigate(['task/approval-screen'], {queryParams:{ source: 'project-document-depository' }});
+  }
+
 }

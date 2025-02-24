@@ -20,7 +20,7 @@
 
 
                             <div class="flex-grow-1"></div>
-                            <div class="mr-8">
+                            <div class="mr-8 d-flex">
 
                                 <ng-container *ngIf="!taskData?.mkey">
                                     <button type="submit" class="btn btn-light mr-2" (click)="onAddTempDoc()" id="btnSaveTask">
@@ -33,6 +33,10 @@
                                         SAVE
                                     </button>
                                 </ng-container>
+
+                                <button class="btn btn-light mx-2" (click)="navigateToApprovlTempelate()" id="btnSaveTask">
+                                    BACK
+                                </button>  
                               
                             </div>
                         </div>

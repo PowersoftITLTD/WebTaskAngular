@@ -112,7 +112,6 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
       const RecursiveTaskData: any = navigation.extras.state.taskData;
       this.taskData = RecursiveTaskData;
 
-      console.log('RecursiveTaskData', RecursiveTaskData)
 
       if (RecursiveTaskData.mkey) {
         this.updatedDetails = !isNewTemp;
@@ -222,7 +221,6 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
       };
 
       const filterUniqueTasks = (tasks: any[]): any[] => {
-        console.log('filterUniqueTasks: ',tasks)
         return tasks        
           .filter((task: any) => abbrCount.get(task?.TASK_NO?.maiN_ABBR) === 1)
           .map((task: any) => ({            
@@ -255,7 +253,6 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
     }
 
 
-    console.log('selectedTasksArray: ', selectedTasksArray);
 
     // Function to check if task exists as a subtask
     const hasMatchingSubtask = (task: any, tasks: any[]): boolean => {
@@ -653,17 +650,14 @@ hasDisabledClear(): boolean {
 
 
   initiateToApprovalInitiation(approvalKey: any) {
-    console.log('taskData Check', this.taskData)
     this.recursiveLogginUser = this.apiService.getRecursiveUser();
     const project_mkey = this.taskData.mkey
     const approval_mkey = this.taskData.approvalS_ABBR_LIST[0].approvaL_MKEY
 
-    console.log(`project_mkey: ${project_mkey}, approval_mkey ${approvalKey}`)
 
     this.apiService.getApprovalInitiation(this.recursiveLogginUser, project_mkey, approvalKey).subscribe({
       next: (response) => {
         if (response) {
-          console.log('initiateToApprovalInitiation', response.data)
           this.navigateToApprovalInitiation(response.data);
         }
       },
@@ -1950,7 +1944,6 @@ clearAllProjects() {
 
 
     this.new_list_of_selectedSeqArr = this.subTasks
-    console.log('new_list_of_selectedSeqArr', this.new_list_of_selectedSeqArr)
     // this.selectedSeqArr = [...this.optionSubTASk]
 
     this.noParentTree_new(noSubParentTasks)
@@ -2016,12 +2009,9 @@ clearAllProjects() {
   }
 
 
-
-
-
-
-
-
+  navigateToProjectDefination() {
+    this.router.navigate(['task/approval-screen'], {queryParams:{ source: 'project-defination' }});
+  }
 
   ngOnDestroy(): void {
     console.log('Component is being destroyed');

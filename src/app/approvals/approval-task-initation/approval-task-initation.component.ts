@@ -100,7 +100,7 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
     private credentialService: CredentialService,
     private router: Router,
     private tostar: ToastrService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
   ) {
 
 
@@ -125,6 +125,8 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
       if (RecursiveTaskData) {
         try {
           this.taskData = JSON.parse(RecursiveTaskData);
+
+          console.log('TASK DATA', this.taskData);
           if (!isNewTemp) {
             this.updatedDetails = this.taskData.mkey ? true : false;
           }
@@ -1747,6 +1749,10 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
     const year = dateObj.getFullYear();  
     return `${year}-${month}-${day}`;  
   }
+
+  navigateToProjectDefination() {
+    history.back();
+      }
 
   ngOnDestroy(): void {
     console.log('Component is being destroyed');
