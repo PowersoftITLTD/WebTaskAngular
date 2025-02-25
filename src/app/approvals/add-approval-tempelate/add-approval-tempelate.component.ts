@@ -126,6 +126,7 @@ export class AddApprovalTempelateComponent implements OnInit {
       const RecursiveTaskData: any = navigation.extras.state.taskData;
       this.taskData = RecursiveTaskData;
 
+      console.log('RecursiveTaskData', RecursiveTaskData)
       if (RecursiveTaskData.mkey) {
         this.updatedDetails = !isNewTemp; // Don't update if adding a new task
       } else {
@@ -481,8 +482,8 @@ export class AddApprovalTempelateComponent implements OnInit {
     console.log('addApprovalTemplate', addApprovalTemplate);
 
     try {
-      // const addApprlTempData = await this.apiService.postApprovalTemp(addApprovalTemplate, this.recursiveLogginUser).toPromise();
-      // console.log('Data added successfully', addApprlTempData);
+      const addApprlTempData = await this.apiService.postApprovalTemp(addApprovalTemplate, this.recursiveLogginUser).toPromise();
+      console.log('Data added successfully', addApprlTempData);
     } catch (error) {
       console.error('Error updating task', error);
       addFieldError('Error updating task');
@@ -999,6 +1000,8 @@ export class AddApprovalTempelateComponent implements OnInit {
 
           const rows: FormArray = this.approvalTempForm.get('rows') as FormArray;
 
+          console.log('Rows: ',rows)
+
           const tagsValue = rows.get('subTaskTags')?.value || [];
           let tagsString: string = '';
 
@@ -1244,11 +1247,11 @@ export class AddApprovalTempelateComponent implements OnInit {
   onAbbrChange(event: Event, rowForm: FormGroup, rowIndex?: number|any) {
 
     
- 
+    console.log('rowForm', rowForm)
     const selectElement = event.target as HTMLSelectElement; // Cast to HTMLSelectElement
 
     const selectedAbbr = selectElement.value; // Now TypeScript knows 'value' exists
-    // console.log('selectedAbbr',selectedAbbr)    
+    console.log('selectElement',selectElement)    
 
     const formArrayVal = (this.approvalTempForm.get('rows') as FormArray).controls;
     // console.log('Rows:', formArrayVal);

@@ -633,47 +633,47 @@
                                                                     </td>
                                                                     <td>
                                                                         <div class="input-container">
-                                                                            <select class="form-control mt-1" formControlName="abbrivation"
+                                                                            <!-- <select class="form-control mt-1" formControlName="abbrivation"
                                                                                 (change)="onAbbrChange($event, row)">
                                                                                 <option value="" style="width: 15rem">
                                                                                     --SELECT--</option>
                                                                                 <option *ngFor="let option of getRelAbbr" [value]="option.maiN_ABBR">{{
                                                                                     option.maiN_ABBR }}
                                                                                 </option>
-                                                                            </select>
+                                                                            </select> -->
                                                         
                                                                             <select class="form-control mt-1" formControlName="abbrivation"
                                                                                 (change)="onAbbrChange($event, row)">
                                                                                 <option value="" style="width: 15rem">
-                                                                                    --SELECT--</option>
-                                                                                <option *ngFor="let option of getRelAbbr" [value]="option.maiN_ABBR">{{
+                                                                                    {{row.value.abbrivation ? row.value.abbrivation : '--SELECT--'}}</option>
+                                                                                <option *ngFor="let option of getRelAbbr" [value]="option.maiN_ABBR" >{{
                                                                                     option.maiN_ABBR }}
                                                                                 </option>
                                                                             </select>
-                                                                            <input class="form-control" style="width: 15rem" placeholder="--SELECT--"
+                                                                            <input class="form-control" style="width: 15rem" 
                                                                                 formControlName="abbrivation" type="text" readonly />
                                                                         </div>
                                                                     </td>  
                                                                     <td>
                                                                         <div class="input-container">
-                                                                            <select class="form-control mt-1" formControlName="shorT_DESCRIPTION"
+                                                                            <!-- <select class="form-control mt-1" formControlName="shorT_DESCRIPTION"
                                                                                 (change)="onAbbrChange($event, row)">
                                                                                 <option value="" style="width: 15rem">
                                                                                     --SELECT--</option>
                                                                                 <option *ngFor="let option of getRelAbbr" [value]="option.maiN_ABBR">{{
                                                                                     option.shorT_DESCRIPTION }}
                                                                                 </option>
-                                                                            </select>
+                                                                            </select> -->
                                                         
                                                                             <select class="form-control mt-1" formControlName="shorT_DESCRIPTION"
                                                                                 (change)="onAbbrChange($event, row)">
                                                                                 <option value="" style="width: 15rem">
-                                                                                    --SELECT--</option>
+                                                                                    {{row.value.shorT_DESCRIPTION ? row.value.shorT_DESCRIPTION : '--SELECT--'}}</option>
                                                                                 <option *ngFor="let option of getRelAbbr" [value]="option.maiN_ABBR">{{
                                                                                     option.shorT_DESCRIPTION }}
                                                                                 </option>
                                                                             </select>
-                                                                            <input class="form-control" style="width: 15rem" placeholder="--SELECT--"
+                                                                            <input class="form-control" style="width: 15rem" 
                                                                                 formControlName="shorT_DESCRIPTION" type="text" readonly />
                                                                         </div>
                                                                     </td>                                                       
