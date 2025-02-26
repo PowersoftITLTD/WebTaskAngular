@@ -93,7 +93,6 @@ export class CredentialService {
 
   saveUser(user: any): void {
 
-    console.log('User: ', user)
 
     // user[0] = {
     //   MKEY: user[0].MKEY,

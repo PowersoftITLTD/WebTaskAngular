@@ -30,10 +30,10 @@
                     SAVE
                   </button>
                 </div>
-                
-                  <button class="btn btn-light mr-2" (click)="navigateToProjectDefination()" id="btnSaveTask">
-                    BACK
-                  </button>                
+
+                <button class="btn btn-light mr-2" (click)="navigateToProjectDefination()" id="btnSaveTask">
+                  BACK
+                </button>
               </div>
 
             </div>
@@ -63,9 +63,8 @@
                       <div class="form-group">
                         <ng-container *ngIf="taskData?.mkey">
                           <label for="taskName">Property</label>
-                          <select class="form-control" formControlName="property" 
-                            [attr.disabled]="hasInitiatedTasks() ? true : null"
-                            [(ngModel)]="taskData.property"
+                          <select class="form-control" formControlName="property"
+                            [attr.disabled]="hasInitiatedTasks() ? true : null" [(ngModel)]="taskData.property"
                             #projectSelect (change)="onProjectSelect(projectSelect)">
                             <option value="0">Select</option>
                             <option *ngFor="let p of project" [ngValue]="p"
@@ -93,8 +92,7 @@
                         <ng-container *ngIf="taskData?.mkey">
                           <label for="category">Building</label>
                           <select class="form-control" formControlName="subProject"
-                            [attr.disabled]="hasInitiatedTasks() ? true : null"
-                            [(ngModel)]="taskData.sub_proj_name"
+                            [attr.disabled]="hasInitiatedTasks() ? true : null" [(ngModel)]="taskData.sub_proj_name"
                             name="subProject">
                             <option value="0">Select</option>
                             <option *ngFor="let s of sub_proj" [selected]="s.TYPE_DESC === taskData.sub_proj_name">
@@ -105,8 +103,7 @@
 
                         <ng-container *ngIf="!taskData?.mkey">
                           <label for="category">Building</label>
-                          <select class="form-control" formControlName="subProject"
-                          >
+                          <select class="form-control" formControlName="subProject">
                             <option value="0">Select</option>
                             <option *ngFor="let s of sub_proj" [ngValue]="s">
                               {{ s.TYPE_DESC }}
@@ -162,7 +159,7 @@
                           <label for="category">Building Classification</label>
 
                           <ng-container *ngIf="taskData?.mkey">
-                            <select class="h6 form-control" formControlName="bldCla"                                                            
+                            <select class="h6 form-control" formControlName="bldCla"
                               [attr.disabled]="hasInitiatedTasks() ? true : null"
                               [(ngModel)]="taskData.buildinG_CLASSIFICATION">
                               <option value=""> --SELECT--</option>
@@ -246,14 +243,12 @@
                       </div>
                     </div>
                     <div class="d-flex justify-content-center mt-2 mr-3">
-                      <i class="fa-solid plus btn mr-2" type="button" *ngIf="isLoading"
-                        (click)="getOptionList()" style="background-color: rgb(196, 147, 82);"><small>Get
+                      <i class="fa-solid plus btn mr-2" type="button" *ngIf="isLoading" (click)="getOptionList()"
+                        style="background-color: rgb(196, 147, 82);"><small>Get
                           List</small></i>
-
                       <div>
                         <button *ngIf="!isCleared && updatedDetails" class="fa-solid plus btn mr-2" type="button"
-                          [disabled]="disableClear || hasDisabledClear()"
-                          (click)="confirmClear()">
+                          [disabled]="disableClear || hasDisabledClear()" (click)="confirmClear()">
                           <small>Clear</small>
                         </button>
 
@@ -295,9 +290,9 @@
                                         <span class="select-all-container">
                                           <input type="checkbox" class="task-item" (change)="selectAll()"
                                             [checked]="isAllSelectedCheck">
-                                        </span>                                                                               
+                                        </span>
                                       </li>
-                                   
+
                                       <hr>
                                       <ng-template #recursiveTaskTemplate let-tasks>
 
@@ -381,14 +376,7 @@
                                           <input type="checkbox" class="task-item" [checked]="isAllSelectedCheck"
                                             (change)="selectAll()">
                                         </span>
-                                      </li>
-                                      <!-- <li class="sticky">
-                                        <span class="select-all-container">
-                                          <input type="checkbox" class="task-item" (change)="selectAll()"
-                                            [checked]="!isAllSelectedCheck">
-                                        </span>
-                                                                               
-                                      </li> -->
+                                      </li>                                  
                                       <hr>
 
                                       <ng-template #recursiveTaskTemplate let-tasks>

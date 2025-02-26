@@ -89,7 +89,6 @@ export class ProjectDocumentDepositoryComponent implements OnInit {
       sessionStorage.removeItem('add_new_task');
     } else {
       const RecursiveTaskData = sessionStorage.getItem('task');
-      console.log('RecursiveTaskData', RecursiveTaskData)
       if (RecursiveTaskData) {
         try {
           this.taskData = JSON.parse(RecursiveTaskData);
@@ -671,6 +670,7 @@ export class ProjectDocumentDepositoryComponent implements OnInit {
   }
 
   fileUrl(filePath: string) {
+  
     return `http://192.168.19.188:8087/${filePath}`;
   }
 

@@ -826,7 +826,7 @@ hasDisabledClear(): boolean {
         updateTaskSelection(task, this.selectAllChecked);
         this.toggleSelection(task);
     });
-    this.selectedSeqArr
+    // this.selectedSeqArr
     // this.getTree(this.subTasks)
     const subTaskList = this.breakToLinear(this.selectedSeqArr);
     this.getTree(subTaskList);
@@ -837,20 +837,22 @@ hasDisabledClear(): boolean {
 }
 
 
+
 clearAllProjects() {
-  const clearTaskSelection = (task: any) => {
-      task.checked = false;
+  const updateTaskSelection = (task: any, isChecked: boolean) => {
+    task.checked = isChecked;
 
-      if (task.subtask && task.subtask.length > 0) {
-          task.subtask.forEach(clearTaskSelection);
-      }
-  };
+    if (task.subtask && task.subtask.length > 0) {
+        task.subtask.forEach((innerTask: any) => {
+            updateTaskSelection(innerTask, isChecked);
+        });
+    }
+};
 
-  this.subTasks.forEach(task => {
-      clearTaskSelection(task);
-      this.toggleSelection(task);
-  });
-
+this.subTasks.forEach(task => {
+    updateTaskSelection(task, false);
+    this.toggleSelection(task);
+});
   // this.selectAllChecked = false;
   this.cdRef.detectChanges();
   // this.selectedSeqArr = [];

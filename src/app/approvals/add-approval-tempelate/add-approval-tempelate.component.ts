@@ -7,7 +7,6 @@ import { CredentialService } from 'src/app/services/credential/credential.servic
 import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
-import { DocumentTempelateComponent } from '../document-tempelate/document-tempelate.component';
 import { AddDocumentDialogComponent } from './add-document-dialog/add-document-dialog.component';
 import { AddInstructionDialogComponent } from './add-instruction-dialog/add-instruction-dialog.component';
 

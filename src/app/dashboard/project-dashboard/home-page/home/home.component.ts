@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 import { ApiService } from 'src/app/services/api/api.service';
 import { CredentialService } from 'src/app/services/credential/credential.service';
 
@@ -33,6 +34,7 @@ export class HomeComponent implements OnInit {
               private router:Router,
               private apiService:ApiService,
               private dataService:CredentialService,
+              private tostar:ToastrService
              ) { 
 
               //this.apiService.getRecursiveUser();
@@ -103,6 +105,7 @@ export class HomeComponent implements OnInit {
   
     this.apiService.getHomeDetailsNew(MKEY.toString(), token).subscribe(
       (response) => {
+
         const today = response[0].Table;
         const overdue = response[0].Table1;
         const review = response[0].Table2;
@@ -123,6 +126,8 @@ export class HomeComponent implements OnInit {
       },
       (error) => {
         console.error('API error:', error);
+        this.tostar.error('Network error')
+        
       }
     );
   }

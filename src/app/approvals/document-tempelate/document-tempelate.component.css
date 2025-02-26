@@ -507,6 +507,31 @@ padding: 0;
 margin: 0;
 }
 
+.side-bar-scroll {
+  max-height: calc(100vh - 240px);
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: auto;
+}
+
+.side-bar-scroll::-webkit-scrollbar {
+  width: 1px;
+  height: 1px;
+}
+
+.side-bar-scroll::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+.side-bar-scroll::-webkit-scrollbar-thumb {
+  background-color: rgb(107, 108, 112);
+  border-radius: 4px;
+}
+
+.side-bar-scroll::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
 /* Adjust task details for small screens */
 @media (max-width: 768px) {
 .task-details {
