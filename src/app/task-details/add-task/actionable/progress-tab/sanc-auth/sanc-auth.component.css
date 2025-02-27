@@ -74,6 +74,17 @@ button.log-btn:hover {
   width: 10rem;
 }
 
+.btn {
+  background-color: rgb(141, 141, 141);
+  color: rgb(255, 255, 255);
+  font-size: medium;
+  position: absolute;
+  right: 2rem;
+  top: 8.4rem;
+  z-index: 9999;
+  box-shadow: none;
+}
+
 @media (max-width: 768px) {
 
   .table {
@@ -94,5 +105,16 @@ button.log-btn:hover {
 
   .form-control {
     font-size: 12px;
+  }
+
+  .btn {
+    background-color: rgb(141, 141, 141);
+    color: rgb(255, 255, 255);
+    font-size: medium;
+    position: absolute;
+    right: 1rem;
+    top: 5.1rem;
+    z-index: 9999;
+    box-shadow: none;
   }
 }

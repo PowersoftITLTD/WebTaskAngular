@@ -7,17 +7,21 @@
 }
 
 /* Active tab styling */
-.nav-tabs .nav-item .btn.active {
-  background-color: white;
-  border-color: #ddd #ddd white;
-  color: #838383;
+.nav-tabs .btn.active {
+  background-color: rgba(255, 255, 255, 0.51) !important; /* Semi-transparent white */
+  border: 1px solid rgba(0, 0, 0, 0.15) !important; /* Soft border */
+  color: rgba(67, 67, 67, 0.885) !important; /* Ensure contrast */
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1) !important; /* Soft shadow */
+  outline: none !important; /* Prevent focus outline */
 }
+
 
 /* Inactive tabs */
 .nav-tabs .btn {
   background-color: rgba(232, 232, 232, 0.522);
   border-color: transparent;
   color: #1b1b1b;
+  box-shadow: none !important; /* Ensure no shadow on inactive buttons */
 }
 
 .nav-tabs .btn:hover {

@@ -5,11 +5,22 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { ActivatedRoute, Router } from '@angular/router';
 
+interface DocumentListItem {
+  selected?: boolean;
+  MKEY: number,
+  DOCUMENT_CATEGORY: string,
+  DOCUMENT_NAME: string,
+  TYPE_DESC: string | null,
+  CREATED_BY: string,
+  SR_NO: number,
+}
+
 @Component({
   selector: 'app-output',
   templateUrl: './output.component.html',
   styleUrls: ['./output.component.css']
 })
+
 export class OutputComponent implements OnInit {
   loading: boolean = true;
   @Input() recursiveLogginUser: any = {};
@@ -20,11 +31,16 @@ export class OutputComponent implements OnInit {
   taskData: any;
   outputList: any[] = [];
   myFiles: { file: File; name: string }[] = [];
-
+  docTypeList: any[] = [];
   @Input() task: any;
   taskDetails: any;
   selectedDocument: any = null;
   isModalOpen: boolean = false;
+  isAddModalOpen: boolean = false;
+  searchItem: string = '';
+  selectedDocs: { key: string; DOCUMENT_CATEGORY: number; MKEY: number }[] = [];
+  groupedDocsList: { DOCUMENT_NAME: string; DOCUMENTS: DocumentListItem[] }[] = [];
+
   tasksData = {
     property: '',
     building: '',
@@ -66,7 +82,6 @@ export class OutputComponent implements OnInit {
 
         this.getSelectedTaskDetails(this.task.toString(), token).subscribe((response: any) => {
           this.taskDetails = response[0]?.data;
-          console.log('Task check: ',this.taskDetails)
           this.fetchOutputList(response[0]?.data);
         });
       }
@@ -172,12 +187,11 @@ export class OutputComponent implements OnInit {
     this.loading = true;
     const token = this.apiService.getRecursiveUser();
     const user = this.credentialService.getUser();
-    // debugger;
+
     this.apiService.getOutputList(taskDetails[0].BUILDING_MKEY, taskDetails[0].PROJECT_MKEY, user[0].ROLE_ID, this.task.toString(), token).subscribe(
       (response: any) => {
         if (response[0].DATA && response[0].DATA.length > 0) {
           this.outputList = response[0].DATA;
-          console.log('check output list',this.outputList)
           this.columns.forEach(col => {
             if (col.field !== 'srNo' && col.field !== 'action') {
               this.checkColumnVisibility(col);
@@ -217,13 +231,113 @@ export class OutputComponent implements OnInit {
     }
   }
 
+  fetchDocsList() {
+    const token = this.apiService.getRecursiveUser();
+    this.apiService.getDocTypeDP(token).subscribe({
+      next: (list: any) => {
+        this.docTypeList = list.map((item: any) => ({
+          MKEY: item.mkey,
+          DOCUMENT_CATEGORY: item.attributE1,
+          DOCUMENT_NAME: item.attributE2,
+          TYPE_DESC: item.typE_DESC,
+          CREATED_BY: item.CREATED_BY,
+          SR_NO: item.SR_NO,
+          selected: this.isDocumentSelected(item)
+        }));
+
+        this.updateFilteredDocsList();
+      },
+      error: (error: any) => {
+        console.error('Unable to fetch Document Type List', error);
+      }
+    });
+  }
+
+  updateFilteredDocsList(): void {
+    const searchItemLower = this.searchItem.toLowerCase().trim();
+    const groupedData: { [key: string]: { DOCUMENT_NAME: string; DOCUMENTS: DocumentListItem[] } } = {};
+
+    this.docTypeList.forEach(item => {
+      const matchesSearch =
+        item.DOCUMENT_NAME.toLowerCase().includes(searchItemLower) ||
+        (item.TYPE_DESC && item.TYPE_DESC.toLowerCase().includes(searchItemLower));
+
+      if (matchesSearch) {
+        const groupKey = item.DOCUMENT_NAME || 'Unknown'; // Ensuring grouping based on `DOCUMENT_NAME`
+
+        // Filter out TYPE_DESC values already present in checklist
+        const isTypeDescInChecklist = this.outputList.some(
+          output => output.TYPE_DESC === item.TYPE_DESC
+        );
+
+        if (!groupedData[groupKey]) {
+          groupedData[groupKey] = { DOCUMENT_NAME: groupKey, DOCUMENTS: [] };
+        }
+
+        // Only add items where TYPE_DESC is NOT in the checklist
+        if (!isTypeDescInChecklist) {
+          groupedData[groupKey].DOCUMENTS.push(item);
+        }
+      }
+    });
+
+    // Remove groups that have no remaining DOCUMENTS after filtering
+    this.groupedDocsList = Object.values(groupedData).filter(group => group.DOCUMENTS.length > 0);
+  }
+
+  toggleListSelection(docItem: DocumentListItem): void {
+    docItem.selected = !docItem.selected;
+    this.addDocumentToOutput(docItem);
+  }
+
+  isDocumentSelected(item: DocumentListItem): boolean {
+    return this.selectedDocs.some(selected =>
+      selected.MKEY === item.MKEY &&
+      selected.DOCUMENT_CATEGORY.toString() === item.DOCUMENT_CATEGORY
+    );
+  }
+  addDocumentToOutput(item: DocumentListItem): void {
+    const token = this.apiService.getRecursiveUser();
+    const user = this.credentialService.getUser();
+
+    const payload = {
+      SR_NO: 0,
+      MKEY: this.task || null,
+      DELETE_FLAG: "N",
+      CREATED_BY: user[0].MKEY.toString() || null,
+      OUTPUT_DOC_LST: {
+        [item.DOCUMENT_NAME]: item.MKEY.toString(),
+      },
+    };
+
+    this.apiService.addOutputDetails(payload, token).subscribe({
+      next: (response) => {
+        if (response[0]?.DATA) {
+          this.fetchOutputList(this.taskDetails);
+        } else {
+          this.tostar.error("Error adding document to output list", "Error");
+        }
+      },
+      error: (error) => console.error("Error updating output list:", error),
+    });
+  }
+
+
+  openAddModal() {
+    this.fetchDocsList();
+    this.isAddModalOpen = true;
+  }
+
+  closeAddModal() {
+    this.isAddModalOpen = false;
+  }
+
 
   openModal(document: any): void {
-    console.log('Check document from model: ', document)
     this.isModalOpen = true;
     setTimeout(() => {
       this.selectedDocument = document;
-      document.TASK_OUTPUT_ATTACHMENT.forEach((docFile:any)=>{
+      document.TASK_OUTPUT_ATTACHMENT.forEach((docFile: any) => {
         this.myFiles.push({
           name: docFile.FILE_NAME,
           file: docFile.FILE_PATH,
@@ -271,8 +385,6 @@ export class OutputComponent implements OnInit {
         });
       });
 
-      console.log('Check files', this.myFiles);
-
       const labelElement = document.getElementById('AttachmentDetails');
       if (labelElement) {
         // Join file names for display
@@ -283,46 +395,40 @@ export class OutputComponent implements OnInit {
   }
 
   saveChanges(): void {
+    const token = this.apiService.getRecursiveUser();
+    const formData: any = new FormData();
 
-    console.log(this.myFiles)
-    const token = this.apiService.getRecursiveUser();    
-    const formData:any = new FormData();
-
-    const documentData:any = {
+    const documentData: any = {
       PROJECT_DOC_FILES: this.myFiles,
       DOC_MKEY: this.selectedDocument.DOC_MKEY.toString(),
       PROPERTY_MKEY: this.selectedDocument.PROPERTY_MKEY,
       BUILDING_MKEY: this.selectedDocument.BUILDING_MKEY,
-      VALIDITY_DATE: this.selectedDocument.VALIDITY_DATE,
+      VALIDITY_DATE: this.selectedDocument.VALIDITY_DATE || '',
       CREATED_BY: this.selectedDocument.CREATED_BY_ID,
-      DOC_NUMBER: this.selectedDocument.DOC_NUMBER,
-      DOC_DATE: this.selectedDocument.DOC_DATE,
+      DOC_NUMBER: this.selectedDocument.DOC_NUMBER || '',
+      DOC_DATE: this.selectedDocument.DOC_DATE || '',
       SR_NO: this.selectedDocument.SR_NO,
       MKEY: this.selectedDocument.MKEY,
       DELETE_FLAG: "N"
-  };
+    };
 
-  console.log('documentData check: ', documentData)
-  
-  // Populate FormData using the object model
-  Object.keys(documentData).forEach((key) => {
-    if (key === "PROJECT_DOC_FILES" && Array.isArray(documentData[key])) {
-      documentData[key].forEach((file: File | any, index: number) => {
-        console.log('file.file file',file)
-        formData.append(`${key}`, file.file);
-      });
-    } else if (key !== "PROJECT_DOC_FILES") {
-      const value = documentData[key] !== undefined ? documentData[key] : "";
-      formData.append(key, value);
+    // Populate FormData using the object model
+    Object.keys(documentData).forEach((key) => {
+      if (key === "PROJECT_DOC_FILES" && Array.isArray(documentData[key])) {
+        documentData[key].forEach((file: File | any, index: number) => {
+          formData.append(`${key}`, file.file);
+        });
+      } else if (key !== "PROJECT_DOC_FILES") {
+        const value = documentData[key] !== undefined ? documentData[key] : "";
+        formData.append(key, value);
+      }
+    });
+
+    for (const [key, value] of formData.entries()) {
+      console.log(`${key}:`, value);
     }
-  });
-
-  console.log("Form Data Contents:");
-  for (const [key, value] of formData.entries()) {
-    console.log(`${key}:`, value);
-  }
-  Object.entries(documentData).forEach(([key, value]) => {
-    formData.append(key, value);
+    Object.entries(documentData).forEach(([key, value]) => {
+      formData.append(key, value);
     });
     this.apiService.updateOutputDetails(formData, token).subscribe(
       (response: any) => {
@@ -343,6 +449,10 @@ export class OutputComponent implements OnInit {
   removeFile(): void {
     this.selectedDocument.TASK_OUTPUT_ATTACHMENT = [];
     this.myFiles = [];
+  }
+
+  addNewDocument(): void {
+
   }
 
   ngOnDestroy(): void {

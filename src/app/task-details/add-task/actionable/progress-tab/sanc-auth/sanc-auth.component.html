@@ -1,11 +1,11 @@
 <div *ngIf="loading" class="text-center">
   <div class="spinner-border text-primary" role="status">
-      <span class="sr-only">Loading...</span>
+    <span class="sr-only">Loading...</span>
   </div>
-</div> 
+</div>
 <div *ngIf="!loading" class="sample-wrapper" style="margin-bottom: 4rem;">
   <form [formGroup]="sancAuthForm">
-    <table class="table" style="width: 90rem;">
+    <table class="table" style="width: 100%;">
       <thead>
         <tr>
           <th style="text-align: center;">Sr No.</th>
@@ -13,25 +13,51 @@
           <th>Sanctioning Department</th>
           <th style="text-align: center;">Sanctioning Authority</th>
           <th>Status</th>
+          <th>            
+            <button (click)="addRow()" type="button" class="btn" [disabled]="isAddingRow">+</button>
+          </th>        
         </tr>
       </thead>
       <tbody formArrayName="rows_new">
         <ng-container *ngIf="rowsNew && rowsNew.controls.length > 0; else noData">
           <tr *ngFor="let row of rowsNew.controls; let i = index" [formGroupName]="i">
-            <td style="text-align: center;">{{ row.get('srNo')?.value || '--' }}</td>
-            <td style="text-align: center;">{{ row.get('level')?.value || '--' }}</td>
-            <td>{{ row.get('sanctioningDept')?.value || '--' }}</td>
-            <td style="text-align: center;">{{ row.get('sanctioningAuth')?.value || '--'}}</td>
-            <td>
-              <select id="select" class="form-control" formControlName="status" (change)="onStatusChange(i)">
-                <option value="Select">--Select--</option>
-                <option value="In-Progress">In Progress</option>
-                <option value="Completed">Completed</option>
+            <td style="text-align: center;">{{ i+1 || '--' }}</td>
+            <td style="text-align: center;"><input
+                style=" text-align: center;border: none; border-bottom: 1px solid rgb(145, 145, 145);"
+                formControlName="level" /></td>
+            <td style="text-align: center;"><input style="border: none;border-bottom: 1px solid rgb(145, 145, 145);"
+                formControlName="sanctioningDept" /></td>
+            <td style="text-align: center;">
+              <select
+                style="border: none; border-bottom: 1px solid rgb(145, 145, 145); background: transparent; text-align: center; width: 100%;"
+                formControlName="sanctioningAuth">
+                <option *ngFor="let auth of SanctoningAuthList" [value]="auth.mkey">
+                  {{ auth.typE_DESC }}
+                </option>
               </select>
             </td>
+            <td>
+              <ng-container *ngIf="!row.get('isNewRow')?.value; else newRowActions">
+                <select id="select" class="form-control" formControlName="status" (change)="onStatusChange(i)">
+                  <option value="Select">--Select--</option>
+                  <option value="In-Progress">In Progress</option>
+                  <option value="Completed">Completed</option>
+                </select>
+              </ng-container>
+            
+              <!-- Show Save & Remove buttons when it's a new row -->
+              <ng-template #newRowActions>
+                <button (click)="saveRow(i)"
+                  style="background-color: rgba(0, 14, 42, 0.7); color: rgb(250, 250, 250); border-radius: 5px; padding: 0.5rem 3rem;">
+                  Save
+                </button>
+                <button (click)="removeRow(i)" style="font-size: medium;">❌</button>
+              </ng-template>
+            </td>
+            
           </tr>
         </ng-container>
-      
+
         <!-- No Data Message -->
         <ng-template #noData>
           <tr>
@@ -41,7 +67,7 @@
           </tr>
         </ng-template>
       </tbody>
-      
+
     </table>
   </form>
 </div>

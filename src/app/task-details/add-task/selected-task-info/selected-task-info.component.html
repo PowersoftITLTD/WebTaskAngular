@@ -43,7 +43,7 @@
                                             </tr>
                                             <tr>
                                                 <td>Completion Date :- </td>
-                                                <td>{{ formatDate(taskDetails[0]?.COMPLETION_DATE) }}</td>
+                                                <td>{{ formatDateForInput(taskDetails[0]?.COMPLETION_DATE) }}</td>
                                             </tr>
                                         </table>
                                     </div>
@@ -74,6 +74,11 @@
                                             <button type="submit" class="btn btn-light mr-2" (click)="submitForm()"
                                                 [hidden]="!showAddSubTaskButton" id="btnSaveNewTask">
                                                 Save 
+                                            </button>
+                                        </td>
+                                        <td>
+                                            <button class="btn btn-light mr-2" (click)="navigateToTask()"  id="btnSaveTask">
+                                                BACK
                                             </button>
                                         </td>
                                     </tr>
@@ -209,12 +214,7 @@
                                                                     required
                                                                     [ngClass]="{ 'is-invalid': taskForm.get('completionDate').invalid && taskForm.get('completionDate').touched }"
                                                                     (change)="onDateChange($event)">
-                                                            </ng-container>
-                                                            
-                                                            
-                                                            
-                                                            
-                                                                                                                        
+                                                            </ng-container>                                                                                                                                                                                                                                                                                                                                                                        
                                                         </div>
                                                     </div>
                                                 </div>

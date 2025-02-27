@@ -30,10 +30,14 @@
 
                 <div class="flex-grow-1"></div>
 
-                <div class="mr-8">
-                  <button type="button" class="btn btn-light" (click)="onSubmit()" id="btnSaveTask">
+                <div class="mr-8 d-flex">
+                  <button type="button" class="btn btn-light mr-2" (click)="onSubmit()" id="btnSaveTask">
                     SAVE
                   </button>
+
+                  <button class="btn btn-light mr-2" (click)="navigateToTask()"  id="btnSaveTask">
+                    BACK
+                </button>
                 </div>
               </div>
 

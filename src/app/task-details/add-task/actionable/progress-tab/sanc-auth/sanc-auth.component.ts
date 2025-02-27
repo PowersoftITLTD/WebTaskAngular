@@ -12,13 +12,15 @@ import { ToastrService } from 'ngx-toastr';
 })
 
 export class SancAuthComponent implements OnInit {
-  loading : boolean = true;
+  loading: boolean = true;
   sancAuthForm: FormGroup;
   sancAuthList: any[] = [];
-  SanctoningAuthList: any[] = []; // holds the dynamic data from the API
+  SanctoningAuthList: any[] = [];
   propertyMKey: any;
   @Input() task: any;
   taskDetails: any;
+  isNewRow: boolean = false;
+  isAddingRow: boolean = false;
 
   constructor(
     private apiService: ApiService,
@@ -34,6 +36,7 @@ export class SancAuthComponent implements OnInit {
 
   ngOnInit(): void {
     this.fetchProjectData();
+    const token = this.apiService.getRecursiveUser();
     this.route.params.subscribe((params) => {
       if (params['Task_Num']) {
         this.task = JSON.parse(params['Task_Num']);
@@ -45,6 +48,14 @@ export class SancAuthComponent implements OnInit {
         });
       }
     });
+    this.apiService.getSanctoningAuthDP(token).subscribe({
+      next: (list: any) => {
+        this.SanctoningAuthList = list
+      }, error: (error: any) => {
+        console.error('Unable to fetch Document Type List', error);
+
+      }
+    })
   }
 
   fetchProjectData(): void {
@@ -100,34 +111,88 @@ export class SancAuthComponent implements OnInit {
 
   prefillFormWithApiData(): void {
     let nextRowToEnable = true; // Flag to determine which row should be "In Progress"
-  
+
     this.sancAuthList.forEach((item, index) => {
       let status = item.STATUS || 'Select'; // Use status from backend or default to "Select"
       let disabled = false;
-  
+
       if (status === 'Completed') {
         disabled = true; // Completed rows should be disabled
       } else if (nextRowToEnable) {
         status = 'In-Progress'; // The first non-completed row should be "In Progress"
         nextRowToEnable = false; // Only one row should be "In Progress"
-      } else {
+      } else if (status === '') {
+        status = 'Select'; // Empty status should be "Select"
+        disabled = true;
+      }
+      else {
         status = 'Select'; // Remaining rows should be "Select"
         disabled = true;
       }
-  
+
       this.renderTable({
         srNo: item.SR_NO,
         level: item.LEVEL,
         sanctioningDept: item.TYPE_CODE,
-        sanctioningAuth: item.SANCTIONING_AUTHORITY_NAME,
+        sanctioningAuth: item.SANCTIONING_AUTHORITY,
         status: status,
         sanctioningAuthName: item.TYPE_DESC,
         disabled: disabled, // Pass disabled flag
       });
     });
   }
-  
-  
+
+  addRow(): void {
+    this.isAddingRow = true;
+    const newRow = this.fb.group({
+      srNo: [''],  // Empty for new rows
+      level: [{ value: this.sancAuthList[this.sancAuthList?.length - 1]?.LEVEL ? this.sancAuthList[this.sancAuthList?.length - 1].LEVEL + 1 : '', disabled: true }, Validators.required],
+      sanctioningDept: ['', Validators.required],
+      sanctioningAuth: ['', Validators.required],
+      isNewRow: [true] // Placeholder for buttons (not needed in the actual form control)
+    });
+    this.rowsNew.push(newRow);
+  }
+
+  saveRow(index: number): void {
+    const row = this.rowsNew.at(index).value; // Get form values dynamically
+    const token = this.apiService.getRecursiveUser();
+
+    const payload = {
+      SR_NO: 0,
+      DELETE_FLAG: "N",
+      MKEY: this.task,
+      LEVEL: row.level,
+      SANCTIONING_DEPARTMENT: row.sanctioningDept,
+      SANCTIONING_AUTHORITY_MKEY: (row.sanctioningAuth),
+      CREATED_BY: this.sancAuthList[0]?.CREATED_BY_ID,
+    };
+    if (row.level > this.sancAuthList[this.sancAuthList.length - 1].LEVEL) {
+      this.apiService.addNewSancAuth(payload, token).subscribe(
+        (response: any) => {
+          if (response[0].DATA) {
+            this.fetchSanctioningAuthorities(this.taskDetails);
+            this.removeRow(index)
+            this.isAddingRow = false;
+          } else {
+            this.tostar.error(response[0].MESSAGE);
+          }
+        },
+        (error: any) => {
+          console.log(error, 'Error occurred while saving sanctioning authority');
+        }
+      );
+    } else {
+      this.tostar.error('Please enter valid level');
+    }
+  }
+
+
+  removeRow(index: number): void {
+    this.isAddingRow = false;
+    this.rowsNew.removeAt(index);
+  }
+
 
   renderTable(data?: any): void {
     if (!this.rowsNew.controls.some((row) => row.value.srNo === data?.srNo)) {
@@ -138,35 +203,34 @@ export class SancAuthComponent implements OnInit {
         sanctioningAuth: [{ value: data?.sanctioningAuth || data.sanctioningAuthName, disabled: true }, Validators.required],
         status: [{ value: data?.status || 'Select', disabled: data?.disabled }, Validators.required],
       });
-  
       this.rowsNew.push(row);
     }
   }
-  
+
   // Called when the user changes the status of a row
   onStatusChange(index: number): void {
     const status = this.rowsNew.at(index).get('status')?.value;
-  
+
     if (status === 'Completed') {
       // Disable current row
       this.rowsNew.at(index).get('status')?.disable();
-  
+
       // Enable next row and set status to 'In Progress'
       if (index + 1 < this.rowsNew.length) {
         this.rowsNew.at(index + 1).get('status')?.setValue('In-Progress');
         this.rowsNew.at(index + 1).get('status')?.enable();
       }
-  
+
       // Set all remaining rows to 'Select'
       for (let i = index + 2; i < this.rowsNew.length; i++) {
         this.rowsNew.at(i).get('status')?.setValue('Select');
         this.rowsNew.at(i).get('status')?.disable();
       }
     }
-  
+
     this.updateStatus(index, status);
   }
-  
+
 
   updateStatus(index: number, status: string): void {
     const token = this.apiService.getRecursiveUser();

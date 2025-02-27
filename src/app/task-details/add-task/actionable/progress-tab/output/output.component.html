@@ -3,42 +3,94 @@
         <span class="sr-only">Loading...</span>
     </div>
 </div>
-<div class="table-wrapper">
-    <table *ngIf="!loading" class="table table-active">
-        <thead>
-            <tr>
-                <th *ngIf="columns[0].visible" style="text-align: center;">{{ columns[0].header }}</th>
-                <th *ngIf="columns[1].visible">{{ columns[1].header }}</th>
-                <th *ngIf="columns[2].visible">{{ columns[2].header }}</th>
-                <th *ngIf="columns[3].visible">{{ columns[3].header }}</th>
-                <th *ngIf="columns[4].visible">{{ columns[4].header }}</th>
-                <th *ngIf="columns[5].visible">{{ columns[5].header }}</th>
-                <th *ngIf="columns[6].visible" style="text-align: center;">{{ columns[6].header }}</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr *ngIf="outputList.length === 0">
-                <td colspan="7" class="text-center">No data available</td>
-            </tr>
-            <tr *ngFor="let document of outputList; let i = index">
-                <td style="text-align: center;">{{ document.SR_NO || i + 1 }}</td>
-                <td *ngIf="columns[1].visible">{{ document.ATTRIBUTE2 }}</td>
-                <td *ngIf="columns[2].visible">{{ document.DOC_NUMBER }}</td>
-                <td *ngIf="columns[3].visible">{{ document.TYPE_DESC }}</td>
-                <td *ngIf="columns[4].visible">{{ document.DOC_DATE | date: 'dd/MM/yyyy' }}</td>
-                <td *ngIf="columns[5].visible">{{ document.VALIDITY_DATE | date: 'dd/MM/yyyy' }}</td>
-                <td style="text-align: center;">
-                    <button type="button" class="d-btn" style="font-size: 14px;" (click)="openModal(document)">
-                        Details
-                    </button>
-                </td>
-            </tr>
-        </tbody>
-    </table>
+<div
+    style="background-color: rgb(231, 231, 231); display: flex; justify-content: space-between; align-items: center; padding: 5px;">
+    <h6 style="font-weight: 600; margin-bottom: -2px;">Document Details</h6>
+    <button type="button" class="d-btn" style="font-size: 14px; margin: 5px; padding: 0.5rem 2rem;"
+        (click)="openAddModal()">
+        Add New +
+    </button>
 </div>
+<!-- Modal - Add document -->
 
+<div *ngIf="isAddModalOpen" class="full-height-modal">
+    <div id="label-header">
+        <label for="category" class="doc_label" id="add-doc-text">Add document</label>
+        <button class="close-button" (click)="closeAddModal()">X</button>
+    </div>
+    <!-- Your modal content here -->
+    <div class="sample-wrapper">
+        <div class="pl-4 combo-section">
+            <!-- Search Input -->
+            <input type="text" [(ngModel)]="searchItem" (ngModelChange)="updateFilteredDocsList()"
+                [ngModelOptions]="{standalone: true}" placeholder="Select Documents" class="search-input" />
 
+            <!-- Dropdown List -->
+            <div *ngIf="!loading && groupedDocsList.length > 0; else noData"
+                class="dropdown bg-light p-3 rounded shadow">
+                <ul class="dropdown-list">
+                    <ng-container *ngFor="let group of groupedDocsList">
+                        <!-- Document Name Header -->
+                        <div class="category-header justify-content-center" style="color: rgb(216, 87, 87);">
+                            <b>{{ group.DOCUMENT_NAME }}</b>
+                        </div>
 
+                        <!-- Document Descriptions -->
+                        <ng-container *ngFor="let docItem of group.DOCUMENTS">
+                            <li (click)="toggleListSelection(docItem)" [class.selected]="docItem.selected"
+                                style="display: flex; justify-content: space-between; align-items: center; cursor: pointer; padding: 5px; border-bottom: 1px solid #ddd;">
+                                <span>{{ docItem.TYPE_DESC || 'No Description Available' }}</span>
+                            </li>
+                        </ng-container>
+
+                    </ng-container>
+                </ul>
+            </div>
+
+            <!-- No Data Message -->
+            <ng-template #noData>
+                <div class="no-data-message text-center text-muted p-2">
+                    No data available.
+                </div>
+            </ng-template>
+        </div>
+    </div>
+</div>
+<div class="table-wrapper">
+    <div class="table-container">
+        <table *ngIf="!loading" class="table table-active">
+            <thead>
+                <tr>
+                    <th *ngIf="columns[0].visible" style="text-align: center;">{{ columns[0].header }}</th>
+                    <th *ngIf="columns[1].visible">{{ columns[1].header }}</th>
+                    <th *ngIf="columns[2].visible">{{ columns[2].header }}</th>
+                    <th *ngIf="columns[3].visible">{{ columns[3].header }}</th>
+                    <th *ngIf="columns[4].visible">{{ columns[4].header }}</th>
+                    <th *ngIf="columns[5].visible">{{ columns[5].header }}</th>
+                    <th *ngIf="columns[6].visible" style="text-align: center;">{{ columns[6].header }}</th>
+                </tr>
+            </thead>
+            <tbody class="table-data">
+                <tr *ngIf="outputList.length === 0">
+                    <td colspan="7" class="text-center">No data available</td>
+                </tr>
+                <tr *ngFor="let document of outputList; let i = index">
+                    <td style="text-align: center;">{{ i + 1 }}</td>
+                    <td *ngIf="columns[1].visible">{{ document.ATTRIBUTE2 }}</td>
+                    <td *ngIf="columns[2].visible">{{ document.DOC_NUMBER }}</td>
+                    <td *ngIf="columns[3].visible">{{ document.TYPE_DESC }}</td>
+                    <td *ngIf="columns[4].visible">{{ document.DOC_DATE | date: 'dd/MM/yyyy' }}</td>
+                    <td *ngIf="columns[5].visible">{{ document.VALIDITY_DATE | date: 'dd/MM/yyyy' }}</td>
+                    <td style="text-align: center;">
+                        <button type="button" class="d-btn" style="font-size: 14px;" (click)="openModal(document)">
+                            Details
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
 
 <!-- Modal -->
 <div *ngIf="isModalOpen" class="modal-backdrop">
@@ -80,7 +132,7 @@
                 </div>
 
                 <!-- Document Number -->
-                <div class="col-md-6" *ngIf="selectedDocument.DOC_NUM_APP_FLAG === 'Y'">
+                <div class="col-md-6" *ngIf="selectedDocument?.DOC_NUM_APP_FLAG === 'Y'">
                     <div class="form-group">
                         <label for="docNumber">Document Number</label>
                         <input type="text" id="docNumber" class="form-control"
@@ -89,7 +141,7 @@
                 </div>
 
                 <!-- Document Date -->
-                <div class="col-md-6" *ngIf="selectedDocument.DOC_NUM_DATE_APP_FLAG === 'Y'">
+                <div class="col-md-6" *ngIf="selectedDocument?.DOC_NUM_DATE_APP_FLAG === 'Y'">
                     <div class="form-group">
                         <label for="docDate">Document Date</label>
                         <input type="date" id="docDate" class="form-control" [(ngModel)]="selectedDocument.DOC_DATE">
@@ -97,7 +149,7 @@
                 </div>
 
                 <!-- Validity Date -->
-                <div class="col-md-6" *ngIf="selectedDocument.DOC_NUM_VALID_FLAG === 'Y'">
+                <div class="col-md-6" *ngIf="selectedDocument?.DOC_NUM_VALID_FLAG === 'Y'">
                     <div class="form-group">
                         <label for="validityDate">Validity Date</label>
                         <input type="date" id="validityDate" class="form-control"
@@ -106,7 +158,7 @@
                 </div>
 
                 <!-- Attach Document Field -->
-                <div class="col-6" *ngIf="selectedDocument.DOC_ATTACH_APP_FLAG === 'Y'">
+                <div class="col-6" *ngIf="selectedDocument?.DOC_ATTACH_APP_FLAG === 'Y'">
                     <div class="form-group" id="customFile" style="margin-top: 23px;">
                         <div class="custom-file d-flex align-items-center">
                             <input type="file" class="custom-file-input" [disabled]="hasFile()"

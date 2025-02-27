@@ -62,16 +62,13 @@ export class AddTaskComponent implements OnInit {
   taskMainNodeId: any;
   mkey: any;
 
-  constructor(private apiService: ApiService,
-    private formBuilder: FormBuilder,
-    private tostar: ToastrService,
-    private credentialService: CredentialService,
-    private http: HttpClient,
-    private router: Router,
-    private sidebarService: SideBarService
-  ) { }
-
-
+  constructor(
+              private apiService: ApiService,
+              private formBuilder: FormBuilder,
+              private tostar: ToastrService,
+              private credentialService: CredentialService,
+              private router: Router,
+             ) { }
 
   ngOnInit(): void {
 
@@ -141,15 +138,11 @@ export class AddTaskComponent implements OnInit {
     const selectedProjectMkey = selectedOption ? selectedOption.MASTER_MKEY : null;
     const token = this.apiService.getRecursiveUser();
 
-
-    console.log('selectedProjectMkey',selectedProjectMkey)
-
     if (selectedProjectMkey) {
       this.apiService.getSubProjectDetailsNew(selectedProjectMkey.toString(), token).subscribe(
         (response: any) => {
           console.log(response)
           this.sub_proj = response[0]?.data;
-          console.log("Sub-Project", this.sub_proj);
         },
         (error: ErrorHandler) => {
           console.log(error, 'Error Occurred while fetching sub-projects');
@@ -164,17 +157,10 @@ export class AddTaskComponent implements OnInit {
     this.loggedInUser = this.credentialService.getUser();
     const token = this.apiService.getRecursiveUser();
 
-    console.log('getTagDetailss1', token);
-
     this.apiService.getTagDetailss1(this.loggedInUser[0]?.MKEY.toString(), token).subscribe((response: any) => { 
-        this.allTags = response[0].data.map((item: { name: string }) => item.name);
-    
+        this.allTags = response[0].data.map((item: { name: string }) => item.name);    
     });
-}
-
-
-
-
+  }
 
 
   getPrivateCategory(event: Event): void {
@@ -201,13 +187,11 @@ export class AddTaskComponent implements OnInit {
   fetchEmployeeName(): void {
     const token = this.apiService.getRecursiveUser();
 
-    console.log('token',token)
 
     this.apiService.getEmpDetailsNew(token).subscribe(
       (response: any) => {
         // console.log("Employee data:", data);
         // const _data = data;
-        console.log(response)
 
         response[0]?.data.forEach((emp: any) => {
           const fullName = emp.EMP_FULL_NAME;
@@ -491,6 +475,10 @@ export class AddTaskComponent implements OnInit {
     } else {
       console.log('Form is invalid. Cannot submit.');
     }
+  }
+
+  navigateToTask() {
+    this.router.navigate(['task/task-management']);
   }
 }
 

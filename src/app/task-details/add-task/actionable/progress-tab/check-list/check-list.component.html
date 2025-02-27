@@ -2,9 +2,16 @@
   <div class="row justify-content-between">
     <div class="col-12 col-md-6">
       <div class="form-group">
-        <label for="category" class="doc_label">Document</label>
+        <div class="label-header">
+          <label for="category" class="doc_label">Document</label>
+          <div class="add-doc-wrapper">
+            <span style="color: grey; font-size: small; padding-right: 3px;" class="add-doc">Add Document</span>
+            <button type="button" style="padding: 0 3rem" class="mb-1 mt-2" (click)="openModal()">+</button>
+          </div>
+        </div>
         <div class="sample-wrapper">
-          <div class="pl-4 combo-section">
+          <!-- Checklist -->
+          <div class="pl-4 combo-section" style="width: 100%;">
             <!-- Search Input -->
             <input type="text" class="search-input" [(ngModel)]="searchQuery"
               (ngModelChange)="updateFilteredChecklist()" placeholder="Search documents" />
@@ -26,13 +33,11 @@
 
                   <!-- Document Descriptions -->
                   <ng-container *ngFor="let docItem of group.DOCUMENTS">
-                    <li (click)="toggleSelection(docItem)" 
-                        [class.selected]="isSelected(docItem)"
-                        style="display: flex; justify-content: space-between;">
+                    <li (click)="toggleSelection(docItem)" [class.selected]="isSelected(docItem)"
+                      style="display: flex; justify-content: space-between;">
                       {{ docItem.TYPE_DESC || 'No Description Available' }}
-                      <input type="checkbox" class="checkbox" 
-                             [checked]="isSelected(docItem)" 
-                             (click)="onCheckboxChange($event, docItem)" />
+                      <input type="checkbox" class="checkbox" [checked]="isSelected(docItem)"
+                        (click)="onCheckboxChange($event, docItem)" />
                     </li>
                   </ng-container>
                 </ng-container>
@@ -46,6 +51,50 @@
                 No data available.
               </div>
             </ng-template>
+          </div>
+          <!-- Modal - Add document -->
+          <div *ngIf="isModalOpen" class="full-height-modal">
+            <div id="label-header">
+              <button class="close-button" (click)="closeModal()">X</button>
+              <label for="category" class="doc_label" id="add-doc-text">Add document</label>
+            </div>
+            <!-- Your modal content here -->
+            <div class="sample-wrapper">
+              <div class="pl-4 combo-section">
+                <!-- Search Input -->
+                <input type="text" [(ngModel)]="searchItem" (ngModelChange)="updateFilteredInstrulist()"
+                  [ngModelOptions]="{standalone: true}" placeholder="Select Documents" class="search-input" />
+
+                <!-- Dropdown List -->
+                <div *ngIf="!loading && groupedInstruList.length > 0; else noData"
+                  class="dropdown bg-light p-3 rounded shadow">
+                  <ul class="dropdown-list">
+                    <ng-container *ngFor="let group of groupedInstruList">
+                      <!-- Document Name Header -->
+                      <div class="category-header justify-content-center" style="color: rgb(216, 87, 87);">
+                        <b>{{ group.DOCUMENT_NAME }}</b>
+                      </div>
+
+                      <!-- Document Descriptions -->
+                      <ng-container *ngFor="let docItem of group.DOCUMENTS">
+                        <li (click)="toggleListSelection(docItem)" [class.selected]="docItem.selected"
+                          style="display: flex; justify-content: space-between; align-items: center; cursor: pointer; padding: 5px; border-bottom: 1px solid #ddd;">
+                          <span>{{ docItem.TYPE_DESC || 'No Description Available' }}</span>
+                        </li>
+                      </ng-container>
+
+                    </ng-container>
+                  </ul>
+                </div>
+
+                <!-- No Data Message -->
+                <ng-template #noData>
+                  <div class="no-data-message text-center text-muted p-2">
+                    No data available.
+                  </div>
+                </ng-template>
+              </div>
+            </div>
 
           </div>
         </div>

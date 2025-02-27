@@ -30,12 +30,10 @@ export class ComplianceComponent implements OnInit {
       if (params['Task_Num']) {
         this.task = JSON.parse(params['Task_Num']);
 
-        console.log('check task',this.task)
         const token = this.apiService.getRecursiveUser();
 
         this.getSelectedTaskDetails(this.task.toString(), token).subscribe((response: any) => {
           this.taskDetails = response[0]?.data;
-          console.log('taskDetails', this.taskDetails)
           this.fetchComplianceList(response[0]?.data);
         });
       }

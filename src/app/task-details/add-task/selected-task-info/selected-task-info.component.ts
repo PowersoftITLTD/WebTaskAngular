@@ -147,7 +147,7 @@ export class SelectedTaskInfoComponent implements OnInit {
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const day = String(date.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`; // 'yyyy-MM-dd' format
+    return `${day}-${month}-${year}`; // 'yyyy-MM-dd' format
   }
   
   
@@ -681,14 +681,7 @@ export class SelectedTaskInfoComponent implements OnInit {
 
     const token = this.apiService.getRecursiveUser();
     // const data = this.dataService.getUser();
-    const USER_MKEY = this.loggedInUser[0]?.MKEY  
-
-
-    console.log('token', token)
-    console.log('USER_MKEY', USER_MKEY)
-    console.log('this.mkey', this.mkey)
-    console.log('this.taskParentId', this.taskParentId)
-    console.log('this.taskMainNodeId', this.taskMainNodeId)
+    const USER_MKEY = this.loggedInUser[0]?.MKEY;   
   
     if (this.file) {
       const additionalAttributes = {
@@ -795,6 +788,10 @@ export class SelectedTaskInfoComponent implements OnInit {
       this.tostar.error(`${m}`);
       return;
     }
+  }
+
+  navigateToTask() {
+    this.router.navigate(['task/task-management']);
   }
 }
 

@@ -1,9 +1,10 @@
 <div class="page-content">
     <!-- Desktop Tabs -->
     <ul class="nav nav-tabs d-none d-md-flex" id="myTab" role="tablist" style="margin-bottom: 0.8rem;">
-        <li class="nav-item" *ngFor="let tab of tabs" [ngClass]="{ active: selectedTab === tab.key }" [id]="'l' + tab.key">
+        <li class="nav-item" *ngFor="let tab of tabs" [id]="'l' + tab.key">
             <a class="btn" (click)="switchTab(tab.key)" [id]="tab.key + '-tab'" role="tab"
-                [attr.aria-controls]="tab.key + '-tab-pane'" [attr.aria-expanded]="selectedTab === tab.key">
+                [ngClass]="{ 'active': selectedTab === tab.key }" [attr.aria-controls]="tab.key + '-tab-pane'"
+                [attr.aria-expanded]="selectedTab === tab.key">
                 {{ tab.label }}
             </a>
         </li>

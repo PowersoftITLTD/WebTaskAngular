@@ -49,7 +49,6 @@ export class ActionableComponent implements OnInit {
 
         this.getSelectedTaskDetails(this.task.toString(), token).subscribe((response: any) => {
           this.taskDetails = response[0]?.data;
-          // console.log('getSelectedTaskDetails',this.taskDetails)
           this.details = response[0]?.data;
           this.taskDetails = response[0]?.data[0].STATUS;
           this.getActionableDetails();
@@ -84,7 +83,6 @@ export class ActionableComponent implements OnInit {
         this.status = response[0].Data;
         this.currentStatus = response[0].Data1; 
         this.loading = false;
-        console.log('this.currentStatus',this.currentStatus)
 
         // console.log('status', this.status)
 
