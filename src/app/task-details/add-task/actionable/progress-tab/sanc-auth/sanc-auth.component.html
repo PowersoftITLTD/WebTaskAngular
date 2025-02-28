@@ -5,7 +5,7 @@
 </div>
 <div *ngIf="!loading" class="sample-wrapper" style="margin-bottom: 4rem;">
   <form [formGroup]="sancAuthForm">
-    <table class="table" style="width: 100%;">
+    <table class="table" style="width: 90rem;">
       <thead>
         <tr>
           <th style="text-align: center;">Sr No.</th>
@@ -13,18 +13,18 @@
           <th>Sanctioning Department</th>
           <th style="text-align: center;">Sanctioning Authority</th>
           <th>Status</th>
-          <th>            
+          <th>
             <button (click)="addRow()" type="button" class="btn" [disabled]="isAddingRow">+</button>
-          </th>        
+          </th>
         </tr>
       </thead>
       <tbody formArrayName="rows_new">
         <ng-container *ngIf="rowsNew && rowsNew.controls.length > 0; else noData">
           <tr *ngFor="let row of rowsNew.controls; let i = index" [formGroupName]="i">
             <td style="text-align: center;">{{ i+1 || '--' }}</td>
-            <td style="text-align: center;"><input
-                style=" text-align: center;border: none; border-bottom: 1px solid rgb(145, 145, 145);"
-                formControlName="level" /></td>
+            <input style="text-align: center; border: none; border-bottom: 1px solid rgb(145, 145, 145);"
+              formControlName="level" [attr.disabled]="true" />
+
             <td style="text-align: center;"><input style="border: none;border-bottom: 1px solid rgb(145, 145, 145);"
                 formControlName="sanctioningDept" /></td>
             <td style="text-align: center;">
@@ -44,7 +44,7 @@
                   <option value="Completed">Completed</option>
                 </select>
               </ng-container>
-            
+
               <!-- Show Save & Remove buttons when it's a new row -->
               <ng-template #newRowActions>
                 <button (click)="saveRow(i)"
@@ -54,7 +54,7 @@
                 <button (click)="removeRow(i)" style="font-size: medium;">❌</button>
               </ng-template>
             </td>
-            
+
           </tr>
         </ng-container>
 

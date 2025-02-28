@@ -122,7 +122,7 @@ export class InstructionMasterComponent implements OnInit {
       this.apiService.postDocumentTempCategory(JSON.stringify(addCategory), token).subscribe({
         next: (response) => {
   
-          console.log('Category added successfully', response);
+          // console.log('Category added successfully', response);
           if (response.Status === 'Ok' && response.Message === 'Inserted Successfully') {
             this.tostar.success('Category added successfully');
             this.router.navigate(['task/approval-screen'], { queryParams: { source: 'category-master' } });
@@ -157,12 +157,12 @@ export class InstructionMasterComponent implements OnInit {
       };
   
   
-      console.log('addInstruction', addInstruction)
+      // console.log('addInstruction', addInstruction)
   
       this.apiService.postInstructionDetails(addInstruction, token).subscribe({
         next: (response) => {
   
-          console.log('Instruction added successfully', response);
+          // console.log('Instruction added successfully', response);
           if (response.Status === 'Ok' && response.Message === 'Inserted Successfully') {
             this.tostar.success('Instruction added successfully');
             this.router.navigate(['task/approval-screen'], { queryParams: { source: 'category-master' } });
@@ -188,7 +188,7 @@ export class InstructionMasterComponent implements OnInit {
         COMPANY_ID: data[0]?.COMPANY_ID
       };
   
-      console.log('Check flag', deleteFlag);
+      // console.log('Check flag', deleteFlag);
   
       const updateINST = {
         MKEY: this.taskData?.MKEY,
@@ -205,7 +205,7 @@ export class InstructionMasterComponent implements OnInit {
   
       this.apiService.putInstructionDetails(JSON.stringify(updateINST), token).subscribe({
         next: (data) => {
-          console.log('Category updated successfully', data);
+          // console.log('Category updated successfully', data);
           if (deleteFlag === 'Y') {
             this.tostar.warning('Instruction deleted successfully');
           } else {
@@ -224,15 +224,15 @@ export class InstructionMasterComponent implements OnInit {
       const confirmDelete = confirm("Are you sure you want to delete?");
       if (confirmDelete) {
         this.isInstructionUpdate = true;
-        console.log('Delete click');
+        // console.log('Delete click');
         this.onsubmit('Y');
       } else {
-        console.log('Delete cancelled');
+        // console.log('Delete cancelled');
       }
     }
   
     onActionButtonClick(field: string, isUpdate: boolean = false) {
-      console.log('onActionButtonClick', field, '&', isUpdate);
+      // console.log('onActionButtonClick', field, '&', isUpdate);
   
       // Set the action type (add or update) based on the button clicked
       if (field === 'category') {
@@ -244,8 +244,8 @@ export class InstructionMasterComponent implements OnInit {
       }
   
       // Log the updated flags for debugging
-      console.log('Category Update Flag:', this.isCategoryUpdate);
-      console.log('Instruction Update Flag:', this.isInstructionUpdate);
+      // console.log('Category Update Flag:', this.isCategoryUpdate);
+      // console.log('Instruction Update Flag:', this.isInstructionUpdate);
   }
   
     
@@ -294,7 +294,7 @@ export class InstructionMasterComponent implements OnInit {
     }
   
     ngOnDestroy(): void {
-      console.log('Component is being destroyed');
+      // console.log('Component is being destroyed');
       sessionStorage.removeItem('task');
     }
 

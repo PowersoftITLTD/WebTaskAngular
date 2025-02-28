@@ -120,7 +120,7 @@ export class CategoryMasterComponent implements OnInit, OnDestroy {
     this.apiService.postDocumentTempCategory(JSON.stringify(addCategory), token).subscribe({
       next: (response) => {
 
-        console.log('Category added successfully', response);
+        // console.log('Category added successfully', response);
         if (response.Status === 'Ok' && response.Message === 'Inserted Successfully') {
           this.tostar.success('Category added successfully');
           this.router.navigate(['task/approval-screen'], { queryParams: { source: 'category-master' } });
@@ -154,12 +154,12 @@ export class CategoryMasterComponent implements OnInit, OnDestroy {
     };
 
 
-    console.log('addInstruction', addInstruction)
+    // console.log('addInstruction', addInstruction)
 
     this.apiService.postInstructionDetails(JSON.stringify(addInstruction), token).subscribe({
       next: (response) => {
 
-        console.log('Instruction added successfully', response);
+        // console.log('Instruction added successfully', response);
         if (response.Status === 'Ok' && response.Message === 'Inserted Successfully') {
           this.tostar.success('Instruction added successfully');
           this.router.navigate(['task/approval-screen'], { queryParams: { source: 'category-master' } });
@@ -184,7 +184,7 @@ export class CategoryMasterComponent implements OnInit, OnDestroy {
       COMPANY_ID: data[0]?.COMPANY_ID
     };
 
-    console.log('Check flag', deleteFlag);
+    // console.log('Check flag', deleteFlag);
 
     const updateCategory = {
       MKEY: this.taskData?.mkey,
@@ -193,11 +193,11 @@ export class CategoryMasterComponent implements OnInit, OnDestroy {
       DELETE_FLAG: deleteFlag  // Pass 'Y' for delete or 'N' for save
     };
 
-    console.log('updateCategory', updateCategory)
+    // console.log('updateCategory', updateCategory)
 
     this.apiService.updateDocumentTempCategory(updateCategory, token).subscribe({
       next: (data) => {
-        console.log('Category updated successfully', data);
+        // console.log('Category updated successfully', data);
         if (deleteFlag === 'Y') {
           this.tostar.warning('Category deleted successfully');
         } else {
@@ -215,11 +215,11 @@ export class CategoryMasterComponent implements OnInit, OnDestroy {
   onDeleteClick() {
     const confirmDelete = confirm("Are you sure you want to delete?");
     if (confirmDelete) {
-      console.log('Delete click');
+      // console.log('Delete click');
       this.isCategoryUpdate = true
       this.onsubmit('Y');
     } else {
-      console.log('Delete cancelled');
+      // console.log('Delete cancelled');
     }
   }
 
@@ -264,7 +264,7 @@ export class CategoryMasterComponent implements OnInit, OnDestroy {
         if (flag === 'Y') {
           // this.updateCategoryForDocSort('Y');
         } else {
-          console.log('sdkjh');
+          // console.log('sdkjh');
 
           // this.updateCategoryForDocSort('N');
         }
@@ -280,7 +280,7 @@ export class CategoryMasterComponent implements OnInit, OnDestroy {
 
 
   ngOnDestroy(): void {
-    console.log('Component is being destroyed');
+    // console.log('Component is being destroyed');
     sessionStorage.removeItem('task');
   }
 

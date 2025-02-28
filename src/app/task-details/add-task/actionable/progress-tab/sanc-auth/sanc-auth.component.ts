@@ -93,7 +93,7 @@ export class SancAuthComponent implements OnInit {
       .subscribe({
         next: (response: any) => {
           if (response?.[0]?.DATA) {
-            this.sancAuthList = response[0].DATA;
+            this.sancAuthList = response[0].DATA?.sort((a: any, b: any) => a.LEVEL - b.LEVEL);
             this.prefillFormWithApiData();
           }
           this.loading = false;
@@ -113,20 +113,20 @@ export class SancAuthComponent implements OnInit {
     let nextRowToEnable = true; // Flag to determine which row should be "In Progress"
 
     this.sancAuthList.forEach((item, index) => {
-      let status = item.STATUS || 'Select'; // Use status from backend or default to "Select"
+      let status = item.STATUS || 'Select';
       let disabled = false;
 
       if (status === 'Completed') {
-        disabled = true; // Completed rows should be disabled
-      } else if (nextRowToEnable) {
-        status = 'In-Progress'; // The first non-completed row should be "In Progress"
-        nextRowToEnable = false; // Only one row should be "In Progress"
-      } else if (status === '') {
-        status = 'Select'; // Empty status should be "Select"
         disabled = true;
+      } else if (nextRowToEnable) {
+        status = 'In-Progress';
+        nextRowToEnable = false;
+      }else if (this.sancAuthList?.length === 1) {
+        status = 'In-Progress';
+        nextRowToEnable = false;
       }
-      else {
-        status = 'Select'; // Remaining rows should be "Select"
+       else {
+        status = 'Select';
         disabled = true;
       }
 
@@ -137,22 +137,36 @@ export class SancAuthComponent implements OnInit {
         sanctioningAuth: item.SANCTIONING_AUTHORITY,
         status: status,
         sanctioningAuthName: item.TYPE_DESC,
-        disabled: disabled, // Pass disabled flag
+        disabled: disabled,
       });
     });
   }
 
+
   addRow(): void {
     this.isAddingRow = true;
+
+    const lastRow = this.sancAuthList[this.sancAuthList.length - 1];
+    let defaultStatus = 'Select';
+    let disabled = true;
+
+    if (lastRow?.STATUS === 'Completed') {
+      defaultStatus = 'In-Progress';
+      disabled = false;
+    }
+
     const newRow = this.fb.group({
-      srNo: [''],  // Empty for new rows
-      level: [{ value: this.sancAuthList[this.sancAuthList?.length - 1]?.LEVEL ? this.sancAuthList[this.sancAuthList?.length - 1].LEVEL + 1 : '', disabled: true }, Validators.required],
+      srNo: [''],
+      level: [lastRow?.LEVEL ? lastRow.LEVEL + 1 : 1, Validators.required],
       sanctioningDept: ['', Validators.required],
       sanctioningAuth: ['', Validators.required],
-      isNewRow: [true] // Placeholder for buttons (not needed in the actual form control)
+      status: [{ value: defaultStatus, disabled: disabled }, Validators.required],
+      isNewRow: [true]
     });
+
     this.rowsNew.push(newRow);
   }
+
 
   saveRow(index: number): void {
     const row = this.rowsNew.at(index).value; // Get form values dynamically
@@ -167,24 +181,31 @@ export class SancAuthComponent implements OnInit {
       SANCTIONING_AUTHORITY_MKEY: (row.sanctioningAuth),
       CREATED_BY: this.sancAuthList[0]?.CREATED_BY_ID,
     };
-    if (row.level > this.sancAuthList[this.sancAuthList.length - 1].LEVEL) {
-      this.apiService.addNewSancAuth(payload, token).subscribe(
-        (response: any) => {
-          if (response[0].DATA) {
-            this.fetchSanctioningAuthorities(this.taskDetails);
-            this.removeRow(index)
-            this.isAddingRow = false;
-          } else {
-            this.tostar.error(response[0].MESSAGE);
-          }
-        },
-        (error: any) => {
-          console.log(error, 'Error occurred while saving sanctioning authority');
-        }
-      );
-    } else {
-      this.tostar.error('Please enter valid level');
+    // Validate required fields
+
+    if (!payload.SANCTIONING_DEPARTMENT) {
+      this.tostar.error('Sanctioning Department is required');
+      return;
     }
+    if (!payload.SANCTIONING_AUTHORITY_MKEY) {
+      this.tostar.error('Sanctioning Authority is required');
+      return;
+    }
+    this.apiService.addNewSancAuth(payload, token).subscribe(
+      (response: any) => {
+        if (response[0].DATA?.length > 0) {
+          this.fetchSanctioningAuthorities(this.taskDetails);
+          this.removeRow(index)
+          this.isAddingRow = false;
+          this.tostar.success(response[0].MESSAGE);
+        } else {
+          this.tostar.error("Error occurred while saving sanctioning authority");
+        }
+      },
+      (error: any) => {
+        console.log(error, 'Error occurred while saving sanctioning authority');
+      }
+    );
   }
 
 

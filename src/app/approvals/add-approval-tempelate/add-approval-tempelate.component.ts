@@ -52,7 +52,7 @@ export class AddApprovalTempelateComponent implements OnInit {
   jobRoleList: any[] = [];
   departmentList: any[] = [];
   docTypeList: any[] = [];
-  instruDetailsList:any[] = [];
+  instruDetailsList: any[] = [];
   SanctoningAuthList: any[] = [];
   SanctoningDeptList: any[] = [];
   employees: any[] = [];
@@ -125,7 +125,6 @@ export class AddApprovalTempelateComponent implements OnInit {
       const RecursiveTaskData: any = navigation.extras.state.taskData;
       this.taskData = RecursiveTaskData;
 
-      console.log('RecursiveTaskData', RecursiveTaskData)
       if (RecursiveTaskData.mkey) {
         this.updatedDetails = !isNewTemp; // Don't update if adding a new task
       } else {
@@ -194,7 +193,7 @@ export class AddApprovalTempelateComponent implements OnInit {
       // sanctioningDept:['',Validators.required],      
       endResult: ['dummy_1, dummy_2'],
       tags: [''],
-      sequenceOrder:[''],
+      sequenceOrder: [''],
       rows: this.formBuilder.array([], [this.duplicateAbbrivationValidator()]),
       rows_new: this.formBuilder.array([])
     })
@@ -344,12 +343,12 @@ export class AddApprovalTempelateComponent implements OnInit {
 
   openDialog(): void {
     this.dialog.open(AddDocumentDialogComponent, {
-      width: '80rem',            
+      width: '80rem',
       data: { /* Any data to pass to the modal if needed */ }
     });
   }
 
-  
+
   openDialogINSTR(): void {
     const dialogRef = this.dialog.open(AddInstructionDialogComponent, {
       width: '50rem',
@@ -365,11 +364,11 @@ export class AddApprovalTempelateComponent implements OnInit {
         // this.cdr.detectChanges();  // Manually trigger change detection
 
 
-       const new_instr =  {
-        typE_DESC:result[0].typE_DESC,
-        attributE2:result[0].typE_CODE,
-        mkey:result[0].mkey
-      }
+        const new_instr = {
+          typE_DESC: result[0].typE_DESC,
+          attributE2: result[0].typE_CODE,
+          mkey: result[0].mkey
+        }
         this.instruDetailsList.push(new_instr);
       }
     });
@@ -384,7 +383,7 @@ export class AddApprovalTempelateComponent implements OnInit {
     const addFieldError = (message: string) => fieldErrors.push(message);
 
     const assignedToValue = this.approvalTempForm.get('assignedTo')?.value;
-    const trimmedAssignedToValue = assignedToValue ? assignedToValue.trim() : '';    const assignedEmployee = this.employees.find(employee => employee.Assign_to === assignedToValue);
+    const trimmedAssignedToValue = assignedToValue ? assignedToValue.trim() : ''; const assignedEmployee = this.employees.find(employee => employee.Assign_to === assignedToValue);
 
     if (!assignedEmployee || !assignedEmployee.MKEY) {
       trimmedAssignedToValue === null
@@ -430,13 +429,7 @@ export class AddApprovalTempelateComponent implements OnInit {
 
 
     const formArrayVal_new: FormArray = (this.approvalTempForm.get('rows_new') as FormArray);
-
-
     const val_of_formArr_new = formArrayVal_new.value;
-
-    console.log('val_of_formArr_new', val_of_formArr_new)
-
-
 
     const subAuth = val_of_formArr_new
       .map((row: any) => {
@@ -445,13 +438,9 @@ export class AddApprovalTempelateComponent implements OnInit {
           SANCTIONING_DEPARTMENT: row.sanctioningDept,
           SANCTIONING_AUTHORITY: row.sanctioningAuth,
           START_DATE: row.startDate_newRow,
-          END_DATE:row.endDate_newRow? row.endDate_newRow: null
+          END_DATE: row.endDate_newRow ? row.endDate_newRow : null
         }
       })
-
-
-    console.log('subTasks', subTasks);
-    console.log('subAuth', subAuth)
 
     const tagsValue = this.approvalTempForm.get('tags')?.value;
 
@@ -470,15 +459,8 @@ export class AddApprovalTempelateComponent implements OnInit {
       }).join(',');
     }
 
-    console.log('tagsString', tagsString)
-
     const assignedEmployeeMKey = assignedEmployee ? assignedEmployee.MKEY : null;
-
-
-
-    const addApprovalTemplate = this.createApprovalTemplate(abbrivation,assignedEmployeeMKey, USER_CRED[0].MKEY, subTasks, subAuth, tagsString);
-
-    console.log('addApprovalTemplate', addApprovalTemplate);
+    const addApprovalTemplate = this.createApprovalTemplate(abbrivation, assignedEmployeeMKey, USER_CRED[0].MKEY, subTasks, subAuth, tagsString);
 
     try {
       const addApprlTempData = await this.apiService.postApprovalTemp(addApprovalTemplate, this.recursiveLogginUser).toPromise();
@@ -527,7 +509,7 @@ export class AddApprovalTempelateComponent implements OnInit {
       resposiblE_EMP_MKEY: employeeMKey,
       joB_ROLE: Number(this.approvalTempForm.get('jobRole')?.value),
       dayS_REQUIERD: Number(this.approvalTempForm.get('noOfDays')?.value),
-      seQ_ORDER:String(this.approvalTempForm.get('sequenceOrder')?.value),
+      seQ_ORDER: String(this.approvalTempForm.get('sequenceOrder')?.value),
       attributE1: userMKey.toString(),
       attributE2: "ADD FORM",
       attributE3: "SAVE BUTTON",
@@ -628,7 +610,7 @@ export class AddApprovalTempelateComponent implements OnInit {
     console.log('subTasks', subTasks);
     const doc_temp_key = this.taskData.mkey
 
-    const  assignedEmployeeMKey = assignedEmployee ? assignedEmployee.MKEY : null;
+    const assignedEmployeeMKey = assignedEmployee ? assignedEmployee.MKEY : null;
     // console.log('checklisT_DOC_LST', this.taskData.checklisT_DOC_LST)
     // console.log('enD_RESULT_DOC_LST', this.taskData.enD_RESULT_DOC_LST)
 
@@ -645,7 +627,7 @@ export class AddApprovalTempelateComponent implements OnInit {
       resposiblE_EMP_MKEY: assignedEmployeeMKey,
       joB_ROLE: Number(this.approvalTempForm.get('jobRole')?.value),
       dayS_REQUIERD: Number(this.approvalTempForm.get('noOfDays')?.value),
-      seQ_ORDER:String(this.approvalTempForm.get('sequenceOrder')?.value),
+      seQ_ORDER: String(this.approvalTempForm.get('sequenceOrder')?.value),
       attributE1: null,
       attributE2: "SAVE FORM",
       attributE3: "SAVE BUTTON",
@@ -677,20 +659,24 @@ export class AddApprovalTempelateComponent implements OnInit {
         const errorDetails = error.error?.errors;
 
         if (errorDetails) {
-          const rowStartDate_Sanction = errorDetails["$.sanctioninG_DEPARTMENT_LIST[0].START_DATE"];
-          
-          if (rowStartDate_Sanction) {
-            this.tostar.error('Required Field', 'Start Date field is required for the sanction'); 
 
-          }
-        } 
+          Object.keys(errorDetails).forEach(key => {
+            if (key.includes('START_DATE')) {
+              const departmentIndexMatch = key.match(/\[\d+\]/);
+              if (departmentIndexMatch) {
+                const departmentIndex = departmentIndexMatch[0].replace(/[\[\]]/g, '');
+
+                const rowStartDate_Sanction = errorDetails[key];
+                if (rowStartDate_Sanction && rowStartDate_Sanction.length > 0) {
+                  this.tostar.error('Required Field', `Start Date field is required for the sanction in department ${departmentIndex}`);
+                }
+              }
+            }
+          });
+        }
       }
     })
   }
-
-
-
-
 
 
   fetchEmployeeName(): void {
@@ -734,7 +720,7 @@ export class AddApprovalTempelateComponent implements OnInit {
 
 
   setEmpName(): void {
-    if (this.taskData && this.taskData.mkey) {     
+    if (this.taskData && this.taskData.mkey) {
       const matchedEmp = this.employees.find((employee: any) =>
         employee.MKEY === Number(this.taskData.resposiblE_EMP_MKEY)
       );
@@ -780,9 +766,9 @@ export class AddApprovalTempelateComponent implements OnInit {
   toggle(index: number): void {
     const idx = this.activeIndices.indexOf(index);
     if (idx === -1) {
-      this.activeIndices.push(index); 
+      this.activeIndices.push(index);
     } else {
-      this.activeIndices.splice(idx, 1); 
+      this.activeIndices.splice(idx, 1);
     }
   }
 
@@ -858,14 +844,14 @@ export class AddApprovalTempelateComponent implements OnInit {
 
 
   toggleSelection(listType: 'endResult' | 'checklist', doc: any) {
-    console.log('listType', listType);
+    // console.log('listType', listType);
 
     const selectedDocs: any = this.selectedDocsMap[listType];
 
     const index = selectedDocs.findIndex((selected: any) => selected.mkey === doc.mkey);
     if (index === -1) {
       selectedDocs.push(doc);
-      console.log('selectedDocs', selectedDocs)
+      // console.log('selectedDocs', selectedDocs)
     } else {
       selectedDocs.splice(index, 1);
     }
@@ -899,10 +885,10 @@ export class AddApprovalTempelateComponent implements OnInit {
     // Log the results based on listType after the toggle operation
     if (listType === 'endResult') {
       this.end_list = end_list
-      console.log('end_list result:', this.end_list);
+      // console.log('end_list result:', this.end_list);
     } else if (listType === 'checklist') {
       this.check_list = check_list
-      console.log('check_list result:', this.check_list);
+      // console.log('check_list result:', this.check_list);
     }
   }
 
@@ -946,7 +932,7 @@ export class AddApprovalTempelateComponent implements OnInit {
     }
 
     return groupedDocs;
-    
+
   }
 
 
@@ -998,8 +984,6 @@ export class AddApprovalTempelateComponent implements OnInit {
           }
 
           const rows: FormArray = this.approvalTempForm.get('rows') as FormArray;
-
-          console.log('Rows: ',rows)
 
           const tagsValue = rows.get('subTaskTags')?.value || [];
           let tagsString: string = '';
@@ -1150,7 +1134,7 @@ export class AddApprovalTempelateComponent implements OnInit {
       return;
     }
 
-    console.log('check group', this.approvalTempForm.get('rows_new').controls)
+    // console.log('check group', this.approvalTempForm.get('rows_new').controls)
 
     const lastRow = rows[rows.length - 1];
     const prevRow = rows[rows.length - 2];
@@ -1172,20 +1156,19 @@ export class AddApprovalTempelateComponent implements OnInit {
         this.tostar.error('Please fill in all fields in all rows before adding a new row');
         return;
       }
-
     }
 
     if (lastLevel === previousLevel) {
       const startDate = new Date(lastRow.value?.startDate_newRow);
       const endDate = new Date(prevRow.value?.endDate_newRow);
 
-      console.log('endDate', endDate)
+      // console.log('endDate', endDate)
 
       if (!isNaN(endDate.getTime())) {
         if (startDate > endDate) {
           console.log('Start date is greater than end date');
         } else {
-          console.log('Start date is NOT greater than end date');
+          // console.log('Start date is NOT greater than end date');
           this.tostar.error('Start date of same level should greater then end date of same level');
           return;
         }
@@ -1243,32 +1226,28 @@ export class AddApprovalTempelateComponent implements OnInit {
   }
 
 
-  onAbbrChange(event: Event, rowForm: FormGroup, rowIndex?: number|any) {
+  onAbbrChange(event: Event, rowForm: FormGroup, rowIndex?: number | any) {
 
-    
-    console.log('rowForm', rowForm)
+
     const selectElement = event.target as HTMLSelectElement; // Cast to HTMLSelectElement
 
     const selectedAbbr = selectElement.value; // Now TypeScript knows 'value' exists
-    console.log('selectElement',selectElement)    
 
-    const formArrayVal = (this.approvalTempForm.get('rows') as FormArray).controls;
     // console.log('Rows:', formArrayVal);
     rowForm.get('abbrivation')?.setValue(selectedAbbr);
 
     const selectedRow = this.getRelAbbr.find(r => r.maiN_ABBR === selectedAbbr);
-  
+
     const header_no_of_days = Number(this.approvalTempForm.get('noOfDays')?.value);
     const subtas_no_of_days = selectedRow.dayS_REQUIERD
-    console.log('header_no_of_days', header_no_of_days);  
-    console.log('subtas_no_of_days', subtas_no_of_days)
-    if(header_no_of_days < subtas_no_of_days && selectedRow){
+ 
+    if (header_no_of_days < subtas_no_of_days && selectedRow) {
       this.tostar.error(`approval session 'No. of Days' should be greater then ${selectedAbbr}`);
       const formArray = this.approvalTempForm.get('rows') as FormArray;
       formArray.removeAt(rowIndex);
       // return;
     }
-    
+
     const departmentList = this.departmentList
 
     // console.log('Department', departmentList)
@@ -1375,36 +1354,132 @@ export class AddApprovalTempelateComponent implements OnInit {
   }
 
 
+  // onSubmit() {
+  //   const requiredControls: string[] = [];
+  //   const requiredFields: string[] = [];
+  //   const valid = this.approvalTempForm.valid;
+
+  //   // console.log('this.approvalTempForm.valid: ', valid);
+
+  //   const addControlError = (message: string) => requiredControls.push(message);
+
+  //   const convertToTitleCase = (input: string) => {
+  //     return input.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase()).trim() + ' is required';
+  //   };
+
+  //   // Check for required form controls
+  //   Object.keys(this.approvalTempForm.controls).forEach(controlName => {
+  //     const control = this.approvalTempForm.get(controlName);
+  //     if (control?.errors?.required) {
+  //       // Convert camelCase to Title Case
+  //       const formattedControlName = convertToTitleCase(controlName);
+  //       addControlError(formattedControlName);
+  //     }
+  //   });
+
+  //   // If required controls are missing, show error
+  //   if (requiredControls.length > 0) {
+  //     const m = `${requiredControls.join(' , ')}`;
+  //     this.tostar.error(`${m}`);
+  //     return;
+  //   }
+
+  //   const formArrayVal_new: FormArray = (this.approvalTempForm.get('rows_new') as FormArray);
+  //   const val_of_formArr_new = formArrayVal_new.value;
+
+  //   const isValid_sanction = val_of_formArr_new.every((row: any) => {
+  //     if (!row.level || !row.level.toString().trim()) {
+  //       this.tostar.error('Field Required for row', 'Please provide level');
+  //       return false;
+  //     }
+  //     if (!row.sanctioningDept || !row.sanctioningDept.trim()) {
+  //       this.tostar.error('Field Required for row', "Sanctioning Department is required.");
+  //       return false;
+  //     }
+  //     if (!row.sanctioningAuth || !row.sanctioningAuth.trim()) {
+  //       this.tostar.error('Field Required for row', 'Sanctioning Authority is required');
+  //       return false;
+  //     }
+  //     return true;
+  //   });
+
+  //   if (!isValid_sanction) {
+  //     return false;
+  //   }
+
+  //   const subAuth = val_of_formArr_new.map((row: any) => {   
+
+  //     return{
+  //       LEVEL: row.level.toString(),
+  //       SANCTIONING_DEPARTMENT: row.sanctioningDept,
+  //       SANCTIONING_AUTHORITY: row.sanctioningAuth,
+  //       START_DATE: new Date(row.startDate_newRow), 
+  //       END_DATE: new Date(row.endDate_newRow)
+  //     }
+
+  //   });
+
+  //   console.log('subAuth from on submit', subAuth);
+
+  //   // Validation logic
+  //   let lastEndDate: Date | null = null;
+  //   let previousLevel: number | null = null; 
+  //   let previousRow: any = null; 
+
+  //   for (let i = 0; i < subAuth.length; i++) {
+  //     const current = subAuth[i];
+
+  //     if (previousRow && current.LEVEL === previousRow.LEVEL) {
+  //       if (current.START_DATE <= previousRow.END_DATE) {
+  //         this.tostar.error(`For level ${current.LEVEL}, the start date should be after the end date of the previous row in the same level.`);
+  //         return false;
+  //       }
+  //     }
+
+  //     if(current.SANCTIONING_DEPARTMENT === '' || current.SANCTIONING_DEPARTMENT === null){
+  //       this.tostar.error('SANCTIONING_DEPARTMENT is required')
+  //     }
+
+
+
+
+  //     previousLevel = parseInt(current.LEVEL);
+  //     previousRow = current;
+  //     lastEndDate = current.END_DATE;
+  //   }
+
+
+
+  //   // If all conditions are met, return true (form is valid)
+  //   return true;
+  // }
+
   onSubmit() {
     const requiredControls: string[] = [];
     const requiredFields: string[] = [];
     const valid = this.approvalTempForm.valid;
-  
-    // console.log('this.approvalTempForm.valid: ', valid);
-  
+
     const addControlError = (message: string) => requiredControls.push(message);
-  
+
     const convertToTitleCase = (input: string) => {
       return input.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase()).trim() + ' is required';
     };
-  
+
     // Check for required form controls
     Object.keys(this.approvalTempForm.controls).forEach(controlName => {
       const control = this.approvalTempForm.get(controlName);
       if (control?.errors?.required) {
-        // Convert camelCase to Title Case
         const formattedControlName = convertToTitleCase(controlName);
         addControlError(formattedControlName);
       }
     });
-  
-    // If required controls are missing, show error
+
     if (requiredControls.length > 0) {
       const m = `${requiredControls.join(' , ')}`;
       this.tostar.error(`${m}`);
-      return;
+      return false;
     }
-  
+
     const formArrayVal_new: FormArray = (this.approvalTempForm.get('rows_new') as FormArray);
     const val_of_formArr_new = formArrayVal_new.value;
 
@@ -1423,30 +1498,26 @@ export class AddApprovalTempelateComponent implements OnInit {
       }
       return true;
     });
-    
+
     if (!isValid_sanction) {
       return false;
     }
-  
-    const subAuth = val_of_formArr_new.map((row: any) => {   
 
-      return{
+    const subAuth = val_of_formArr_new.map((row: any) => {
+      return {
         LEVEL: row.level.toString(),
         SANCTIONING_DEPARTMENT: row.sanctioningDept,
         SANCTIONING_AUTHORITY: row.sanctioningAuth,
-        START_DATE: new Date(row.startDate_newRow), 
+        START_DATE: new Date(row.startDate_newRow),
         END_DATE: new Date(row.endDate_newRow)
-      }
-    
+      };
     });
-  
-    console.log('subAuth from on submit', subAuth);
-  
-    // Validation logic
+
+
     let lastEndDate: Date | null = null;
-    let previousLevel: number | null = null; 
-    let previousRow: any = null; 
-  
+    let previousLevel: number | null = null;
+    let previousRow: any = null;
+
     for (let i = 0; i < subAuth.length; i++) {
       const current = subAuth[i];
 
@@ -1457,26 +1528,34 @@ export class AddApprovalTempelateComponent implements OnInit {
         }
       }
 
-
-      if(current.SANCTIONING_DEPARTMENT === '' || current.SANCTIONING_DEPARTMENT === null){
-        this.tostar.error('SANCTIONING_DEPARTMENT is required')
+      if (current.SANCTIONING_DEPARTMENT === '' || current.SANCTIONING_DEPARTMENT === null) {
+        this.tostar.error('SANCTIONING_DEPARTMENT is required');
+        return false;
       }
-  
-   
-  
-     
+
+      // New Validation: Check level sequencing
+      if (previousLevel !== null) {
+        const currentLevel = parseInt(current.LEVEL);
+        if (!(currentLevel === previousLevel || currentLevel === previousLevel + 1)) {
+          this.tostar.error(`Last row level should be ${previousLevel} or ${previousLevel + 1} from its previous row`);
+          return false;
+        }
+      }
+
+      if (current.END_DATE && current.START_DATE > current.END_DATE) {
+        this.tostar.error(`For level ${current.LEVEL}, the end date should be greater than the start date.`);
+        return false;
+      }
+
+
       previousLevel = parseInt(current.LEVEL);
       previousRow = current;
       lastEndDate = current.END_DATE;
     }
 
-   
-  
-    // If all conditions are met, return true (form is valid)
     return true;
   }
-  
-  
+
 
   onAddTempDoc() {
     const isValid = this.onSubmit();
@@ -1507,7 +1586,7 @@ export class AddApprovalTempelateComponent implements OnInit {
   }
 
   navigateToApprovlTempelate() {
-    this.router.navigate(['task/approval-screen'], {queryParams:{ source: 'authority-tempelate' }});
+    this.router.navigate(['task/approval-screen'], { queryParams: { source: 'authority-tempelate' } });
   }
 
   formatDate(date: string): string {

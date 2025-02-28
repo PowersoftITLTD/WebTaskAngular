@@ -1,11 +1,9 @@
-import { HttpClient } from '@angular/common/http';
 import { Component, ErrorHandler, HostListener, Input, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { ApiService } from 'src/app/services/api/api.service';
 import { CredentialService } from 'src/app/services/credential/credential.service';
-import { SideBarService } from 'src/app/services/side-panel/side-bar.service';
 
 @Component({
   selector: 'app-add-task',
@@ -71,7 +69,6 @@ export class AddTaskComponent implements OnInit {
              ) { }
 
   ngOnInit(): void {
-
     this.initializeForm();
     this.fetchCategoryData();
     this.fetchProjectData();
@@ -340,7 +337,6 @@ export class AddTaskComponent implements OnInit {
 
 
     console.log(taskData)
-
 
       const token = this.apiService.getRecursiveUser();;
 

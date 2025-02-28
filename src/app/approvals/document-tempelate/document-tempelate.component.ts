@@ -115,7 +115,7 @@ export class DocumentTempelateComponent implements OnInit {
     if (navigation?.extras.state) {
       const RecursiveTaskData: any = navigation.extras.state.taskData;
       this.taskData = RecursiveTaskData;
-      console.log('RecursiveTaskData', RecursiveTaskData)
+      // console.log('RecursiveTaskData', RecursiveTaskData)
 
       // if(RecursiveTaskData){
       //   this._getSelectedTaskDetails();
@@ -134,7 +134,7 @@ export class DocumentTempelateComponent implements OnInit {
       if (RecursiveTaskData) {
         try {
           this.taskData = JSON.parse(RecursiveTaskData);
-          console.log('Check task data', this.taskData)
+          // console.log('Check task data', this.taskData)
           if (!isNewTemp) {
             this.updatedDetails = this.taskData.mkey ? true : false;
           }
@@ -203,7 +203,7 @@ export class DocumentTempelateComponent implements OnInit {
       next: (list: any) => {
         this.docCatList = list
         this.setCategoryData();
-        console.log('Document Type List:', this.docCatList);
+        // console.log('Document Type List:', this.docCatList);
       },
       error: (error: any) => {
         console.error('Unable to fetch Document Type List', error);
@@ -278,14 +278,14 @@ export class DocumentTempelateComponent implements OnInit {
     }
 
 
-    console.log('addTmpDoc', addTmpDoc)
+    // console.log('addTmpDoc', addTmpDoc)
 
     this.apiService.postDocumentTempelate(addTmpDoc, this.recursiveLogginUser).subscribe({
       next: (addTemplateDate: any) => {
         this.router.navigate(['task/approval-screen'], { queryParams: { source: 'document-tempelate' } });
         this.tostar.success('Successfully!!', 'document added successfully');
 
-        console.log('Data added successfully', addTemplateDate)
+        // console.log('Data added successfully', addTemplateDate)
 
       }, error: (error) => {
         if (error) {
@@ -359,9 +359,12 @@ export class DocumentTempelateComponent implements OnInit {
         this.router.navigate(['task/approval-screen'], { queryParams: { source: 'document-tempelate' } });
         this.tostar.success('Successfully!!', 'Document updated successfully!');
 
-        console.log('Doc updated successfully', update_doc)
+        // console.log('Doc updated successfully', update_doc)
       }, error: (error) => {
-        console.log('Error occured', error)
+        // console.log('Error occured', error)
+        if(error){
+          this.tostar.error('Error occured while updating details')
+        }
       }
     })
   }
@@ -372,10 +375,10 @@ export class DocumentTempelateComponent implements OnInit {
     if (this.taskData && this.taskData.mkey) {
       // Find the project in the project array
 
-      console.log('docCatList', this.docCatList)
+      // console.log('docCatList', this.docCatList)
       const matchedCategory = this.docCatList.find((doc_type: any) => doc_type.mkey === this.taskData.doC_CATEGORY);
 
-      console.log('matchedCategory', matchedCategory)
+      // console.log('matchedCategory', matchedCategory)
 
       if (matchedCategory) {
         this.taskData.category_Name = matchedCategory.typE_DESC;
