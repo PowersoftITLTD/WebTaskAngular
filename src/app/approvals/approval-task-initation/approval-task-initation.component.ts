@@ -201,7 +201,7 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
       jobRole: ['',],
       daysRequired: [''],
       tags: [''],
-      startDate: [this.currentDate || '', Validators.required],
+      startDate: [new Date(new Date().setDate(new Date().getDate() - 1)).toISOString().split('T')[0], Validators.required],
       endDate: ['', Validators.required],
       complitionDate: ['', Validators.required],
       ProjectApprovalSrNo: [''],
@@ -221,12 +221,13 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
       return sum + (task.DAYS_REQUIRED || 0);
     }, 0);
 
+
     // Get current date
     const currentDate = new Date();
 
     // Calculate the end date by adding totalDays
     const endDate = new Date();
-    endDate.setDate(currentDate.getDate() + totalDays);
+    endDate.setDate(currentDate.getDate() + totalDays + this.taskData.SUBTASK_LIST.length );
 
     // Format the end date using formatDate() method
     const formattedEndDate = this.formatDate(endDate);
@@ -623,9 +624,13 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
 
       // console.log('matchedEmployee', matchedEmployee)
       // console.log('this.taskData.RESPOSIBLE_EMP_MKEY', this.taskData.RESPOSIBLE_EMP_MKEY)
-      if (matchedProject) {
+
+      console.log('Project: ',matchedProject.TYPE_DESC);
+      console.log('Sub-Project: ',matchedSubProject.TYPE_DESC)
+
+      // if (matchedProject) {
         this.taskData.project_Name = matchedProject.TYPE_DESC;
-      }
+     // }
 
       if (matchedSubProject) {
         this.taskData.sub_proj_name = matchedSubProject.TYPE_DESC;
@@ -696,11 +701,10 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
     const USER_CRED = this.credentialService.getUser();
     const token = this.apiService.getRecursiveUser();
 
-    console.log('token', token)
-    console.log('USER_CRED', USER_CRED[0].MKEY)
-    console.log('JOB_ROLE', this.taskData.JOB_ROLE)
-    console.log('AUTHORITY_DEPARTMENT', this.taskData.AUTHORITY_DEPARTMENT)
-
+    // console.log('token', token)
+    // console.log('USER_CRED', USER_CRED[0].MKEY)
+    // console.log('JOB_ROLE', this.taskData.JOB_ROLE)
+    // console.log('AUTHORITY_DEPARTMENT', this.taskData.AUTHORITY_DEPARTMENT)
 
     this.apiService.getEmpDetailsByDeptAndJobRole(token,this.taskData.AUTHORITY_DEPARTMENT,this.taskData.JOB_ROLE, USER_CRED[0].MKEY).subscribe(
       (response: any) => {
@@ -711,6 +715,8 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
         response[0]?.data.forEach((emp: any) => {
           const fullName = emp.EMP_FULL_NAME;
           const MKEY = emp.MKEY;
+          const FLAG = emp.ATTRIBUTE1
+
           let capitalizedFullName = '';
           const nameParts = fullName.split(' ');
 
@@ -728,7 +734,7 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
             }
           }
 
-          this.headerEmployee.push({ Assign_to: capitalizedFullName, MKEY: MKEY });
+          this.headerEmployee.push({ Assign_to: capitalizedFullName, MKEY: MKEY, FLAG:FLAG });
           this.HeaderfullName = [{ Assign_to: capitalizedFullName, MKEY: MKEY }];
           // this.subTaskEmployees.push({ Assign_to: capitalizedFullName, MKEY: MKEY });
         });
@@ -832,10 +838,10 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
   }
 
   SubfilterEmployeesInitiator(event: Event, task_no: any): void {
-    console.log('task_no', task_no)
-    console.log('event', event)
+    // console.log('task_no', task_no)
+    // console.log('event', event)
     const value = (event.target as HTMLInputElement).value.trim();
-    console.log('value', value)
+    // console.log('value', value)
 
     if (!value) {
       this.subListFilteredEmp = [];
@@ -855,22 +861,61 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
       return fullName.includes(filterValue);
     });
 
+
+    // console.log()
+
     this.inputHasValue = value.trim().length > 0;
 
   }
 
 
+  // selectEmployee(employee: any): void {
+
+  //   console.log('CHECK EMP MODEL',employee)
+  //   const assignedTo = employee.Assign_to;
+  //   const flag = employee.FLAG;
+  //   this.appeInitForm.get('responsiblePerson').setValue(assignedTo);
+
+  //   if (flag === 'N') {
+  //     const confirmation = confirm('This user does not belong to job role and department. Do you still want to add?');
+  //     if (!confirmation) {
+
+
+
+  //         employee.Assign_to = '';
+  //         this.filteredEmployees = [];
+  //         return; // Exit if user clicks "Cancel"
+  //     }
+  // }
+
+  //   if (assignedTo) {
+  //     this.filteredEmployees = [];
+  //     return
+  //   }
+  // }
+
   selectEmployee(employee: any): void {
-
+    
     const assignedTo = employee.Assign_to;
+    const flag = employee.FLAG;
 
-    this.appeInitForm.get('responsiblePerson').setValue(assignedTo);
+    if (flag === 'N') {
+      const confirmation = confirm('This user does not belong to job role and department. Do you still want to add?');
+      
+      if (!confirmation) {
+          this.appeInitForm.get('responsiblePerson').setValue(''); // Clear the input field
+          this.filteredEmployees = [];
+          return; // Exit if user clicks "Cancel"
+      }
+    }
 
     if (assignedTo) {
+      this.appeInitForm.get('responsiblePerson').setValue(assignedTo); // Ensure the input updates properly
       this.filteredEmployees = [];
-      return
+      return;
     }
-  }
+}
+
 
   selectInitiatoe(employee: any): void {
 
@@ -884,20 +929,49 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
     }
   }
 
-  selectEmpSubList(employee: any): void {
+  // selectEmpSubList(employee: any): void {
+  //   console.log('CHECK EMP MODEL',employee)
 
-    //subTaskEmployees
-    const assignedTo = employee.Assign_to;
+  //   //subTaskEmployees
+  //   const assignedTo = employee.Assign_to;
+  //   const flag = employee.FLAG
 
-    this.selectedAssignTo = assignedTo; // This will set the value to the input field
+  //   console.log('Check flag: ', flag)
 
-    if (assignedTo) {
-      this.subListFilteredEmp = []; // Clear the list (or do any other actions you need)
-    }
+  //   this.selectedAssignTo = assignedTo; // This will set the value to the input field
+
+  //   if (assignedTo) {
+  //     this.subListFilteredEmp = []; // Clear the list (or do any other actions you need)
+  //   }
 
   
 
-  }
+  // }
+
+  selectEmpSubList(employee: any): void {
+    console.log('CHECK EMP MODEL', employee);
+
+    const assignedTo = employee.Assign_to;
+    const flag = employee.FLAG;
+
+    console.log('Check flag: ', flag);
+
+    if (flag === 'N') {
+        const confirmation = confirm('This user does not belong to job role and department. Do you still want to add?');
+        if (!confirmation) {
+            this.selectedAssignTo = '';
+            this.filteredInitiator = [];
+            return; // Exit if user clicks "Cancel"
+        }
+    }
+
+    this.selectedAssignTo = assignedTo; // Set the value to the input field
+
+    if (assignedTo) {
+        this.subListFilteredEmp = []; // Clear the list or perform other actions
+    }
+}
+
 
 
   selectEmployeeSubList(employee: any): void {
@@ -1002,26 +1076,26 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
   // }
 
   toggleFormVisibility_main(index: number, task: any) {
+    console.log('task', task);
     this.onSubmitSubList(task.TASK_NO);
-    console.log('task: ', task);
     const token = this.apiService.getRecursiveUser();
     const USER_CRED = this.credentialService.getUser();    
 
     const subTask_job_role = task.TASK_NO.joB_ROLE_mkey;
     const subTask_dept = task.TASK_NO.department_mkey;
 
-    console.log('subTask_job_role', subTask_job_role);
-    console.log('subTask_dept', subTask_dept);
-    console.log('USER_CRED', USER_CRED[0].MKEY);
+    // console.log('subTask_job_role: ', subTask_job_role);
+    // console.log('subTask_dept: ', subTask_dept);
 
     this.apiService.getEmpDetailsByDeptAndJobRole(token, subTask_dept, subTask_job_role, USER_CRED[0].MKEY).subscribe(
         (response: any) => {
-            console.log('Check the responsible person', response[0]?.data);
-            
+            // console.log('Emp: ',response[0].data);
             this.employees = []; // Reset employees before adding new ones
             response[0]?.data?.forEach((emp: any) => {
                 const fullName = emp.EMP_FULL_NAME;
                 const MKEY = emp.MKEY;
+                const FLAG = emp.ATTRIBUTE1
+              
                 let capitalizedFullName = '';
                 const nameParts = fullName.split(' ');
 
@@ -1039,7 +1113,7 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
                     }
                 }
 
-                this.employees.push({ Assign_to: capitalizedFullName, MKEY: MKEY });
+                this.employees.push({ Assign_to: capitalizedFullName, MKEY: MKEY, FLAG:FLAG });
             });
 
             // Set selectedAssignTo after employees array is populated
@@ -1054,6 +1128,9 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
 
     console.log('Check name of RP', task.TASK_NO?.RESPOSIBLE_EMP_NAME);
     console.log('Form visible map', this.formVisibleMap[index]);
+    console.log('task.TASK_NO.start_date', task.TASK_NO.start_date)
+
+    // this.formatDate(task.TASK_NO.start_date);
 
     if (this.formVisibleMap[index]) {
         this.formVisibleMap[index] = false;
@@ -1072,6 +1149,8 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
 
   setEmpName(): void {
     if (this.taskData && this.taskData.MKEY) {
+
+      console.log('EMP: ',this.employees)
 
       // console.log('setEmpName',this.employees)
       // console.log('this.departmentList', this.departmentList)
@@ -1168,7 +1247,12 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
             ...updateInitiationSubTask
           };
 
-          window.location.reload();
+
+          localStorage.setItem('RESPOSIBLE_EMP_MKEY', JSON.stringify(this.taskData.RESPOSIBLE_EMP_MKEY));
+          console.log('HEADER RESPOSIBLE_EMP_MKEY saved to local storage:', this.taskData.RESPOSIBLE_EMP_MKEY);
+
+
+          // window.location.reload();
 
           console.log('Updated subtask list:', this.taskData.SUBTASK_LIST);
 
@@ -1320,7 +1404,7 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
         JOB_ROLE: task.TASK_NO.joB_ROLE_mkey,
         COMPLITION_DATE: this.taskData.COMPLITION_DATE,
         approvaL_MKEY: task.TASK_NO.approvaL_MKEY,
-        TAGS: 'asjas,sakjld',
+        TAGS: '',
         // approvaL_MKEY: task.TASK_NO.approvaL_MKEY,
         OUTPUT_DOCUMENT: task.TASK_NO.enD_RESULT_DOC,
         STATUS: 'Created',
@@ -1475,24 +1559,25 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
 
     // const taskMap = new Map();
 
+    let lastEndDate = this.appeInitForm.get('startDate')?.value;  
+    let modified_start_date = new Date(lastEndDate);
+    
     const optionListArr = sortedTasks
       .filter((item: any) => item.TASK_NO !== null)
       .map((item: any, index: number) => {
+        
         const jobRole = jobRoleList.find((role: any) => role.mkey === item.JOB_ROLE);
         const departmentRole = departmentList.find((department: any) => department.mkey === item.DEPARTMENT);
         const daysRequired = isNaN(item.DAYS_REQUIRED) ? 0 : Number(item.DAYS_REQUIRED);
+    
+        let startDate = new Date(lastEndDate); // Start date is the end date of the previous task
+        startDate.setDate(startDate.getDate() + 1);
 
-        //let startDate = new Date(lastEndDate);
-        
-        let lastEndDate = this.appeInitForm.get('startDate')?.value;  
-        let modified_start_date = new Date(lastEndDate)
-        let startDate = modified_start_date;   
         let endDate = new Date(startDate);
         
         endDate.setDate(startDate.getDate() + daysRequired);
-
         lastEndDate = new Date(endDate); // Update for the next task
-
+    
         return {
           TASK_NO: item.TASK_NO,
           maiN_ABBR: item.APPROVAL_ABBRIVATION,
@@ -1752,7 +1837,7 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
 
   navigateToProjectDefination() {
     history.back();
-      }
+  }
 
   ngOnDestroy(): void {
     console.log('Component is being destroyed');

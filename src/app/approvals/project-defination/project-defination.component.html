@@ -302,7 +302,7 @@
                                             <ng-container *ngIf="task.TASK_NO?.TASK_NO">
 
                                               <div class="task-details">
-                                                <span class="select-all-container">
+                                                <span class="select-all-container" >
                                                   <input type="checkbox" class="task-item" *ngIf="!disableChilCheckBox"
                                                     [checked]="task.checked"
                                                     (click)="isTaskDisabled(task) ? null : toggleSelection(task)"
@@ -317,7 +317,7 @@
                                                   </mat-icon>
                                                   {{ task.TASK_NO.TASK_NO }}
                                                 </span>
-                                                <div class="task-detail">{{ task.TASK_NO?.maiN_ABBR }}</div>
+                                                <!-- <div class="task-detail">{{ task.TASK_NO?.maiN_ABBR }}</div> -->
 
                                                 <div class="task-detail">{{ task.TASK_NO?.abbR_SHORT_DESC }}</div>
                                               </div>
@@ -352,7 +352,7 @@
                                                 </mat-icon>
                                                 {{ task.TASK_NO.TASK_NO }}
                                               </span>
-                                              <div class="task-detail">{{ task.TASK_NO?.maiN_ABBR }}</div>
+                                              <!-- <div class="task-detail">{{ task.TASK_NO?.maiN_ABBR }}</div> -->
 
                                               <div class="task-detail">{{ task.TASK_NO?.abbR_SHORT_DESC }}</div>
                                             </div>
@@ -376,7 +376,8 @@
                                           <input type="checkbox" class="task-item" [checked]="isAllSelectedCheck"
                                             (change)="selectAll()">
                                         </span>
-                                      </li>                                  
+                                      </li>                                                                              
+
                                       <hr>
 
                                       <ng-template #recursiveTaskTemplate let-tasks>
@@ -387,12 +388,14 @@
                                             <ng-container *ngIf="task.TASK_NO?.TASK_NO">
 
                                               <div class="task-details">
-                                                <span class="select-all-container">
-                                                  <input type="checkbox" class="task-item" *ngIf="!disableChilCheckBox"
+                                                <span class="select-all-container" >
+                                                  <div *ngIf="!selectAllChecked">
+                                                    <input type="checkbox" class="task-item" *ngIf="!disableChilCheckBox"
                                                     [checked]="task.checked"
                                                     (click)="isTaskDisabled(task) ? null : toggleSelection(task)"
                                                     [ngClass]="{'selected': isSelected(task) || isTaskInSavedList(task), 'disabled': isTaskDisabled(task)}"
                                                     [attr.disabled]="isTaskDisabled(task) ? '' : null">
+                                                  </div>                                              
                                                 </span>
                                                 <span class="task-number"
                                                   [style.marginLeft.px]="calculateIndentation(task.TASK_NO.TASK_NO, task.subtask && task.subtask.length > 15 ? 15 : 30,  task.TASK_NO.start_date, task.TASK_NO.end_date)">
@@ -480,6 +483,7 @@
                                   <!-- <th><i class="fas fa-edit"></i></th> -->
                                   <th>Serial No.</th>
                                   <th>Sequence No.</th>
+                                  <th>Task No.</th>
                                   <th>Abbreviation</th>
                                   <th class="truncate-date">Approved Description</th>
                                   <th>Days Required</th>
@@ -509,7 +513,7 @@
                                           </div>
                                         </td> -->
                                       <td></td>
-                                      <td style="min-width: 300px;">
+                                      <td style="min-width: 100px;">
                                         <ng-container *ngIf="task.TASK_NO.TASK_NO">
                                           <span
                                             [style.marginLeft.px]="calculateIndentation(task.TASK_NO.TASK_NO, task.subtask && task.subtask.length > 0 ? 15 : 30, task.TASK_NO.start_date, task.TASK_NO.end_date)">
@@ -522,6 +526,7 @@
                                           </span>
                                         </ng-container>
                                       </td>
+                                      <td>{{task.TASK_NO?.seQ_NO}}</td>
                                       <td class="truncate-text" matTooltip="{{ task.TASK_NO?.maiN_ABBR }}">{{
                                         task.TASK_NO?.maiN_ABBR }}</td>
                                       <td class="truncate-text" matTooltip="{{ task.TASK_NO?.abbR_SHORT_DESC }}">{{
@@ -612,7 +617,7 @@
                                         </div>
                                       </td> -->
                                     <td>{{i + 1}}</td>
-                                    <td style="min-width: 300px;">
+                                    <td style="min-width: 100px;">
                                       <ng-container *ngIf="task.TASK_NO.TASK_NO">
                                         <span
                                           [style.marginLeft.px]="calculateIndentation(task.TASK_NO.TASK_NO, task.subtask && task.subtask.length > 0 ? 15 : 30, task.TASK_NO.start_date, task.TASK_NO.end_date)">
@@ -625,6 +630,7 @@
                                         </span>
                                       </ng-container>
                                     </td>
+                                    <td>{{task.TASK_NO?.seQ_NO}}</td>
                                     <td class="truncate-text" matTooltip="{{ task.TASK_NO?.maiN_ABBR }}">{{
                                       task.TASK_NO?.maiN_ABBR }}</td>
                                     <td class="truncate-text" matTooltip="{{ task.TASK_NO?.abbR_SHORT_DESC }}">{{

@@ -39,26 +39,26 @@
                       <div class="form-group">
                         <label for="taskName">Property</label>
 
-                        <ng-container *ngIf="taskData?.MKEY">
+                        <!-- <ng-container *ngIf="taskData?.MKEY"> -->
                           <select class="form-control" formControlName="property" #projectSelect [class.disabled]="true"
                             [attr.disabled]="true" [disabled]="isFieldDisabled"
-                            (change)="onProjectSelect(projectSelect)">
+                            > <!--(change)="onProjectSelect(projectSelect)"-->
                             <option value="0">Select</option>
                             <option *ngFor="let p of project" [ngValue]="p"
                               [selected]="p.TYPE_DESC === taskData.project_Name">
                               {{ p.TYPE_DESC }}
                             </option>
                           </select>
-                        </ng-container>
+                        <!-- </ng-container> -->
 
 
-                        <ng-container *ngIf="!taskData?.MKEY">
+                        <!-- <ng-container *ngIf="!taskData?.MKEY">
                           <select class="form-control " formControlName="property" #projectSelect
                             (change)="onProjectSelect(projectSelect)">
                             <option value="0" selected>Select</option>
                             <option *ngFor="let p of project" [ngValue]="p">{{ p.TYPE_DESC }}</option>
                           </select>
-                        </ng-container>
+                        </ng-container> -->
 
                       </div>
                     </div>
@@ -229,12 +229,12 @@
 
                     <div class="col-xs-12 col-xl-4 col-md-12">
                       <div class="form-group">
-                        <label for="category">Responsible Person&nbsp;<small>*</small></label>
+                        <label for="category">Project Manager&nbsp;<small>*</small></label>
 
                         <ng-container *ngIf="taskData?.MKEY">
                           <input type="text" class="form-control" formControlName="responsiblePerson"
-                            [ngModel]="HeaderfullName[0]?.Assign_to" (input)="filterEmployees($event)" appAlphabeticOnly
-                            [ngStyle]="isFieldDisabled ? { 'background-color': 'rgb(238 236 195)', 'color': '#11111', 'cursor': 'allowed' } : {}" />
+                            (input)="filterEmployees($event)" appAlphabeticOnly
+                            [ngStyle]="isFieldDisabled ? { 'background-color': 'rgb(238 236 195)', 'color': '#11111', 'cursor': 'allowed' } : {}" /> <!-- [ngModel]="HeaderfullName[0]?.Assign_to"-->
                         </ng-container>
 
                         <!-- <ng-container *ngIf="!taskData?.MKEY">

@@ -191,8 +191,6 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
 
   toggleSelection(task: any = []): void {
 
-    console.log('Check',task)
-
     const taskId = task?.TASK_NO?.TASK_NO;
 
     // Safely check and toggle selection state
@@ -455,7 +453,6 @@ hasDisabledClear(): boolean {
 
   breakToLinear(selectedSeq: any) {
 
-    // console.log('breakToLinear selectedSeq',selectedSeq)
     const result: any[] = [];
     const flatten = (task: any) => {
 
@@ -780,38 +777,14 @@ hasDisabledClear(): boolean {
   //   // this.cdr.detectChanges();
   // }
 
-  // selectAll() {
-  //   this.selectAllChecked = !this.selectAllChecked;
-    
-  //   console.log('selectAllChecked', this.selectAllChecked)
-  //   const updateTaskSelection = (task: any, isChecked: boolean) => {
-  //     task.checked = isChecked;
 
-  //     if (task.subtask && task.subtask.length > 0) {
-  //       task.subtask.forEach((innerTask: any) => {
-  //         console.log('innerTask', innerTask)
-  //         updateTaskSelection(innerTask, isChecked);
-  //       });
-  //     }
-  //   };
+ 
 
-  //   this.subTasks.forEach(task => {
-  //     console.log('Understand task', task)
-  //     updateTaskSelection(task, this.selectAllChecked);
-  //     this.toggleSelection(task);
-  //   });
-
-
-  // // Force UI update
-  // this.cdRef.detectChanges();
+  selectAll() {
+    this.selectAllChecked = !this.selectAllChecked;
 
    
-  // }
-  selectAll() {
-    this.selectAllChecked = !this.selectAllChecked;   
-
-    console.log('selectAll checkbox',this.selectAllChecked)
-    
+     
     const updateTaskSelection = (task: any, isChecked: boolean) => {
         task.checked = isChecked;
 
@@ -831,7 +804,6 @@ hasDisabledClear(): boolean {
     const subTaskList = this.breakToLinear(this.selectedSeqArr);
     this.getTree(subTaskList);
 
-    console.log('selectAll(): ',subTaskList);
     
     this.cdRef.detectChanges();
 }
@@ -1021,8 +993,6 @@ this.subTasks.forEach(task => {
 
   getOptionList() {
 
-
-
     const token = this.apiService.getRecursiveUser();
     const USER_CRED = this.credentialService.getUser();
     let gerAbbrRelDataArr = []
@@ -1033,7 +1003,7 @@ this.subTasks.forEach(task => {
 
 
 
-    console.log(`buildingCla: ${buildingCla} buildingStd: ${buildingStd} statutoryAuth: ${statutoryAuth}`)
+    // console.log(`buildingCla: ${buildingCla} buildingStd: ${buildingStd} statutoryAuth: ${statutoryAuth}`)
     // this.hasDataBeenPassed = true; 
 
     if (buildingCla && buildingStd && statutoryAuth) {
@@ -1041,10 +1011,9 @@ this.subTasks.forEach(task => {
       this.apiService.projectDefinationOption(USER_CRED[0]?.MKEY, token, buildingCla, buildingStd, statutoryAuth).subscribe({
         next: (gerAbbrRelData) => {
           // this.projDefinationTable = gerAbbrRelData
-          console.log('gerAbbrRelData', gerAbbrRelData)
+          // console.log('gerAbbrRelData', gerAbbrRelData)
 
           const check_TAsk_no = gerAbbrRelData.forEach((task: any) => {
-            console.log('check task no', task.TASK_NO)
           })
           console.log('TASk_no', check_TAsk_no)
 
@@ -1454,6 +1423,7 @@ this.subTasks.forEach(task => {
 
         return {
           TASK_NO: item.TASK_NO,
+          seQ_NO:item.seQ_NO,
           maiN_ABBR: item.MAIN_ABBR,
           abbR_SHORT_DESC: item.ABBR_SHORT_DESC,
           dayS_REQUIERD: item.DAYS_REQUIERD,
@@ -1905,6 +1875,7 @@ this.subTasks.forEach(task => {
 
         return {
           TASK_NO: item.tasK_NO,
+          seQ_NO:item.seQ_NO,
           maiN_ABBR: item.approvaL_ABBRIVATION,
           abbR_SHORT_DESC: item.approvaL_DESCRIPTION,
           dayS_REQUIERD: item.dayS_REQUIRED,
