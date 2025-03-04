@@ -808,7 +808,7 @@ hasDisabledClear(): boolean {
    
   // }
   selectAll() {
-    this.selectAllChecked = !this.selectAllChecked;
+    this.selectAllChecked = !this.selectAllChecked;   
 
     console.log('selectAll checkbox',this.selectAllChecked)
     
