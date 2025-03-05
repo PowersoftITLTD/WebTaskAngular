@@ -513,7 +513,7 @@
                                           </div>
                                         </td> -->
                                       <td></td>
-                                      <td style="min-width: 100px;">
+                                      <td style="min-width: 200px;">
                                         <ng-container *ngIf="task.TASK_NO.TASK_NO">
                                           <span
                                             [style.marginLeft.px]="calculateIndentation(task.TASK_NO.TASK_NO, task.subtask && task.subtask.length > 0 ? 15 : 30, task.TASK_NO.start_date, task.TASK_NO.end_date)">
@@ -617,7 +617,7 @@
                                         </div>
                                       </td> -->
                                     <td>{{i + 1}}</td>
-                                    <td style="min-width: 100px;">
+                                    <td style="min-width: 200px;">
                                       <ng-container *ngIf="task.TASK_NO.TASK_NO">
                                         <span
                                           [style.marginLeft.px]="calculateIndentation(task.TASK_NO.TASK_NO, task.subtask && task.subtask.length > 0 ? 15 : 30, task.TASK_NO.start_date, task.TASK_NO.end_date)">

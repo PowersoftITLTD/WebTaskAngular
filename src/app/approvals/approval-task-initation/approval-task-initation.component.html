@@ -503,6 +503,7 @@
                                                       [ngStyle]="isFieldDisabled ? { 'background-color': 'rgb(238 236 195)', 'color': '#11111', 'cursor': 'allowed' } : {}"
                                                       (ngModelChange)="task.TASK_NO.start_date = $event"
                                                       [ngModel]="task.TASK_NO.start_date | date: 'yyyy-MM-dd'"
+                                                      (change)="calculateHeaderDate(task)"
                                                       name="staDate_new_{{task.TASK_NO}}" />
 
                                                   </div>
@@ -738,7 +739,8 @@
                                                   <input type="date" class="form-control"
                                                     [ngStyle]="isFieldDisabled ? { 'background-color': 'rgb(238 236 195)', 'color': '#11111', 'cursor': 'allowed' } : {}"
                                                     (ngModelChange)="task.TASK_NO.start_date = $event"
-                                                    [ngModel]="task.TASK_NO.start_date | date: 'yyyy-MM-dd'"
+                                                    [ngModel]="task.TASK_NO.start_date | date: 'yyyy-MM-dd'"    
+                                                    (change)="calculateHeaderDate(task)"                                              
                                                     name="staDate_new_{{task.TASK_NO}}" />
 
                                                 </div>
