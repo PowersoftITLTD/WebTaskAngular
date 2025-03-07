@@ -1227,63 +1227,125 @@ export class AddApprovalTempelateComponent implements OnInit {
 
 
   onAbbrChange(event: Event, rowForm: FormGroup, rowIndex?: number | any) {
-
-
     const selectElement = event.target as HTMLSelectElement; // Cast to HTMLSelectElement
-
     const selectedAbbr = selectElement.value; // Now TypeScript knows 'value' exists
 
-    // console.log('Rows:', formArrayVal);
     rowForm.get('abbrivation')?.setValue(selectedAbbr);
 
     const selectedRow = this.getRelAbbr.find(r => r.maiN_ABBR === selectedAbbr);
-
     const header_no_of_days = Number(this.approvalTempForm.get('noOfDays')?.value);
-    const subtas_no_of_days = selectedRow.dayS_REQUIERD
- 
-    if (header_no_of_days < subtas_no_of_days && selectedRow) {
-      this.tostar.error(`approval session 'No. of Days' should be greater then ${selectedAbbr}`);
-      const formArray = this.approvalTempForm.get('rows') as FormArray;
-      formArray.removeAt(rowIndex);
-      // return;
+    const subtas_no_of_days = selectedRow?.dayS_REQUIERD || 0;
+
+    const formArray = this.approvalTempForm.get('rows') as FormArray;
+    
+    // Calculate total days required across all rows
+    let totalDaysRequired = formArray.controls.reduce((sum, row) => {
+        return sum + (row.get('nO_DAYS_REQUIRED')?.value || 0);
+    }, 0);
+
+    totalDaysRequired += subtas_no_of_days; // Add newly selected row's days
+
+    console.log('Total Days Required: ', totalDaysRequired);
+
+    if (totalDaysRequired > header_no_of_days) {
+        if (!confirm(`Days are exceeding as per header which is ${header_no_of_days} Days. Do you still want to proceed?`)) {
+            formArray.removeAt(formArray.length - 1); // Remove the last added row
+            return;
+        }
     }
 
-    const departmentList = this.departmentList
+    // if (header_no_of_days < subtas_no_of_days && selectedRow) {
+    //     this.tostar.error(`Approval session 'No. of Days' should be greater than ${selectedAbbr}`);
+    // }
 
-    // console.log('Department', departmentList)
-    const matchedDepartment = departmentList.find(department => department.mkey === selectedRow.authoritY_DEPARTMENT);
-
+    const matchedDepartment = this.departmentList.find(department => department.mkey === selectedRow?.authoritY_DEPARTMENT);
     if (matchedDepartment) {
-      selectedRow.sanctioN_DEPARTMENT = matchedDepartment.typE_DESC;
+        selectedRow.sanctioN_DEPARTMENT = matchedDepartment.typE_DESC;
     } else {
-      console.log("Department not found");
+        console.log("Department not found");
     }
 
-    console.log('SELECTED ROEW', selectedRow)
-
-    console.log('Selected Row onAbbrChange', selectedRow.mkey)
     if (selectedRow) {
-      rowForm.get('selectedAbbr')?.setValue(selectedRow.maiN_ABBR);
-      rowForm.get('shorT_DESCRIPTION')?.setValue(selectedRow.shorT_DESCRIPTION);
-      rowForm.get('sanctioN_DEPARTMENT')?.setValue(selectedRow.sanctioN_DEPARTMENT);
-      rowForm.get('nO_DAYS_REQUIRED')?.setValue(selectedRow.dayS_REQUIERD);
-      rowForm.get('enD_RESULT_DOC')?.setValue(selectedRow.enD_RESULT_DOC)
-      rowForm.get('authoritY_DEPARTMENT')?.setValue(selectedRow.abbR_SHORT_DESC);
-      rowForm.get('subtasK_MKEY')?.setValue(selectedRow.mkey)
-      rowForm.get('SUBTASK_TAGS')?.setValue(selectedRow.subTaskTags)
+        rowForm.get('selectedAbbr')?.setValue(selectedRow.maiN_ABBR);
+        rowForm.get('shorT_DESCRIPTION')?.setValue(selectedRow.shorT_DESCRIPTION);
+        rowForm.get('sanctioN_DEPARTMENT')?.setValue(selectedRow.sanctioN_DEPARTMENT);
+        rowForm.get('nO_DAYS_REQUIRED')?.setValue(selectedRow.dayS_REQUIERD);
+        rowForm.get('enD_RESULT_DOC')?.setValue(selectedRow.enD_RESULT_DOC);
+        rowForm.get('authoritY_DEPARTMENT')?.setValue(selectedRow.abbR_SHORT_DESC);
+        rowForm.get('subtasK_MKEY')?.setValue(selectedRow.mkey);
+        rowForm.get('SUBTASK_TAGS')?.setValue(selectedRow.subTaskTags);
     } else {
-      rowForm.get('selectedAbbr')?.setValue('');
-      rowForm.get('shorT_DESCRIPTION')?.setValue('');
-      rowForm.get('sanctioN_DEPARTMENT')?.setValue('');
-      rowForm.get('nO_DAYS_REQUIRED')?.setValue('');
-      rowForm.get('enD_RESULT_DOC')?.setValue('');
-      rowForm.get('authoritY_DEPARTMENT')?.setValue('');
-      rowForm.get('subtasK_MKEY')?.setValue('');
-      rowForm.get('SUBTASK_TAGS')?.setValue('');
+        rowForm.get('selectedAbbr')?.setValue('');
+        rowForm.get('shorT_DESCRIPTION')?.setValue('');
+        rowForm.get('sanctioN_DEPARTMENT')?.setValue('');
+        rowForm.get('nO_DAYS_REQUIRED')?.setValue('');
+        rowForm.get('enD_RESULT_DOC')?.setValue('');
+        rowForm.get('authoritY_DEPARTMENT')?.setValue('');
+        rowForm.get('subtasK_MKEY')?.setValue('');
+        rowForm.get('SUBTASK_TAGS')?.setValue('');
     }
+}
 
-    // return true;
-  }
+//  onAbbrChange(event: Event, rowForm: FormGroup, rowIndex?: number | any) {
+
+
+//     const selectElement = event.target as HTMLSelectElement; // Cast to HTMLSelectElement
+
+//     const selectedAbbr = selectElement.value; // Now TypeScript knows 'value' exists
+
+//     // console.log('Rows:', formArrayVal);
+//     rowForm.get('abbrivation')?.setValue(selectedAbbr);
+
+//     const selectedRow = this.getRelAbbr.find(r => r.maiN_ABBR === selectedAbbr);
+
+//     const header_no_of_days = Number(this.approvalTempForm.get('noOfDays')?.value);
+//     const subtas_no_of_days = selectedRow.dayS_REQUIERD
+
+//     console.log('subtas_no_of_days: ', subtas_no_of_days)
+ 
+//     if (header_no_of_days < subtas_no_of_days && selectedRow) {
+//       this.tostar.error(`approval session 'No. of Days' should be greater then ${selectedAbbr}`);
+//       const formArray = this.approvalTempForm.get('rows') as FormArray;
+//       // formArray.removeAt(rowIndex);
+//       // return;
+//     }
+
+//     const departmentList = this.departmentList
+
+//     // console.log('Department', departmentList)
+//     const matchedDepartment = departmentList.find(department => department.mkey === selectedRow.authoritY_DEPARTMENT);
+
+//     if (matchedDepartment) {
+//       selectedRow.sanctioN_DEPARTMENT = matchedDepartment.typE_DESC;
+//     } else {
+//       console.log("Department not found");
+//     }
+
+//     console.log('SELECTED ROEW', selectedRow)
+
+//     console.log('Selected Row onAbbrChange', selectedRow.mkey)
+//     if (selectedRow) {
+//       rowForm.get('selectedAbbr')?.setValue(selectedRow.maiN_ABBR);
+//       rowForm.get('shorT_DESCRIPTION')?.setValue(selectedRow.shorT_DESCRIPTION);
+//       rowForm.get('sanctioN_DEPARTMENT')?.setValue(selectedRow.sanctioN_DEPARTMENT);
+//       rowForm.get('nO_DAYS_REQUIRED')?.setValue(selectedRow.dayS_REQUIERD);
+//       rowForm.get('enD_RESULT_DOC')?.setValue(selectedRow.enD_RESULT_DOC)
+//       rowForm.get('authoritY_DEPARTMENT')?.setValue(selectedRow.abbR_SHORT_DESC);
+//       rowForm.get('subtasK_MKEY')?.setValue(selectedRow.mkey)
+//       rowForm.get('SUBTASK_TAGS')?.setValue(selectedRow.subTaskTags)
+//     } else {
+//       rowForm.get('selectedAbbr')?.setValue('');
+//       rowForm.get('shorT_DESCRIPTION')?.setValue('');
+//       rowForm.get('sanctioN_DEPARTMENT')?.setValue('');
+//       rowForm.get('nO_DAYS_REQUIRED')?.setValue('');
+//       rowForm.get('enD_RESULT_DOC')?.setValue('');
+//       rowForm.get('authoritY_DEPARTMENT')?.setValue('');
+//       rowForm.get('subtasK_MKEY')?.setValue('');
+//       rowForm.get('SUBTASK_TAGS')?.setValue('');
+//     }
+
+//     // return true;
+//   } 
 
 
   clearFields(row: any): void {

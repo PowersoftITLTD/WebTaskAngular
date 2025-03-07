@@ -33,6 +33,8 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
   employees: any[] = [];
   headerEmployee:any[] = [];
   subTaskEmployees:any[]=[];
+  sortedDates:any[]=[];
+
   appeInitForm: FormGroup | any;
   subTaskForm: FormGroup | any;
 
@@ -1195,7 +1197,7 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
   
     if (daysRequired > 0) {
       const endDate = new Date(startDate);
-      endDate.setDate(startDate.getDate() + daysRequired); 
+      endDate.setDate(startDate.getDate() + daysRequired - 1); 
       task.TASK_NO.end_date = endDate.toISOString().split('T')[0]; // Format as YYYY-MM-DD
     }
   
@@ -1272,6 +1274,7 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
     const updateInitiationSubTask = {
       MKEY: this.taskData.HEADER_MKEY,
       approvaL_MKEY: task.approvaL_MKEY,
+      HEADER_MKEY:task.HEADER_MKEY,
       maiN_ABB: task.maiN_ABBR,
       SHORT_DESCRIPTION: task.abbr_short_DESC,
       LONG_DESCRIPTION: task.abbR_SHORT_DESC,
@@ -1441,7 +1444,7 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
 
     const flatten = (task: any) => {
 
-      console.log('task.TASK_NO.resposiblE_EMP_MKEY: ',task.TASK_NO.resposiblE_EMP_MKEY)
+      // console.log('task.TASK_NO.resposiblE_EMP_MKEY: ',task.TASK_NO.resposiblE_EMP_MKEY)
 
       result.push({
         TASK_NO: task.TASK_NO.TASK_NO.trim(),
@@ -1457,6 +1460,7 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
         JOB_ROLE: task.TASK_NO.joB_ROLE_mkey,
         COMPLITION_DATE: this.taskData.COMPLITION_DATE,
         approvaL_MKEY: task.TASK_NO.approvaL_MKEY,
+        header_MKEY:task.TASK_NO.header_MKEY,
         TAGS: '',
         // approvaL_MKEY: task.TASK_NO.approvaL_MKEY,
         OUTPUT_DOCUMENT: task.TASK_NO.enD_RESULT_DOC,
@@ -1591,163 +1595,7 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
     });
   }
 
-  // async getTree() {
 
-  //   let department_new: any;
-  //   let jobRole_new: any;
-
-  //   try {
-  //     department_new = await this.apiService.getDepartmentDP(this.recursiveLogginUser).toPromise();
-  //     jobRole_new = await this.apiService.getJobRoleDP(this.recursiveLogginUser).toPromise();
-
-  //   } catch (error) {
-  //     console.error('Error fetching data:', error);
-  //   }
-
-  //   const jobRoleList = this.jobRoleList;
-  //   const departmentList = this.departmentList;
-  //   const sortedTasks = [...this.taskData.SUBTASK_LIST].sort((a, b) =>
-  //     a.TASK_NO.localeCompare(b.TASK_NO, undefined, { numeric: true })
-  //   );
-
-  //   // const taskMap = new Map();
-
-  //   let lastEndDate = this.appeInitForm.get('startDate')?.value;  
-  //   let modified_start_date = new Date(lastEndDate);
-
-  //   console.log('sortedTasks: ', sortedTasks)
-    
-  //   const optionListArr = sortedTasks
-  //     .filter((item: any) => item.TASK_NO !== null)
-  //     .map((item: any, index: number) => {
-        
-  //       console.log('Check date before mechanism TENTATIVE_START_DATE',item.TENTATIVE_START_DATE)
-  //       console.log('Check date before mechanism TENTATIVE_END_DATE',item.TENTATIVE_END_DATE)
-
-  //       const jobRole = jobRoleList.find((role: any) => role.mkey === item.JOB_ROLE);
-  //       const departmentRole = departmentList.find((department: any) => department.mkey === item.DEPARTMENT);
-  //       const daysRequired = isNaN(item.DAYS_REQUIRED) ? 0 : Number(item.DAYS_REQUIRED);
-    
-  //       let startDate = new Date(lastEndDate); // Start date is the end date of the previous task
-  //       startDate.setDate(startDate.getDate() + 1);
-
-  //       let endDate = new Date(startDate);
-        
-  //       endDate.setDate(startDate.getDate() + daysRequired);
-  //       lastEndDate = new Date(endDate); // Update for the next task
-    
-  //       return {
-  //         TASK_NO: item.TASK_NO,
-  //         maiN_ABBR: item.APPROVAL_ABBRIVATION,
-  //         abbR_SHORT_DESC: item.LONG_DESCRIPTION,
-  //         abbr_short_DESC: item.SHORT_DESCRIPTION,
-  //         dayS_REQUIERD: item.DAYS_REQUIRED,
-  //         enD_RESULT_DOC: item.OUTPUT_DOCUMENT,
-  //         approvaL_MKEY: item.approvaL_MKEY,
-  //         joB_ROLE: jobRole ? jobRole.typE_DESC : "Not found",
-  //         joB_ROLE_mkey: jobRole ? jobRole.mkey : 0,
-  //         department: departmentRole ? departmentRole.typE_DESC : "Not found",
-  //         department_mkey: departmentRole ? departmentRole.mkey : 0,
-  //         start_date: startDate.toISOString().split("T")[0],
-  //         end_date: endDate.toISOString().split("T")[0],
-  //         RESPOSIBLE_EMP_NAME: item.RESPOSIBLE_EMP_NAME,
-  //         resposiblE_EMP_MKEY: item.resposiblE_EMP_MKEY,
-  //         TAGS:item.TAGS,
-  //         status: item.STATUS,
-  //       };
-  //     });
-
-  //   // this.cdr.detectChanges(); 
-  //   this.loading = true;
-
-  //   this.selectedAssignTo
-
-  //   const same_data = optionListArr;
-
-  //   // console.log('Building hierarchy with data:', JSON.stringify(same_data, null, 2));
-
-  //   //this.cdr.detectChanges();
-
-  //   const buildHierarchy = (tasks: any, rootTaskNo: any) => {
-  //     const rootTask = tasks.find((task: any) => task.TASK_NO === rootTaskNo);
-  //     if (!rootTask) return null;
-
-  //     const buildSubtasks = (taskNo: any, depth: any) => {
-  //       const subtasks = tasks.filter((task: any) => {
-  //         const taskDepth = task.TASK_NO.split('.').length - 1;
-  //         return task.TASK_NO.startsWith(taskNo + '.') && taskDepth === depth + 1;
-  //       });
-  //       if (subtasks.length === 0) return [];
-
-  //       return subtasks.map((subtask: any) => {
-  //         const subtaskWithNestedTaskNo: any = {
-  //           TASK_NO: subtask,
-  //           visible: true,
-  //           subtask: buildSubtasks(subtask.TASK_NO, depth + 1)
-  //         };
-
-  //         const spaces = '  '.repeat(depth + 1);
-
-  //         const indentedSubtask = Object.keys(subtaskWithNestedTaskNo).reduce((acc: any, key) => {
-  //           if (key === 'TASK_NO') {
-  //             acc[key] = {
-  //               ...subtaskWithNestedTaskNo[key],
-  //               TASK_NO: spaces + subtaskWithNestedTaskNo[key].TASK_NO
-  //             };
-  //           } else {
-  //             acc[key] = subtaskWithNestedTaskNo[key];
-  //           }
-  //           return acc;
-  //         }, {});
-
-  //         return indentedSubtask;
-  //       });
-  //     };
-
-  //     const rootDepth = rootTask.TASK_NO.split('.').length - 1;
-  //     const rootHierarchy = {
-  //       TASK_NO: {
-  //         ...rootTask,
-  //         TASK_NO: rootTask.TASK_NO,
-
-  //       },
-  //       visible: true,
-  //       subtask: buildSubtasks(rootTask.TASK_NO, rootDepth)
-  //     };
-
-  //     return rootHierarchy;
-  //   };
-
-  //   //this.cdr.detectChanges();
-  //   const taskNumbers = [...new Set(same_data.map((task: any) => task.TASK_NO.split('.')[0]))]; // Get unique root TASK_NO
-
-  //   taskNumbers.forEach(taskNo => {
-  //     const hierarchy = buildHierarchy(same_data, taskNo);
-  //     if (hierarchy) {
-  //       this.subTasks.push(hierarchy);
-  //     }
-  //   });
-
-  //   console.log("Updated this.subTasks:", JSON.stringify(this.subTasks, null, 2));
-  //   this.subTasks = [...this.subTasks];
-
-  //   // this.cdr.detectChanges();
-
-  //   const noSubParentTasks: any = []
-
-  //   const allRootTaskNumbersInHierarchy = this.subTasks.map((subtask: any) => subtask.TASK_NO.TASK_NO.split('.')[0]);
-
-  //   same_data.forEach((task: any) => {
-
-  //     const taskRootNo = task.TASK_NO.split('.')[0];
-  //     if (!allRootTaskNumbersInHierarchy.includes(taskRootNo)) {
-  //       noSubParentTasks.push(task);
-  //     }
-  //   });
-
-  //   this.loading = false;
-  //   this.noParentTree(noSubParentTasks)
-  // }
 
 
   // async getTree() {
@@ -1865,7 +1713,117 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
   // }
 
 
-  async getTree() {
+  // async getTree() {
+  //   let department_new, jobRole_new;
+  
+  //   try {
+  //     department_new = await this.apiService.getDepartmentDP(this.recursiveLogginUser).toPromise();
+  //     jobRole_new = await this.apiService.getJobRoleDP(this.recursiveLogginUser).toPromise();
+  //   } catch (error) {
+  //     console.error('Error fetching data:', error);
+  //   }
+  
+  //   const jobRoleList = this.jobRoleList;
+  //   const departmentList = this.departmentList;
+  //   const sortedTasks = [...this.taskData.SUBTASK_LIST].sort((a, b) =>
+  //     a.TASK_NO.localeCompare(b.TASK_NO, undefined, { numeric: true })
+  //   );
+  
+  //   let lastEndDate = new Date(this.appeInitForm.get('startDate')?.value);
+    
+  //   const optionListArr = sortedTasks
+  //     .filter(item => item.TASK_NO !== null)
+  //     .map(item => {
+
+  //       console.log('CHECK item', item);
+  //       const jobRole = jobRoleList.find(role => role.mkey === item.JOB_ROLE);
+  //       const departmentRole = departmentList.find(dept => dept.mkey === item.DEPARTMENT);
+  //       const daysRequired = isNaN(item.DAYS_REQUIRED) ? 0 : Number(item.DAYS_REQUIRED);
+  
+  //       let startDate = item.TENTATIVE_START_DATE ? new Date(item.TENTATIVE_START_DATE) : new Date(lastEndDate);
+  //       let endDate = item.TENTATIVE_END_DATE ? new Date(item.TENTATIVE_END_DATE) : new Date(startDate);
+  
+  //       if (!item.TENTATIVE_START_DATE) {
+  //         startDate.setDate(startDate.getDate() + 1);
+  //       }
+  //       if (!item.TENTATIVE_END_DATE) {
+  //         endDate.setDate(startDate.getDate() + daysRequired);
+  //       }
+  
+  //       if (!item.TENTATIVE_END_DATE) {
+  //         lastEndDate = new Date(endDate);
+  //       }
+  
+  //       return {
+  //         TASK_NO: item.TASK_NO,
+  //         maiN_ABBR: item.APPROVAL_ABBRIVATION,
+  //         abbR_SHORT_DESC: item.LONG_DESCRIPTION,
+  //         abbr_short_DESC: item.SHORT_DESCRIPTION,
+  //         dayS_REQUIERD: item.DAYS_REQUIRED,
+  //         enD_RESULT_DOC: item.OUTPUT_DOCUMENT,
+  //         approvaL_MKEY: item.approvaL_MKEY,
+  //         joB_ROLE: jobRole ? jobRole.typE_DESC : "Not found",
+  //         joB_ROLE_mkey: jobRole ? jobRole.mkey : 0,
+  //         department: departmentRole ? departmentRole.typE_DESC : "Not found",
+  //         department_mkey: departmentRole ? departmentRole.mkey : 0,
+  //         start_date: startDate.toISOString().split("T")[0],
+  //         end_date: endDate.toISOString().split("T")[0],
+  //         tentative_start_date: item.TENTATIVE_START_DATE ? startDate.toISOString().split("T")[0] : null,
+  //         tentative_end_date: item.TENTATIVE_END_DATE ? endDate.toISOString().split("T")[0] : null,
+  //         RESPOSIBLE_EMP_NAME: item.RESPOSIBLE_EMP_NAME,
+  //         resposiblE_EMP_MKEY: item.resposiblE_EMP_MKEY,
+  //         TAGS: item.TAGS,
+  //         status: item.STATUS,
+  //       };
+  //     });
+  
+  //   this.loading = true;
+  //   this.subTasks = [];
+  //   const taskNumbers = [...new Set(optionListArr.map(task => task.TASK_NO.split('.')[0]))];
+  
+  //   const buildHierarchy = (tasks:any, rootTaskNo:any) => {
+  //     const rootTask = tasks.find((task:any) => task.TASK_NO === rootTaskNo);
+  //     if (!rootTask) return null;
+  
+  //     const buildSubtasks = (taskNo:any, depth:any) => {
+  //       const subtasks = tasks.filter((task:any) => {
+  //         const taskDepth = task.TASK_NO.split('.').length - 1;
+  //         return task.TASK_NO.startsWith(taskNo + '.') && taskDepth === depth + 1;
+  //       });
+  //       return subtasks.length === 0 ? [] : subtasks.map((subtask:any) => ({
+  //         TASK_NO: subtask,
+  //         visible: true,
+  //         subtask: buildSubtasks(subtask.TASK_NO, depth + 1),
+  //       }));
+  //     };
+  
+  //     return {
+  //       TASK_NO: { ...rootTask, TASK_NO: rootTask.TASK_NO },
+  //       visible: true,
+  //       subtask: buildSubtasks(rootTask.TASK_NO, rootTask.TASK_NO.split('.').length - 1),
+  //     };
+  //   };
+  
+  //   taskNumbers.forEach(taskNo => {
+  //     const hierarchy = buildHierarchy(optionListArr, taskNo);
+  //     if (hierarchy) {
+  //       this.subTasks.push(hierarchy);
+  //     }
+  //   });
+  
+  //   console.log("Updated this.subTasks:", JSON.stringify(this.subTasks, null, 2));
+  //   this.subTasks = [...this.subTasks];
+  
+  //   const noSubParentTasks = optionListArr.filter(task => 
+  //     !this.subTasks.some(subtask => subtask.TASK_NO.TASK_NO.split('.')[0] === task.TASK_NO.split('.')[0])
+  //   );
+  
+  //   this.loading = false;
+  //   this.noParentTree(noSubParentTasks);
+  // }
+  
+
+   async getTree() {
     let department_new, jobRole_new;
   
     try {
@@ -1881,29 +1839,42 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
       a.TASK_NO.localeCompare(b.TASK_NO, undefined, { numeric: true })
     );
   
-    let lastEndDate = new Date(this.appeInitForm.get('startDate')?.value);
+    let headerEndDates: { [key: number]: Date } = {}; // Store end dates by HEADER_MKEY
+
+    // console.log('sortedTasks: ', sortedTasks)
+
+    const adjustDate = (date:any) => {
+      return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+    };
+    
     
     const optionListArr = sortedTasks
       .filter(item => item.TASK_NO !== null)
       .map(item => {
+        console.log('CHECK ITEM', item);
         const jobRole = jobRoleList.find(role => role.mkey === item.JOB_ROLE);
         const departmentRole = departmentList.find(dept => dept.mkey === item.DEPARTMENT);
         const daysRequired = isNaN(item.DAYS_REQUIRED) ? 0 : Number(item.DAYS_REQUIRED);
-  
+    
+        let lastEndDate = headerEndDates[item.HEADER_MKEY] || new Date(this.appeInitForm.get('startDate')?.value);    
+    
         let startDate = item.TENTATIVE_START_DATE ? new Date(item.TENTATIVE_START_DATE) : new Date(lastEndDate);
         let endDate = item.TENTATIVE_END_DATE ? new Date(item.TENTATIVE_END_DATE) : new Date(startDate);
-  
+    
+        console.log('startDate: ', startDate);
+        console.log('endDate: ', startDate);
+    
         if (!item.TENTATIVE_START_DATE) {
           startDate.setDate(startDate.getDate() + 1);
         }
+    
         if (!item.TENTATIVE_END_DATE) {
+          endDate = new Date(startDate);
           endDate.setDate(startDate.getDate() + daysRequired);
         }
-  
-        if (!item.TENTATIVE_END_DATE) {
-          lastEndDate = new Date(endDate);
-        }
-  
+    
+        headerEndDates[item.HEADER_MKEY] = new Date(endDate);
+    
         return {
           TASK_NO: item.TASK_NO,
           maiN_ABBR: item.APPROVAL_ABBRIVATION,
@@ -1912,20 +1883,30 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
           dayS_REQUIERD: item.DAYS_REQUIRED,
           enD_RESULT_DOC: item.OUTPUT_DOCUMENT,
           approvaL_MKEY: item.approvaL_MKEY,
+          header_MKEY: item.HEADER_MKEY,
           joB_ROLE: jobRole ? jobRole.typE_DESC : "Not found",
           joB_ROLE_mkey: jobRole ? jobRole.mkey : 0,
           department: departmentRole ? departmentRole.typE_DESC : "Not found",
           department_mkey: departmentRole ? departmentRole.mkey : 0,
-          start_date: startDate.toISOString().split("T")[0],
-          end_date: endDate.toISOString().split("T")[0],
-          tentative_start_date: item.TENTATIVE_START_DATE ? startDate.toISOString().split("T")[0] : null,
-          tentative_end_date: item.TENTATIVE_END_DATE ? endDate.toISOString().split("T")[0] : null,
+          start_date: adjustDate(startDate),
+          end_date: adjustDate(endDate),
+          tentative_start_date: item.TENTATIVE_START_DATE
+            ? item.TENTATIVE_START_DATE
+            : adjustDate(startDate),
+          tentative_end_date: item.TENTATIVE_END_DATE
+            ? item.TENTATIVE_END_DATE
+            : adjustDate(endDate),
           RESPOSIBLE_EMP_NAME: item.RESPOSIBLE_EMP_NAME,
           resposiblE_EMP_MKEY: item.resposiblE_EMP_MKEY,
           TAGS: item.TAGS,
           status: item.STATUS,
         };
       });
+    
+  
+    
+      console.log('sortedTasks: ',sortedTasks)
+
   
     this.loading = true;
     this.subTasks = [];
@@ -1968,10 +1949,10 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
       !this.subTasks.some(subtask => subtask.TASK_NO.TASK_NO.split('.')[0] === task.TASK_NO.split('.')[0])
     );
   
+
     this.loading = false;
     this.noParentTree(noSubParentTasks);
   }
-  
 
   noParentTree(noParentTree: any = []) {
 
@@ -2054,12 +2035,39 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
 
     const subTaskList = this.taskData.SUBTASK_LIST;
 
+    const check = this.breakToLinear(this.subTasks);
+  console.log('Check subtask: ', check);
+
+    // Validate dates between dependent tasks
+    // Validate dates between dependent tasks
+    for (let i = 0; i < check.length; i++) {
+      let currentTask = check[i];
+      
+      // Find tasks that have the current task's approval as their header
+      let dependentTasks = check.filter(task => task.header_MKEY === currentTask.approvaL_MKEY);
+      
+      for (let dependentTask of dependentTasks) {
+
+        let parentStartDate = new Date(currentTask.TENTATIVE_START_DATE);
+        let parentEndDate = new Date(currentTask.TENTATIVE_END_DATE);
+        let subtaskStartDate = new Date(dependentTask.TENTATIVE_START_DATE);
+        let subtaskEndDate = new Date(dependentTask.TENTATIVE_END_DATE);
+
+        console.log(`Check Header Date ${parentStartDate} and subtask date ${subtaskStartDate}`);
+
+        // Corrected condition: Ensure subtask falls within header task's range
+        if (subtaskStartDate < parentStartDate || subtaskEndDate > parentEndDate) {
+          this.tostar.error(`Date mismatch for Task ${dependentTask.TASK_NO}. It must fall within the range of the header task ${currentTask.TASK_NO}.`);
+          return false; // Stop execution if date validation fails
+        }
+      }
+    }
 
 
     // if (subTaskList && subTaskList.length > 0) {
     //   const invalidSubTasks = subTaskList.filter((subTask:any) => {
     //     console.log('subTask', subTask)
-    //     return !subTask.RESPOSIBLE_EMP_MKEY || !subTask.resposiblE_EMP_MKEY;  // Checks for 0, undefined, null, or empty string
+    //     return subTask.RESPOSIBLE_EMP_MKEY || subTask.resposiblE_EMP_MKEY;  // Checks for 0, undefined, null, or empty string
     //   });
 
     //   console.log('invalidSubTasks', invalidSubTasks)
@@ -2092,6 +2100,11 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
 
     return valid; // Return the actual validity of the form
   }
+
+
+  
+
+
 
 
   onAddInitiation() {
