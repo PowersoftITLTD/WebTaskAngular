@@ -610,12 +610,12 @@
                                                     <table class="table mb-5 ml-2 mr-5">
                                                         <thead>
                                                             <tr>
-                                                                <th>Sr No.</th>
-                                                                <th>Sequential No.</th>
-                                                                <th>Abbreviation</th>
+                                                                <th style="width: 10px;">Sr No.</th>
+                                                                <th style="width: 10px;">Sequential No.</th>
+                                                                <th style="width: 20px;">Abbreviation</th>
                                                                 <!-- <th>Tags</th> -->
-                                                                <th>Short Description</th>
-                                                                <th>Days Required</th>
+                                                                <th style="width: 20px;">Short Description</th>
+                                                                <th style="width: 10px;">Days Required</th>
                                                                 <th>Authority Department</th>
                                                                 <th>End Result</th>
                                                                 <th>
@@ -643,8 +643,8 @@
                                                                             </select> -->
                                                         
                                                                             <select class="form-control mt-1" formControlName="abbrivation"
-                                                                                (change)="onAbbrChange($event, row)">
-                                                                                <option value="" style="width: 15rem">
+                                                                                (change)="onAbbrChange($event, row)" style="width: 500px;">
+                                                                                <option value="" >
                                                                                     {{row.value.abbrivation ? row.value.abbrivation : '--SELECT--'}}</option>
                                                                                 <option *ngFor="let option of getRelAbbr" [value]="option.maiN_ABBR" >{{
                                                                                     option.maiN_ABBR }}

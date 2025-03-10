@@ -231,12 +231,13 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
 
     // Calculate the end date by adding totalDays
     const endDate = new Date();
-    endDate.setDate(currentDate.getDate() + totalDays + this.taskData.SUBTASK_LIST.length );
+    //endDate.setDate(currentDate.getDate() + totalDays + this.taskData.SUBTASK_LIST.length );
+    endDate.setDate(currentDate.getDate() + Number(this.taskData.DAYS_REQUIERD) );
 
     // Format the end date using formatDate() method
     const formattedEndDate = this.formatDate(endDate);
 
-
+    const no_of_days_header = 
     // Patch value to form
     this.appeInitForm.patchValue({ endDate: [formattedEndDate] });
     this.appeInitForm.patchValue({ complitionDate: [formattedEndDate] });
@@ -1227,22 +1228,17 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
   }
 
   updatedTaskCheck(task: any, assignTo?: any) {
-    console.log('task ', task);
-    console.log('assignTo', assignTo);
 
-    console.log('Check employees name',this.employees)
     const matchedEmp = this.employees.find((employee: any) =>
       employee.Assign_to.toLowerCase() === assignTo.toLowerCase()
     );
-
-    console.log('matchedEmp from update subtask', matchedEmp?.MKEY);
 
     const data = this.credentialService.getUser();
     const headerMkey = this.taskData.HEADER_MKEY;
     const token = this.apiService.getRecursiveUser();
 
     const tagsValue: any = this.selectedTags;
-    console.log('tagsValue', tagsValue);
+
     let tagsString = '';
 
     if (Array.isArray(tagsValue)) {
@@ -1268,8 +1264,6 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
     }
 
     const responsibleEmpName = matchedEmp?.Assign_to || task.RESPOSIBLE_EMP_NAME;
-
-    console.log('responsibleEmpMKey: ', responsibleEmpMKey);
 
     const updateInitiationSubTask = {
       MKEY: this.taskData.HEADER_MKEY,
@@ -1903,11 +1897,8 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
         };
       });
     
-  
-    
       console.log('sortedTasks: ',sortedTasks)
 
-  
     this.loading = true;
     this.subTasks = [];
     const taskNumbers = [...new Set(optionListArr.map(task => task.TASK_NO.split('.')[0]))];
@@ -2033,10 +2024,14 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
     });
 
 
+    const header_completion_date = new Date(this.appeInitForm.get('complitionDate')?.value);
+    console.log('header_completion_date: ', header_completion_date)
+
+
     const subTaskList = this.taskData.SUBTASK_LIST;
 
     const check = this.breakToLinear(this.subTasks);
-  console.log('Check subtask: ', check);
+    //console.log('Check subtask: ', check);
 
     // Validate dates between dependent tasks
     // Validate dates between dependent tasks
@@ -2053,16 +2048,25 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
         let subtaskStartDate = new Date(dependentTask.TENTATIVE_START_DATE);
         let subtaskEndDate = new Date(dependentTask.TENTATIVE_END_DATE);
 
-        console.log(`Check Header Date ${parentStartDate} and subtask date ${subtaskStartDate}`);
+        //console.log(`Check Header Date ${parentStartDate} and subtask date ${subtaskStartDate} and ${subtaskEndDate} and ${dependentTask.TASK_NO}`);
 
         // Corrected condition: Ensure subtask falls within header task's range
         if (subtaskStartDate < parentStartDate || subtaskEndDate > parentEndDate) {
           this.tostar.error(`Date mismatch for Task ${dependentTask.TASK_NO}. It must fall within the range of the header task ${currentTask.TASK_NO}.`);
-          return false; // Stop execution if date validation fails
+          return false; 
+        }
+
+
+        console.log(`Check End Date ${subtaskEndDate} and completion date ${header_completion_date}`);
+
+        if (subtaskEndDate > header_completion_date) {
+          this.tostar.error(`Date mismatch for Task ${dependentTask.TASK_NO}. Its TENTATIVE_END_DATE (${subtaskEndDate.toDateString()}) must be strictly earlier than the HEADER COMPLETION DATE (${header_completion_date.toDateString()}).`);
+          return false; 
         }
       }
     }
 
+    
 
     // if (subTaskList && subTaskList.length > 0) {
     //   const invalidSubTasks = subTaskList.filter((subTask:any) => {
@@ -2081,11 +2085,9 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
 
     if (subTaskList && subTaskList.length > 0) {
       const invalidSubTasks = subTaskList.filter((subTask: any) => {
-        console.log('subTask well', subTask)
         return !(Number(subTask.RESPOSIBLE_EMP_MKEY) > 0 || Number(subTask.resposiblE_EMP_MKEY) > 0);
       });
 
-      console.log('invalidSubTasks', invalidSubTasks);
       if (invalidSubTasks.length > 0) {
         this.tostar.error('Please add responsible person/s to all subtask(s)');
         return;

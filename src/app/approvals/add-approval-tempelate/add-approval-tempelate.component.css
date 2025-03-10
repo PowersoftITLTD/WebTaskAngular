@@ -466,3 +466,28 @@ body {
 }
 
 
+.input-brackets {
+  border: 2px solid black;
+  border-radius: 10px; /* Curly edges */
+  padding: 5px;
+  text-align: center;
+  font-family: monospace; /* To make it look more structured */
+  position: relative;
+}
+
+.input-brackets::before,
+.input-brackets::after {
+  content: "[";
+  position: absolute;
+  left: -10px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.2em;
+  font-weight: bold;
+}
+
+.input-brackets::after {
+  content: "]";
+  left: auto;
+  right: -10px;
+}
