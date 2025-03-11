@@ -31,9 +31,9 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
 
   startDateValue: Date | any;
   employees: any[] = [];
-  headerEmployee:any[] = [];
-  subTaskEmployees:any[]=[];
-  sortedDates:any[]=[];
+  headerEmployee: any[] = [];
+  subTaskEmployees: any[] = [];
+  sortedDates: any[] = [];
 
   appeInitForm: FormGroup | any;
   subTaskForm: FormGroup | any;
@@ -50,7 +50,7 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
 
   project: any = [];
   sub_proj: any = [];
-  HeaderfullName:any = [];
+  HeaderfullName: any = [];
 
   selectedAssignTo: string = '';
 
@@ -85,7 +85,7 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
   tags: string[] = [];
   completionDate: string = '';
 
-  subTaskTags: any[]=[];
+  subTaskTags: any[] = [];
 
   loginName: string = '';
   loginPassword: string = '';
@@ -232,14 +232,14 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
     // Calculate the end date by adding totalDays
     const endDate = new Date();
     //endDate.setDate(currentDate.getDate() + totalDays + this.taskData.SUBTASK_LIST.length );
-    endDate.setDate(currentDate.getDate() + Number(this.taskData.DAYS_REQUIERD) );
+    endDate.setDate(currentDate.getDate() + Number(this.taskData.DAYS_REQUIERD));
 
     // Format the end date using formatDate() method
     const formattedEndDate = this.formatDate(endDate);
 
-    const no_of_days_header = 
-    // Patch value to form
-    this.appeInitForm.patchValue({ endDate: [formattedEndDate] });
+    const no_of_days_header =
+      // Patch value to form
+      this.appeInitForm.patchValue({ endDate: [formattedEndDate] });
     this.appeInitForm.patchValue({ complitionDate: [formattedEndDate] });
 
 
@@ -303,23 +303,23 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
   //   // // Patch calculated dates to the form
   //   // this.appeInitForm.patchValue({ endDate: formattedEndDate });
   //   // this.appeInitForm.patchValue({ complitionDate: formattedEndDate });
-    
+
 
   //             // let check_start_date = task.TASK_NO?.start_date;
   //             // let check_end_date = task.TASK_NO?.end_date;
-              
+
   //             // const totalDays = task.TASK_NO?.dayS_REQUIERD.reduce((sum: number, task: any) => {
   //             //   return sum + (task.dayS_REQUIERD || 0);
   //             // }, 0);
 
   //             // console.log('TOTAL DAYS: ', task.TASK_NO?.dayS_REQUIERD)
-              
+
   //             // const startDate = new Date(check_start_date);
   //             // const endDate = new Date(startDate);
   //             // endDate.setDate(startDate.getDate() + task.TASK_NO?.dayS_REQUIERD); // Shift end date based on total days
-              
+
   //             // task.TASK_NO.end_date = endDate.toISOString().split('T')[0]; // Update task's end date (format YYYY-MM-DD)
-              
+
   //             // console.log('Updated start_date: ', check_start_date);
   //             // console.log('Updated end_date: ', task.TASK_NO.end_date);
 
@@ -361,7 +361,7 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
 
     const property = this.appeInitForm.get('property')?.value;
     const building = this.appeInitForm.get('building')?.value;
-   
+
     let PROPERTY, BUILDING;
 
     if (this.taskData?.PROPERTY === property?.MASTER_MKEY || this.taskData?.BUILDING_MKEY === building?.MASTER_MKEY) {
@@ -373,7 +373,7 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
       PROPERTY = (property?.MASTER_MKEY === null || property?.MASTER_MKEY === undefined) ? this.taskData?.PROPERTY : property?.MASTER_MKEY;
       BUILDING = (building?.MASTER_MKEY === null || building?.MASTER_MKEY === undefined) ? this.taskData?.BUILDING_MKEY : building?.MASTER_MKEY;
     }
-   
+
     const tagsValue = this.appeInitForm.get('tags')?.value;
 
     let tagsString = '';
@@ -419,22 +419,22 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
     console.log('addApprovalInitiation: ', addApprovalInitiation);
 
 
-    // this.apiService.postApprovalInitiation(addApprovalInitiation, this.recursiveLogginUser).subscribe({
-    //   next: (response) => {
-    //     console.log(response.message)
-    //     if (response.status === 'Error') {
-    //       this.tostar.error(response.message)
-    //       return
-    //     }
-    //     this.router.navigate(['/task/task-management']);
+    this.apiService.postApprovalInitiation(addApprovalInitiation, this.recursiveLogginUser).subscribe({
+      next: (response) => {
+        console.log(response.message)
+        if (response.status === 'Error') {
+          this.tostar.error(response.message)
+          return
+        }
+        this.router.navigate(['/task/task-management']);
 
-    //     this.tostar.success('Success', 'Template added successfuly');
+        this.tostar.success('Success', 'Template added successfuly');
 
-    //     console.log('Project task initiation', response)
-    //   }, error: (error) => {
-    //     console.error('Login failed:', error);
-    //   }
-    // })
+        console.log('Project task initiation', response)
+      }, error: (error) => {
+        console.error('Login failed:', error);
+      }
+    })
   }
 
 
@@ -442,7 +442,7 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
     this.loggedInUser = this.credentialService.getUser();
     const token = this.apiService.getRecursiveUser();
     this.apiService.getTagDetailss1(this.loggedInUser[0]?.MKEY.toString(), token).subscribe((response: any) => {
-      this.allTags = response[0].data.map((item: { name: string }) => item.name); 
+      this.allTags = response[0].data.map((item: { name: string }) => item.name);
     });
   }
 
@@ -549,7 +549,7 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
     this.apiService.getSanctoningAuthDP(this.recursiveLogginUser).subscribe({
       next: (list: any) => {
         this.SanctoningAuthList = list
-        this.setSenctoningAuthorityName();        
+        this.setSenctoningAuthorityName();
       }, error: (error: any) => {
         console.error('Unable to fetch Document Type List', error);
 
@@ -649,12 +649,12 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
       // console.log('matchedEmployee', matchedEmployee)
       // console.log('this.taskData.RESPOSIBLE_EMP_MKEY', this.taskData.RESPOSIBLE_EMP_MKEY)
 
-      console.log('Project: ',matchedProject.TYPE_DESC);
-      console.log('Sub-Project: ',matchedSubProject.TYPE_DESC)
+      console.log('Project: ', matchedProject.TYPE_DESC);
+      console.log('Sub-Project: ', matchedSubProject.TYPE_DESC)
 
       // if (matchedProject) {
-        this.taskData.project_Name = matchedProject.TYPE_DESC;
-     // }
+      this.taskData.project_Name = matchedProject.TYPE_DESC;
+      // }
 
       if (matchedSubProject) {
         this.taskData.sub_proj_name = matchedSubProject.TYPE_DESC;
@@ -718,7 +718,7 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
   }
 
 
-  fetchEmployeeName():void{
+  fetchEmployeeName(): void {
 
     console.log('Check this.taskdata', this.taskData)
 
@@ -730,11 +730,11 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
     // console.log('JOB_ROLE', this.taskData.JOB_ROLE)
     // console.log('AUTHORITY_DEPARTMENT', this.taskData.AUTHORITY_DEPARTMENT)
 
-    this.apiService.getEmpDetailsByDeptAndJobRole(token,this.taskData.AUTHORITY_DEPARTMENT,this.taskData.JOB_ROLE, USER_CRED[0].MKEY).subscribe(
+    this.apiService.getEmpDetailsByDeptAndJobRole(token, this.taskData.AUTHORITY_DEPARTMENT, this.taskData.JOB_ROLE, USER_CRED[0].MKEY).subscribe(
       (response: any) => {
         // console.log("Employee data:", data);
         // const _data = data;
-                   
+
 
         response[0]?.data.forEach((emp: any) => {
           const fullName = emp.EMP_FULL_NAME;
@@ -758,20 +758,20 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
             }
           }
 
-          this.headerEmployee.push({ Assign_to: capitalizedFullName, MKEY: MKEY, FLAG:FLAG });
+          this.headerEmployee.push({ Assign_to: capitalizedFullName, MKEY: MKEY, FLAG: FLAG });
           this.HeaderfullName = [{ Assign_to: capitalizedFullName, MKEY: MKEY }];
           // this.subTaskEmployees.push({ Assign_to: capitalizedFullName, MKEY: MKEY });
         });
-        console.log('this.employees', this.employees);    
+        console.log('this.employees', this.employees);
       },
-      (error: ErrorHandler|any) => {
+      (error: ErrorHandler | any) => {
         console.error('Error fetching employee details:', error);
         this.tostar.error(error)
       }
     );
   }
 
- 
+
 
 
   // fetchEmployeeName(): void {
@@ -833,7 +833,7 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
       return fullName.includes(filterValue);
     });
 
-    if(this.filteredEmployees.length === 0){
+    if (this.filteredEmployees.length === 0) {
       this.tostar.error('No employee available')
     }
 
@@ -874,7 +874,7 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
 
     const filterValue = value.toLowerCase();
 
-    if(this.employees.length === 0){
+    if (this.employees.length === 0) {
       this.tostar.error('No employee available')
     }
 
@@ -917,17 +917,17 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
   // }
 
   selectEmployee(employee: any): void {
-    
+
     const assignedTo = employee.Assign_to;
     const flag = employee.FLAG;
 
     if (flag === 'N') {
       const confirmation = confirm('This user does not belong to job role and department. Do you still want to add?');
-      
+
       if (!confirmation) {
-          this.appeInitForm.get('responsiblePerson').setValue(''); // Clear the input field
-          this.filteredEmployees = [];
-          return; // Exit if user clicks "Cancel"
+        this.appeInitForm.get('responsiblePerson').setValue(''); // Clear the input field
+        this.filteredEmployees = [];
+        return; // Exit if user clicks "Cancel"
       }
     }
 
@@ -936,7 +936,7 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
       this.filteredEmployees = [];
       return;
     }
-}
+  }
 
 
   selectInitiatoe(employee: any): void {
@@ -966,7 +966,7 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
   //     this.subListFilteredEmp = []; // Clear the list (or do any other actions you need)
   //   }
 
-  
+
 
   // }
 
@@ -979,22 +979,22 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
     console.log('Check flag: ', flag);
 
     if (flag === 'N') {
-        const confirmation = confirm('This user does not belong to job role and department. Do you still want to add?');
-        if (!confirmation) {
-            this.subListFilteredEmp = []; // Clear the list or perform other actions
-            this.filteredInitiator = [];
-            this.selectedAssignTo = '';
-            return; 
-        }
+      const confirmation = confirm('This user does not belong to job role and department. Do you still want to add?');
+      if (!confirmation) {
+        this.subListFilteredEmp = []; // Clear the list or perform other actions
+        this.filteredInitiator = [];
+        this.selectedAssignTo = '';
+        return;
+      }
     }
 
     this.selectedAssignTo = assignedTo; // Set the value to the input field
 
     if (assignedTo) {
-        this.subListFilteredEmp = []; // Clear the list or perform other actions
-        this.filteredInitiator = [];
+      this.subListFilteredEmp = []; // Clear the list or perform other actions
+      this.filteredInitiator = [];
     }
-}
+  }
 
 
 
@@ -1032,7 +1032,7 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
   //   this.apiService.getEmpDetailsByDeptAndJobRole(token,subTask_dept,subTask_job_role,USER_CRED[0].MKEY).subscribe((response:any)=>{
   //     // console.log("Employee data:", data);
   //     // const _data = data;
-                 
+
   //     console.log( 'Check the responsible person',response[0]?.data)
 
   //     response[0]?.data.forEach((emp: any) => {
@@ -1066,7 +1066,7 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
 
 
   //   console.log('Check name of RP',task.TASK_NO?.RESPOSIBLE_EMP_NAME)
-  
+
 
   //   // this.selectedAssignTo = task.TASK_NO?.RESPOSIBLE_EMP_NAME;
 
@@ -1086,8 +1086,8 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
   //       // console.log('RESPOSIBLE_EMP_NAME',task.TASK_NO.RESPOSIBLE_EMP_NAME)
   //       // console.log('employees', this.employees[0].Assign_to)
 
-        
-        
+
+
   //       this.formVisibleMap[key] = false;
   //       this.employees = [];
   //       this.selectedAssignTo = '';
@@ -1103,88 +1103,88 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
     console.log('task', task);
     this.onSubmitSubList(task.TASK_NO);
     const token = this.apiService.getRecursiveUser();
-    const USER_CRED = this.credentialService.getUser();    
+    const USER_CRED = this.credentialService.getUser();
 
     const subTask_job_role = task.TASK_NO.joB_ROLE_mkey;
     const subTask_dept = task.TASK_NO.department_mkey;
 
     this.apiService.getEmpDetailsByDeptAndJobRole(token, subTask_dept, subTask_job_role, USER_CRED[0].MKEY).subscribe(
-        (response: any) => {
-            // console.log('Emp: ',response[0].data);
-            this.employees = []; // Reset employees before adding new ones
-            response[0]?.data?.forEach((emp: any) => {
-                const fullName = emp.EMP_FULL_NAME;
-                const MKEY = emp.MKEY;
-                const FLAG = emp.ATTRIBUTE1
-              
-                let capitalizedFullName = '';
-                const nameParts = fullName.split(' ');
+      (response: any) => {
+        // console.log('Emp: ',response[0].data);
+        this.employees = []; // Reset employees before adding new ones
+        response[0]?.data?.forEach((emp: any) => {
+          const fullName = emp.EMP_FULL_NAME;
+          const MKEY = emp.MKEY;
+          const FLAG = emp.ATTRIBUTE1
 
-                for (let i = 0; i < nameParts.length; i++) {
-                    if (nameParts[i].length === 1 && i < nameParts.length - 1) {
-                        capitalizedFullName += nameParts[i].toUpperCase() + '.' + 
-                                               nameParts[i + 1].charAt(0).toUpperCase() + 
-                                               nameParts[i + 1].slice(1).toLowerCase();
-                        i++;
-                    } else {
-                        capitalizedFullName += nameParts[i].charAt(0).toUpperCase() + nameParts[i].slice(1).toLowerCase();
-                    }
-                    if (i !== nameParts.length - 1) {
-                        capitalizedFullName += ' ';
-                    }
-                }
+          let capitalizedFullName = '';
+          const nameParts = fullName.split(' ');
 
-                this.employees.push({ Assign_to: capitalizedFullName, MKEY: MKEY, FLAG:FLAG });
-            });
+          for (let i = 0; i < nameParts.length; i++) {
+            if (nameParts[i].length === 1 && i < nameParts.length - 1) {
+              capitalizedFullName += nameParts[i].toUpperCase() + '.' +
+                nameParts[i + 1].charAt(0).toUpperCase() +
+                nameParts[i + 1].slice(1).toLowerCase();
+              i++;
+            } else {
+              capitalizedFullName += nameParts[i].charAt(0).toUpperCase() + nameParts[i].slice(1).toLowerCase();
+            }
+            if (i !== nameParts.length - 1) {
+              capitalizedFullName += ' ';
+            }
+          }
 
-            // Set selectedAssignTo after employees array is populated
-            this.selectedAssignTo = (task.TASK_NO?.RESPOSIBLE_EMP_NAME) 
-                                    ? task.TASK_NO.RESPOSIBLE_EMP_NAME 
-                                    : (this.employees.length > 0 ? this.employees[0].Assign_to : '');
+          this.employees.push({ Assign_to: capitalizedFullName, MKEY: MKEY, FLAG: FLAG });
+        });
 
-            let check_start_date = task.TASK_NO?.start_date;
-            let check_end_date = task.TASK_NO?.end_date;
+        // Set selectedAssignTo after employees array is populated
+        this.selectedAssignTo = (task.TASK_NO?.RESPOSIBLE_EMP_NAME)
+          ? task.TASK_NO.RESPOSIBLE_EMP_NAME
+          : (this.employees.length > 0 ? this.employees[0].Assign_to : '');
 
-            console.log('check_start_date: ', check_start_date);
-            
-            const totalDays = task.TASK_NO?.dayS_REQUIERD.reduce((sum: number, task: any) => {
-              return sum + (task.dayS_REQUIERD || 0);
-            }, 0);
+        let check_start_date = task.TASK_NO?.start_date;
+        let check_end_date = task.TASK_NO?.end_date;
 
-            console.log('TOTAL DAYS: ', task.TASK_NO?.dayS_REQUIERD)
+        console.log('check_start_date: ', check_start_date);
 
-            console.log('task.TASK_NO.start_date: ', task.TASK_NO.start_date)
-            
-            const startDate = new Date(check_start_date);
-            const endDate = new Date(startDate);
-            endDate.setDate(startDate.getDate() + task.TASK_NO?.dayS_REQUIERD); // Shift end date based on total days
-            
-            task.TASK_NO.end_date = endDate.toISOString().split('T')[0]; // Update task's end date (format YYYY-MM-DD)
-            
-            console.log('Updated start_date: ', check_start_date);
-            console.log('Updated end_date: ', task.TASK_NO.end_date);
-            
+        const totalDays = task.TASK_NO?.dayS_REQUIERD.reduce((sum: number, task: any) => {
+          return sum + (task.dayS_REQUIERD || 0);
+        }, 0);
 
-            let tagsString = task.TASK_NO?.TAGS.split(','); 
-            this.selectedTags = tagsString;       
-            this.selectedAssignTo = task.TASK_NO?.RESPOSIBLE_EMP_NAME;
-        },
-        (error: ErrorHandler) => {
-            console.error('Error fetching employee details:', error);
-        }
+        console.log('TOTAL DAYS: ', task.TASK_NO?.dayS_REQUIERD)
+
+        console.log('task.TASK_NO.start_date: ', task.TASK_NO.start_date)
+
+        const startDate = new Date(check_start_date);
+        const endDate = new Date(startDate);
+        endDate.setDate(startDate.getDate() + task.TASK_NO?.dayS_REQUIERD); // Shift end date based on total days
+
+        task.TASK_NO.end_date = endDate.toISOString().split('T')[0]; // Update task's end date (format YYYY-MM-DD)
+
+        console.log('Updated start_date: ', check_start_date);
+        console.log('Updated end_date: ', task.TASK_NO.end_date);
+
+
+        let tagsString = task.TASK_NO?.TAGS.split(',');
+        this.selectedTags = tagsString;
+        this.selectedAssignTo = task.TASK_NO?.RESPOSIBLE_EMP_NAME;
+      },
+      (error: ErrorHandler) => {
+        console.error('Error fetching employee details:', error);
+      }
     );
 
     if (this.formVisibleMap[index]) {
-        this.formVisibleMap[index] = false;
+      this.formVisibleMap[index] = false;
     } else {
-        for (let key in this.formVisibleMap) {
-            this.formVisibleMap[key] = false;
-            this.employees = [];
-            this.selectedAssignTo = '';
-            this.subListFilteredEmp = [];
-            this.selectedTags = [];
-        }
-        this.formVisibleMap[index] = true;
+      for (let key in this.formVisibleMap) {
+        this.formVisibleMap[key] = false;
+        this.employees = [];
+        this.selectedAssignTo = '';
+        this.subListFilteredEmp = [];
+        this.selectedTags = [];
+      }
+      this.formVisibleMap[index] = true;
     }
   }
 
@@ -1192,26 +1192,26 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
   calculateHeaderDate(task: any) {
 
     if (!task.TASK_NO.start_date) return;
-  
+
     const startDate = new Date(task.TASK_NO.start_date);
     const daysRequired = task.TASK_NO?.dayS_REQUIERD || 0;
-  
+
     if (daysRequired > 0) {
       const endDate = new Date(startDate);
-      endDate.setDate(startDate.getDate() + daysRequired - 1); 
+      endDate.setDate(startDate.getDate() + daysRequired - 1);
       task.TASK_NO.end_date = endDate.toISOString().split('T')[0]; // Format as YYYY-MM-DD
     }
-  
+
     // console.log('Updated Start Date:', task.TASK_NO.start_date);
     // console.log('Updated End Date:', task.TASK_NO.end_date);
   }
-  
+
 
   updateTaskDate(task: any, newDate: string) {
     task.TASK_NO.start_date = newDate;
     console.log('Updated Task:', task);
   }
-  
+
 
   setEmpName(): void {
     if (this.taskData && this.taskData.MKEY) {
@@ -1251,7 +1251,7 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
           return '';
         }
       }).join(',');
-    } 
+    }
 
     const responsibleEmpMKey = (assignTo === null || assignTo === undefined || assignTo === '' || !matchedEmp)
       ? task.resposiblE_EMP_MKEY
@@ -1259,8 +1259,8 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
 
     // **Return early if both matchedEmp.Assign_to and task.RESPOSIBLE_EMP_NAME are missing**
     if (!matchedEmp?.Assign_to && !task.RESPOSIBLE_EMP_NAME) {
-        this.tostar.error(`Please update responsible person for subtask:${task.TASK_NO}`);
-        return; // **Exit the function here**
+      this.tostar.error(`Please update responsible person for subtask:${task.TASK_NO}`);
+      return; // **Exit the function here**
     }
 
     const responsibleEmpName = matchedEmp?.Assign_to || task.RESPOSIBLE_EMP_NAME;
@@ -1268,7 +1268,7 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
     const updateInitiationSubTask = {
       MKEY: this.taskData.HEADER_MKEY,
       approvaL_MKEY: task.approvaL_MKEY,
-      HEADER_MKEY:task.HEADER_MKEY,
+      HEADER_MKEY: task.HEADER_MKEY,
       maiN_ABB: task.maiN_ABBR,
       SHORT_DESCRIPTION: task.abbr_short_DESC,
       LONG_DESCRIPTION: task.abbR_SHORT_DESC,
@@ -1291,7 +1291,9 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
         const subTaskIndex = this.taskData.SUBTASK_LIST.findIndex(
           (subtask: any) => subtask.approvaL_MKEY === task.approvaL_MKEY
         );
-        
+
+
+        this.tostar.success('Subtask updated successfully!')
 
         if (subTaskIndex > -1) {
           this.taskData.SUBTASK_LIST[subTaskIndex] = {
@@ -1303,10 +1305,15 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
           // console.log('HEADER RESPOSIBLE_EMP_MKEY saved to local storage:', this.taskData.RESPOSIBLE_EMP_MKEY);
 
           window.location.reload();
+
+          this.tostar.success('Subtask updated successfully!')
+
           // this.cdr.detectChanges();
 
           // console.log('Updated subtask list:', this.taskData.SUBTASK_LIST);
           sessionStorage.setItem('task', JSON.stringify(this.taskData));
+          
+
           // console.log('Session storage updated');
         } else {
           console.warn('Subtask not found for update!');
@@ -1316,7 +1323,7 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
         console.error('Error updating subtask:', error);
       }
     });
-}
+  }
 
 
   // updatedTaskCheck(task: any, assignTo?: any) {
@@ -1454,7 +1461,7 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
         JOB_ROLE: task.TASK_NO.joB_ROLE_mkey,
         COMPLITION_DATE: this.taskData.COMPLITION_DATE,
         approvaL_MKEY: task.TASK_NO.approvaL_MKEY,
-        header_MKEY:task.TASK_NO.header_MKEY,
+        header_MKEY: task.TASK_NO.header_MKEY,
         TAGS: '',
         // approvaL_MKEY: task.TASK_NO.approvaL_MKEY,
         OUTPUT_DOCUMENT: task.TASK_NO.enD_RESULT_DOC,
@@ -1620,17 +1627,17 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
   //       const jobRole = jobRoleList.find((role: any) => role.mkey === item.JOB_ROLE);
   //       const departmentRole = departmentList.find((department: any) => department.mkey === item.DEPARTMENT);
   //       const daysRequired = isNaN(item.DAYS_REQUIRED) ? 0 : Number(item.DAYS_REQUIRED);
-    
+
   //       let startDate = item.TENTATIVE_START_DATE ? new Date(item.TENTATIVE_START_DATE) : new Date(lastEndDate);
   //       let endDate = item.TENTATIVE_END_DATE ? new Date(item.TENTATIVE_END_DATE) : new Date(startDate);
-        
+
   //       if (!item.TENTATIVE_START_DATE || !item.TENTATIVE_END_DATE) {
   //         startDate.setDate(startDate.getDate() + 1);
   //         endDate.setDate(startDate.getDate() + daysRequired);
   //       }
 
   //       lastEndDate = new Date(endDate);
-    
+
   //       return {
   //         TASK_NO: item.TASK_NO,
   //         maiN_ABBR: item.APPROVAL_ABBRIVATION,
@@ -1709,22 +1716,22 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
 
   // async getTree() {
   //   let department_new, jobRole_new;
-  
+
   //   try {
   //     department_new = await this.apiService.getDepartmentDP(this.recursiveLogginUser).toPromise();
   //     jobRole_new = await this.apiService.getJobRoleDP(this.recursiveLogginUser).toPromise();
   //   } catch (error) {
   //     console.error('Error fetching data:', error);
   //   }
-  
+
   //   const jobRoleList = this.jobRoleList;
   //   const departmentList = this.departmentList;
   //   const sortedTasks = [...this.taskData.SUBTASK_LIST].sort((a, b) =>
   //     a.TASK_NO.localeCompare(b.TASK_NO, undefined, { numeric: true })
   //   );
-  
+
   //   let lastEndDate = new Date(this.appeInitForm.get('startDate')?.value);
-    
+
   //   const optionListArr = sortedTasks
   //     .filter(item => item.TASK_NO !== null)
   //     .map(item => {
@@ -1733,21 +1740,21 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
   //       const jobRole = jobRoleList.find(role => role.mkey === item.JOB_ROLE);
   //       const departmentRole = departmentList.find(dept => dept.mkey === item.DEPARTMENT);
   //       const daysRequired = isNaN(item.DAYS_REQUIRED) ? 0 : Number(item.DAYS_REQUIRED);
-  
+
   //       let startDate = item.TENTATIVE_START_DATE ? new Date(item.TENTATIVE_START_DATE) : new Date(lastEndDate);
   //       let endDate = item.TENTATIVE_END_DATE ? new Date(item.TENTATIVE_END_DATE) : new Date(startDate);
-  
+
   //       if (!item.TENTATIVE_START_DATE) {
   //         startDate.setDate(startDate.getDate() + 1);
   //       }
   //       if (!item.TENTATIVE_END_DATE) {
   //         endDate.setDate(startDate.getDate() + daysRequired);
   //       }
-  
+
   //       if (!item.TENTATIVE_END_DATE) {
   //         lastEndDate = new Date(endDate);
   //       }
-  
+
   //       return {
   //         TASK_NO: item.TASK_NO,
   //         maiN_ABBR: item.APPROVAL_ABBRIVATION,
@@ -1770,15 +1777,15 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
   //         status: item.STATUS,
   //       };
   //     });
-  
+
   //   this.loading = true;
   //   this.subTasks = [];
   //   const taskNumbers = [...new Set(optionListArr.map(task => task.TASK_NO.split('.')[0]))];
-  
+
   //   const buildHierarchy = (tasks:any, rootTaskNo:any) => {
   //     const rootTask = tasks.find((task:any) => task.TASK_NO === rootTaskNo);
   //     if (!rootTask) return null;
-  
+
   //     const buildSubtasks = (taskNo:any, depth:any) => {
   //       const subtasks = tasks.filter((task:any) => {
   //         const taskDepth = task.TASK_NO.split('.').length - 1;
@@ -1790,85 +1797,85 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
   //         subtask: buildSubtasks(subtask.TASK_NO, depth + 1),
   //       }));
   //     };
-  
+
   //     return {
   //       TASK_NO: { ...rootTask, TASK_NO: rootTask.TASK_NO },
   //       visible: true,
   //       subtask: buildSubtasks(rootTask.TASK_NO, rootTask.TASK_NO.split('.').length - 1),
   //     };
   //   };
-  
+
   //   taskNumbers.forEach(taskNo => {
   //     const hierarchy = buildHierarchy(optionListArr, taskNo);
   //     if (hierarchy) {
   //       this.subTasks.push(hierarchy);
   //     }
   //   });
-  
+
   //   console.log("Updated this.subTasks:", JSON.stringify(this.subTasks, null, 2));
   //   this.subTasks = [...this.subTasks];
-  
+
   //   const noSubParentTasks = optionListArr.filter(task => 
   //     !this.subTasks.some(subtask => subtask.TASK_NO.TASK_NO.split('.')[0] === task.TASK_NO.split('.')[0])
   //   );
-  
+
   //   this.loading = false;
   //   this.noParentTree(noSubParentTasks);
   // }
-  
 
-   async getTree() {
+
+  async getTree() {
     let department_new, jobRole_new;
-  
+
     try {
       department_new = await this.apiService.getDepartmentDP(this.recursiveLogginUser).toPromise();
       jobRole_new = await this.apiService.getJobRoleDP(this.recursiveLogginUser).toPromise();
     } catch (error) {
       console.error('Error fetching data:', error);
     }
-  
+
     const jobRoleList = this.jobRoleList;
     const departmentList = this.departmentList;
     const sortedTasks = [...this.taskData.SUBTASK_LIST].sort((a, b) =>
       a.TASK_NO.localeCompare(b.TASK_NO, undefined, { numeric: true })
     );
-  
+
     let headerEndDates: { [key: number]: Date } = {}; // Store end dates by HEADER_MKEY
 
     // console.log('sortedTasks: ', sortedTasks)
 
-    const adjustDate = (date:any) => {
+    const adjustDate = (date: any) => {
       return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
     };
-    
-    
+
+
     const optionListArr = sortedTasks
       .filter(item => item.TASK_NO !== null)
       .map(item => {
-        console.log('CHECK ITEM', item);
+        // console.log('CHECK ITEM', item);
         const jobRole = jobRoleList.find(role => role.mkey === item.JOB_ROLE);
         const departmentRole = departmentList.find(dept => dept.mkey === item.DEPARTMENT);
         const daysRequired = isNaN(item.DAYS_REQUIRED) ? 0 : Number(item.DAYS_REQUIRED);
-    
-        let lastEndDate = headerEndDates[item.HEADER_MKEY] || new Date(this.appeInitForm.get('startDate')?.value);    
-    
+
+        let lastEndDate = headerEndDates[item.HEADER_MKEY] || new Date(this.appeInitForm.get('startDate')?.value);
+
         let startDate = item.TENTATIVE_START_DATE ? new Date(item.TENTATIVE_START_DATE) : new Date(lastEndDate);
         let endDate = item.TENTATIVE_END_DATE ? new Date(item.TENTATIVE_END_DATE) : new Date(startDate);
-    
-        console.log('startDate: ', startDate);
-        console.log('endDate: ', startDate);
-    
+
+        // console.log('startDate: ', startDate);
+        // console.log('endDate: ', startDate);
+
         if (!item.TENTATIVE_START_DATE) {
           startDate.setDate(startDate.getDate() + 1);
         }
-    
+
         if (!item.TENTATIVE_END_DATE) {
           endDate = new Date(startDate);
           endDate.setDate(startDate.getDate() + daysRequired);
         }
-    
+
         headerEndDates[item.HEADER_MKEY] = new Date(endDate);
-    
+
         return {
           TASK_NO: item.TASK_NO,
           maiN_ABBR: item.APPROVAL_ABBRIVATION,
@@ -1884,62 +1891,58 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
           department_mkey: departmentRole ? departmentRole.mkey : 0,
           start_date: adjustDate(startDate),
           end_date: adjustDate(endDate),
-          tentative_start_date: item.TENTATIVE_START_DATE
-            ? item.TENTATIVE_START_DATE
-            : adjustDate(startDate),
-          tentative_end_date: item.TENTATIVE_END_DATE
-            ? item.TENTATIVE_END_DATE
-            : adjustDate(endDate),
+          tentative_start_date: item.TENTATIVE_START_DATE ? item.TENTATIVE_START_DATE : adjustDate(startDate),
+          tentative_end_date: item.TENTATIVE_END_DATE ? item.TENTATIVE_END_DATE : adjustDate(endDate),
           RESPOSIBLE_EMP_NAME: item.RESPOSIBLE_EMP_NAME,
           resposiblE_EMP_MKEY: item.resposiblE_EMP_MKEY,
           TAGS: item.TAGS,
           status: item.STATUS,
         };
       });
-    
-      console.log('sortedTasks: ',sortedTasks)
+
+    console.log('sortedTasks: ', sortedTasks)
 
     this.loading = true;
     this.subTasks = [];
     const taskNumbers = [...new Set(optionListArr.map(task => task.TASK_NO.split('.')[0]))];
-  
-    const buildHierarchy = (tasks:any, rootTaskNo:any) => {
-      const rootTask = tasks.find((task:any) => task.TASK_NO === rootTaskNo);
+
+    const buildHierarchy = (tasks: any, rootTaskNo: any) => {
+      const rootTask = tasks.find((task: any) => task.TASK_NO === rootTaskNo);
       if (!rootTask) return null;
-  
-      const buildSubtasks = (taskNo:any, depth:any) => {
-        const subtasks = tasks.filter((task:any) => {
+
+      const buildSubtasks = (taskNo: any, depth: any) => {
+        const subtasks = tasks.filter((task: any) => {
           const taskDepth = task.TASK_NO.split('.').length - 1;
           return task.TASK_NO.startsWith(taskNo + '.') && taskDepth === depth + 1;
         });
-        return subtasks.length === 0 ? [] : subtasks.map((subtask:any) => ({
+        return subtasks.length === 0 ? [] : subtasks.map((subtask: any) => ({
           TASK_NO: subtask,
           visible: true,
           subtask: buildSubtasks(subtask.TASK_NO, depth + 1),
         }));
       };
-  
+
       return {
         TASK_NO: { ...rootTask, TASK_NO: rootTask.TASK_NO },
         visible: true,
         subtask: buildSubtasks(rootTask.TASK_NO, rootTask.TASK_NO.split('.').length - 1),
       };
     };
-  
+
     taskNumbers.forEach(taskNo => {
       const hierarchy = buildHierarchy(optionListArr, taskNo);
       if (hierarchy) {
         this.subTasks.push(hierarchy);
       }
     });
-  
+
     console.log("Updated this.subTasks:", JSON.stringify(this.subTasks, null, 2));
     this.subTasks = [...this.subTasks];
-  
-    const noSubParentTasks = optionListArr.filter(task => 
+
+    const noSubParentTasks = optionListArr.filter(task =>
       !this.subTasks.some(subtask => subtask.TASK_NO.TASK_NO.split('.')[0] === task.TASK_NO.split('.')[0])
     );
-  
+
 
     this.loading = false;
     this.noParentTree(noSubParentTasks);
@@ -2005,10 +2008,8 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
 
   onSubmit() {
     const requiredControls: string[] = [];
-    const requiredFields: string[] = [];
+    const errorMessages: string[] = [];
     const valid = this.appeInitForm.valid;
-
-    const addControlError = (message: string) => requiredControls.push(message);
 
     const convertToTitleCase = (input: string) => {
       return input.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase()).trim() + ' is required';
@@ -2016,31 +2017,20 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
 
     Object.keys(this.appeInitForm.controls).forEach(controlName => {
       const control = this.appeInitForm.get(controlName);
-
       if (control?.errors?.required) {
-        const formattedControlName = convertToTitleCase(controlName);
-        addControlError(formattedControlName);
+        requiredControls.push(convertToTitleCase(controlName));
       }
     });
 
-
-    const header_completion_date = new Date(this.appeInitForm.get('complitionDate')?.value);
-    console.log('header_completion_date: ', header_completion_date)
-
-
-    const subTaskList = this.taskData.SUBTASK_LIST;
-
+    let headerCompletionDate = new Date(this.appeInitForm.get('complitionDate')?.value[0]);
     const check = this.breakToLinear(this.subTasks);
-    //console.log('Check subtask: ', check);
 
-    // Validate dates between dependent tasks
-    // Validate dates between dependent tasks
     for (let i = 0; i < check.length; i++) {
       let currentTask = check[i];
-      
+
       // Find tasks that have the current task's approval as their header
       let dependentTasks = check.filter(task => task.header_MKEY === currentTask.approvaL_MKEY);
-      
+
       for (let dependentTask of dependentTasks) {
 
         let parentStartDate = new Date(currentTask.TENTATIVE_START_DATE);
@@ -2048,63 +2038,156 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
         let subtaskStartDate = new Date(dependentTask.TENTATIVE_START_DATE);
         let subtaskEndDate = new Date(dependentTask.TENTATIVE_END_DATE);
 
-        //console.log(`Check Header Date ${parentStartDate} and subtask date ${subtaskStartDate} and ${subtaskEndDate} and ${dependentTask.TASK_NO}`);
+        console.log(`Check Header Date ${parentStartDate} and subtask end date ${subtaskEndDate} and ${dependentTask.TASK_NO}`);
 
-        // Corrected condition: Ensure subtask falls within header task's range
         if (subtaskStartDate < parentStartDate || subtaskEndDate > parentEndDate) {
           this.tostar.error(`Date mismatch for Task ${dependentTask.TASK_NO}. It must fall within the range of the header task ${currentTask.TASK_NO}.`);
-          return false; 
-        }
-
-
-        console.log(`Check End Date ${subtaskEndDate} and completion date ${header_completion_date}`);
-
-        if (subtaskEndDate > header_completion_date) {
-          this.tostar.error(`Date mismatch for Task ${dependentTask.TASK_NO}. Its TENTATIVE_END_DATE (${subtaskEndDate.toDateString()}) must be strictly earlier than the HEADER COMPLETION DATE (${header_completion_date.toDateString()}).`);
-          return false; 
+          return false;
         }
       }
     }
 
-    
+    let header_date = new Date(this.appeInitForm.get('complitionDate')?.value);
+    console.log('Check completion date: ', this.appeInitForm.get('complitionDate')?.value)
+    let taskNumbers: string[] = [];
 
-    // if (subTaskList && subTaskList.length > 0) {
-    //   const invalidSubTasks = subTaskList.filter((subTask:any) => {
-    //     console.log('subTask', subTask)
-    //     return subTask.RESPOSIBLE_EMP_MKEY || subTask.resposiblE_EMP_MKEY;  // Checks for 0, undefined, null, or empty string
-    //   });
+    check.forEach(task => {
+      if (task.TENTATIVE_END_DATE) {
+        const taskEndDate = new Date(task.TENTATIVE_END_DATE);
+        if (taskEndDate >= header_date) {
 
-    //   console.log('invalidSubTasks', invalidSubTasks)
+          taskNumbers.push(`Task ${task.TASK_NO}`);
 
-    //   if (invalidSubTasks.length > 0) {
-    //     this.tostar.error('Please add responsible person to the subtask/s');
-    //     return;
-    //   }
-    // }
+        }
+      }
+    });
 
+    if (taskNumbers.length > 0) {
+      errorMessages.push(taskNumbers.join(', ') + " end date exceeds the header completion date");
+    }
 
-    if (subTaskList && subTaskList.length > 0) {
-      const invalidSubTasks = subTaskList.filter((subTask: any) => {
+    if (this.taskData.SUBTASK_LIST?.length > 0) {
+      const invalidSubTasks = this.taskData.SUBTASK_LIST.filter((subTask: any) => {
         return !(Number(subTask.RESPOSIBLE_EMP_MKEY) > 0 || Number(subTask.resposiblE_EMP_MKEY) > 0);
       });
-
       if (invalidSubTasks.length > 0) {
-        this.tostar.error('Please add responsible person/s to all subtask(s)');
-        return;
+        errorMessages.push('Please add responsible person(s) to all subtask(s).');
       }
     }
 
     if (requiredControls.length > 0) {
-      const errorMessage = `${requiredControls.join(' , ')}`;
-      this.tostar.error(errorMessage);
-      return false; // Return false when there are validation errors
+      errorMessages.push(`${requiredControls.join(' , ')}`);
     }
 
-    return valid; // Return the actual validity of the form
+    if (errorMessages.length > 0) {
+      this.tostar.error(errorMessages.join(' , '));
+      return false;
+    }
+
+    return valid;
   }
 
 
-  
+  // onSubmit() {
+  //   const requiredControls: string[] = [];
+  //   const requiredFields: string[] = [];
+  //   const valid = this.appeInitForm.valid;
+
+  //   const addControlError = (message: string) => requiredControls.push(message);
+
+  //   const convertToTitleCase = (input: string) => {
+  //     return input.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase()).trim() + ' is required';
+  //   };
+
+  //   Object.keys(this.appeInitForm.controls).forEach(controlName => {
+  //     const control = this.appeInitForm.get(controlName);
+
+  //     if (control?.errors?.required) {
+  //       const formattedControlName = convertToTitleCase(controlName);
+  //       addControlError(formattedControlName);
+  //     }
+  //   });
+
+
+  //   const header_completion_date = new Date(this.appeInitForm.get('complitionDate')?.value[0]);
+  //   // console.log('header_completion_date: ', header_completion_date)
+  //   // console.log(this.appeInitForm.get('complitionDate')?.value)
+
+  //   const subTaskList = this.taskData.SUBTASK_LIST;
+
+  //   const check = this.breakToLinear(this.subTasks);
+  //   console.log('Check subtask: ', check);
+
+  //   // Validate dates between dependent tasks
+  //   // Validate dates between dependent tasks
+  //   for (let i = 0; i < check.length; i++) {
+  //     let currentTask = check[i];
+
+  //     // Find tasks that have the current task's approval as their header
+  //     let dependentTasks = check.filter(task => task.header_MKEY === currentTask.approvaL_MKEY);
+
+  //     for (let dependentTask of dependentTasks) {
+
+  //       let parentTask = currentTask.TASK_NO
+  //       let parentStartDate = new Date(currentTask.TENTATIVE_START_DATE);
+  //       let parentEndDate = new Date(currentTask.TENTATIVE_END_DATE);
+  //       let subtaskStartDate = new Date(dependentTask.TENTATIVE_START_DATE);
+  //       let subtaskEndDate = new Date(dependentTask.TENTATIVE_END_DATE);
+  //       // let subtaskTask = currentTask.TASK_NO
+
+
+  //       console.log('Check parent', parentTask)
+
+  //       //console.log(`Check Header Date ${parentStartDate} and subtask date ${subtaskStartDate} and ${subtaskEndDate} and ${dependentTask.TASK_NO}`);
+
+  //       // Corrected condition: Ensure subtask falls within header task's range
+  //       if (subtaskStartDate < parentStartDate || subtaskEndDate > parentEndDate) {
+  //         this.tostar.error(`Date mismatch for Task ${dependentTask.TASK_NO}. It must fall within the range of the header task ${currentTask.TASK_NO}.`);
+  //         return false; 
+  //       }
+
+
+  //     }
+  //   }
+
+  //   const headerCompletionDate = new Date(this.appeInitForm.get('complitionDate')?.value[0]);
+
+  //     check.filter(task => {
+  //       if (!task.TENTATIVE_END_DATE) return false;
+
+  //       const taskEndDate = new Date(task.TENTATIVE_END_DATE);
+
+  //       if (taskEndDate > headerCompletionDate) {
+  //           this.tostar.error(`Task ${task.TASK_NO}'s end date exceeds the header completion date!`);
+  //           return false; // Exclude tasks that exceed the header date
+  //       }
+
+  //       return true;
+  //   });
+
+
+  //   if (subTaskList && subTaskList.length > 0) {
+  //     const invalidSubTasks = subTaskList.filter((subTask: any) => {
+  //       return !(Number(subTask.RESPOSIBLE_EMP_MKEY) > 0 || Number(subTask.resposiblE_EMP_MKEY) > 0);
+  //     });
+
+  //     if (invalidSubTasks.length > 0) {
+  //       this.tostar.error('Please add responsible person/s to all subtask(s)');
+  //       return;
+  //     }
+  //   }
+
+  //   if (requiredControls.length > 0) {
+  //     const errorMessage = `${requiredControls.join(' , ')}`;
+  //     this.tostar.error(errorMessage);
+  //     return false; // Return false when there are validation errors
+  //   }
+
+  //   return valid; // Return the actual validity of the form
+  // }
+
+
+
 
 
 
@@ -2123,12 +2206,12 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
     console.log('Coming to form', task)
   }
 
-  formatDate(date: Date): string {  
+  formatDate(date: Date): string {
     const dateObj = new Date(date);
-    const day = String(dateObj.getDate()).padStart(2, '0'); 
-    const month = String(dateObj.getMonth() + 1).padStart(2, '0'); 
-    const year = dateObj.getFullYear();  
-    return `${year}-${month}-${day}`;  
+    const day = String(dateObj.getDate()).padStart(2, '0');
+    const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+    const year = dateObj.getFullYear();
+    return `${year}-${month}-${day}`;
   }
 
   navigateToProjectDefination() {

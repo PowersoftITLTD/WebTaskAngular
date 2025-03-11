@@ -435,10 +435,14 @@
                                                                     <td style="width:20rem">
                                                                         <input class="form-control" formControlName="endDate_newRow" [min]="currentDate"  type="date"  />
                                                                     </td>                                                                 
-                                                                    <!-- <td>
-                                                                        <i class="fa fa-trash ml-6" type="button" style="font-size: small; color: rgb(0, 110, 255)"
-                                                                            (click)="removeRowNew(i)"></i>
-                                                                    </td> -->
+                                                                    <td>
+                                                                        <i *ngIf="i === approvalTempForm.get('rows_new').controls.length - 1"
+                                                                           class="fa fa-trash ml-6" type="button" 
+                                                                           style="font-size: small; color: rgb(0, 110, 255)"
+                                                                           (click)="removeRowNew(i)">
+                                                                        </i>
+                                                                    </td>
+                                                                    
                                                                 </tr>
                                                             </ng-container>
                                                         </tbody>

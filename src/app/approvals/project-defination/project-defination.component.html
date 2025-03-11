@@ -620,7 +620,7 @@
                                     <td style="min-width: 200px;">
                                       <ng-container *ngIf="task.TASK_NO.TASK_NO">
                                         <span
-                                          [style.marginLeft.px]="calculateIndentation(task.TASK_NO.TASK_NO, task.subtask && task.subtask.length > 0 ? 15 : 30, task.TASK_NO.start_date, task.TASK_NO.end_date)">
+                                          >
                                           <mat-icon (click)="toggleVisibility(task)" style="cursor: pointer;"
                                             *ngIf="task.subtask && task.subtask.length > 0">
                                             <img *ngIf="task.subtask && task.subtask.length > 0"
