@@ -19,7 +19,7 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
 
   isLoading: boolean = true; // Hide the button when clicked
   disableChilCheckBox: boolean = false;
-  isAllSelectedCheck:boolean = false;
+  isAllSelectedCheck: boolean = false;
   receivedUser: string | any;
   taskDetails: any;
   loading: boolean = false;
@@ -31,8 +31,8 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
   existingTaskA: any;
   selectAllChecked: boolean = false;
   flatList: any
-  subtask_len:any = [];
-  real_len:any = [];
+  subtask_len: any = [];
+  real_len: any = [];
 
   formVisibleMap: boolean[] = [];
 
@@ -187,22 +187,28 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
     this.formVisibleMap[index] = !this.formVisibleMap[index];
   }
 
+  toggleAll(task: any = []) {
 
+    if (this.selectAllChecked) {
+      // Select all tasks when selectAllChecked is true
+      this.selectedTasks.clear();
+      this.selectedTasksId.clear();
 
-  toggleSelection(task: any = []): void {
+      this.subTasks.forEach((task: any) => {
+        this.selectedTasks.add(task);
+        this.selectedTasksId.add(task?.TASK_NO?.TASK_NO);
+      });
+    } else if (!this.selectAllChecked) {
 
-    const taskId = task?.TASK_NO?.TASK_NO;
+      this.selectedTasks.clear();
+      this.selectedTasksId.clear();
 
-    // Safely check and toggle selection state
-    if (this.selectedTasksId.has(taskId)) {
-      this.selectedTasksId.delete(taskId);
-      this.selectedTasks.delete(task);
-    } else {
-      this.selectedTasksId.add(taskId);
-      this.selectedTasks.add(task);
+      this.subTasks.forEach((task: any) => {
+        this.selectedTasks.delete(task);
+        this.selectedTasksId.delete(task?.TASK_NO?.TASK_NO);
+      });
     }
 
-    // Combine and deduplicate tasks
     let selectedTasksArray: any[];
 
     // Utility function to count maiN_ABBR occurrences
@@ -219,10 +225,10 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
       };
 
       const filterUniqueTasks = (tasks: any[]): any[] => {
-        return tasks        
+        return tasks
           .filter((task: any) => abbrCount.get(task?.TASK_NO?.maiN_ABBR) === 1)
-          .map((task: any) => ({            
-            ...task,          
+          .map((task: any) => ({
+            ...task,
             subtask: filterUniqueTasks(task.subtask || []), // Recursive filtering
           }));
       };
@@ -235,15 +241,12 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
       const status = this.taskData.approvalS_ABBR_LIST?.[0]?.status;
 
       if (status === 'Initiated' || status === 'Ready to Initiate') {
-        // console.log('Combining data', this.new_list_of_selectedSeqArr);
 
-        // Merge, deduplicate, and filter for unique tasks
         selectedTasksArray = [...this.selectedTasks, ...this.new_list_of_selectedSeqArr];
         const uniqueTasksArray = getUniqueTasks(selectedTasksArray);
 
         selectedTasksArray = [...uniqueTasksArray, ...this.new_list_of_selectedSeqArr];
       } else {
-        // Only existing tasks
         selectedTasksArray = [...this.selectedTasks];
       }
     } else {
@@ -251,12 +254,13 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
     }
 
 
+    // console.log('selectedTasksArray: ', selectedTasksArray)
 
     // Function to check if task exists as a subtask
     const hasMatchingSubtask = (task: any, tasks: any[]): boolean => {
       return tasks.some((parentTask) =>
         parentTask.subtask?.some((subtask: any) => {
-   
+
           if (subtask?.TASK_NO?.TASK_NO.trim() === task?.TASK_NO?.TASK_NO.trim()) {
             return true;
           }
@@ -265,7 +269,7 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
       );
     };
 
- 
+
     // Remove parent tasks that exist in subtasks
     const removeParentTaskIfInSubtasks = (tasks: any[]): any[] => {
       return tasks.filter((task: any) => !hasMatchingSubtask(task, tasks));
@@ -279,7 +283,7 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
     this.selectedSeqArr = this.sortTasksBySequence(updatedTasksArray);
 
     const subtask_len = this.subTasks.length;
-    const seq_len =  this.selectedSeqArr.length;
+    const seq_len = this.selectedSeqArr.length;
     const remaining = subtask_len - seq_len
     const real_len = subtask_len - remaining
 
@@ -291,7 +295,7 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
     //   this.isAllSelectedCheck = true;
     //   // this.isAllSelectedCheck = this.selectAllChecked
     //   console.log("Checkbox should be unchecked:", this.isAllSelectedCheck);
-  
+
     //   setTimeout(() => {
     //     this.cdRef.detectChanges();
     //   });
@@ -327,29 +331,177 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
 
     // Update the uniqueSubTask property
     this.uniqueSubTask = uniqueTasks;
+
+
+  }
+
+
+  toggleSelection(task: any = []): void {
+
+
+    const taskId = task?.TASK_NO?.TASK_NO;
+
+    // Toggle individual selection
+    if (this.selectedTasksId.has(taskId)) {
+      this.selectedTasksId.delete(taskId);
+      this.selectedTasks.delete(task);
+    } else {
+      this.selectedTasksId.add(taskId);
+      this.selectedTasks.add(task);
+    }
+
+    // Combine and deduplicate tasks
+    let selectedTasksArray: any[];
+
+    // Utility function to count maiN_ABBR occurrences
+    const getUniqueTasks = (tasksArray: any[]): any[] => {
+      const abbrCount = new Map();
+
+      const countAbbr = (tasks: any[]) => {
+        tasks.forEach((task: any) => {
+          const abbr = task?.TASK_NO?.maiN_ABBR;
+          if (abbr) abbrCount.set(abbr, (abbrCount.get(abbr) || 0) + 1);
+
+          if (task.subtask?.length) countAbbr(task.subtask); // Recursive call
+        });
+      };
+
+      const filterUniqueTasks = (tasks: any[]): any[] => {
+        return tasks
+          .filter((task: any) => abbrCount.get(task?.TASK_NO?.maiN_ABBR) === 1)
+          .map((task: any) => ({
+            ...task,
+            subtask: filterUniqueTasks(task.subtask || []), // Recursive filtering
+          }));
+      };
+
+      countAbbr(tasksArray); // Step 1: Count
+      return filterUniqueTasks(tasksArray); // Step 2: Filter
+    };
+
+    if (this.taskData?.mkey && !this.isCleared) {
+      const status = this.taskData.approvalS_ABBR_LIST?.[0]?.status;
+
+      if (status === 'Initiated' || status === 'Ready to Initiate') {
+        // console.log('Combining data', this.new_list_of_selectedSeqArr);
+
+        // Merge, deduplicate, and filter for unique tasks
+        selectedTasksArray = [...this.selectedTasks, ...this.new_list_of_selectedSeqArr];
+        const uniqueTasksArray = getUniqueTasks(selectedTasksArray);
+
+        selectedTasksArray = [...uniqueTasksArray, ...this.new_list_of_selectedSeqArr];
+      } else {
+        // Only existing tasks
+        selectedTasksArray = [...this.selectedTasks];
+      }
+    } else {
+      selectedTasksArray = [...this.selectedTasks];
+    }
+
+
+
+    // Function to check if task exists as a subtask
+    const hasMatchingSubtask = (task: any, tasks: any[]): boolean => {
+      return tasks.some((parentTask) =>
+        parentTask.subtask?.some((subtask: any) => {
+
+          if (subtask?.TASK_NO?.TASK_NO.trim() === task?.TASK_NO?.TASK_NO.trim()) {
+            return true;
+          }
+          return subtask.subtask?.length > 0 && hasMatchingSubtask(task, [subtask]);
+        })
+      );
+    };
+
+
+    // Remove parent tasks that exist in subtasks
+    const removeParentTaskIfInSubtasks = (tasks: any[]): any[] => {
+      return tasks.filter((task: any) => !hasMatchingSubtask(task, tasks));
+    };
+
+    // Filter tasks to exclude duplicates in subtasks
+    const updatedTasksArray = removeParentTaskIfInSubtasks(selectedTasksArray);
+
+
+    // Sort tasks by sequence
+    this.selectedSeqArr = this.sortTasksBySequence(updatedTasksArray);
+
+    // const subtask_len = this.subTasks.length;
+    // const seq_len = this.selectedSeqArr.length;
+    // const remaining = subtask_len - seq_len
+    // const real_len = subtask_len - remaining
+
+
+    // this.subtask_len = subtask_len;
+    // this.real_len = real_len;
+
+    // // if(subtask_len === real_len){
+    // //   this.isAllSelectedCheck = true;
+    // //   // this.isAllSelectedCheck = this.selectAllChecked
+    // //   console.log("Checkbox should be unchecked:", this.isAllSelectedCheck);
+
+    // //   setTimeout(() => {
+    // //     this.cdRef.detectChanges();
+    // //   });
+    // // }else{
+
+    // //   this.isAllSelectedCheck = false;
+    // //   // this.isAllSelectedCheck = this.selectAllChecked
+    // //   console.log("Checkbox should be unchecked:", this.isAllSelectedCheck);
+    // //   setTimeout(() => {
+    // //     this.cdRef.detectChanges();
+    // //   });
+    // // }
+
+
+
+    // Flatten tasks into a linear structure
+    const flattenedTasks = this.breakToLinear(this.selectedSeqArr);
+
+    const removeDup = this.removeDuplicates(this.selectedSeqArr)
+
+    this.selectedSeqArr = removeDup;
+
+    // console.log('this.selectedSeqArr', this.selectedSeqArr)
+
+    // Ensure uniqueness in the flattened tasks
+    const seen = new Set();
+    const uniqueTasks = flattenedTasks.filter((task) => {
+      const taskNo = task?.TASK_NO?.TASK_NO;
+      if (seen.has(taskNo)) return false;
+      seen.add(taskNo);
+      return true;
+    });
+
+    // Update the uniqueSubTask property
+    this.uniqueSubTask = uniqueTasks;
     // this.updateSelectAllState();
   }
+
+
+  toggleSelectedAndUnSelectedTask() { }
 
   updateSelectAllState() {
     this.selectAllChecked = !this.selectAllChecked;
 
-    console.log('selectAll checkbox',this.selectAllChecked)
-    
-    const updateTaskSelection = (task: any, isChecked: boolean) => {
-        task.checked = isChecked;
+    console.log('selectAll checkbox', this.selectAllChecked)
 
-        if (task.subtask && task.subtask.length > 0) {
-            task.subtask.forEach((innerTask: any) => {
-                updateTaskSelection(innerTask, isChecked);
-            });
-        }
+    const updateTaskSelection = (task: any, isChecked: boolean) => {
+      task.checked = isChecked;
+
+      if (task.subtask && task.subtask.length > 0) {
+        task.subtask.forEach((innerTask: any) => {
+          updateTaskSelection(innerTask, isChecked);
+        });
+      }
     };
 
     this.subTasks.forEach(task => {
-        updateTaskSelection(task, this.selectAllChecked);
-        // this.toggleSelection(task);
+      updateTaskSelection(task, this.selectAllChecked);
+      // this.toggleSelection(task);
     });
-}
+  }
+
 
   isTaskDisabled(task: any): boolean {
 
@@ -438,17 +590,17 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
 
 
   hasInitiatedTasks(): boolean {
-    return this.taskData?.approvalS_ABBR_LIST?.some((task: any) => 
-        task.status?.toLowerCase() === 'initiated' || task.status?.toLowerCase() === 'ready to initiate'
+    return this.taskData?.approvalS_ABBR_LIST?.some((task: any) =>
+      task.status?.toLowerCase() === 'initiated' || task.status?.toLowerCase() === 'ready to initiate'
     );
-}
+  }
 
 
-hasDisabledClear(): boolean {
-  return this.taskData?.approvalS_ABBR_LIST?.some((task: any) => 
+  hasDisabledClear(): boolean {
+    return this.taskData?.approvalS_ABBR_LIST?.some((task: any) =>
       task.status?.toLowerCase() === 'initiated'
-  );
-}
+    );
+  }
 
 
   breakToLinear(selectedSeq: any) {
@@ -512,14 +664,14 @@ hasDisabledClear(): boolean {
     const PROJECT = this.projectDefForm.get('property')?.value;
     const SUB_PROJECT = this.projectDefForm.get('subProject')?.value;
 
-    const subTaskList = this.flatList
+    const subTaskList = this.flatList;
 
-    console.log('uniq list',this.uniqList)
-    console.log('flatList list from add',this.flatList)
+    console.log('uniq list', this.uniqList)
+    console.log('flatList list from add', this.flatList)
 
     console.log('PROJECT', PROJECT)
     console.log('SUB_PROJECT', SUB_PROJECT)
-    
+
     const addProjectDefination = {
       projecT_NAME: SUB_PROJECT.MASTER_MKEY,
       projecT_ABBR: this.projectDefForm.get('projectAbbr')?.value,
@@ -538,23 +690,23 @@ hasDisabledClear(): boolean {
     }
 
     console.log(addProjectDefination)
-    this.apiService.postProjectDefination(addProjectDefination, this.recursiveLogginUser).subscribe({
-      next: (addData: any) => {
-        console.log('Data added successfully', addData)
+    // this.apiService.postProjectDefination(addProjectDefination, this.recursiveLogginUser).subscribe({
+    //   next: (addData: any) => {
+    //     console.log('Data added successfully', addData)
 
-        if(addData.status === 'Error'){
-          this.tostar.error('This project is already exist for same property and building');
-          return;
-        }
-        this.tostar.success('Success', 'Template added successfuly')
-        this.router.navigate(['task/approval-screen'], { queryParams: { source: 'project-defination' } });
+    //     if(addData.status === 'Error'){
+    //       this.tostar.error('This project is already exist for same property and building');
+    //       return;
+    //     }
+    //     this.tostar.success('Success', 'Template added successfuly')
+    //     this.router.navigate(['task/approval-screen'], { queryParams: { source: 'project-defination' } });
 
-      }, error: (error: ErrorHandler|any) => {
-        const errorData = error.error.errors;
-        const errorMessage = Object.values(errorData).flat().join(' , ');
-        this.tostar.error(errorMessage, 'Error Occured in server') 
-      }
-    });
+    //   }, error: (error: ErrorHandler|any) => {
+    //     const errorData = error.error.errors;
+    //     const errorMessage = Object.values(errorData).flat().join(' , ');
+    //     this.tostar.error(errorMessage, 'Error Occured in server') 
+    //   }
+    // });
   }
 
 
@@ -611,7 +763,7 @@ hasDisabledClear(): boolean {
 
     // console.log('Filtered Sub Task List:', subTaskList);
 
-    const addProjectDefination = {
+    const updateProjectDefination = {
       mkey: this.taskData.mkey,
       projecT_NAME: subProjectName,
       projecT_ABBR: this.projectDefForm.get('projectAbbr')?.value,
@@ -629,13 +781,13 @@ hasDisabledClear(): boolean {
       approvalS_ABBR_LIST: this.removeDuplicates(subTaskList)
     };
 
-    console.log(addProjectDefination);
-    this.apiService.putProjectDefination(addProjectDefination, headerMkey, this.recursiveLogginUser).subscribe({
+    console.log(updateProjectDefination);
+    this.apiService.putProjectDefination(updateProjectDefination, headerMkey, this.recursiveLogginUser).subscribe({
       next: (addData: any) => {
         console.log('Data added successfully', addData)
         this.tostar.success('Success', 'Template added successfuly')
         this.router.navigate(['task/approval-screen'], { queryParams: { source: 'project-defination' } });
-      }, error: (error: ErrorHandler|any) => {
+      }, error: (error: ErrorHandler | any) => {
         const errorData = error.error.errors;
         const errorMessage = Object.values(errorData).flat().join(' , ');
         this.tostar.error(errorMessage, 'Error Occured in server')
@@ -658,10 +810,10 @@ hasDisabledClear(): boolean {
           this.navigateToApprovalInitiation(response.data);
         }
       },
-      error: (error:ErrorHandler | any) => {
+      error: (error: ErrorHandler | any) => {
         const errorData = error.error.errors;
         const errorMessage = Object.values(errorData).flat().join(' , ');
-        this.tostar.error(errorMessage, 'Error Occured in server') 
+        this.tostar.error(errorMessage, 'Error Occured in server')
       }
     })
   }
@@ -778,57 +930,106 @@ hasDisabledClear(): boolean {
   // }
 
 
- 
+
+
+
+
 
   selectAll() {
     this.selectAllChecked = !this.selectAllChecked;
 
-   
-     
     const updateTaskSelection = (task: any, isChecked: boolean) => {
-        task.checked = isChecked;
+      task.checked = isChecked;
 
-        if (task.subtask && task.subtask.length > 0) {
-            task.subtask.forEach((innerTask: any) => {
-                updateTaskSelection(innerTask, isChecked);
-            });
-        }
+      if (task.subtask && task.subtask.length > 0) {
+        task.subtask.forEach((innerTask: any) => {
+          updateTaskSelection(innerTask, isChecked);
+        });
+      }
+    };
+    if (this.selectAllChecked) {
+      const newTasks = this.selectedSeqArr.filter(task =>
+        !this.subTasks.some(subTask => {
+          return subTask.TASK_NO.TASK_NO === task.TASK_NO.TASK_NO; // Add explicit return
+        })
+      );
+
+      this.selectedSeqArr = [...this.subTasks, ...newTasks];
+    }
+
+    this.subTasks.forEach(task => {
+      console.log('task', task)
+      updateTaskSelection(task, this.selectAllChecked);
+      this.toggleAll(task);
+    });
+
+    this.cdRef.detectChanges();
+  }
+
+  // selectAll() {
+  //   this.selectAllChecked = !this.selectAllChecked;
+
+  // //   if (!this.selectAllChecked) {
+  // //     this.selectedSeqArr = [];
+  // // }
+
+
+  //   const updateTaskSelection = (task: any, isChecked: boolean) => {
+  //       task.checked = isChecked;
+
+  //       if (task.subtask && task.subtask.length > 0) {
+  //           task.subtask = task.subtask.filter((innerTask:any) =>
+  //               !this.selectedSeqArr.some(sel => sel.TASK_NO === innerTask.TASK_NO)
+  //           );
+
+  //           task.subtask.forEach((innerTask: any) => {
+  //               updateTaskSelection(innerTask, isChecked);
+  //           });
+  //       }
+  //   };
+
+  //   // Filter top-level tasks
+  //   const check = this.subTasks.filter(task =>
+  //     //console.log('Check task m',task)
+  //      !this.selectedSeqArr.some(sel => {
+  //         console.log('Check task m',sel)
+  //         sel.TASK_NO === task.TASK_NO
+  //       }
+  //     )
+  //   );
+
+  //   console.log('check', check)
+  //   console.log('Subtask: ', this.subTasks);
+  //   console.log('Check the selected task: ', this.selectedSeqArr);
+
+  //   this.subTasks.forEach(task => {
+  //       updateTaskSelection(task, this.selectAllChecked);
+  //       this.toggleSelection(task);
+  //   });
+
+  //   this.cdRef.detectChanges();
+  // }
+
+
+  clearAllProjects() {
+    const updateTaskSelection = (task: any, isChecked: boolean) => {
+      task.checked = isChecked;
+
+      if (task.subtask && task.subtask.length > 0) {
+        task.subtask.forEach((innerTask: any) => {
+          updateTaskSelection(innerTask, isChecked);
+        });
+      }
     };
 
     this.subTasks.forEach(task => {
-        updateTaskSelection(task, this.selectAllChecked);
-        this.toggleSelection(task);
+      updateTaskSelection(task, false);
+      this.toggleSelection(task);
     });
-    // this.selectedSeqArr
-    // this.getTree(this.subTasks)
-    const subTaskList = this.breakToLinear(this.selectedSeqArr);
-    this.getTree(subTaskList);
-
-    
+    // this.selectAllChecked = false;
     this.cdRef.detectChanges();
-}
-
-
-
-clearAllProjects() {
-  const updateTaskSelection = (task: any, isChecked: boolean) => {
-    task.checked = isChecked;
-
-    if (task.subtask && task.subtask.length > 0) {
-        task.subtask.forEach((innerTask: any) => {
-            updateTaskSelection(innerTask, isChecked);
-        });
-    }
-};
-
-this.subTasks.forEach(task => {
-    updateTaskSelection(task, false);
-    this.toggleSelection(task);
-});
-  // this.selectAllChecked = false;
-  this.cdRef.detectChanges();
-  // this.selectedSeqArr = [];
-}
+    // this.selectedSeqArr = [];
+  }
 
 
 
@@ -995,30 +1196,15 @@ this.subTasks.forEach(task => {
 
     const token = this.apiService.getRecursiveUser();
     const USER_CRED = this.credentialService.getUser();
-    let gerAbbrRelDataArr = []
 
     const buildingCla = this.projectDefForm.get('bldCla')?.value;
     const buildingStd = this.projectDefForm.get('blsStandard')?.value;
     const statutoryAuth = this.projectDefForm.get('statutoryAuth')?.value;
 
-
-
-    // console.log(`buildingCla: ${buildingCla} buildingStd: ${buildingStd} statutoryAuth: ${statutoryAuth}`)
-    // this.hasDataBeenPassed = true; 
-
     if (buildingCla && buildingStd && statutoryAuth) {
       this.recursiveLogginUser = this.apiService.getRecursiveUser();
       this.apiService.projectDefinationOption(USER_CRED[0]?.MKEY, token, buildingCla, buildingStd, statutoryAuth).subscribe({
         next: (gerAbbrRelData) => {
-          // this.projDefinationTable = gerAbbrRelData
-          // console.log('gerAbbrRelData', gerAbbrRelData)
-
-          const check_TAsk_no = gerAbbrRelData.forEach((task: any) => {
-          })
-          console.log('TASk_no', check_TAsk_no)
-
-          const check = gerAbbrRelDataArr.push(gerAbbrRelData)
-          // console.log('check gerAbbrRelData', gerAbbrRelData)
           this.getTree(gerAbbrRelData);
           this.isLoading = false;
         },
@@ -1047,7 +1233,7 @@ this.subTasks.forEach(task => {
     const buildingCla = this.taskData.buildinG_CLASSIFICATION;
     const buildingStd = this.taskData.buildinG_STANDARD;
     const statutoryAuth = this.taskData.statutorY_AUTHORITY;
-   
+
     if (buildingCla && buildingStd && statutoryAuth) {
       this.recursiveLogginUser = this.apiService.getRecursiveUser();
       this.apiService.projectDefinationOption(USER_CRED[0]?.MKEY, token, buildingCla, buildingStd, statutoryAuth).subscribe({
@@ -1238,11 +1424,11 @@ this.subTasks.forEach(task => {
           this.employees.push({ Assign_to: capitalizedFullName, MKEY: MKEY });
         });
       },
-      (error: ErrorHandler| any) => {
+      (error: ErrorHandler | any) => {
         console.error('Error fetching employee details:', error);
         const errorData = error.error.errors;
         const errorMessage = Object.values(errorData).flat().join(' , ');
-        this.tostar.error(errorMessage, 'Error Occured in server') 
+        this.tostar.error(errorMessage, 'Error Occured in server')
       }
     );
   }
@@ -1423,7 +1609,7 @@ this.subTasks.forEach(task => {
 
         return {
           TASK_NO: item.TASK_NO,
-          seQ_NO:item.seQ_NO,
+          seQ_NO: item.seQ_NO,
           maiN_ABBR: item.MAIN_ABBR,
           abbR_SHORT_DESC: item.ABBR_SHORT_DESC,
           dayS_REQUIERD: item.DAYS_REQUIERD,
@@ -1875,7 +2061,7 @@ this.subTasks.forEach(task => {
 
         return {
           TASK_NO: item.tasK_NO,
-          seQ_NO:item.seQ_NO,
+          seQ_NO: item.seQ_NO,
           maiN_ABBR: item.approvaL_ABBRIVATION,
           abbR_SHORT_DESC: item.approvaL_DESCRIPTION,
           dayS_REQUIERD: item.dayS_REQUIRED,
@@ -1983,7 +2169,7 @@ this.subTasks.forEach(task => {
 
 
   navigateToProjectDefination() {
-    this.router.navigate(['task/approval-screen'], {queryParams:{ source: 'project-defination' }});
+    this.router.navigate(['task/approval-screen'], { queryParams: { source: 'project-defination' } });
   }
 
   ngOnDestroy(): void {

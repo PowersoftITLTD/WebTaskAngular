@@ -237,9 +237,8 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
     // Format the end date using formatDate() method
     const formattedEndDate = this.formatDate(endDate);
 
-    const no_of_days_header =
-      // Patch value to form
-      this.appeInitForm.patchValue({ endDate: [formattedEndDate] });
+
+    this.appeInitForm.patchValue({ endDate: [formattedEndDate] });
     this.appeInitForm.patchValue({ complitionDate: [formattedEndDate] });
 
 
@@ -417,7 +416,6 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
     };
 
     console.log('addApprovalInitiation: ', addApprovalInitiation);
-
 
     this.apiService.postApprovalInitiation(addApprovalInitiation, this.recursiveLogginUser).subscribe({
       next: (response) => {
@@ -732,10 +730,7 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
 
     this.apiService.getEmpDetailsByDeptAndJobRole(token, this.taskData.AUTHORITY_DEPARTMENT, this.taskData.JOB_ROLE, USER_CRED[0].MKEY).subscribe(
       (response: any) => {
-        // console.log("Employee data:", data);
-        // const _data = data;
-
-
+    
         response[0]?.data.forEach((emp: any) => {
           const fullName = emp.EMP_FULL_NAME;
           const MKEY = emp.MKEY;
@@ -760,9 +755,7 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
 
           this.headerEmployee.push({ Assign_to: capitalizedFullName, MKEY: MKEY, FLAG: FLAG });
           this.HeaderfullName = [{ Assign_to: capitalizedFullName, MKEY: MKEY }];
-          // this.subTaskEmployees.push({ Assign_to: capitalizedFullName, MKEY: MKEY });
         });
-        console.log('this.employees', this.employees);
       },
       (error: ErrorHandler | any) => {
         console.error('Error fetching employee details:', error);
@@ -816,7 +809,6 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
 
 
 
-  //subTaskEmployees
 
   filterEmployees(event: Event): void {
     const value = (event.target as HTMLInputElement).value.trim();
@@ -1100,8 +1092,7 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
   // }
 
   toggleFormVisibility_main(index: number, task: any) {
-    console.log('task', task);
-    this.onSubmitSubList(task.TASK_NO);
+    // this.onSubmitSubList(task.TASK_NO);
     const token = this.apiService.getRecursiveUser();
     const USER_CRED = this.credentialService.getUser();
 
@@ -1142,32 +1133,17 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
           ? task.TASK_NO.RESPOSIBLE_EMP_NAME
           : (this.employees.length > 0 ? this.employees[0].Assign_to : '');
 
-        let check_start_date = task.TASK_NO?.start_date;
-        let check_end_date = task.TASK_NO?.end_date;
-
-        console.log('check_start_date: ', check_start_date);
-
-        const totalDays = task.TASK_NO?.dayS_REQUIERD.reduce((sum: number, task: any) => {
-          return sum + (task.dayS_REQUIERD || 0);
-        }, 0);
-
-        console.log('TOTAL DAYS: ', task.TASK_NO?.dayS_REQUIERD)
-
-        console.log('task.TASK_NO.start_date: ', task.TASK_NO.start_date)
-
+        let check_start_date = task.TASK_NO?.start_date;       
         const startDate = new Date(check_start_date);
         const endDate = new Date(startDate);
         endDate.setDate(startDate.getDate() + task.TASK_NO?.dayS_REQUIERD); // Shift end date based on total days
 
         task.TASK_NO.end_date = endDate.toISOString().split('T')[0]; // Update task's end date (format YYYY-MM-DD)
 
-        console.log('Updated start_date: ', check_start_date);
-        console.log('Updated end_date: ', task.TASK_NO.end_date);
-
-
         let tagsString = task.TASK_NO?.TAGS.split(',');
         this.selectedTags = tagsString;
         this.selectedAssignTo = task.TASK_NO?.RESPOSIBLE_EMP_NAME;
+
       },
       (error: ErrorHandler) => {
         console.error('Error fetching employee details:', error);
@@ -1306,7 +1282,7 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
 
           window.location.reload();
 
-          this.tostar.success('Subtask updated successfully!')
+          //this.tostar.success('Subtask updated successfully!')
 
           // this.cdr.detectChanges();
 

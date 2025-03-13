@@ -280,8 +280,8 @@
                             <div class="sample-wrapper">
                               <div class="combo-section">
                                 <div>
-                                  <!-- <input type="text" (input)="filterCities()" placeholder="Search Project"
-                                    class="search-input" /> -->
+                                  <input type="text" (input)="filterCities()" placeholder="Search Project"
+                                    class="search-input" />
 
                                   <ng-container *ngIf="taskData?.mkey">
 
@@ -389,7 +389,7 @@
 
                                               <div class="task-details">
                                                 <span class="select-all-container" >
-                                                  <div *ngIf="!selectAllChecked">
+                                                  <div><!--*ngIf="!selectAllChecked"-->
                                                     <input type="checkbox" class="task-item" *ngIf="!disableChilCheckBox"
                                                     [checked]="task.checked"
                                                     (click)="isTaskDisabled(task) ? null : toggleSelection(task)"

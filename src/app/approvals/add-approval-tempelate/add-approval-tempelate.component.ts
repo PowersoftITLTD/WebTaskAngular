@@ -124,7 +124,7 @@ export class AddApprovalTempelateComponent implements OnInit {
     if (navigation?.extras.state) {
       const RecursiveTaskData: any = navigation.extras.state.taskData;
       this.taskData = RecursiveTaskData;
-
+      console.log('RecursiveTaskData: ', RecursiveTaskData)
       if (RecursiveTaskData.mkey) {
         this.updatedDetails = !isNewTemp; // Don't update if adding a new task
       } else {
@@ -1279,24 +1279,7 @@ export class AddApprovalTempelateComponent implements OnInit {
 
 
 
-
-  clearFields(row: any): void {
-    row.shorT_DESCRIPTION = '';
-    row.long_DESCRIPTION = '';
-    row.nO_DAYS_REQUIRED = null;
-    row.enD_RESULT_DOC = '';
-    row.abbR_SHORT_DESC = '';
-  }
-
-
-
-
-  toggleSave(row: any) {
-    row.isSaved = !row.isSaved;
-  }
-
-
-  removeRow(index: number) {
+ removeRow(index: number) {
     const rows = this.approvalTempForm.get('rows') as FormArray;
 
     if (rows.length > 0) {
