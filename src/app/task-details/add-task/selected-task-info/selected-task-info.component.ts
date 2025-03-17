@@ -634,12 +634,12 @@ export class SelectedTaskInfoComponent implements OnInit {
 
 
 
-    console.log('Save Task taskData',taskData)
+    // console.log('Save Task taskData',taskData)
   
 
     const token = this.apiService.getRecursiveUser();;
 
-    console.log('save task token', token)
+    // console.log('save task token', token)
 
     this.apiService.addTaskManagement(taskData, token).subscribe((response:any)=>{
       console.log(response[0].data)

@@ -22,7 +22,7 @@
         <ng-container *ngIf="rowsNew && rowsNew.controls.length > 0; else noData">
           <tr *ngFor="let row of rowsNew.controls; let i = index" [formGroupName]="i">
             <td style="text-align: center;">{{ i+1 || '--' }}</td>
-            <input style="text-align: center; border: none; border-bottom: 1px solid rgb(145, 145, 145);"
+            <input style="text-align: center; border: none; padding-top: 8px; border-bottom: 1px solid rgb(145, 145, 145);"
               formControlName="level" [attr.disabled]="true" />
 
             <td style="text-align: center;"><input style="border: none;border-bottom: 1px solid rgb(145, 145, 145);"

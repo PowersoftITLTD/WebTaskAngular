@@ -63,7 +63,10 @@ export class AddApprovalTempelateComponent implements OnInit {
   getRelAbbr: any[] = [];
 
   rows: any[] = [];
+
   updatedDetails: boolean = false;
+  isInsertingApprl: boolean = false;
+
 
 
   abbrivationError = '';
@@ -160,6 +163,8 @@ export class AddApprovalTempelateComponent implements OnInit {
     this.fetchEmployeeName();
     this.getTags();
     if (this.taskData && this.taskData.mkey) {
+
+    
       // this.end_list = this.taskData.enD_RESULT_DOC_LST
       // console.log('checklisT_DOC_LST', this.taskData.checklisT_DOC_LST)
       // console.log('enD_RESULT_DOC_LST', this.taskData.enD_RESULT_DOC_LST)
@@ -331,8 +336,26 @@ export class AddApprovalTempelateComponent implements OnInit {
     })
 
     if (this.taskData && this.taskData.mkey) {
+
+      const formArrayVal_new: FormArray = this.approvalTempForm.get('rows') as FormArray;
+
+      formArrayVal_new.removeAt(formArrayVal_new.length);
+
+
+      console.log('formArrayVal_new: ', formArrayVal_new)
       this.addRow()
       this.checkValueForNewRow_1();
+
+      
+
+        // Ensure FormArray is not empty before checking the last row
+      //  if (formArrayVal_new.length > 0) {
+      //   const lastRow = formArrayVal_new.at(formArrayVal_new.length - 1);
+
+      //   // Check if the last row is empty (adjust conditions as needed)
+      //   if (lastRow.value && Object.values(lastRow.value).every(val => val === null || val === '')) {
+      //   }
+      // } 
 
       // this.check
       this.end_list = this.taskData.enD_RESULT_DOC_LST;
@@ -475,9 +498,12 @@ export class AddApprovalTempelateComponent implements OnInit {
       fieldErrors.forEach(errorMessage => this.tostar.error(errorMessage));
       return;
     }
+    this.isInsertingApprl = true;
 
     this.tostar.success('Success', 'Template added successfuly')
     this.router.navigate(['task/approval-screen'], { queryParams: { source: 'authority-tempelate' } });
+    
+    
 
 
   }
@@ -651,6 +677,9 @@ export class AddApprovalTempelateComponent implements OnInit {
 
     this.apiService.putApprovalTemp(updateApprlTemp, doc_temp_key, token).subscribe({
       next: (data) => {
+        if(data){
+          this.isInsertingApprl = true;
+        }
         this.tostar.success('Success', 'Template updated successfuly')
         this.router.navigate(['task/approval-screen'], { queryParams: { source: 'authority-tempelate' } });
         console.log('data successfully updated', data)
@@ -985,6 +1014,8 @@ export class AddApprovalTempelateComponent implements OnInit {
 
           const rows: FormArray = this.approvalTempForm.get('rows') as FormArray;
 
+          
+
           const tagsValue = rows.get('subTaskTags')?.value || [];
           let tagsString: string = '';
 
@@ -1004,13 +1035,13 @@ export class AddApprovalTempelateComponent implements OnInit {
 
           // Create a new row with the necessary controls
           const newRow = this.formBuilder.group({
-            abbrivation: ['', Validators.required],
-            shorT_DESCRIPTION: [''],
-            sanctioN_DEPARTMENT: [''],
-            nO_DAYS_REQUIRED: [''],
-            authoritY_DEPARTMENT: [''],
-            enD_RESULT_DOC: [''],
-            subtasK_MKEY: [''],
+            abbrivation: [null, Validators.required],
+            shorT_DESCRIPTION: [null],
+            sanctioN_DEPARTMENT: [null],
+            nO_DAYS_REQUIRED: [null],
+            authoritY_DEPARTMENT: [null],
+            enD_RESULT_DOC: [null],
+            subtasK_MKEY: [null],
             subTaskTags: [tagsString],
             sequentialNo: [rows.length + 1],
           });
@@ -1020,7 +1051,7 @@ export class AddApprovalTempelateComponent implements OnInit {
           if (!this.isCheckValueCalled) {
             this.isCheckValueCalled = true;
           } else {
-            this.checkValueForNewRow(newRow);
+            //this.checkValueForNewRow(newRow);
           }
         },
         error: (err) => {
@@ -1049,16 +1080,19 @@ export class AddApprovalTempelateComponent implements OnInit {
             // console.log('matchedDepartment', matchedDepartment);
 
             if (matchedDepartment) {
+              //console.log('matchedDepartment: ', matchedDepartment)
               value.sanctioN_DEPARTMENT = matchedDepartment.typE_DESC;
             } else {
               console.log("Department not found");
             }
 
+            console.log('value: ', value)
+
             if (value.maiN_ABBR && value.maiN_ABBR === subtask.subtasK_ABBR) {
               const rowForm = this.formBuilder.group({
                 sequentialNo: [subtask.seQ_NO],
                 abbrivation: [subtask.subtasK_ABBR],
-                shorT_DESCRIPTION: [value.abbR_SHORT_DESC],
+                shorT_DESCRIPTION: [value.shorT_DESCRIPTION],
                 sanctioN_DEPARTMENT: [value.sanctioN_DEPARTMENT || ''],
                 nO_DAYS_REQUIRED: [value.dayS_REQUIERD || ''],
                 authoritY_DEPARTMENT: [value.authoritY_DEPARTMENT || ''],
@@ -1084,10 +1118,12 @@ export class AddApprovalTempelateComponent implements OnInit {
     values.forEach((value: any) => {
       if (this.taskData && this.taskData.subtasK_LIST) {
         this.taskData.subtasK_LIST.forEach((subtask: any) => {
+          console.log('subtask: ', subtask)
           const departmentList = this.departmentList;
           const matchedDepartment = departmentList.find(department => department.mkey === value.authoritY_DEPARTMENT);
 
           if (matchedDepartment) {
+            console.log('matchedDepartment: ', matchedDepartment);
             value.sanctioN_DEPARTMENT = matchedDepartment.typE_DESC;
           } else {
             console.log("Department not found");
@@ -1225,9 +1261,11 @@ export class AddApprovalTempelateComponent implements OnInit {
     const selectElement = event.target as HTMLSelectElement; // Cast to HTMLSelectElement
     const selectedAbbr = selectElement.value; // Now TypeScript knows 'value' exists
 
+    //console.log('selectedAbbr', selectedAbbr)
     rowForm.get('abbrivation')?.setValue(selectedAbbr);
 
     const selectedRow = this.getRelAbbr.find(r => r.maiN_ABBR === selectedAbbr);
+    console.log('selectedRow: ', )
     const header_no_of_days = Number(this.approvalTempForm.get('noOfDays')?.value);
     const subtas_no_of_days = selectedRow?.dayS_REQUIERD || 0;
 
@@ -1250,6 +1288,8 @@ export class AddApprovalTempelateComponent implements OnInit {
     }
 
     const matchedDepartment = this.departmentList.find(department => department.mkey === selectedRow?.authoritY_DEPARTMENT);
+
+    console.log('matchedDepartment: ',matchedDepartment)
     if (matchedDepartment) {
         selectedRow.sanctioN_DEPARTMENT = matchedDepartment.typE_DESC;
     } else {
@@ -1330,6 +1370,21 @@ export class AddApprovalTempelateComponent implements OnInit {
     };
   }
 
+
+  validateInput(event: KeyboardEvent) {
+    const charCode = event.which ? event.which : event.keyCode;
+    if (charCode < 48 || charCode > 57) {
+      event.preventDefault(); // Block non-numeric input
+    }
+  }
+  
+  enforceMinValue(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (input.value !== '' && Number(input.value) < 1) {
+      input.value = '1'; // Prevents 0 or negative values
+    }
+  }
+  
 
 
   onSubmit() {

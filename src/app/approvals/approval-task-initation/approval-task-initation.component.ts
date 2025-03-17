@@ -1280,7 +1280,7 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
           localStorage.setItem('RESPOSIBLE_EMP_MKEY', JSON.stringify(this.taskData.RESPOSIBLE_EMP_MKEY));
           // console.log('HEADER RESPOSIBLE_EMP_MKEY saved to local storage:', this.taskData.RESPOSIBLE_EMP_MKEY);
 
-          window.location.reload();
+          //window.location.reload();
 
           //this.tostar.success('Subtask updated successfully!')
 
@@ -2169,6 +2169,8 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
 
 
   onAddInitiation() {
+   // this.addApprovalInitiation();
+
     const isValid = this.onSubmit();
     if (isValid) {
       this.addApprovalInitiation();

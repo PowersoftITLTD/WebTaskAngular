@@ -36,7 +36,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     CategoryMasterComponent,
     AddDocumentDialogComponent,
     AddInstructionDialogComponent,
-    InstructionMasterComponent
+    InstructionMasterComponent,
   ],
   imports: [
     CommonModule,

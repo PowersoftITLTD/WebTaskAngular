@@ -1,4 +1,4 @@
-import { Component, ErrorHandler, Input, OnInit } from '@angular/core';
+import { Component, ElementRef, ErrorHandler, HostListener, Input, OnInit } from '@angular/core';
 import { ApiService } from 'src/app/services/api/api.service';
 import { CredentialService } from 'src/app/services/credential/credential.service';
 import { FormBuilder, FormGroup } from '@angular/forms';
@@ -20,7 +20,6 @@ interface DocumentListItem {
   templateUrl: './output.component.html',
   styleUrls: ['./output.component.css']
 })
-
 export class OutputComponent implements OnInit {
   loading: boolean = true;
   @Input() recursiveLogginUser: any = {};
@@ -30,7 +29,6 @@ export class OutputComponent implements OnInit {
   selectedTags: [] = [];
   taskData: any;
   outputList: any[] = [];
-  myFiles: { file: File; name: string }[] = [];
   docTypeList: any[] = [];
   @Input() task: any;
   taskDetails: any;
@@ -40,7 +38,6 @@ export class OutputComponent implements OnInit {
   searchItem: string = '';
   selectedDocs: { key: string; DOCUMENT_CATEGORY: number; MKEY: number }[] = [];
   groupedDocsList: { DOCUMENT_NAME: string; DOCUMENTS: DocumentListItem[] }[] = [];
-
   tasksData = {
     property: '',
     building: '',
@@ -63,8 +60,20 @@ export class OutputComponent implements OnInit {
     private router: Router,
     private tostar: ToastrService,
     private route: ActivatedRoute,
+    private el: ElementRef
+
   ) {
     this.fetchProjectData();
+  }
+  @HostListener('document:click', ['$event'])
+
+  clickOutside(event: Event) {
+    if (this.isModalOpen && !this.el.nativeElement.contains(event.target)) {
+      this.closeModal();
+    }
+    if (this.isAddModalOpen && !this.el.nativeElement.contains(event.target)) {
+      this.closeAddModal();
+    }
   }
 
   ngOnInit(): void {
@@ -253,6 +262,53 @@ export class OutputComponent implements OnInit {
     });
   }
 
+  openModal(document: any): void {
+    this.isModalOpen = true;
+    setTimeout(() => {
+      this.selectedDocument = document;
+    });
+  }
+
+  closeModal(): void {
+    this.isModalOpen = false;
+    this.selectedDocument = null;
+  }
+
+  hasFile(): boolean {
+    return this.selectedDocument.TASK_OUTPUT_ATTACHMENT.length > 0;
+  }
+
+  selectedFileName(): string {
+    const files = this.selectedDocument.TASK_OUTPUT_ATTACHMENT;
+
+    if (files && files.length > 0) {
+      const file = files[0];
+      return file.name || file.FILE_NAME;
+    }
+    return "Attach Document";
+  }
+
+  getDownloadUrl(): string {
+    const filePath = this.selectedDocument.TASK_OUTPUT_ATTACHMENT[0]?.FILE_PATH;
+    return `http://192.168.19.188:8065/${filePath}`
+  }
+
+  onFileSelected(event: any): void {
+    const file = event.target.files[0];
+    if (file) {
+      this.selectedDocument.TASK_OUTPUT_ATTACHMENT = [file];
+    }
+  }
+
+  openAddModal() {
+    this.fetchDocsList();
+    this.isAddModalOpen = true;
+  }
+
+  closeAddModal() {
+    this.isAddModalOpen = false;
+  }
+
   updateFilteredDocsList(): void {
     const searchItemLower = this.searchItem.toLowerCase().trim();
     const groupedData: { [key: string]: { DOCUMENT_NAME: string; DOCUMENTS: DocumentListItem[] } } = {};
@@ -296,6 +352,7 @@ export class OutputComponent implements OnInit {
       selected.DOCUMENT_CATEGORY.toString() === item.DOCUMENT_CATEGORY
     );
   }
+
   addDocumentToOutput(item: DocumentListItem): void {
     const token = this.apiService.getRecursiveUser();
     const user = this.credentialService.getUser();
@@ -322,114 +379,35 @@ export class OutputComponent implements OnInit {
     });
   }
 
-
-  openAddModal() {
-    this.fetchDocsList();
-    this.isAddModalOpen = true;
-  }
-
-  closeAddModal() {
-    this.isAddModalOpen = false;
-  }
-
-
-  openModal(document: any): void {
-    this.isModalOpen = true;
-    setTimeout(() => {
-      this.selectedDocument = document;
-      document.TASK_OUTPUT_ATTACHMENT.forEach((docFile: any) => {
-        this.myFiles.push({
-          name: docFile.FILE_NAME,
-          file: docFile.FILE_PATH,
-        })
-      })
-    });
-  }
-
-  closeModal(): void {
-    this.isModalOpen = false;
-    this.selectedDocument = null;
-  }
-
-  hasFile(): boolean {
-    return this.selectedDocument.TASK_OUTPUT_ATTACHMENT.length > 0;
-  }
-
-  selectedFileName(): string {
-    const files = this.selectedDocument.TASK_OUTPUT_ATTACHMENT;
-
-    if (files && files.length > 0) {
-      const file = files[0];
-      return file.name || file.FILE_NAME;
-    }
-    return "Attach Document";
-  }
-
-  getDownloadUrl(): string {
-    const filePath = this.selectedDocument.TASK_OUTPUT_ATTACHMENT[0]?.FILE_PATH;
-    return `http://192.168.19.188:8087/${filePath}`
-  }
-
-  onFileSelected(event: any): void {
-    const file = event.target.files[0];
-    if (file) {
-      this.selectedDocument.TASK_OUTPUT_ATTACHMENT = [file];
-    }
-    const inputElement = event.target as HTMLInputElement;
-    if (inputElement.files && inputElement.files.length > 0) {
-      Array.from(inputElement.files).forEach((file: File) => {
-        // Push an object with file and its name to myFiles array
-        this.myFiles.push({
-          file: file,
-          name: file.name,
-        });
-      });
-
-      const labelElement = document.getElementById('AttachmentDetails');
-      if (labelElement) {
-        // Join file names for display
-        const fileNames = this.myFiles.map((item: any) => item.name).join(', ');
-        labelElement.textContent = fileNames;
-      }
-    }
-  }
-
   saveChanges(): void {
     const token = this.apiService.getRecursiveUser();
-    const formData: any = new FormData();
+    const formData = new FormData();
 
-    const documentData: any = {
-      PROJECT_DOC_FILES: this.myFiles,
-      DOC_MKEY: this.selectedDocument.DOC_MKEY.toString(),
-      PROPERTY_MKEY: this.selectedDocument.PROPERTY_MKEY,
-      BUILDING_MKEY: this.selectedDocument.BUILDING_MKEY,
-      VALIDITY_DATE: this.selectedDocument.VALIDITY_DATE || '',
-      CREATED_BY: this.selectedDocument.CREATED_BY_ID,
-      DOC_NUMBER: this.selectedDocument.DOC_NUMBER || '',
-      DOC_DATE: this.selectedDocument.DOC_DATE || '',
-      SR_NO: this.selectedDocument.SR_NO,
-      MKEY: this.selectedDocument.MKEY,
-      DELETE_FLAG: "N"
-    };
+    const fileAttachment = this.selectedDocument.TASK_OUTPUT_ATTACHMENT[0];
+    console.log('fileAttachment', fileAttachment);
 
-    // Populate FormData using the object model
-    Object.keys(documentData).forEach((key) => {
-      if (key === "PROJECT_DOC_FILES" && Array.isArray(documentData[key])) {
-        documentData[key].forEach((file: File | any, index: number) => {
-          formData.append(`${key}`, file.file);
-        });
-      } else if (key !== "PROJECT_DOC_FILES") {
-        const value = documentData[key] !== undefined ? documentData[key] : "";
-        formData.append(key, value);
-      }
-    });
-
-    for (const [key, value] of formData.entries()) {
-      console.log(`${key}:`, value);
+    if (fileAttachment instanceof File) {
+      formData.append('PROJECT_DOC_FILES', fileAttachment);
+      formData.append('FILE_DELETE_FLAG', 'N');
+    } else if (fileAttachment?.FILE_PATH && fileAttachment !== null) { //Checking if data is prefilled.
+      formData.append('PROJECT_DOC_FILES', fileAttachment?.FILE_PATH);
+      formData.append('FILE_DELETE_FLAG', 'N');
+    } else {
+      formData.append('PROJECT_DOC_FILES', 'null');
+      formData.append('FILE_DELETE_FLAG', 'Y');
     }
-    Object.entries(documentData).forEach(([key, value]) => {
-      formData.append(key, value);
-    });
+
+    formData.append('DOC_MKEY', this.selectedDocument.DOC_MKEY.toString());
+    formData.append('PROPERTY_MKEY', this.selectedDocument.PROPERTY_MKEY);
+    formData.append('BUILDING_MKEY', this.selectedDocument.BUILDING_MKEY);
+    formData.append('VALIDITY_DATE', this.selectedDocument.VALIDITY_DATE);
+    formData.append('CREATED_BY', this.selectedDocument.CREATED_BY_ID);
+    formData.append('DOC_NUMBER', this.selectedDocument.DOC_NUMBER);
+    formData.append('DOC_DATE', this.selectedDocument.DOC_DATE);
+    formData.append('SR_NO', this.selectedDocument.SR_NO);
+    formData.append('MKEY', this.selectedDocument.MKEY);
+    formData.append('DELETE_FLAG', "N");
+
     this.apiService.updateOutputDetails(formData, token).subscribe(
       (response: any) => {
         if (response[0].DATA?.length) {
@@ -448,11 +426,6 @@ export class OutputComponent implements OnInit {
 
   removeFile(): void {
     this.selectedDocument.TASK_OUTPUT_ATTACHMENT = [];
-    this.myFiles = [];
-  }
-
-  addNewDocument(): void {
-
   }
 
   ngOnDestroy(): void {

@@ -280,7 +280,7 @@
                             <div class="sample-wrapper">
                               <div class="combo-section">
                                 <div>
-                                  <input type="text" (input)="filterCities()" placeholder="Search Project"
+                                  <input type="text" [(ngModel)]="searchText" [ngModelOptions]="{standalone: true}" placeholder="Search Project"
                                     class="search-input" />
 
                                   <ng-container *ngIf="taskData?.mkey">
@@ -296,9 +296,14 @@
                                       <hr>
                                       <ng-template #recursiveTaskTemplate let-tasks>
 
-                                        <ng-container *ngFor="let task of tasks">
+                                        <ng-container *ngFor="let task of tasks | projectTaskSearch: searchText">
 
-                                          <li class="task-item" [ngClass]="{'selected': isSelected(task)}">
+                                          <li class="task-item" 
+                                          [ngClass]="{
+                                            'selected': isSelected(task),
+                                            'task-selected': isSelected(task),
+                                            'task-disabled': isTaskDisabled(task)
+                                            }">
                                             <ng-container *ngIf="task.TASK_NO?.TASK_NO">
 
                                               <div class="task-details">
@@ -333,8 +338,13 @@
 
                                       </ng-template>
 
-                                      <ng-container *ngFor="let task of subTasks">
-                                        <li class="task-item" [ngClass]="{'selected': isSelected(task)}">
+                                      <ng-container *ngFor="let task of subTasks | projectTaskSearch: searchText">
+                                        <li class="task-item" 
+                                        [ngClass]="{
+                                          'selected': isSelected(task),
+                                          'task-selected': isSelected(task),
+                                          'task-disabled': isTaskDisabled(task)
+                                        }">
                                           <ng-container *ngIf="task.TASK_NO?.TASK_NO">
                                             <div class="task-details">
                                               <span class="select-all-container">
@@ -382,7 +392,7 @@
 
                                       <ng-template #recursiveTaskTemplate let-tasks>
 
-                                        <ng-container *ngFor="let task of tasks">
+                                        <ng-container *ngFor="let task of tasks | projectTaskSearch: searchText">
 
                                           <li class="task-item">
                                             <ng-container *ngIf="task.TASK_NO?.TASK_NO">
@@ -419,7 +429,7 @@
                                         </ng-container>
                                       </ng-template>
 
-                                      <ng-container *ngFor="let task of subTasks">
+                                      <ng-container *ngFor="let task of subTasks | projectTaskSearch: searchText">
                                         <li class="task-item">
                                           <ng-container *ngIf="task.TASK_NO?.TASK_NO">
                                             <div class="task-details">

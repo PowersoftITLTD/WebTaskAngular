@@ -78,10 +78,6 @@ button.log-btn:hover {
   background-color: rgb(141, 141, 141);
   color: rgb(255, 255, 255);
   font-size: medium;
-  position: absolute;
-  right: 2rem;
-  top: 8.4rem;
-  z-index: 9999;
   box-shadow: none;
 }
 
@@ -110,11 +106,7 @@ button.log-btn:hover {
   .btn {
     background-color: rgb(141, 141, 141);
     color: rgb(255, 255, 255);
-    font-size: medium;
-    position: absolute;
-    right: 1rem;
-    top: 5.1rem;
-    z-index: 9999;
+    font-size: small;
     box-shadow: none;
   }
 }

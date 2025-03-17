@@ -121,11 +121,11 @@ export class SancAuthComponent implements OnInit {
       } else if (nextRowToEnable) {
         status = 'In-Progress';
         nextRowToEnable = false;
-      }else if (this.sancAuthList?.length === 1) {
+      } else if (this.sancAuthList?.length === 1) {
         status = 'In-Progress';
         nextRowToEnable = false;
       }
-       else {
+      else {
         status = 'Select';
         disabled = true;
       }
@@ -171,6 +171,7 @@ export class SancAuthComponent implements OnInit {
   saveRow(index: number): void {
     const row = this.rowsNew.at(index).value; // Get form values dynamically
     const token = this.apiService.getRecursiveUser();
+    const user = this.credentialService.getUser();
 
     const payload = {
       SR_NO: 0,
@@ -179,7 +180,7 @@ export class SancAuthComponent implements OnInit {
       LEVEL: row.level,
       SANCTIONING_DEPARTMENT: row.sanctioningDept,
       SANCTIONING_AUTHORITY_MKEY: (row.sanctioningAuth),
-      CREATED_BY: this.sancAuthList[0]?.CREATED_BY_ID,
+      CREATED_BY: user[0]?.MKEY,
     };
     // Validate required fields
 

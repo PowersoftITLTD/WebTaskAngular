@@ -26,6 +26,8 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
   public filteredDocs: ICity[] = [];
   public searchTerm: string = '';
   selectedTask: string = '';
+  searchText: string = '';
+
   uniqueSubTask: any[] = []
   unFlatternArr: any[] = [];
   existingTaskA: any;
@@ -134,7 +136,6 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
         }
       }
     }
-
   }
 
   ngOnInit(): void {
@@ -331,8 +332,6 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
 
     // Update the uniqueSubTask property
     this.uniqueSubTask = uniqueTasks;
-
-
   }
 
 
@@ -359,6 +358,7 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
 
       const countAbbr = (tasks: any[]) => {
         tasks.forEach((task: any) => {
+          console.log('task', task.TASK_NO)
           const abbr = task?.TASK_NO?.maiN_ABBR;
           if (abbr) abbrCount.set(abbr, (abbrCount.get(abbr) || 0) + 1);
 
@@ -690,23 +690,23 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
     }
 
     console.log(addProjectDefination)
-    // this.apiService.postProjectDefination(addProjectDefination, this.recursiveLogginUser).subscribe({
-    //   next: (addData: any) => {
-    //     console.log('Data added successfully', addData)
+    this.apiService.postProjectDefination(addProjectDefination, this.recursiveLogginUser).subscribe({
+      next: (addData: any) => {
+        console.log('Data added successfully', addData)
 
-    //     if(addData.status === 'Error'){
-    //       this.tostar.error('This project is already exist for same property and building');
-    //       return;
-    //     }
-    //     this.tostar.success('Success', 'Template added successfuly')
-    //     this.router.navigate(['task/approval-screen'], { queryParams: { source: 'project-defination' } });
+        if(addData.status === 'Error'){
+          this.tostar.error('This project is already exist for same property and building');
+          return;
+        }
+        this.tostar.success('Success', 'Template added successfuly')
+        this.router.navigate(['task/approval-screen'], { queryParams: { source: 'project-defination' } });
 
-    //   }, error: (error: ErrorHandler|any) => {
-    //     const errorData = error.error.errors;
-    //     const errorMessage = Object.values(errorData).flat().join(' , ');
-    //     this.tostar.error(errorMessage, 'Error Occured in server') 
-    //   }
-    // });
+      }, error: (error: ErrorHandler|any) => {
+        const errorData = error.error.errors;
+        const errorMessage = Object.values(errorData).flat().join(' , ');
+        this.tostar.error(errorMessage, 'Error Occured in server') 
+      }
+    });
   }
 
 
@@ -958,7 +958,6 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
     }
 
     this.subTasks.forEach(task => {
-      console.log('task', task)
       updateTaskSelection(task, this.selectAllChecked);
       this.toggleAll(task);
     });
@@ -1628,7 +1627,7 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
 
     const same_data = optionListArr;
 
-    // console.log('optionListArr', optionListArr)
+     //console.log('optionListArr', optionListArr)
 
     const buildHierarchy = (tasks: any, rootTaskNo: any) => {
       const rootTask = tasks.find((task: any) => task.TASK_NO === rootTaskNo);
@@ -1702,7 +1701,7 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
       }
     });
 
-    // console.log('subTasks from parents: ',this.subTasks)
+    console.log('subTasks from parents: ',this.subTasks)
 
     this.loading = false;
 

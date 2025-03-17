@@ -158,28 +158,29 @@
                 </div>
 
                 <!-- Attach Document Field -->
-                <div class="col-6" *ngIf="selectedDocument?.DOC_ATTACH_APP_FLAG === 'Y'">
-                    <div class="form-group" id="customFile" style="margin-top: 23px;">
-                        <div class="custom-file d-flex align-items-center">
-                            <input type="file" class="custom-file-input" [disabled]="hasFile()"
+                <div class="col-md-6" *ngIf="selectedDocument?.DOC_ATTACH_APP_FLAG === 'Y'">
+                    <div class="form-group">
+                        <label for="fileUpload" class="form-label">Attach Document</label>
+                        <div class="custom-file" *ngIf="!hasFile()" >
+                            <input type="file" id="fileUpload" class="custom-file-input"
                                 (change)="onFileSelected($event)">
-
-                            <label class="custom-file-label flex-grow-1 text-truncate" for="customFile">
-                                {{ selectedFileName() }}
+                            <label class="custom-file-label text-truncate">
+                                Attach Document
                             </label>
+                        </div>
 
-                            <div *ngIf="hasFile()" class="file-actions d-flex align-items-center ms-2"
-                                style="z-index: 1000; margin-left: -15rem; margin-top: 3px; gap: 4px;">
-                                <a [href]="getDownloadUrl()" download>
-                                    <i class="fa fa-download" aria-hidden="true"></i>
-                                </a>
-                                <button (click)="removeFile()">
-                                    <i class="fa fa-trash" aria-hidden="true"></i>
-                                </button>
+                        <div *ngIf="hasFile()" class="d-flex align-items-center" style="gap: 8px;">
+                            <span class="text-truncate">{{ selectedFileName() }}</span>
+                            <a [href]="getDownloadUrl()" download>
+                                <i class="fa fa-download" id="download" aria-hidden="true"></i>
+                            </a>
+                            <div (click)="removeFile();  $event.stopPropagation()">
+                                <i class="fa fa-trash" id="removeBtn" aria-hidden="true"></i>
                             </div>
                         </div>
                     </div>
                 </div>
+
             </div>
         </div>
         <div class="modal-footer">

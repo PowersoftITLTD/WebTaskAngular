@@ -251,6 +251,16 @@
   color: white;
 }
 
+#removeBtn:hover{
+  color: rgba(255, 0, 0, 0.625);
+  cursor: pointer;
+}
+
+#download:hover{
+  color: rgba(0, 0, 255, 0.629);
+  cursor: pointer;
+}
+
 /* Fade-in Animation */
 @keyframes fadeIn {
   from {
@@ -439,6 +449,9 @@
     width: 100%;
     align-items: center;
     margin-bottom: 4rem;
+  }
+  .text-truncate{
+    font-size: small;
   }
 }
 

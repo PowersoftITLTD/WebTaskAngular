@@ -47,6 +47,16 @@
     position: relative;
   
   }
+
+  .task-selected {
+    background-color: #5a79ac; /* Light blue for selection */
+  }
+  
+  .task-disabled {
+    background-color: #e7cfcf; /* Light blue for selection */
+
+  }
+  
   
   .progress-bar {
     height: 100%;
