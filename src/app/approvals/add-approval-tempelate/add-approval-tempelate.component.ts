@@ -498,7 +498,6 @@ export class AddApprovalTempelateComponent implements OnInit {
       fieldErrors.forEach(errorMessage => this.tostar.error(errorMessage));
       return;
     }
-    this.isInsertingApprl = true;
 
     this.tostar.success('Success', 'Template added successfuly')
     this.router.navigate(['task/approval-screen'], { queryParams: { source: 'authority-tempelate' } });
@@ -1265,7 +1264,7 @@ export class AddApprovalTempelateComponent implements OnInit {
     rowForm.get('abbrivation')?.setValue(selectedAbbr);
 
     const selectedRow = this.getRelAbbr.find(r => r.maiN_ABBR === selectedAbbr);
-    console.log('selectedRow: ', )
+    console.log('selectedRow: ',rowForm);
     const header_no_of_days = Number(this.approvalTempForm.get('noOfDays')?.value);
     const subtas_no_of_days = selectedRow?.dayS_REQUIERD || 0;
 
@@ -1279,12 +1278,48 @@ export class AddApprovalTempelateComponent implements OnInit {
     totalDaysRequired += subtas_no_of_days; // Add newly selected row's days
 
     console.log('Total Days Required: ', totalDaysRequired);
+    console.log('header_no_of_days: ', header_no_of_days)
 
-    if (totalDaysRequired > header_no_of_days) {
+    if (totalDaysRequired >= header_no_of_days) {
         if (!confirm(`Days are exceeding as per header which is ${header_no_of_days} Days. Do you still want to proceed?`)) {
             formArray.removeAt(formArray.length - 1); // Remove the last added row
             return;
         }
+    }
+
+    const abbrivation = this.approvalTempForm.get('abbr')?.value;
+    
+
+
+    if(abbrivation === selectedAbbr){
+      this.tostar.error('Same approval cannot assign to itself');
+      formArray.removeAt(formArray.length - 1); // Remove the last added row
+      return;
+    }else if(abbrivation === '' || abbrivation === undefined || abbrivation === null){
+      this.tostar.error('Please enter the approval header abbrivation');
+      formArray.removeAt(formArray.length - 1); // Remove the last added row
+      return;
+    }
+
+    console.log('ROW form: ',formArray.value)
+
+    const sublist_form_value = formArray.value
+
+    const abbrivationSet = new Set();
+    let hasDuplicate = false;
+    
+    sublist_form_value.forEach((val: any) => {
+        if (abbrivationSet.has(val.abbrivation)) {
+            hasDuplicate = true;
+        } else {
+            abbrivationSet.add(val.abbrivation);
+        }
+    });
+    
+    if (hasDuplicate) {
+        this.tostar.error("Record already exist");
+        formArray.removeAt(formArray.length - 1); // Remove the last added row
+        return;
     }
 
     const matchedDepartment = this.departmentList.find(department => department.mkey === selectedRow?.authoritY_DEPARTMENT);

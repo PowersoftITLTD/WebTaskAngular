@@ -27,7 +27,7 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
 
 
   taskDetails: any;
-  loading: boolean = false;
+  loading: boolean = true;
 
   startDateValue: Date | any;
   employees: any[] = [];
@@ -1093,6 +1093,7 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
 
   toggleFormVisibility_main(index: number, task: any) {
     // this.onSubmitSubList(task.TASK_NO);
+    console.log('toggleFormVisibility_main',task)
     const token = this.apiService.getRecursiveUser();
     const USER_CRED = this.credentialService.getUser();
 
@@ -1131,14 +1132,24 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
         // Set selectedAssignTo after employees array is populated
         this.selectedAssignTo = (task.TASK_NO?.RESPOSIBLE_EMP_NAME)
           ? task.TASK_NO.RESPOSIBLE_EMP_NAME
-          : (this.employees.length > 0 ? this.employees[0].Assign_to : '');
+          :'';
+
+          // (this.employees.length > 0 ? this.employees[0].Assign_to : '')
 
         let check_start_date = task.TASK_NO?.start_date;       
         const startDate = new Date(check_start_date);
         const endDate = new Date(startDate);
-        endDate.setDate(startDate.getDate() + task.TASK_NO?.dayS_REQUIERD); // Shift end date based on total days
 
-        task.TASK_NO.end_date = endDate.toISOString().split('T')[0]; // Update task's end date (format YYYY-MM-DD)
+        if (task.TASK_NO?.tentative_end_date) {
+          task.TASK_NO.end_date = new Date(task.TASK_NO.tentative_end_date);
+      } else {
+          endDate.setDate(startDate.getDate() + task.TASK_NO?.dayS_REQUIERD);
+          task.TASK_NO.end_date = endDate.toISOString().split('T')[0]; // Format YYYY-MM-DD
+      }
+      
+        //endDate.setDate(startDate.getDate() + task.TASK_NO?.dayS_REQUIERD); // Shift end date based on total days
+
+        //task.TASK_NO.end_date = endDate.toISOString().split('T')[0]; // Update task's end date (format YYYY-MM-DD)
 
         let tagsString = task.TASK_NO?.TAGS.split(',');
         this.selectedTags = tagsString;
@@ -1280,7 +1291,7 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
           localStorage.setItem('RESPOSIBLE_EMP_MKEY', JSON.stringify(this.taskData.RESPOSIBLE_EMP_MKEY));
           // console.log('HEADER RESPOSIBLE_EMP_MKEY saved to local storage:', this.taskData.RESPOSIBLE_EMP_MKEY);
 
-          //window.location.reload();
+          window.location.reload();
 
           //this.tostar.success('Subtask updated successfully!')
 
@@ -1416,7 +1427,7 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
     console.log('breakToLinear selectedSeq', selectedSeq)
 
     const result: any[] = [];
-    const USER_CRED = this.credentialService.getUser();
+    //const USER_CRED = this.credentialService.getUser();
 
 
     const flatten = (task: any) => {
@@ -1850,7 +1861,19 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
           endDate.setDate(startDate.getDate() + daysRequired);
         }
 
+        if (item.TENTATIVE_END_DATE) {
+          console.log('coming to if')
+          endDate = new Date(item.TENTATIVE_END_DATE);
+        } else {
+          console.log('coming to else')
+          endDate = new Date(startDate);
+          endDate.setDate(startDate.getDate() + daysRequired);
+        }
+        
+
         headerEndDates[item.HEADER_MKEY] = new Date(endDate);
+
+        console.log('Check Item: ', item);
 
         return {
           TASK_NO: item.TASK_NO,
@@ -1865,12 +1888,12 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
           joB_ROLE_mkey: jobRole ? jobRole.mkey : 0,
           department: departmentRole ? departmentRole.typE_DESC : "Not found",
           department_mkey: departmentRole ? departmentRole.mkey : 0,
-          start_date: adjustDate(startDate),
-          end_date: adjustDate(endDate),
+          start_date: item.TENTATIVE_START_DATE ? item.TENTATIVE_START_DATE : adjustDate(startDate),
+          end_date: item.TENTATIVE_END_DATE ? item.TENTATIVE_END_DATE : adjustDate(endDate),
           tentative_start_date: item.TENTATIVE_START_DATE ? item.TENTATIVE_START_DATE : adjustDate(startDate),
           tentative_end_date: item.TENTATIVE_END_DATE ? item.TENTATIVE_END_DATE : adjustDate(endDate),
           RESPOSIBLE_EMP_NAME: item.RESPOSIBLE_EMP_NAME,
-          resposiblE_EMP_MKEY: item.resposiblE_EMP_MKEY,
+          resposiblE_EMP_MKEY: item.RESPOSIBLE_EMP_MKEY? item.RESPOSIBLE_EMP_MKEY: item.resposiblE_EMP_MKEY,
           TAGS: item.TAGS,
           status: item.STATUS,
         };
@@ -2009,6 +2032,7 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
 
       for (let dependentTask of dependentTasks) {
 
+        // console.log('dependentTasks', dependentTasks)
         let parentStartDate = new Date(currentTask.TENTATIVE_START_DATE);
         let parentEndDate = new Date(currentTask.TENTATIVE_END_DATE);
         let subtaskStartDate = new Date(dependentTask.TENTATIVE_START_DATE);

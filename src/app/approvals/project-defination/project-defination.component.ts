@@ -736,33 +736,6 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
     let subTaskList = this.uniqList;
     subTaskList = this.breakToLinear(this.selectedSeqArr);
 
-    // const linear_arr = this.breakToLinear(this.selectedSeqArr);
-    // const linear_sub = this.removeDuplicates(subTaskList);
-    // console.log('subTaskList',  linear_arr)
-    // console.log('linear_sub', linear_sub)
-
-    // if (!this.isCleared) {
-    //   console.log('Coming to non clear')
-    //   // subTaskList = subTaskList.filter((task, index, self) => {
-    //   //   // Check if task is not "Ready to Initiate" and is not a duplicate task with status "created"
-    //   //   const isDuplicate = self.findIndex(t => t.tasK_NO === task.tasK_NO) !== index;
-    //   //   console.log('isDuplicate', isDuplicate)
-    //   //   // Keep tasks that are either "Ready to Initiate" or "created" and if it is the first occurrence (or not a duplicate with status "created")
-    //   //   return (task.status === "Ready to Initiate" || task.status === "created" || task.status === "Initiated") &&
-    //   //     (!isDuplicate || task.status === "Ready to Initiate") || (!isDuplicate || task.status === "Initiated");
-    //   // });
-    //   subTaskList = this.breakToLinear(this.selectedSeqArr);
-    //   console.log('subTaskList', subTaskList)
-    // } else   {
-    //   console.log('Coming to clear')
-    //   subTaskList = this.flatList
-    //   console.log('subTaskList', this.subTasks )
-    //   // Otherwise, remove "Ready to Initiate" tasks
-    //   // subTaskList = subTaskList.filter(task => task.status !== "Ready to Initiate");
-    // }
-
-    // console.log('Filtered Sub Task List:', subTaskList);
-
     const updateProjectDefination = {
       mkey: this.taskData.mkey,
       projecT_NAME: subProjectName,
@@ -785,6 +758,10 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
     this.apiService.putProjectDefination(updateProjectDefination, headerMkey, this.recursiveLogginUser).subscribe({
       next: (addData: any) => {
         console.log('Data added successfully', addData)
+        if(addData.status === 'Error'){
+          this.tostar.error('Unable to update data');
+          return;
+        }
         this.tostar.success('Success', 'Template added successfuly')
         this.router.navigate(['task/approval-screen'], { queryParams: { source: 'project-defination' } });
       }, error: (error: ErrorHandler | any) => {
