@@ -39,8 +39,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     TaskManagementRoutingModule,
     SidePanelModule,
     PipeContentModule,
-    MatTooltipModule,
-    
+    MatTooltipModule,        
   ],
   entryComponents: [
     SelectedTaskInfoComponent

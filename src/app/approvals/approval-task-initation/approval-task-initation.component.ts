@@ -1269,6 +1269,14 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
       DELETE_FLAG: 'N'
     };
 
+    const task_start_date = new Date(task.start_date)
+    const task_end_date = new Date(task.end_date)
+
+    if(task_start_date > task_end_date){
+      this.tostar.error(`End date should be greater then end date`)
+      return;
+    }
+
     console.log('updateInitiationSubTask', updateInitiationSubTask);
 
     this.apiService.subTaskPutApprovalInitiation(headerMkey, updateInitiationSubTask, token).subscribe({
@@ -1810,6 +1818,25 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
   //   this.noParentTree(noSubParentTasks);
   // }
 
+  initiateToApprovalInitiation(approvalKey: any) {
+    this.recursiveLogginUser = this.apiService.getRecursiveUser();
+    const project_mkey = this.taskData.mkey
+    const approval_mkey = this.taskData.approvalS_ABBR_LIST[0].approvaL_MKEY
+
+
+    this.apiService.getApprovalInitiation(this.recursiveLogginUser, project_mkey, approvalKey).subscribe({
+      next: (response) => {
+        if (response) {
+         // this.navigateToApprovalInitiation(response.data);
+        }
+      },
+      error: (error: ErrorHandler | any) => {
+        const errorData = error.error.errors;
+        const errorMessage = Object.values(errorData).flat().join(' , ');
+        this.tostar.error(errorMessage, 'Error Occured in server')
+      }
+    })
+  }
 
   async getTree() {
     let department_new, jobRole_new;
@@ -1844,7 +1871,9 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
         const departmentRole = departmentList.find(dept => dept.mkey === item.DEPARTMENT);
         const daysRequired = isNaN(item.DAYS_REQUIRED) ? 0 : Number(item.DAYS_REQUIRED);
 
-        let lastEndDate = headerEndDates[item.HEADER_MKEY] || new Date(this.appeInitForm.get('startDate')?.value);
+        //let lastEndDate = headerEndDates[item.HEADER_MKEY] || new Date(this.appeInitForm.get('startDate')?.value);
+
+        let lastEndDate = new Date();
 
         let startDate = item.TENTATIVE_START_DATE ? new Date(item.TENTATIVE_START_DATE) : new Date(lastEndDate);
         let endDate = item.TENTATIVE_END_DATE ? new Date(item.TENTATIVE_END_DATE) : new Date(startDate);
@@ -2022,15 +2051,17 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
     });
 
     let headerCompletionDate = new Date(this.appeInitForm.get('complitionDate')?.value[0]);
-    const check = this.breakToLinear(this.subTasks);
+    const tasks = this.breakToLinear(this.subTasks);
 
-    for (let i = 0; i < check.length; i++) {
-      let currentTask = check[i];
+    for (let i = 0; i < tasks.length; i++) {
+      let currentTask = tasks[i];
 
       // Find tasks that have the current task's approval as their header
-      let dependentTasks = check.filter(task => task.header_MKEY === currentTask.approvaL_MKEY);
+      let dependentTasks = tasks.filter(task => task.header_MKEY === currentTask.approvaL_MKEY);
 
       for (let dependentTask of dependentTasks) {
+
+        const getDateOnly = (date:any) => new Date(date.getFullYear(), date.getMonth(), date.getDate());
 
         // console.log('dependentTasks', dependentTasks)
         let parentStartDate = new Date(currentTask.TENTATIVE_START_DATE);
@@ -2038,12 +2069,20 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
         let subtaskStartDate = new Date(dependentTask.TENTATIVE_START_DATE);
         let subtaskEndDate = new Date(dependentTask.TENTATIVE_END_DATE);
 
-        console.log(`Check Header Date ${parentStartDate} and subtask end date ${subtaskEndDate} and ${dependentTask.TASK_NO}`);
+      //   console.log('parentStartDate: ', parentStartDate);
+      //   console.log('parentEndDate: ', parentEndDate);
+      //   console.log('subtaskStartDate: ', subtaskStartDate);
+      //   console.log('subtaskEndDate: ', subtaskEndDate);
 
-        if (subtaskStartDate < parentStartDate || subtaskEndDate > parentEndDate) {
-          this.tostar.error(`Date mismatch for Task ${dependentTask.TASK_NO}. It must fall within the range of the header task ${currentTask.TASK_NO}.`);
-          return false;
-        }
+      //   console.log(`Check Header Date ${parentStartDate} and subtask end date ${subtaskEndDate} and ${dependentTask.TASK_NO}`);
+
+      //  console.log('dependentTask: ', dependentTask);
+      //  console.log('currentTask: ', currentTask);
+
+        // if (subtaskStartDate < parentStartDate || subtaskEndDate > parentEndDate) {
+        //   this.tostar.error(`Date mismatch for Task ${dependentTask.TASK_NO}. It must fall within the range of the header task ${currentTask.TASK_NO}.`);
+        //   return false;
+        // }
       }
     }
 
@@ -2051,7 +2090,7 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
     console.log('Check completion date: ', this.appeInitForm.get('complitionDate')?.value)
     let taskNumbers: string[] = [];
 
-    check.forEach(task => {
+    tasks.forEach(task => {
       if (task.TENTATIVE_END_DATE) {
         const taskEndDate = new Date(task.TENTATIVE_END_DATE);
         if (taskEndDate >= header_date) {

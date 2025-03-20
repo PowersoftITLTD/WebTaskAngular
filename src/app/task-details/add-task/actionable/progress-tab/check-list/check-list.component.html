@@ -34,12 +34,17 @@
                   <!-- Document Descriptions -->
                   <ng-container *ngFor="let docItem of group.DOCUMENTS">
                     <li (click)="toggleSelection(docItem)" [class.selected]="isSelected(docItem)"
-                      style="display: flex; justify-content: space-between;">
-                      {{ docItem.TYPE_DESC || 'No Description Available' }}
+                      style="display: flex; justify-content: space-between; align-items: center;">
+
+                      <span class="truncate-text" [title]="docItem.TYPE_DESC || 'No Description Available'">
+                        {{ docItem.TYPE_DESC || 'No Description Available' }}
+                      </span>
+
                       <input type="checkbox" class="checkbox" [checked]="isSelected(docItem)"
                         (click)="onCheckboxChange($event, docItem)" />
                     </li>
                   </ng-container>
+
                 </ng-container>
               </ul>
 
@@ -79,7 +84,9 @@
                       <ng-container *ngFor="let docItem of group.DOCUMENTS">
                         <li (click)="toggleListSelection(docItem)" [class.selected]="docItem.selected"
                           style="display: flex; justify-content: space-between; align-items: center; cursor: pointer; padding: 5px; border-bottom: 1px solid #ddd;">
-                          <span>{{ docItem.TYPE_DESC || 'No Description Available' }}</span>
+                          <span class="truncate-text" [title]="docItem.TYPE_DESC || 'No Description Available'">
+                            {{ docItem.TYPE_DESC || 'No Description Available' }}
+                          </span>
                         </li>
                       </ng-container>
 

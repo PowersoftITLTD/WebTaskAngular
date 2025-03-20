@@ -657,7 +657,7 @@ export class SelectedTaskInfoComponent implements OnInit {
 
 
   fileUrl() {
-    return `http://192.168.19.188:8087/${this.taskDetails[0].FILE_PATH}`;
+    return `http://task.piplapps.com:8074/${this.taskDetails[0].FILE_PATH}`;
   }
 
 

@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, ErrorHandler, Input, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 import { ApiService } from 'src/app/services/api/api.service';
 import { CredentialService } from 'src/app/services/credential/credential.service';
 
@@ -48,7 +49,7 @@ export class ApprovalScreenComponent implements OnInit {
   @Input() recursiveLogginUser: any = {};
   @Input() loggedInUser: any;
 
-  loading: boolean = false;
+  loading: boolean = true;
 
   selectedMKey: number | undefined;
 
@@ -77,6 +78,7 @@ export class ApprovalScreenComponent implements OnInit {
     private apiService: ApiService,
     private activatedRoute: ActivatedRoute,
     private dataService: CredentialService,
+    private tostar:ToastrService,
     private http:HttpClient
   ) { }
 
@@ -85,38 +87,39 @@ export class ApprovalScreenComponent implements OnInit {
 
     this.source = this.activatedRoute.queryParams.subscribe(params => {
       const source = params['source'];
-      console.log('check source',source)
       if (source === 'document-tempelate') {
         console.log('In document template')
+        this.taskList = []
         this.buttonText = 'ADD Template';
         this.getDocumentTempList();
       } else if (source === 'authority-tempelate') {
+        this.taskList = []
         this.buttonText = 'ADD Abbrevation';
         this.getApprovalTempList();
       } else if (source === 'project-defination') {
+        this.taskList = []
         this.getProjDefinationList();
         this.buttonText = 'ADD Project';
       } else if(source === 'project-document-depository'){
+        this.taskList = []
         this.getDocumentDepository();
         this.buttonText = 'ADD Depository'
       }else if(source === 'category-master'){
+        this.taskList = []
         this.buttonText = 'ADD Category'
         this.getCategoryList();
       }else if(source === 'instruction-master'){
+        this.taskList = []
         this.buttonText = 'ADD Instruction'
         this.getINSTRList();
       }
     })
-
-
   }
 
 
   changeEndAndCheckList(select_type:string){
     console.log('select_type', select_type)
   }
-
-
 
 
   onLogin() {   
@@ -205,7 +208,7 @@ onFilterTypeChange(event: Event) {
 
 
 openSelectedTask(data: any) {
-  console.log('Data passed:', data); 
+  // console.log('Data passed:', data); 
   
   const button = this.buttonText;
   if (button === 'ADD Template') {
@@ -275,7 +278,7 @@ fetchComboDetails(){
   this.apiService.getBuildingClassificationDP(this.recursiveLogginUser).subscribe({
     next: (list: any) => {
       this.buildingList = list;
-      this.setComboData()
+      // this.setComboData()
 
       console.log('Building Classification List:', this.buildingList);       
     },
@@ -317,6 +320,7 @@ fetchComboDetails(){
       console.error('Unable to fetch Document Type List', error);
     }
   });
+
 }
 
 setCategoryData(): void {
@@ -346,9 +350,9 @@ setComboData(): void {
       const matchedAuthority = this.statutoryAuthList.find((authority: any) => authority.mkey === task.statutorY_AUTHORITY);
 
       if (matchedBuilding && matchedStandard ) {
-        task.building_Name = matchedBuilding.typE_DESC; 
-        task.standard_Name = matchedStandard.typE_DESC
-        task.authority_Name = matchedAuthority.typE_DESC
+        // task.building_Name = matchedBuilding.typE_DESC; 
+        // task.standard_Name = matchedStandard.typE_DESC
+        // task.authority_Name = matchedAuthority.typE_DESC
       } else {
         // console.log('No matching category found for doC_CATEGORY:', task.doC_CATEGORY);
       }
@@ -361,25 +365,31 @@ setComboData(): void {
 
 
 getApprovalTempList(){
+
+  this.loading = true;
+
   this.recursiveLogginUser = this.apiService.getRecursiveUser();
 
   this.apiService.getApprovalTemp(this.recursiveLogginUser).subscribe({
     next:(approval_temp_data) =>{
       
-      this.taskList = approval_temp_data;
+      this.taskList = approval_temp_data.reverse();
+      this.loading = false;
 
-      console.log('Approval List', this.taskList)
-      this.fetchComboDetails()
-      // console.log('approval_temp_data', approval_temp_data)
+      // this.fetchComboDetails()
 
     },error:(error) =>{
       console.log('Error occured', error)
+      this.tostar.error('Network error')
+
     }
   })
 }
 
 
   getProjDefinationList(){
+
+    this.loading = true;
     const data = this.dataService.getUser();
       console.log('onLogin data')
 
@@ -394,10 +404,12 @@ getApprovalTempList(){
     this.apiService.getProjectDefination(this.recursiveLogginUser, USER_CRED.MKEY).subscribe({
       next:(proj_def) => {
         this.taskList = proj_def.reverse();
-        // console.log('proj_def',proj_def)
+        this.loading = false;
       },error:(error)=>{
         if(error){
           console.log('error', error)
+          this.tostar.error('Network error or error occored while fetching data')
+
         }
       }
     })
@@ -405,6 +417,8 @@ getApprovalTempList(){
 
 
   getDocumentTempList() {
+    this.loading = true;
+
     const data = this.dataService.getUser();
     console.log('onLogin data')
 
@@ -422,9 +436,12 @@ getApprovalTempList(){
 
 
         this.taskList = doc_temp_list.reverse();
+        this.loading = false;
       }, error: (error) => {
         if (error) {
           console.log('error', error)
+          this.tostar.error('Network error')
+
         }
       }
     })
@@ -432,6 +449,8 @@ getApprovalTempList(){
 
 
   getDocumentDepository(){
+    this.loading = true;
+
     const data = this.dataService.getUser();
     console.log('onLogin data')
 
@@ -442,16 +461,15 @@ getApprovalTempList(){
     };
 
     this.recursiveLogginUser = this.apiService.getRecursiveUser();
-
-
     this.apiService.getDocumentryList( this.recursiveLogginUser.toString(), USER_CRED.MKEY).subscribe({
       next: (depositoryList) => {
-        console.log('depositoryList', depositoryList)
-
         this.taskList = depositoryList[0].DATA.reverse();
+        this.loading = false;
       }, error: (error) => {
         if (error) {
           console.log('error', error)
+          this.tostar.error('Network error')
+
         }
       }
     })
@@ -459,6 +477,8 @@ getApprovalTempList(){
 
 
   getCategoryList(){
+    this.loading = true;
+
     this.docTypeList = this.taskList
     this.recursiveLogginUser = this.apiService.getRecursiveUser();
 
@@ -466,31 +486,36 @@ getApprovalTempList(){
       next: (list: any) => {
         this.catList = list;
         this.taskList = this.catList
+        this.loading = false;
       },
       error: (error: any) => {
         console.error('Unable to fetch Document Type List', error);
+        this.tostar.error('Network error')
+
       }
     });
   }
 
 
   getINSTRList(){
+    this.loading = true;
+
     this.docTypeList = this.taskList
     this.recursiveLogginUser = this.apiService.getRecursiveUser();
 
     this.apiService.getInstructionList(this.recursiveLogginUser).subscribe({
       next: (list: any) => {
         this.INSTRList = list;
-        this.taskList = this.INSTRList
-        console.log('INSTRList: ',this.taskList)
+        this.taskList = this.INSTRList;
+        this.loading = false;
       },
       error: (error: any) => {
         console.error('Unable to fetch Document Type List', error);
+        this.tostar.error('Network error')
+
       }
     });
-  }
-  
-
+  }  
 }
 
  

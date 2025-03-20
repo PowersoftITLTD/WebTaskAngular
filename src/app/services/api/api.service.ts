@@ -853,6 +853,25 @@ export class ApiService {
     return this.http.delete<any>(`${this._apiUrl_1}api/ProjectDefination/ProjectDefination/Delete-TASK?id=${headerMkey}&LastUpatedBy=${lastUpdatedBy}`, { headers })
   }
 
+  addDocToChecklist(data: any, jwtToken: string): Observable<any> {
+    const url = `${this._apiUrl_1}api/CommonApi/Task-Management/Task-CheckList-Table-Insert-Update`;
+    const headers = new HttpHeaders({ 'Authorization': `Bearer ${jwtToken}` });
+    return this.http.post(url, data, { headers });
+  }
+
+
+  addOutputDetails(data: any, jwtToken: string): Observable<any> {
+    const url = `${this._apiUrl_1}api/CommonApi/Task-Management/Task-Output-Table-Insert-Update`;
+    const headers = new HttpHeaders({ 'Authorization': `Bearer ${jwtToken}` });
+    return this.http.post(url, data, { headers });
+  }
+
+  addNewSancAuth(data: any, jwtToken: string): Observable<any> {
+    const url = `${this._apiUrl_1}api/CommonApi/Task-Management/Task-Sanctioning-Table-Insert-Update`;
+    const headers = new HttpHeaders({ 'Authorization': `Bearer ${jwtToken}` });
+    return this.http.post(url, data, { headers });
+  }
+
   // getCheckList(building_mkey: number, property_mkey: number, user_id: number, taskMkey: string, jwtToken: string): Observable<any> {
   //   const headers = new HttpHeaders({
   //     'Authorization': `Bearer ${jwtToken}`,
@@ -925,6 +944,7 @@ export class ApiService {
   //   });
 
   //   const compliance_list_body = {
+
   //     "PROPERTY_MKEY": property_mkey,
   //     "BUILDING_MKEY": building_mkey,
   //     "TASK_MKEY": taskMkey,

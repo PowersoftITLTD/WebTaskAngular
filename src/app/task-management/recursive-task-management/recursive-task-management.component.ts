@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, ErrorHandler, Input, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 import { Observable } from 'rxjs';
 import { ApiService } from 'src/app/services/api/api.service';
 import { CredentialService } from 'src/app/services/credential/credential.service';
@@ -89,13 +90,14 @@ export class RecursiveTaskManagementComponent implements OnInit {
   jwtToken: string | any = '';
   taskDetails: any;
 
-
+  loading: boolean = true;  // Track if data is loading
 
   constructor(
     private router: Router,
     private apiService: ApiService,
     private activatedRoute: ActivatedRoute,
     private dataService: CredentialService,
+    private tostar:ToastrService,
     private http:HttpClient
   ) { }
 
@@ -125,6 +127,8 @@ export class RecursiveTaskManagementComponent implements OnInit {
       },
       (error: ErrorHandler) => {
         console.log(error, 'Error Occurred while fetching projects');
+        this.tostar.error('Network error')
+
       }
     );
   }
@@ -154,6 +158,8 @@ export class RecursiveTaskManagementComponent implements OnInit {
       },
       error: (error) => {
         console.error('Login failed:', error);
+        this.tostar.error('Network error')
+
       }
     });
   }
@@ -193,6 +199,8 @@ export class RecursiveTaskManagementComponent implements OnInit {
       },
       (error: ErrorHandler) => {
         console.error('Error fetching employee details:', error);
+        this.tostar.error('Network error')
+
       }
     );
 }
@@ -211,7 +219,7 @@ fetchTaskDetails() {
         });
 
         this.taskList = filteredData
-    
+        this.loading = false;
         // console.log('Filtered Dashboard response:', filteredData);
       }
       // this.taskList = response;
@@ -219,6 +227,8 @@ fetchTaskDetails() {
       this.mergingProjAndSubProjName();
     }, error => {
       console.error('Failed to fetch task details:', error);
+      this.tostar.error('Network error')
+
     });
 }
 
@@ -253,6 +263,8 @@ mergingProjAndSubProjName() {
       },
       (error: ErrorHandler) => {
         console.log(error, 'Error Occurred while fetching sub-projects');
+        this.tostar.error('Network error')
+
       }
     );
   });
@@ -269,7 +281,6 @@ mergeEmployeeNamesWithTasks() {
       task.assign_To_Name = employeeMap.get(task.assigneD_TO) || 'NA'
     });
 
-    // console.log('Merged Task List:', this.taskList);
 }
 
 
@@ -302,7 +313,13 @@ mergeEmployeeNamesWithTasks() {
   }
 
   toggleSortOrder(): void {
+    console.log(this.taskList)
     this.isAscending = !this.isAscending;
+    this.taskList.sort((a, b) => {
+      const dateA = new Date(a.mkey).getTime();
+      const dateB = new Date(b.mkey).getTime();
+      return this.isAscending ? dateA - dateB : dateB - dateA;
+    });
   }
 
   

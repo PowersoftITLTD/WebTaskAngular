@@ -290,7 +290,7 @@ export class OutputComponent implements OnInit {
 
   getDownloadUrl(): string {
     const filePath = this.selectedDocument.TASK_OUTPUT_ATTACHMENT[0]?.FILE_PATH;
-    return `http://192.168.19.188:8065/${filePath}`
+    return `http://task.piplapps.com:8074/${filePath}`
   }
 
   onFileSelected(event: any): void {

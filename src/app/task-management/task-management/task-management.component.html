@@ -2,8 +2,6 @@
     <main>
         <div id="wrapper" class="content-bar-scroll">
 
-            <!-- <app-side-panel></app-side-panel>  -->
-
             <div class="content-wrapper">
 
                 <app-header-bar></app-header-bar>
@@ -17,7 +15,6 @@
                             <div id="todo" class="page-layout carded left-sidebar">
                                 <div class="top-bg bg-primary"></div>
                                 <aside class="page-sidebar " data-fuse-bar="todo-sidebar" data-fuse-bar-media-step="md">
-                                    <!-- HEADER -->
                                     <div class="header d-flex flex-column justify-content-between p-6 light-fg ">
                                         <div class="logo d-flex align-items-center pt-7">
                                             <i class="icon-checkbox-marked mr-4"></i>
@@ -27,7 +24,6 @@
                                         <div class="account">
                                         </div>
                                     </div>
-                                    <!-- / HEADER -->
                                     <div class="content side-bar-scroll">
                                         <div class="p-8">
                                             <button type="button" (click)="addTaskDetails()"
@@ -42,7 +38,6 @@
                                                     [ngClass]="{ 'active': selectedTab === 'actionable' }"
                                                     type="button">
                                                     <i class="fas fa-bars" style="font-size: 0.90em;"></i>
-                                                    <!-- This line adds smaller bar icons -->
                                                     <span>
                                                         My Actionable
                                                         <span class="">({{ count.length > 0 ? count[0]?.Default : 0
@@ -114,7 +109,6 @@
                                 </aside>
 
                                 <div class="page-content-wrapper">
-                                    <!-- HEADER -->
                                     <div class="py-3 d-flex flex-column justify-content-center light-fg">
                                         <div class="search-bar row align-items-center no-gutters bg-white text-auto">
                                             <button type="button" (click)="toggleSidebar()"
@@ -127,10 +121,7 @@
                                                 placeholder="Search for a task" [(ngModel)]="_SearchText">
                                         </div>
                                     </div>
-                                    <!-- / HEADER -->
                                     <div class="card" style="height:100%;">
-                                        <!-- CONTENT -->
-                                        <!-- CONTENT TOOLBAR -->
                                         <div
                                             class="toolbar d-flex align-items-center justify-content-between p-3 p-sm-6">
                                             <select id="_FilterSelection" class="custom-select mb-2 mr-sm-2 mb-sm-0"
@@ -162,13 +153,13 @@
                                         <!-- / CONTENT TOOLBAR -->
                                         <div class="card">
                                             <div class="side-bar-scroll" >
-                                                <div class="page-content-card"><!--style="height: 100%"-->
+                                                <div class="page-content-card">
                                                     <div *ngIf="loading" class="text-center py-3">
                                                         <div class="spinner-border text-primary" role="status">
                                                             <span class="sr-only">Loading...</span>
                                                         </div>
                                                     </div>
-                                                    <div class="todo-items w-10" *ngIf="!loading">
+                                                    <div class="todo-items w-10"  *ngIf="!loading">
 
                                                         <div id="dvMain_$index"
                                                             class="todo-item  py-4 ripple row no-gutters flex-wrap flex-sm-nowrap align-items-center"
@@ -231,7 +222,6 @@
                                                                         style="margin-left:22px"
                                                                         *ngIf="t.PROJECT_NAME && t.PROJECT_NAME.length !== 0">
                                                                         <div class="row no-gutters align-items-center">
-                                                                            <!-- <div class="tag-color mr-2"></div> -->
                                                                             <img src="https://static.thenounproject.com/png/3332980-200.png"
                                                                                 alt="Project Icon 3332980"
                                                                                 style="height:25px">
@@ -252,7 +242,7 @@
                                                                             data</td>
                                                                     </tr>
                                                                 </tbody>
-                                                            </table>                                                     
+                                                            </table>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -262,7 +252,6 @@
                                 </div>
                             </div>
                         </div>
-                        <!-- <app-time-and-weather></app-time-and-weather> -->
                     </div>
                     <script type="text/javascript" src="../assets/js/apps/dashboard/project.js"></script>
                 </div>

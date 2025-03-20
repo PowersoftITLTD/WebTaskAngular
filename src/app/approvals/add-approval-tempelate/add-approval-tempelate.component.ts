@@ -488,9 +488,11 @@ export class AddApprovalTempelateComponent implements OnInit {
     try {
       const addApprlTempData = await this.apiService.postApprovalTemp(addApprovalTemplate, this.recursiveLogginUser).toPromise();
       console.log('Data added successfully', addApprlTempData);
+
+     console.log('message: ',addApprlTempData[0].message)
     } catch (error) {
       console.error('Error updating task', error);
-      addFieldError('Error updating task');
+      addFieldError('Error updating task. Abbrivation already used');
     }
 
     if (fieldErrors.length > 0) {
@@ -500,11 +502,8 @@ export class AddApprovalTempelateComponent implements OnInit {
     }
 
     this.tostar.success('Success', 'Template added successfuly')
-    this.router.navigate(['task/approval-screen'], { queryParams: { source: 'authority-tempelate' } });
-    
-    
-
-
+    //this.router.navigate(['task/approval-screen'], { queryParams: { source: 'authority-tempelate' } });
+      
   }
 
   getTags() {
@@ -679,6 +678,7 @@ export class AddApprovalTempelateComponent implements OnInit {
         if(data){
           this.isInsertingApprl = true;
         }
+       
         this.tostar.success('Success', 'Template updated successfuly')
         this.router.navigate(['task/approval-screen'], { queryParams: { source: 'authority-tempelate' } });
         console.log('data successfully updated', data)

@@ -118,8 +118,7 @@ export class ComplianceComponent implements OnInit {
     this.router.navigate(['compliance', 'add-compliance', { compliance_state: data[0].MKEY, taskCompliance: taskCompliance }], {state: { taskData: data[0] }});
   }
 
-  initiateCompliance(data:any, initiate:string){
- 
+  initiateCompliance(data:any, initiate:string){ 
     this.router.navigate(['compliance', 'add-compliance', { compliance_state: data.MKEY, initiate:initiate }], {state: { taskData: data  }});
   }
 

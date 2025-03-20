@@ -509,6 +509,9 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
       return false;
     }
 
+    //console.log('approvalS_ABBR_LIST: ',this.taskData?.approvalS_ABBR_LIST[0]);
+    // console.log('task: ', task)
+
     if (this.taskData?.approvalS_ABBR_LIST[0].status === 'Initiated' || this.taskData?.approvalS_ABBR_LIST[0].status === 'Ready to Initiate') {
       const savedTaskNos = this.taskData?.approvalS_ABBR_LIST.map((item: any) => item.approvaL_ABBRIVATION.trim());
       // console.log("Saved Task Numbers (Trimmed):", savedTaskNos);
@@ -776,6 +779,7 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
 
 
   initiateToApprovalInitiation(approvalKey: any) {
+    console.log('approvalKey', approvalKey)
     this.recursiveLogginUser = this.apiService.getRecursiveUser();
     const project_mkey = this.taskData.mkey
     const approval_mkey = this.taskData.approvalS_ABBR_LIST[0].approvaL_MKEY
@@ -1031,9 +1035,7 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
         this.SanctoningAuthList = response.sanctoningAuthList;
         this.docTypeList = response.docTypeList;
 
-
         this.bindComboClassification();
-
 
       },
       error: (error: any) => {
@@ -1215,7 +1217,7 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
       this.apiService.projectDefinationOption(USER_CRED[0]?.MKEY, token, buildingCla, buildingStd, statutoryAuth).subscribe({
         next: (gerAbbrRelData) => {
 
-          // console.log('Selected Project def data',gerAbbrRelData)
+          //console.log('Selected Project def data',gerAbbrRelData)
           const newTasks = gerAbbrRelData.map((task: any) => {
             const newTask = {
               HEADER_MKEY: task.HEADER_MKEY,
@@ -1237,6 +1239,8 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
           });
 
           this.isLoading = false;
+
+          //console.log('Selected Project def data',gerAbbrRelData)
 
           // console.log('After looping of Proj Def',newTasks);
           if (!this.isCleared) { // Only call getTree if not cleared
@@ -2030,6 +2034,7 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
     const optionListArr = this.taskData.approvalS_ABBR_LIST
       .filter((item: any) => item.tasK_NO !== null)
       .map((item: any) => {
+        console.log('Item: ', item);
 
         // console.log("item.resposiblE_EMP_MKEY:", item.resposiblE_EMP_MKEY);
         const jobRole = jobRoleList.find((role: any) => role.mkey === parseInt(item.joB_ROLE));

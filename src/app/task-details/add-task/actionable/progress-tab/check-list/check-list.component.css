@@ -2,7 +2,7 @@
 .mb-3 {
   margin-left: -20rem;
   padding-bottom: 5rem;
-  height: fit-content;
+  height: 90vh;
 }
 
 .form-group {
@@ -38,6 +38,15 @@
   border-radius: 4px;
   margin-bottom: 5px;
 }
+
+.truncate-text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 300px; /* Adjust as per layout */
+  display: inline-block;
+}
+
 
 /* Dropdown styling */
 /* Dropdown styling */

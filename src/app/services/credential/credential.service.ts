@@ -79,8 +79,6 @@ export class CredentialService {
 
 
   validRecursiveUser(login_id:string, login_password:string){
-
-    console.log(`User recursive login id${login_id} & password ${login_password}`)
     this.apiService.login(login_id, login_password);
   }
   
@@ -92,27 +90,32 @@ export class CredentialService {
 
 
   saveUser(user: any): void {
-
-
-    // user[0] = {
-    //   MKEY: user[0].MKEY,
-    //   COMPANY_NAME: user[0].COMPANY_NAME,
-    //   FIRST_NAME: user[0].FIRST_NAME,
-    //   LAST_NAME: user[0].LAST_NAME,
-    //   EMP_FULL_NAME: user[0].EMP_FULL_NAME,
-    //   EMAIL_ID_OFFICIAL: user[0].EMAIL_ID_OFFICIAL,
-    //   KEY: user[0].LOGIN_PASSWORD            
-    // };
-
+    const sessionId = new Date().getTime().toString();     
     localStorage.setItem(this.loggedInUserKey, JSON.stringify(user));
+    localStorage.setItem('sessionId', sessionId); // Store session ID in localStorage
+    sessionStorage.setItem('sessionId', sessionId); // Store session ID in sessionStorage
   }
+
+  // isAuthenticated(): boolean {
+  //   const storedUser = localStorage.getItem('loggedInUser');
+  //   this.loggedInUser = storedUser ? JSON.parse(storedUser) : null;
+  //   return !!this.loggedInUser;
+  // }
+
 
   isAuthenticated(): boolean {
-    const storedUser = localStorage.getItem('loggedInUser');
-    this.loggedInUser = storedUser ? JSON.parse(storedUser) : null;
-    return !!this.loggedInUser;
+    const storedUser = localStorage.getItem(this.loggedInUserKey);
+    const localSessionId = localStorage.getItem('sessionId');
+    const sessionSessionId = sessionStorage.getItem('sessionId');
+  
+    if (!storedUser || !localSessionId || localSessionId !== sessionSessionId) {
+      this.logout();
+      return false;
+    }
+  
+    return true;
   }
-
+  
   
   logout() {
     localStorage.removeItem('loggedInUser');
