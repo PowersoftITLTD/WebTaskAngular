@@ -479,11 +479,33 @@ body {
 .city-tag {
   background-color: #d8e8ff; 
   border-radius: 12px;  
-  padding: 5px 10px; 
+  /* padding: 5px 10px;  */
   font-size: 14px;  
   color: #333; 
   min-width: 60rem;
+  max-height: 480px; /* Adjust as needed */
+  overflow-y: auto;
+  position: relative; /* Required for sticky header */
 }
+
+.city-tag table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.city-tag thead {
+  position: sticky;
+  top: 0;
+  background: #d8e8ff; /* Same as container background */
+  z-index: 10;
+}
+
+.city-tag th {
+  background: #d8e8ff; /* Ensures header visibility */
+  padding: 8px;
+  text-align: left;
+}
+
 
 
 .input-brackets {

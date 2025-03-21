@@ -276,14 +276,18 @@
                                                         <label for="taskName">Sequence order</label>
 
                                                         <ng-container *ngIf="taskData?.mkey">
-                                                            <input type="number" maxlength="150" appNumericOnly 
+                                                            <input type="text" maxlength="150" 
+                                                            (keydown)="validateInput_sequence_num($event)"
+                                                            (input)="enforceMinValue_sequence_num($event)"
                                                             formControlName="sequenceOrder" class="form-control"
                                                             [(ngModel)]="taskData.seQ_ORDER"
                                                             maxlength="150" /> <!--[(ngModel)]="taskData.sequenceOrder"-->
                                                         </ng-container>
 
                                                         <ng-container *ngIf="!taskData?.mkey">
-                                                            <input type="number" maxlength="150" appNumericOnly
+                                                            <input type="text" maxlength="150" 
+                                                            (keydown)="validateInput_sequence_num($event)"
+                                                            (input)="enforceMinValue_sequence_num($event)"
                                                             formControlName="sequenceOrder" class="form-control"
                                                             maxlength="150" />
                                                         </ng-container>
@@ -296,13 +300,15 @@
                                                         <label for="taskName">No. of Days Required</label>
 
                                                         <ng-container *ngIf="taskData?.mkey">
-                                                            <input type="number" maxlength="150" appNumericOnly [(ngModel)]="taskData.dayS_REQUIERD"
+                                                            <input type="number" maxlength="150" (keypress)="validateInput($event)"
+                                                            (input)="enforceMinValue($event)"  [(ngModel)]="taskData.dayS_REQUIERD"
                                                             formControlName="noOfDays" class="form-control"
                                                             maxlength="150" />
                                                         </ng-container>
 
                                                         <ng-container *ngIf="!taskData?.mkey">
-                                                            <input type="number" maxlength="150" appNumericOnly
+                                                            <input type="number" maxlength="150" (keypress)="validateInput($event)"
+                                                            (input)="enforceMinValue($event)" 
                                                             formControlName="noOfDays" class="form-control"
                                                             maxlength="150" />
                                                         </ng-container>
@@ -476,7 +482,7 @@
                                                             <h6>Details:</h6>
                                                             <div class="sample-wrapper">
                                                                 <div class="city-tag">
-                                                                    <br>
+                                                                    
                                                                     <table class="table table-active">
                                                                         <thead>
                                                                             <tr>
@@ -546,7 +552,34 @@
                                     <div class="accordion-body " [class.show]="activeIndices.includes(i)">
                                         <div class="mb-3" *ngIf="i === 3">
                                             <div class="row justify-content-between">
-                                                <div class="col-xs-12 col-xl-4 col-md-12 mx-4">
+
+                                                <div class="col-xs-6 col-xl-4 col-md-12 mx-4">
+                                                    <div class="row">
+                                                        <div class="form-group sample-wrapper">
+                                                            <h6>Details:</h6>
+                                                            <div class="sample-wrapper">
+                                                                <div class="city-tag">
+                                                                    
+                                                                    <table class="table table-active">
+                                                                        <thead>
+                                                                            <th>Sr No.</th>
+                                                                            <th>Document Name</th>
+                                                                            <th>Document Category</th>
+                                                                        </thead>
+                                                                        <tbody
+                                                                            *ngFor="let city of selectedDocsMap['checklist']; let i = index">
+                                                                            <td>{{i + 1}}</td>
+                                                                            <td>{{city.attributE2}}</td>
+                                                                            <td>{{city.typE_DESC}}</td>                                                                       
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
+                                                                <br>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <!-- <div class="col-xs-12 col-xl-4 col-md-12 mx-4">
                                                     <div class="row">
                                                         <div class="form-group sample-wrapper">
                                                             <h6>Details:</h6>
@@ -571,7 +604,7 @@
                                                             </div>
                                                         </div>
                                                     </div>
-                                                </div>
+                                                </div> -->
 
                                                 <div class="col-xs-12 col-xl-6 col-md-12">
                                                     <div class="form-group sample-wrapper">

@@ -286,11 +286,23 @@
                                   <ng-container *ngIf="taskData?.mkey">
 
                                     <ul class="dropdown-list" style="height:40rem">
+
+                                    
                                       <li class="sticky">
                                         <span class="select-all-container">
                                           <input type="checkbox" class="task-item" (change)="selectAll()"
                                             [checked]="isAllSelectedCheck">
                                         </span>
+                                      </li>
+
+                                      <li  *ngIf="loading">
+                                        <div class="text-center">
+                                          <div class="no-data py-3 d-flex justify-content-center align-items-center">
+                                            <div class="spinner-border text-primary" role="status">
+                                              <span class="sr-only">Loading...</span>
+                                            </div>
+                                          </div>                            
+                                        </div> 
                                       </li>
 
                                       <hr>
@@ -461,7 +473,7 @@
                                         </ng-container>
                                       </ng-container>
                                     </ul>
-                                  </ng-container>
+                                  </ng-container>                                 
 
                                 </div>
                               </div>
@@ -472,22 +484,17 @@
                     </div>
                   </div>
                 </div>
-
+               
                 <div class="row">
                   <div class="page-layout carded full-width">
                     <div class="">
 
-                      <div class="">
-                        <div *ngIf="loading" class="text-center">
-                          <div class="spinner-border text-primary" role="status">
-                            <span class="sr-only">Loading...</span>
-                          </div>
-                        </div>
-
-                        <div *ngIf="!loading" class="progress-details">
+                      <div class="">                                              
+                        <div  class="progress-details">
                           <div class="table-scroll-container mx-4">
+                          
 
-                            <table class="table table-active mr-1">
+                            <table  class="table table-active mr-1">
                               <thead class="table-header">
                                 <tr>
                                   <!-- <th><i class="fas fa-edit"></i></th> -->
@@ -512,7 +519,9 @@
                                 </tr>
                               </thead>
 
-                              <tbody>
+                             
+                              
+                              <tbody *ngIf="!loading">
                                 <ng-template #recursiveTaskTemplate let-tasks let-serialCounter="serialCounter">
                                   <ng-container *ngFor="let task of tasks; let i = index">
                                     <tr>
@@ -716,8 +725,16 @@
                                 </ng-container>
                               </tbody>
 
-                            </table>
-                            <div *ngIf="selectedSeqArr.length === 0 || ''"
+                            </table>   
+                                         
+                            <div *ngIf="loading" class="text-center">
+                              <div class="no-data py-3 d-flex justify-content-center align-items-center">
+                                <div class="spinner-border text-primary" role="status">
+                                  <span class="sr-only">Loading...</span>
+                                </div>
+                              </div>                            
+                            </div> 
+                            <div *ngIf="!loading && selectedSeqArr.length === 0 || ''"
                               class="no-data py-3 d-flex justify-content-center align-items-center">
                               No row to show
                             </div>

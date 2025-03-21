@@ -145,6 +145,7 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
     this.fetchProjectData();
 
     if (this.taskData && this.taskData.mkey) {
+      this.loading = true
       this.selectedOptionList();
       this.getTree_new();
       this.getSubProj();
@@ -1184,6 +1185,7 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
       this.apiService.projectDefinationOption(USER_CRED[0]?.MKEY, token, buildingCla, buildingStd, statutoryAuth).subscribe({
         next: (gerAbbrRelData) => {
           this.getTree(gerAbbrRelData);
+          console.log('gerAbbrRelData', gerAbbrRelData)
           this.isLoading = false;
         },
         error: (error) => {
@@ -2145,6 +2147,8 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
     // this.selectedSeqArr = [...this.subTasks]
 
     this.new_list_of_selectedSeqArr = this.selectedSeqArr
+    this.loading = false;
+
 
   }
 

@@ -489,20 +489,24 @@ export class AddApprovalTempelateComponent implements OnInit {
       const addApprlTempData = await this.apiService.postApprovalTemp(addApprovalTemplate, this.recursiveLogginUser).toPromise();
       console.log('Data added successfully', addApprlTempData);
 
-     console.log('message: ',addApprlTempData[0].message)
+     console.log('message: ',addApprlTempData.message)
+     if(addApprlTempData.message === 'Duplicate'){
+        this.tostar.error('This abbrivation is already taken');
+        return;
+     }
     } catch (error) {
       console.error('Error updating task', error);
-      addFieldError('Error updating task. Abbrivation already used');
+      //addFieldError('Error updating task. Abbrivation already used');
     }
 
     if (fieldErrors.length > 0) {
-      this.fieldErrs = fieldErrors
+      this.fieldErrs = fieldErrors;
       fieldErrors.forEach(errorMessage => this.tostar.error(errorMessage));
       return;
     }
 
-    this.tostar.success('Success', 'Template added successfuly')
-    //this.router.navigate(['task/approval-screen'], { queryParams: { source: 'authority-tempelate' } });
+    this.tostar.success('Success', 'Template added successfuly');
+    this.router.navigate(['task/approval-screen'], { queryParams: { source: 'authority-tempelate' } });
       
   }
 
@@ -685,6 +689,12 @@ export class AddApprovalTempelateComponent implements OnInit {
       }, error: (error) => {
 
         const errorDetails = error.error?.errors;
+
+
+        if (error.error?.errors?.SEQ_ORDER?.length) {
+          this.tostar.error('Sequence number is required');
+        }
+               
 
         if (errorDetails) {
 
@@ -1420,7 +1430,35 @@ export class AddApprovalTempelateComponent implements OnInit {
     }
   }
   
-
+  validateInput_sequence_num(event: KeyboardEvent) {
+    const input = event.target as HTMLInputElement;
+    const char = event.key;
+  
+    // Allow numbers (0-9), dot (.), Backspace, Delete, and Arrow keys
+    if (!char.match(/[0-9.]/) && !['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight'].includes(char)) {
+      event.preventDefault();
+      return;
+    }
+  
+    // Prevent multiple consecutive dots or dot at the start
+    if (char === '.' && (input.value.endsWith('.') || input.value === '')) {
+      event.preventDefault();
+    }
+  }
+  
+  enforceMinValue_sequence_num(event: Event) {
+    const input = event.target as HTMLInputElement;
+  
+    // Remove leading dots
+    input.value = input.value.replace(/^\+/, '');
+  
+    // Ensure no multiple consecutive dots (e.g., "1..1" becomes "1.1")
+    input.value = input.value.replace(/\{2,}/g, '');
+  
+    // Prevent ending with a dot
+    input.value = input.value.replace(/\$/, '');
+  }
+    
 
   onSubmit() {
     const requiredControls: string[] = [];
