@@ -101,6 +101,7 @@ export class CheckListComponent implements OnInit {
       token
     ).subscribe({
       next: (response: any) => {
+        //console.log('response: ', response[0]?.DATA)
         if (response?.[0]?.DATA?.length) {
           this.checkList = response[0].DATA.map((item: any) => ({
             MKEY: item.MKEY,
@@ -185,7 +186,7 @@ export class CheckListComponent implements OnInit {
 
   updateChecklistStatus(item: ChecklistItem, status: string): void {
     const token = this.apiService.getRecursiveUser();
-    console.log('item', item);
+    //console.log('item', item);
     
     const payload = {
       MKEY: item.MKEY,

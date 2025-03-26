@@ -446,6 +446,7 @@ body {
 
 .tab-content::-webkit-scrollbar {
   width: 8px;
+  height: 1px;
 }
 
 .tab-content::-webkit-scrollbar-track {

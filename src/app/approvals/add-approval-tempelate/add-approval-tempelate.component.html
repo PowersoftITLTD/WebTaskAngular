@@ -392,7 +392,7 @@
                                                 <br>
                                                 <br>
                                                 
-                                                <div class="sample-wrapper">
+                                                <div class="sample-wrapper tab-content-table">
                                                     <table class="table">
                                                         <thead>
                                                             <tr>
@@ -470,7 +470,6 @@
                                         </div>
                                     </div>
                                     
-
                                     <!-- End Result Accordion Section -->
                                     <div class="accordion-body " [class.show]="activeIndices.includes(i)">
                                         <div class="mb-3" *ngIf="i === 2">
@@ -563,8 +562,8 @@
                                                                     <table class="table table-active">
                                                                         <thead>
                                                                             <th>Sr No.</th>
-                                                                            <th>Document Name</th>
                                                                             <th>Document Category</th>
+                                                                            <th>Document Name</th>
                                                                         </thead>
                                                                         <tbody
                                                                             *ngFor="let city of selectedDocsMap['checklist']; let i = index">
@@ -647,7 +646,7 @@
 
 
                                     <div class="accordion-body " [class.show]="activeIndices.includes(i)">
-                                        <div class="mb-3" *ngIf="i === 4">
+                                        <div class="mb-3 tab-content" *ngIf="i === 4">
                                             <div class=" sample-wrapper">
                                                 <div class="sample-wrapper">
                                                     <table class="table mb-5 ml-2 mr-5">

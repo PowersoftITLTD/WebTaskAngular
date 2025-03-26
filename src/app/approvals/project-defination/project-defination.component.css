@@ -589,6 +589,13 @@
     .month_class{
       width: 0rem;
     }
+
+    
+    .tab-content {
+      max-height: calc(100vh - 200px);
+      overflow-x: auto;
+      overflow-y: auto;
+    }
   }
   
   @media only screen and (max-width: 992px) and (min-width:767px) {
@@ -599,6 +606,7 @@
     .month_class{
       width: 0rem;
     }
+
   }
   
   .combo-section {

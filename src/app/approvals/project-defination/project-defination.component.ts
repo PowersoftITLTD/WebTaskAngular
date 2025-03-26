@@ -670,11 +670,11 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
 
     const subTaskList = this.flatList;
 
-    console.log('uniq list', this.uniqList)
-    console.log('flatList list from add', this.flatList)
+    // console.log('uniq list', this.uniqList)
+    // console.log('flatList list from add', this.flatList)
 
-    console.log('PROJECT', PROJECT)
-    console.log('SUB_PROJECT', SUB_PROJECT)
+    // console.log('PROJECT', PROJECT)
+    // console.log('SUB_PROJECT', SUB_PROJECT)
 
     const addProjectDefination = {
       projecT_NAME: SUB_PROJECT.MASTER_MKEY,
@@ -719,17 +719,17 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
     this.recursiveLogginUser = this.apiService.getRecursiveUser();
     const headerMkey = this.taskData.mkey
 
-    console.log('from update', this.sub_proj)
+    // console.log('from update', this.sub_proj)
 
-    console.log('sub_project', this.taskData.projecT_NAME)
-    console.log('Project', this.taskData.property)
+    // console.log('sub_project', this.taskData.projecT_NAME)
+    // console.log('Project', this.taskData.property)
 
     const PROJECT = this.projectDefForm.get('property')?.value;
-    console.log('PROJECT.MASTER_MKEY', PROJECT.MASTER_MKEY)
+   // console.log('PROJECT.MASTER_MKEY', PROJECT.MASTER_MKEY)
     const matchedProject = this.project.find((project: any) => project.TYPE_DESC === PROJECT);
 
     const SUB_PROJECT = this.projectDefForm.get('subProject')?.value;
-    console.log(SUB_PROJECT)
+  //  console.log(SUB_PROJECT)
 
     const SELECTED_PROJ = this.sub_proj.find((sub_proj: any) => sub_proj.TYPE_DESC === SUB_PROJECT);
 
@@ -1171,6 +1171,10 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
   }
 
 
+  openSelectedTask(mkey: any) {
+    this.router.navigate(['task', 'selected-task-info', { Task_Num: (mkey) }]);
+  }
+
   getOptionList() {
 
     const token = this.apiService.getRecursiveUser();
@@ -1324,8 +1328,6 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
       return 0;
     });
   }
-
-
 
 
 
@@ -1575,7 +1577,7 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
     // const combinedList = [...optionList];
 
 
-    optionList;
+    //optionList;
 
     // console.log('uniqueList', uniqueList)
 
@@ -1601,6 +1603,8 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
           department: departmentRole ? departmentRole.typE_DESC : "Not found",
           department_mkey: departmentRole.mkey,
           approvaL_MKEY: item.HEADER_MKEY,
+          // tasK_STATUS:item.tasK_STATUS,
+          task_MKEY:item.task_MKEY,
           // resposiblE_EMP: assignedEmployee.Assign_to,
           resposiblE_EMP_MKEY: item.RESPOSIBLE_EMP_MKEY
         }
@@ -1610,7 +1614,7 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
 
     const same_data = optionListArr;
 
-     //console.log('optionListArr', optionListArr)
+     console.log('optionListArr', optionListArr)
 
     const buildHierarchy = (tasks: any, rootTaskNo: any) => {
       const rootTask = tasks.find((task: any) => task.TASK_NO === rootTaskNo);
@@ -1745,6 +1749,7 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
     // console.log('filteredTasks', filteredTasks)
 
     // this.selectedSeqArr = [...this.subTasks]
+    
 
   }
 
@@ -2057,12 +2062,14 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
           end_date: item.tentativE_END_DATE,
           approvaL_MKEY: item.approvaL_MKEY,
           status: item.status,
+          tasK_STATUS:item.tasK_STATUS,
+          task_MKEY:item.mkey,
           // resposiblE_EMP: assignedEmployee.Assign_to,
           resposiblE_EMP_MKEY: item.resposiblE_EMP_MKEY
         }
       });
 
-    // console.log('Updated optionListArr with typE_DESC getTree_new:', optionListArr);
+     console.log('Updated optionListArr with typE_DESC getTree_new:', optionListArr);
 
 
 

@@ -513,9 +513,11 @@
                                   <th
                                     style="max-width:100rem; position: sticky; right: 0; background: white; z-index: 1;">
                                     Status</th>
-                                  <th
+                                  <th style="max-width:100rem; position: sticky; right: 0; background: white; z-index: 1;"
+                                  >Task Status</th>
+                                  <!-- <th
                                     style="max-width:10rem; position: sticky; right: 0; background: white; z-index: 1;">
-                                    Delete</th>
+                                    Delete</th> -->
                                 </tr>
                               </thead>
 
@@ -545,7 +547,12 @@
                                           </span>
                                         </ng-container>
                                       </td>
-                                      <td>{{task.TASK_NO?.seQ_NO}}</td>
+                                      <td>
+                                        <a href="javascript:void(0);" (click)="openSelectedTask(task.TASK_NO?.task_MKEY)">
+                                          {{task.TASK_NO?.seQ_NO}}
+                                        </a>
+                                      </td>
+                                      
                                       <td class="truncate-text" matTooltip="{{ task.TASK_NO?.maiN_ABBR }}">{{
                                         task.TASK_NO?.maiN_ABBR }}</td>
                                       <td class="truncate-text" matTooltip="{{ task.TASK_NO?.abbR_SHORT_DESC }}">{{
@@ -610,14 +617,17 @@
                                             </span> -->
                                         </div>
                                       </td>
-                                      <td
+                                      <td class="truncate-text"
+                                       style="max-width:100rem; position: sticky; right: 0; background: white; z-index: 1;">
+                                        {{task.TASK_NO?.tasK_STATUS}}                                        
+                                      </td>
+                                      <!-- <td
                                         style="max-width:100rem; position: sticky; right: 0; background: white; z-index: 1;">
                                         <div *ngIf="task.TASK_NO?.status === 'Ready to Initiate'">
                                           <i class="fa fa-trash ml-6" type="button"
                                             style="font-size: small; color: rgb(0, 110, 255)"></i>
-                                          <!-- <button type="button" class="badge badge-pill badge ml-1">Delete</button> -->
                                         </div>
-                                      </td>
+                                      </td> -->
                                     </tr>
 
                                     <ng-container *ngIf="task.visible && task.subtask && task.subtask.length > 0">
@@ -649,7 +659,11 @@
                                         </span>
                                       </ng-container>
                                     </td>
-                                    <td>{{task.TASK_NO?.seQ_NO}}</td>
+                                    <td>
+                                      <a href="javascript:void(0);" (click)="openSelectedTask(task.TASK_NO?.task_MKEY)">
+                                        {{task.TASK_NO?.seQ_NO}}
+                                      </a>
+                                    </td>
                                     <td class="truncate-text" matTooltip="{{ task.TASK_NO?.maiN_ABBR }}">{{
                                       task.TASK_NO?.maiN_ABBR }}</td>
                                     <td class="truncate-text" matTooltip="{{ task.TASK_NO?.abbR_SHORT_DESC }}">{{
@@ -707,14 +721,17 @@
                                         </span>
                                       </div>
                                     </td>
-                                    <td
+                                    <td class="truncate-text"
+                                    style="max-width:100rem; position: sticky; right: 0; background: white; z-index: 1;">
+                                      {{task.TASK_NO?.tasK_STATUS}}                                        
+                                    </td>
+                                    <!-- <td
                                       style="max-width:100rem; position: sticky; right: 0; background: white; z-index: 1;">
                                       <div *ngIf="task.TASK_NO?.status === 'Ready to Initiate'">
                                         <i class="fa fa-trash ml-6" type="button"
                                           style="font-size: small; color: rgb(0, 110, 255)"></i>
-                                        <!-- <button type="button" class="badge badge-pill badge ml-1">Delete</button> -->
                                       </div>
-                                    </td>
+                                    </td> -->
 
                                   </tr>
 

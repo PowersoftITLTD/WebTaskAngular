@@ -36,7 +36,7 @@
                         
                                     <div class="form-group select-width">
                                         <label><small>Status</small></label>
-                                        <select class="form-control status" formControlName="status" (change)="onStatusChange($event)"> 
+                                        <select class="form-control status" formControlName="status" style="width: 130px;" (change)="onStatusChange($event)"> 
                                             <option *ngFor="let s of status" [value]="s.TYPE_DESC">{{ s.TYPE_DESC }}</option>
                                         </select>
                                     </div>      

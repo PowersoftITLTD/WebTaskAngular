@@ -112,7 +112,7 @@ export class SelectedTaskInfoComponent implements OnInit {
           // console.log('COMPLETION_DATE:', this.taskDetails[0]?.COMPLETION_DATE);
 
 
-          // console.log('taskDetails', response[0]?.data)
+          console.log('taskDetails', response[0]?.data)
 
           // console.log('this.taskDetails[0]?.PROJECT_MKEY', this.taskDetails[0])
 
