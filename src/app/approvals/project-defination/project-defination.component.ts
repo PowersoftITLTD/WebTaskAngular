@@ -20,6 +20,9 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
   isLoading: boolean = true; // Hide the button when clicked
   disableChilCheckBox: boolean = false;
   isAllSelectedCheck: boolean = false;
+  selectAllChecked: boolean = false;
+  lodingTrue: boolean = false;
+
   receivedUser: string | any;
   taskDetails: any;
   loading: boolean = false;
@@ -31,7 +34,6 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
   uniqueSubTask: any[] = []
   unFlatternArr: any[] = [];
   existingTaskA: any;
-  selectAllChecked: boolean = false;
   flatList: any
   subtask_len: any = [];
   real_len: any = [];
@@ -149,8 +151,8 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
       this.selectedOptionList();
       this.getTree_new();
       this.getSubProj();
-
     }
+
     this.initilizeProjDefForm();
     this.fetchEmployeeName();
 
@@ -163,7 +165,7 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
       property: ['', Validators.required],
       subProject: ['', Validators.required],
       legalEntity: ['', Validators.required],
-      projAddress: ['', Validators.required],
+      projAddress: [''],
       bldCla: ['', Validators.required],
       blsStandard: ['', Validators.required],
       statutoryAuth: ['', Validators.required],
@@ -661,7 +663,14 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
 
 
   addProjectDef() {
-    console.log()
+
+    this.lodingTrue = true;
+
+    // setTimeout(() => {
+    //   this.lodingTrue = false;
+    //   this.tostar.error('Something went wrong.');
+    // }, 10000);
+
     const USER_CRED = this.credentialService.getUser();
     this.recursiveLogginUser = this.apiService.getRecursiveUser();
 
@@ -700,15 +709,22 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
 
         if(addData.status === 'Error'){
           this.tostar.error('This project is already exist for same property and building');
+          this.lodingTrue = false;
+
           return;
         }
         this.tostar.success('Success', 'Template added successfuly')
         this.router.navigate(['task/approval-screen'], { queryParams: { source: 'project-defination' } });
 
+        this.lodingTrue = false;
+
       }, error: (error: ErrorHandler|any) => {
+
+        this.lodingTrue = false;
         const errorData = error.error.errors;
         const errorMessage = Object.values(errorData).flat().join(' , ');
         this.tostar.error(errorMessage, 'Error Occured in server') 
+
       }
     });
   }
@@ -1189,7 +1205,7 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
       this.apiService.projectDefinationOption(USER_CRED[0]?.MKEY, token, buildingCla, buildingStd, statutoryAuth).subscribe({
         next: (gerAbbrRelData) => {
           this.getTree(gerAbbrRelData);
-          console.log('gerAbbrRelData', gerAbbrRelData)
+          // console.log('gerAbbrRelData', gerAbbrRelData)
           this.isLoading = false;
         },
         error: (error) => {
@@ -1428,6 +1444,7 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
         taskMap.set(task.SUBTASK_PARENT_ID, []);
       }
       taskMap.get(task.SUBTASK_PARENT_ID)?.push(task);
+
     });
 
     // Step 2: Recursive function to assign TASK_NO, In this it will assign the 
@@ -1436,6 +1453,7 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
 
       let count = 1;
       for (const task of taskMap.get(parentId)!) {
+        // console.log('task: ', task)        
         const taskNo = prefix ? `${prefix}.${count}` : `${count}`;
         task.TASK_NO = taskNo;
         taskNumbers.set(task.HEADER_MKEY, taskNo);
@@ -1563,6 +1581,8 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
 
       // Then fetch job role data
       jobRole_new = await this.apiService.getJobRoleDP(this.recursiveLogginUser).toPromise();
+
+      // console.log('jobRole_new: ', jobRole_new)
     } catch (error) {
       console.error('Error fetching data:', error);
     }
@@ -1586,6 +1606,8 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
     const optionListArr = optionList
       .filter((item: any) => item.tasK_NO !== null)
       .map((item: any) => {
+
+        // console.log('Item', item)
 
         const jobRole = jobRoleList.find((role: any) => role.mkey === parseInt(item.JOB_ROLE));
         const departmentRole = departmentList.find((department: any) => department.mkey === parseInt(item.AUTHORITY_DEPARTMENT))
@@ -1614,7 +1636,7 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
 
     const same_data = optionListArr;
 
-     console.log('optionListArr', optionListArr)
+    //  console.log('optionListArr', optionListArr)
 
     const buildHierarchy = (tasks: any, rootTaskNo: any) => {
       const rootTask = tasks.find((task: any) => task.TASK_NO === rootTaskNo);
@@ -1688,7 +1710,7 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
       }
     });
 
-    console.log('subTasks from parents: ',this.subTasks)
+    // console.log('subTasks from parents: ',this.subTasks)
 
     this.loading = false;
 
@@ -1726,7 +1748,7 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
           };
           no_parent_arr.push(parentTask);
         } else {
-          console.log(`Found Parent Task: ${parentTask.TASK_NO.TASK_NO}`);
+          // console.log(`Found Parent Task: ${parentTask.TASK_NO.TASK_NO}`);
           parentTask.subtask.push(task);
         }
       }
@@ -1820,8 +1842,8 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
     const flatList = this.breakToLinear(selectedSeqArr);
 
     this.flatList = flatList
-    console.log('uniqList', uniqList);
-    console.log('flatList', flatList);
+    // console.log('uniqList', uniqList);
+    // console.log('flatList', flatList);
 
     // if (uniqList.length === 0 && flatList.length > 0) {
     //   this.tostar.error('Missing tentative start or end date for a subtask');
@@ -1989,7 +2011,7 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
 
     employeesList = this.apiService.getEmpDetailsNew(token).toPromise();
 
-    console.log('employeesList', employeesList)
+    // console.log('employeesList', employeesList)
 
     employeesList.forEach((emp: any) => {
       const fullName = emp.EMP_FULL_NAME;
@@ -2036,16 +2058,18 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
     const jobRoleList = jobRole_new;
     const departmentList = department_new
 
+   // console.log('Item: ',  this.taskData.approvalS_ABBR_LIST);
 
-    this.taskData.approvalS_ABBR_LIST
+   
     const optionListArr = this.taskData.approvalS_ABBR_LIST
       .filter((item: any) => item.tasK_NO !== null)
       .map((item: any) => {
-        console.log('Item: ', item);
 
         // console.log("item.resposiblE_EMP_MKEY:", item.resposiblE_EMP_MKEY);
         const jobRole = jobRoleList.find((role: any) => role.mkey === parseInt(item.joB_ROLE));
         const departmentRole = departmentList.find((department: any) => department.mkey === parseInt(item.department));
+
+       // console.log('Item',item)
 
         return {
           TASK_NO: item.tasK_NO,
@@ -2064,12 +2088,12 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
           status: item.status,
           tasK_STATUS:item.tasK_STATUS,
           task_MKEY:item.mkey,
-          // resposiblE_EMP: assignedEmployee.Assign_to,
+          resposiblE_EMP: item.resposiblE_EMP_NAME,
           resposiblE_EMP_MKEY: item.resposiblE_EMP_MKEY
         }
       });
 
-     console.log('Updated optionListArr with typE_DESC getTree_new:', optionListArr);
+    //  console.log('Updated optionListArr with typE_DESC getTree_new:', optionListArr);
 
 
 

@@ -393,7 +393,7 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
 
       MKEY: this.taskData.MKEY,
       HEADER_MKEY: this.taskData.HEADER_MKEY,
-      CAREGORY: 64,
+      CAREGORY: 190,
       TAGS: tagsString,
       INITIATOR: assignedInitiator,
       TASK_NO: this.taskData.TASK_NO,
@@ -414,6 +414,15 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
       STATUS: 'Ready to Initiated',
       SUBTASK_LIST: this.breakToLinear(this.subTasks)
     };
+
+
+    console.log('this.breakToLinear(this.subTasks)', this.breakToLinear(this.subTasks));
+
+    console.log('this.taskData.SUBTASK_LIST', this.taskData.SUBTASK_LIST);
+
+
+    // console.log('this.breakToLinear(this.taskData.SUBTASK_LIST)', this.breakToLinear(this.taskData.SUBTASK_LIST));
+
 
     console.log('addApprovalInitiation: ', addApprovalInitiation);
 
@@ -647,8 +656,8 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
       // console.log('matchedEmployee', matchedEmployee)
       // console.log('this.taskData.RESPOSIBLE_EMP_MKEY', this.taskData.RESPOSIBLE_EMP_MKEY)
 
-      console.log('Project: ', matchedProject.TYPE_DESC);
-      console.log('Sub-Project: ', matchedSubProject.TYPE_DESC)
+      // console.log('Project: ', matchedProject.TYPE_DESC);
+      // console.log('Sub-Project: ', matchedSubProject.TYPE_DESC)
 
       // if (matchedProject) {
       this.taskData.project_Name = matchedProject.TYPE_DESC;
@@ -718,7 +727,7 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
 
   fetchEmployeeName(): void {
 
-    console.log('Check this.taskdata', this.taskData)
+    // console.log('Check this.taskdata', this.taskData)
 
     const USER_CRED = this.credentialService.getUser();
     const token = this.apiService.getRecursiveUser();
@@ -975,7 +984,7 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
       if (!confirmation) {
         this.subListFilteredEmp = []; // Clear the list or perform other actions
         this.filteredInitiator = [];
-        this.selectedAssignTo = '';
+        // this.selectedAssignTo = '';
         return;
       }
     }
@@ -1216,6 +1225,8 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
 
   updatedTaskCheck(task: any, assignTo?: any) {
 
+    //console.log('updatedTaskCheck: ',task)
+
     const matchedEmp = this.employees.find((employee: any) =>
       employee.Assign_to.toLowerCase() === assignTo.toLowerCase()
     );
@@ -1255,7 +1266,7 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
     const updateInitiationSubTask = {
       MKEY: this.taskData.HEADER_MKEY,
       approvaL_MKEY: task.approvaL_MKEY,
-      HEADER_MKEY: task.HEADER_MKEY,
+      HEADER_MKEY: task.header_MKEY,
       maiN_ABB: task.maiN_ABBR,
       SHORT_DESCRIPTION: task.abbr_short_DESC,
       LONG_DESCRIPTION: task.abbR_SHORT_DESC,
@@ -1277,7 +1288,7 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
       return;
     }
 
-    console.log('updateInitiationSubTask', updateInitiationSubTask);
+    //console.log('updateInitiationSubTask', updateInitiationSubTask);
 
     this.apiService.subTaskPutApprovalInitiation(headerMkey, updateInitiationSubTask, token).subscribe({
       next: (responseData) => {
@@ -1298,6 +1309,8 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
 
           localStorage.setItem('RESPOSIBLE_EMP_MKEY', JSON.stringify(this.taskData.RESPOSIBLE_EMP_MKEY));
           // console.log('HEADER RESPOSIBLE_EMP_MKEY saved to local storage:', this.taskData.RESPOSIBLE_EMP_MKEY);
+
+          console.log('Task data: ',this.taskData)
 
           window.location.reload();
 
@@ -1426,13 +1439,10 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
   // }
 
 
-
-
-
   breakToLinear(selectedSeq: any) {
 
 
-    console.log('breakToLinear selectedSeq', selectedSeq)
+    // console.log('breakToLinear selectedSeq', selectedSeq)
 
     const result: any[] = [];
     //const USER_CRED = this.credentialService.getUser();
@@ -1847,6 +1857,7 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
     } catch (error) {
       console.error('Error fetching data:', error);
     }
+    console.log('this.taskData.SUBTASK_LIST', this.taskData.SUBTASK_LIST)
 
     const jobRoleList = this.jobRoleList;
     const departmentList = this.departmentList;
@@ -1891,18 +1902,15 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
         }
 
         if (item.TENTATIVE_END_DATE) {
-          console.log('coming to if')
           endDate = new Date(item.TENTATIVE_END_DATE);
         } else {
-          console.log('coming to else')
           endDate = new Date(startDate);
           endDate.setDate(startDate.getDate() + daysRequired);
         }
         
 
         headerEndDates[item.HEADER_MKEY] = new Date(endDate);
-
-        console.log('Check Item: ', item);
+        console.log('Item of submit : ',item )
 
         return {
           TASK_NO: item.TASK_NO,
@@ -1922,13 +1930,15 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
           tentative_start_date: item.TENTATIVE_START_DATE ? item.TENTATIVE_START_DATE : adjustDate(startDate),
           tentative_end_date: item.TENTATIVE_END_DATE ? item.TENTATIVE_END_DATE : adjustDate(endDate),
           RESPOSIBLE_EMP_NAME: item.RESPOSIBLE_EMP_NAME,
-          resposiblE_EMP_MKEY: item.RESPOSIBLE_EMP_MKEY? item.RESPOSIBLE_EMP_MKEY: item.resposiblE_EMP_MKEY,
+          resposiblE_EMP_MKEY: item.hasOwnProperty('resposiblE_EMP_MKEY') && item.resposiblE_EMP_MKEY
+          ? item.resposiblE_EMP_MKEY
+          : item.RESPOSIBLE_EMP_MKEY,
           TAGS: item.TAGS,
           status: item.STATUS,
         };
       });
 
-    console.log('sortedTasks: ', sortedTasks)
+    //console.log('sortedTasks: ', sortedTasks)
 
     this.loading = true;
     this.subTasks = [];
@@ -1964,7 +1974,7 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
       }
     });
 
-    console.log("Updated this.subTasks:", JSON.stringify(this.subTasks, null, 2));
+    //console.log("Updated this.subTasks:", JSON.stringify(this.subTasks, null, 2));
     this.subTasks = [...this.subTasks];
 
     const noSubParentTasks = optionListArr.filter(task =>
@@ -2012,7 +2022,6 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
       return task.TASK_NO.maiN_ABBR !== undefined;
     });
 
-    console.log('subtasks', this.subTasks)
     const subtasks = tasks.flatMap((task: any) => task.subtask.map((sub: any) => sub.TASK_NO.TASK_NO));
     const filteredTasks = tasks.filter((task: any) => !subtasks.includes(task.TASK_NO.TASK_NO));
     this.subTasks = [...this.subTasks, ...filteredTasks];
@@ -2053,11 +2062,17 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
     let headerCompletionDate = new Date(this.appeInitForm.get('complitionDate')?.value[0]);
     const tasks = this.breakToLinear(this.subTasks);
 
+    console.log('tasks: ', tasks)
+
     for (let i = 0; i < tasks.length; i++) {
       let currentTask = tasks[i];
 
+      // console.log('currentTask: ', currentTask)
+
       // Find tasks that have the current task's approval as their header
       let dependentTasks = tasks.filter(task => task.header_MKEY === currentTask.approvaL_MKEY);
+
+      // console.log('dependentTasks: ', dependentTasks)
 
       for (let dependentTask of dependentTasks) {
 
@@ -2069,20 +2084,22 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
         let subtaskStartDate = new Date(dependentTask.TENTATIVE_START_DATE);
         let subtaskEndDate = new Date(dependentTask.TENTATIVE_END_DATE);
 
-      //   console.log('parentStartDate: ', parentStartDate);
-      //   console.log('parentEndDate: ', parentEndDate);
-      //   console.log('subtaskStartDate: ', subtaskStartDate);
-      //   console.log('subtaskEndDate: ', subtaskEndDate);
+        // console.log('parentStartDate: ', parentStartDate);
+        // console.log('parentEndDate: ', parentEndDate);
+        // console.log('subtaskStartDate: ', subtaskStartDate);
+        // console.log('subtaskEndDate: ', subtaskEndDate);
 
-      //   console.log(`Check Header Date ${parentStartDate} and subtask end date ${subtaskEndDate} and ${dependentTask.TASK_NO}`);
+        console.log(`Check Header Date ${parentStartDate} and subtask end date ${subtaskEndDate} and ${dependentTask.TASK_NO}`);
 
-      //  console.log('dependentTask: ', dependentTask);
-      //  console.log('currentTask: ', currentTask);
+        // console.log('dependentTask: ', dependentTask);
+        // console.log('currentTask: ', currentTask);
 
-        // if (subtaskStartDate < parentStartDate || subtaskEndDate > parentEndDate) {
-        //   this.tostar.error(`Date mismatch for Task ${dependentTask.TASK_NO}. It must fall within the range of the header task ${currentTask.TASK_NO}.`);
-        //   return false;
-        // }
+        if (subtaskStartDate < parentStartDate || subtaskEndDate > parentEndDate) {
+          console.log(`Date mismatch for Task ${dependentTask.TASK_NO}. It must fall within the range of the header task ${currentTask.TASK_NO}.`)
+          this.tostar.error(`Date mismatch for Task ${dependentTask.TASK_NO}. It must fall within the range of the header task ${currentTask.TASK_NO}.`);
+          return false;
+        }
+       
       }
     }
 

@@ -120,8 +120,8 @@
   
   
   .truncate-text {
-    min-width: 100px;
-    max-width: 150px;
+    min-width: 10rem;
+    max-width: 30rem;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;

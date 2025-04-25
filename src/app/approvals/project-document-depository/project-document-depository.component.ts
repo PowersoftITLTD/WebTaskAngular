@@ -300,7 +300,9 @@ export class ProjectDocumentDepositoryComponent implements OnInit {
 
 
   downloadFile(file_path: any): any {
-    const baseUrl = 'http://task.piplapps.com:8074/';
+
+    const baseUrl = 'http://192.168.19.188:8065/';
+    //const baseUrl = 'http://task.piplapps.com:8074/';
     const fullPath = `${baseUrl}/${file_path}`;
     return fullPath;
   }
@@ -672,6 +674,8 @@ export class ProjectDocumentDepositoryComponent implements OnInit {
   fileUrl(filePath: string) {
   
     return `http://task.piplapps.com:8074/${filePath}`;
+
+   // return `http://192.168.19.188:8087/${filePath}`
   }
 
 

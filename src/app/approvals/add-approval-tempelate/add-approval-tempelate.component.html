@@ -23,10 +23,34 @@
                             <div class="mr-8 d-flex">
 
                                 <ng-container *ngIf="!taskData?.mkey">
+                                    <button
+                                      type="submit"
+                                      class="btn btn-light mr-2 d-flex align-items-center"
+                                      [disabled]="isInsertingApprl"                                      
+                                      id="btnSaveTask"
+                                    >
+                                      <!-- Loader shown when loading -->
+                                      <!-- <div *ngIf="lodingTrue" class="spinner-border btn-light spinner-border-sm me-2" role="status"></div> -->
+                                  
+                                      <!-- Text shown always (or conditionally if needed) -->
+                                      <span *ngIf="!lodingTrue" (click)="onAddTempDoc()" class="ml-3">ADD</span>
+                                      <span *ngIf="lodingTrue">Loading...</span>
+
+                                      <div *ngIf="lodingTrue" class="spinner-border btn-light spinner-border-sm me-2 mb-1 ml-1" role="status"></div>
+
+                                    </button>
+                                  </ng-container>
+
+                                <!-- <ng-container *ngIf="!taskData?.mkey">
                                     <button type="submit" class="btn btn-light mr-2" [disabled]="isInsertingApprl" (click)="onAddTempDoc()" id="btnSaveTask">
                                         ADD
+                                        
+                                        <div (click)="onAddTempDoc()"><div *ngIf="lodingTrue"></div></div>
+
+                                        <div class="spinner-border mt-2" *ngIf="lodingTrue" role="status"></div>
+
                                     </button>
-                                </ng-container>
+                                </ng-container> -->
 
                                 <ng-container *ngIf="taskData?.mkey">
                                      <button type="submit" class="btn btn-light mr-2" [disabled]="isInsertingApprl" (click)="onUpdateTempDoc()" id="btnSaveTask">
@@ -366,7 +390,7 @@
                                                 <div class="col-xs-12 col-xl-6 col-md-8">
                                                     <div class="form-group">
                                                         <label for="tags">Tags</label>
-                                                        <ng-container *ngIf="taskData?.mkey">
+                                                        <!-- <ng-container *ngIf="taskData?.mkey">
                                                             <tag-input [addOnBlur]="true"
                                                             [formControl]="approvalTempForm.get('tags')">
                                                             <tag-input-dropdown [autocompleteItems]="allTags"
@@ -381,7 +405,11 @@
                                                                 [showDropdownIfEmpty]="true"
                                                                 [dynamicUpdate]="true"></tag-input-dropdown>
                                                         </tag-input>
-                                                        </ng-container>
+                                                        </ng-container> -->
+                                                        <tag-input [addOnBlur]="true"  [(ngModel)]="selectedTags" [formControl]="approvalTempForm.get('tags')">
+                                                            <tag-input-dropdown [autocompleteItems]="allTags"  [showDropdownIfEmpty]="true"
+                                                              [dynamicUpdate]="true"></tag-input-dropdown>
+                                                          </tag-input>
                                                       
                                                     </div>
                                                 </div>

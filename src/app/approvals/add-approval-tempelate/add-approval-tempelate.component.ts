@@ -18,6 +18,7 @@ import { AddInstructionDialogComponent } from './add-instruction-dialog/add-inst
 export class AddApprovalTempelateComponent implements OnInit {
 
   public cities: ICity[] = CITIES;
+
   public selectedCities: ICity[] = [];
   public selectedDocs: any[] = [];
   public filteredDocs: ICity[] = [];
@@ -28,6 +29,7 @@ export class AddApprovalTempelateComponent implements OnInit {
   allTags: any[] = [];
   taskData: any;
 
+  lodingTrue: boolean = false;
 
   currentDate: string = new Date().toISOString().split('T')[0];
 
@@ -59,6 +61,7 @@ export class AddApprovalTempelateComponent implements OnInit {
   filteredEmployees: any[] = [];
   fieldErrs: any[] = [];
   ApprovalTempData: any[] = [];
+  selectedTags:any[]=[];
 
   getRelAbbr: any[] = [];
 
@@ -127,7 +130,7 @@ export class AddApprovalTempelateComponent implements OnInit {
     if (navigation?.extras.state) {
       const RecursiveTaskData: any = navigation.extras.state.taskData;
       this.taskData = RecursiveTaskData;
-      console.log('RecursiveTaskData: ', RecursiveTaskData)
+      console.log('Approval: ', RecursiveTaskData)
       if (RecursiveTaskData.mkey) {
         this.updatedDetails = !isNewTemp; // Don't update if adding a new task
       } else {
@@ -164,7 +167,9 @@ export class AddApprovalTempelateComponent implements OnInit {
     this.getTags();
     if (this.taskData && this.taskData.mkey) {
 
-    
+      this.selectedTags = this.taskData?.tags.split(',')
+
+      console.log('Tag', this.selectedTags)
       // this.end_list = this.taskData.enD_RESULT_DOC_LST
       // console.log('checklisT_DOC_LST', this.taskData.checklisT_DOC_LST)
       // console.log('enD_RESULT_DOC_LST', this.taskData.enD_RESULT_DOC_LST)
@@ -399,6 +404,14 @@ export class AddApprovalTempelateComponent implements OnInit {
 
   async addApprovalTempelate() {
 
+    this.lodingTrue = true;
+
+    setTimeout(() => {
+      this.lodingTrue = false;
+      this.tostar.error('Something went wrong.');
+    }, 10000);
+    
+
     const fieldErrors: string[] = [];
 
     const USER_CRED = this.credentialService.getUser();
@@ -482,6 +495,8 @@ export class AddApprovalTempelateComponent implements OnInit {
       }).join(',');
     }
 
+    console.log('Tags: ', tagsString)
+
     const assignedEmployeeMKey = assignedEmployee ? assignedEmployee.MKEY : null;
     const addApprovalTemplate = this.createApprovalTemplate(abbrivation, assignedEmployeeMKey, USER_CRED[0].MKEY, subTasks, subAuth, tagsString);
 
@@ -507,6 +522,9 @@ export class AddApprovalTempelateComponent implements OnInit {
 
     this.tostar.success('Success', 'Template added successfuly');
     this.router.navigate(['task/approval-screen'], { queryParams: { source: 'authority-tempelate' } });
+
+    this.lodingTrue = false;
+
       
   }
 
@@ -518,7 +536,10 @@ export class AddApprovalTempelateComponent implements OnInit {
 
     this.apiService.getTagDetailss1(this.loggedInUser[0]?.MKEY.toString(), token).subscribe((response: any) => {
       this.allTags = response[0].data.map((item: { name: string }) => item.name);
+      
     });
+
+    //console.log(this.allTags)
   }
 
 
@@ -1094,8 +1115,6 @@ export class AddApprovalTempelateComponent implements OnInit {
             } else {
               console.log("Department not found");
             }
-
-            console.log('value: ', value)
 
             if (value.maiN_ABBR && value.maiN_ABBR === subtask.subtasK_ABBR) {
               const rowForm = this.formBuilder.group({
