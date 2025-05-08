@@ -40,7 +40,15 @@ const routes: Routes = [
   { path:'approvals', loadChildren:()=> import('../app/approvals/approvals.module').then(m => m.ApprovalsModule), canActivate:[AuthGuardGuard]},
 
   //Compliance
-  { path:'compliance', loadChildren:()=> import('../app/compliance/compliance.module').then(m => m.ComplianceModule), canActivate:[AuthGuardGuard] }
+  { path:'compliance', loadChildren:()=> import('../app/compliance/compliance.module').then(m => m.ComplianceModule), canActivate:[AuthGuardGuard] },
+
+
+  //Project-view
+  { path:'Details', loadChildren:()=> import('../app/project-view/project-view.module').then(m => m.ProjectViewModule), canActivate:[AuthGuardGuard] },
+
+
+  // { path:'Details', loadChildren:()=> import('../app/details/details-routing.module').then(m=>m.DetailsRoutingModule), canActivate:[AuthGuardGuard]}
+
 
 ];
 

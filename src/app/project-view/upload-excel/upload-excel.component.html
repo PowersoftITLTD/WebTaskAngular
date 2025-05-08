@@ -1,0 +1,265 @@
+
+
+
+        <div class="main content custom-scrollbar">
+            <div id="project-dashboard" class="page-layout simple right-sidebar">
+                <div class="page-content-wrapper custom-scrollbar">
+                    <div class="page-content">
+                        <ul class="nav nav-tabs" id="myTab" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link btn active" id="upload-project-tab" onclick="funcProjectUpload()" data-toggle="tab" href="#Upload-Project-Pane" role="tab">Project Upload</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link btn" id="modify-project-tab" onclick="funcProjectModify()" data-toggle="tab" href="#modify-project-pane" role="tab">Project Modify</a>
+                            </li>
+                        </ul>
+
+                        <div class="tab-content">
+                            <!-- Upload Project Tab -->
+                            <div class="tab-pane fade show active p-3" ng-controller="Upload_Ctrl" id="Upload-Project-Pane" role="tabpanel">
+                                <div class="widget-group row no-gutters">
+                                    <div class="col-12">
+                                        <div class="card">
+                                            <div class="tab-content">
+                                                <div class="tab-pane fade show active">
+                                                    <div class="card p-6">
+                                                        <form name="uploadForm">
+                                                            <div class="row">
+                                                                <div class="col-md-6">
+                                                                    <div class="form-group">
+                                                                        <label>Project</label>
+                                                                        <select class="h6 custom-select" style="width:100%" ng-model="Main_Project" ng-change="getSub_Project()" ng-options="y.Type_Desc for (x,y) in Main_ProjectSelect" required>
+                                                                            <option value="">Select Project</option>
+                                                                        </select>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-6">
+                                                                    <div class="form-group">
+                                                                        <label>Sub-Project</label>
+                                                                        <select class="h6 custom-select" style="width:100%" ng-model="Sub_Project" ng-options="y.Type_Desc for (x,y) in Sub_ProjectSelect" required>
+                                                                            <option value="">Select Sub-Project</option>
+                                                                        </select>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="row">
+                                                                <div class="col-md-6">
+                                                                    <div class="form-group">
+                                                                        <label>Select File</label>
+                                                                        <input class="form-control" type="file" ng-model="excelFile" ngf-select="SelectFile($file)" accept=".xlsx, .xls" required />
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-4">
+                                                                    <div class="form-group">
+                                                                        <label>MPP Name</label>
+                                                                        <input type="text" maxlength="100" placeholder="e.g.: xyz.mpp" class="form-control" ng-model="mpp_name" required />
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-2">
+                                                                    <div class="form-group">
+                                                                        <label>&nbsp;</label>
+                                                                        <button type="submit" ng-click="submitForm()" class="w-100 btn btn-primary">Submit</button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="cover-spin"></div>
+
+                                            <div ng-if="displayTable" class="card p-6">
+                                                <div class="form-group">
+                                                    <div class="row">
+                                                        <div class="offset-md-1 col-md-1">
+                                                            <label for="query">Search:</label>
+                                                        </div>
+                                                        <div class="col-md-8">
+                                                            <input type="search" id="query" class="form-control" ng-model="query" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="tableContainer" style="min-width: 60% !important;">
+                                                    <table class="table table-bordered table-striped text-nowrap" id="excelTable">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Excel Row No.</th>
+                                                                <th>WBS</th>
+                                                                <th>Name</th>
+                                                                <th>Duration</th>
+                                                                <th>Start Date</th>
+                                                                <th>Finish Date</th>
+                                                                <th>Predecessors</th>
+                                                                <th>Resource Names</th>
+                                                                <th>AllocatedTo</th>
+                                                                <th>Outline_Level</th>
+                                                                <th>Number1</th>
+                                                                <th>Unique ID</th>
+                                                                <th>Percent Complete</th>
+                                                                <th>Remarks</th>
+                                                                <th>FileName</th>
+                                                                <th>MPP Name</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr ng-repeat="rec in tableData | filter: query" data-ng-class="{'errorRecord': rec.ErrorRecord}">
+                                                                <td>rec.rowno</td>
+                                                                <td>rec.WBS</td>
+                                                                <td>rec.Name</td>
+                                                                <td>rec.Duration</td>
+                                                                <td>rec.Start_Date</td>
+                                                                <td>rec.Finish_Date</td>
+                                                                <td>rec.Predecessors</td>
+                                                                <td>rec.Resource_Names</td>
+                                                                <td>rec.Allocated_To</td>
+                                                                <td>rec.Outline_Level</td>
+                                                                <td>rec.Number1</td>
+                                                                <td>rec.Unique_ID</td>
+                                                                <td>rec.Percent_Complete</td>
+                                                                <td style="min-width:350px;" id="remarksCell-rec.rowno-upload"><span ng-if="rec.ErrorRecord === false">rec.Remarks</span> <span ng-if="rec.ErrorRecord === true"></span>Upload file cell row</td><!--formatRemarks(rec.Remarks,'remarksCell-'+rec.rowno+'-upload')-->
+                                                                <td>rec.FileName</td>
+                                                                <td>rec.mpp_name</td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label>Total Records: tableData.length / <span class="errorRecord">Total Error Record(s): ErrorRecords.length</span></label>
+                                                    <button type="button" ng-disabled="proceedButton" ng-click="proceed()" class="btn btn-primary pull-right">Proceed</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Modify Project Tab -->
+                            <div class="tab-pane fade p-3" ng-controller="Modify_Ctrl" id="modify-project-pane" role="tabpanel">
+                                <div class="widget-group row no-gutters">
+                                    <div class="col-12">
+                                        <div class="card">
+                                            <div class="tab-content">
+                                                <div class="tab-pane fade show active">
+                                                    <div class="card p-6">
+                                                        <form name="uploadForm">
+                                                            <div class="row">
+                                                                <div class="col-md-6">
+                                                                    <div class="form-group">
+                                                                        <label>Project</label>
+                                                                        <select class="h6 custom-select" style="width:100%" ng-model="Main_Project" ng-change="getSub_Project()" ng-options="y.Type_Desc for (x,y) in Main_ProjectSelect" required>
+                                                                            <option value="">Select Project</option>
+                                                                        </select>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-6">
+                                                                    <div class="form-group">
+                                                                        <label>Sub-Project</label>
+                                                                        <select class="h6 custom-select" style="width:100%" ng-model="Sub_Project" ng-options="y.Type_Desc for (x,y) in Sub_ProjectSelect" required>
+                                                                            <option value="">Select Sub-Project</option>
+                                                                        </select>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="row">
+                                                                <div class="col-md-6">
+                                                                    <div class="form-group">
+                                                                        <label>Select File</label>
+                                                                        <input class="form-control" type="file" ng-model="excelFile" ngf-select="SelectFile($file)" accept=".xlsx, .xls" required />
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-4">
+                                                                    <div class="form-group">
+                                                                        <label>MPP Name</label>
+                                                                        <input type="text" maxlength="100" placeholder="e.g.: xyz.mpp" class="form-control" ng-model="mpp_name" required />
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-2">
+                                                                    <div class="form-group">
+                                                                        <label>&nbsp;</label>
+                                                                        <button type="submit" ng-click="submitForm()" class="w-100 btn btn-primary">Submit</button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="cover-spin"></div>
+
+                                            <div ng-if="displayTable" class="card p-6">
+                                                <div class="form-group">
+                                                    <div class="row">
+                                                        <div class="offset-md-1 col-md-1">
+                                                            <label for="query">Search:</label>
+                                                        </div>
+                                                        <div class="col-md-8">
+                                                            <input type="search" id="query" class="form-control" ng-model="query" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="tableContainer" style="min-width: 60% !important;">
+                                                    <table class="table table-bordered table-striped text-nowrap" id="excelTable">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Excel Row No.</th>
+                                                                <th>WBS</th>
+                                                                <th>Name</th>
+                                                                <th>Duration</th>
+                                                                <th>Start Date</th>
+                                                                <th>Finish Date</th>
+                                                                <th>Predecessors</th>
+                                                                <th>Resource Names</th>
+                                                                <th>AllocatedTo</th>
+                                                                <th>Outline_Level</th>
+                                                                <th>Number1</th>
+                                                                <th>Unique ID</th>
+                                                                <th>Percent Complete</th>
+                                                                <th>Remarks</th>
+                                                                <th>FileName</th>
+                                                                <th>MPP Name</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr ng-repeat="rec in tableData | filter: query" data-ng-class="{'errorRecord': rec.ErrorRecord}">
+                                                                <td>rec.rowno</td>
+                                                                <td>rec.WBS</td>
+                                                                <td>rec.Name</td>
+                                                                <td>rec.Duration</td>
+                                                                <td>rec.Start_Date</td>
+                                                                <td>rec.Finish_Date</td>
+                                                                <td>rec.Predecessors</td>
+                                                                <td>rec.Resource_Names</td>
+                                                                <td>rec.Allocated_To</td>
+                                                                <td>rec.Outline_Level</td>
+                                                                <td>rec.Number1</td>
+                                                                <td>rec.Unique_ID</td>
+                                                                <td>rec.Percent_Complete</td>
+                                                                <td style="min-width:350px;" id="remarksCell-rec.rowno-upload"><span ng-if="rec.ErrorRecord === false">rec.Remarks</span> <span ng-if="rec.ErrorRecord === true"></span>Upload file cell row</td><!--formatRemarks(rec.Remarks,'remarksCell-'+rec.rowno+'-upload')-->
+                                                                <td>rec.FileName</td>
+                                                                <td>rec.mpp_name</td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label>Total Records: tableData.length / <span class="errorRecord">Total Error Record(s): ErrorRecords.length</span></label>
+                                                    <button type="button" ng-disabled="proceedButton" ng-click="proceed()" class="btn btn-primary pull-right">Proceed</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div> <!-- End Modify Tab -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+ 

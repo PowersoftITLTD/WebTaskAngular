@@ -1,0 +1,23 @@
+.main {
+    padding-left: 250px;
+    
+    }
+
+    .tableContainer {
+        width: 100%;
+        overflow-x: auto;
+    }
+    
+    .table {
+        width: 100%;
+        table-layout: auto; /* or 'fixed' if you want stricter column sizing */
+        word-wrap: break-word;
+    }
+    
+
+    .table td:nth-child(14) {
+        max-width: 300px;
+        white-space: normal;
+        word-break: break-word;
+    }
+    
