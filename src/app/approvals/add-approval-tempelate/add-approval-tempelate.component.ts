@@ -406,10 +406,10 @@ export class AddApprovalTempelateComponent implements OnInit {
 
     this.lodingTrue = true;
 
-    setTimeout(() => {
-      this.lodingTrue = false;
-      this.tostar.error('Something went wrong.');
-    }, 10000);
+    // setTimeout(() => {
+    //   this.lodingTrue = false;
+    //   this.tostar.error('Something went wrong.');
+    // }, 10000);
     
 
     const fieldErrors: string[] = [];
