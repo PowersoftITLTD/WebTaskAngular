@@ -68,11 +68,15 @@ export class ProjectFileUploaderComponent {
 
       this.data = XLSX.utils.sheet_to_json(worksheet, { header: 1, raw: false });
 
+
       this.data = this.data.map(row => row.map(cell => {
+
         if (typeof cell === 'string' && this.isDateString(cell)) {
           const parsedDate = this.parseDate(cell);
           return parsedDate ? this.formatDateToDDMMYYYY(parsedDate) : cell;
         }
+
+
         return cell;
       }));
     } catch (error) {
@@ -80,6 +84,8 @@ export class ProjectFileUploaderComponent {
     } finally {
       this.loading = false;
     }
+
+
   }
   
 
