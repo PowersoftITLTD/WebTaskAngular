@@ -1,0 +1,110 @@
+<div class="widget-group row no-gutters">
+    <div class="col-12">
+        <div class="card">
+            <div class="tab-content">
+                <div class="tab-pane fade show active">
+                    <div class="card p-6">
+                        <form [formGroup]="fileTaskForm"> <!--(ngSubmit)="readFileData()"-->
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Project</label>
+                                        <select class="h6 custom-select " style="width:100%" #projectSelect
+                                            (change)="onProjectSelect(projectSelect)" formControlName="property">
+                                            <option value="" selected>Select</option>
+                                            <option *ngFor="let p of project" [value]="p.MKEY">{{
+                                                p.TYPE_DESC }}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Sub-Project</label>
+                                        <select class="h6 custom-select cate" style="width:100%"
+                                            formControlName="building">
+                                            <option value="" selected>Select</option>
+                                            <option *ngFor="let s of sub_proj" [value]="s.MKEY">{{ s.TYPE_DESC }}
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Select File</label>
+                                        <input class="form-control" type="file" formControlName="ExcelFile"
+                                            accept=".xlsx, .xls" (change)="uploadExcelFile($event)" />
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>MPP Name</label>
+                                        <input type="text" maxlength="100" placeholder="e.g.: xyz.mpp"
+                                            class="form-control" formControlName="mppName" />
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label>&nbsp;</label>
+                                        <button type="submit" (click)="readFileData()" class="w-100 btn btn-primary">
+                                            <!--[disabled]="fileTaskForm.invalid"-->
+                                            Submit
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="cover-spin"></div>
+
+            <!-- Reactive Replacement for ng-if -->
+            <div class="card p-3">
+                <div class="form-group">
+                    <div class="row">
+                        <div class="offset-md-1 col-md-1"></div>
+                        <div class="col-md-8">
+                            <label for="query"></label>
+                            <input type="text" id="query" placeholder="Search Task Instance" class="form-control" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tableContainer scrollable-table" style="min-width: 60% !important;">
+                    <table class="table table-bordered table-striped text-nowrap">
+                        <tbody>
+                            <tr *ngFor="let row of data; let i = index">
+                                <td [ngClass]="{ 'sticky-row': i === 0 }">{{ i === 0 ? 'Sr no.' : i }}</td>
+                                <td *ngFor="let val of row"
+                                    [ngClass]="{ 'sticky-row': i === 0, 'error-cell': hasError(row) }">
+                                    {{ val }}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="form-group">
+                    <label>
+                        <span>
+                            Total Records: Total Record(s): {{ (data || []).length > 0 ? data.length - 1 : 0 }}
+                        </span>/
+                        <span class="errorRecord error_count">Total Error Record(s): <span class="error_count"> {{error
+                                ? error : 0}}</span></span> /
+                        <span class="errorRecord success_count">Total Success Record(s): <span
+                                class="success_count">{{no_error? no_error : 0}}</span></span>
+                    </label>
+                    <button type="button" [disabled]="procedureDisable" (click)="proceed()"
+                        class="btn btn-primary pull-right">
+                        Proceed
+                    </button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

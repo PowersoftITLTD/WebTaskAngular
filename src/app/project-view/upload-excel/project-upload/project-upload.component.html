@@ -1,0 +1,287 @@
+<div class="widget-group row no-gutters">
+    <div class="col-12">
+        <div class="card">
+            <div class="tab-content">
+                <div class="tab-pane fade show active classification-border">
+                    <div class="card p-6">
+                        <form [formGroup]="fileTaskForm">
+                            <div class="row">
+
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>Property</label>
+                                        <select class="h6 custom-select " style="width:100%" #projectSelect
+                                            (change)="onProjectSelect(projectSelect)" formControlName="property">
+                                            <option value="" selected>Select</option>
+                                            <option *ngFor="let p of project" [value]="p.MKEY">{{
+                                                p.TYPE_DESC }}</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>Building</label>
+                                        <select class="h6 custom-select cate" style="width:100%"
+                                            formControlName="building" (change)="ifSheetExist()">
+                                            <option value="" selected>Select</option>
+                                            <option *ngFor="let s of sub_proj" [value]="s.MKEY">{{ s.TYPE_DESC }}
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3"  ><!--*ngIf="fileTab && noFileExist || type === 'modify'"-->
+                                    <div class="form-group">
+                                        <!-- <p>Disabled: {{  }}</p> -->
+
+                                        <label>MPP Name</label>                                        
+                                        <input type="text" maxlength="100" [ngClass]="{ 'disabled-field': !(fileTab && noFileExist) && type === 'upload' || hideCancel }" placeholder="e.g.: xyz.mpp"
+                                        class="form-control" formControlName="mppName" />
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3" >
+                                    <div class="form-group">
+                                        <label>Select File</label>
+                                        <input class="form-control" type="file" [ngClass]="{ 'disabled-field': !(fileTab && noFileExist) && type === 'upload' || hideCancel }" formControlName="ExcelFile"
+                                            accept=".xlsx, .xls" (change)="uploadExcelFile($event)" />
+                                    </div>
+                                </div>
+                                <!-- </div>                                                       -->
+                            </div>
+
+                            <div class="row justify-content-center" *ngIf="fileTab && noFileExist || type === 'modify'">
+                                <!-- -->
+
+                                <div class="col-md-2 " *ngIf="hideSubmit">
+                                    <!-- <label>&nbsp;</label> -->
+                                    <button type="submit" (click)="readFileData()" [disabled]="disableSubmit"
+                                        class="w-100 btn btn-primary submit-btn">
+                                        Submit
+                                    </button>
+                                </div>
+
+                                <div class="col-md-2" *ngIf="hideCancel">
+                                    <!-- <label>&nbsp;</label> -->
+                                    <button type="submit" (click)="cancel()" [disabled]="disableSubmit"
+                                        class="w-100 btn btn-primary cancel-btn">
+                                        Cancel
+                                    </button>
+                                </div>
+                            
+                            </div>
+                            <div class="row justify-content-center" *ngIf="!fileTab && noFileExist">
+                                <div class="col-md-2"  *ngIf="type !== 'modify' && type === 'upload'">
+                                    <!-- <label>&nbsp;</label> *ngIf="type === 'modify' && type === 'upload'"-->
+                                    <button type="submit" (click)="reset()"
+                                        class="w-100 btn btn-primary">
+                                        Reset
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="container">
+                                <div class="d-flex justify-content-end">
+                                    <div class="file-download-container"
+                                        style="background-color: rgb(232, 199, 199); display: flex; justify-content: space-between; align-items: center;"
+                                        *ngIf="closeExistingFilePopup">
+                                        <span class="file-name">No record available</span>
+                                        <a><button (click)="closeEmptyRecord()">X</button></a>
+                                    </div>
+                                    <div class="file-download-container" *ngIf="extractExistingFile">
+                                        <span class="file-name">Record already exist</span>
+                                        <button class="download-button" (click)="exportToExcel()"
+                                            aria-label="Download as Excel">
+                                            <i class="fas fa-file-export mt-2" aria-hidden="true"></i>
+                                        </button>
+                                    </div>
+
+                                    <!-- <div  *ngIf="incorrect_feild_update.length > 0">
+                                        <div class="file-download-container" *ngFor="let error of incorrect_feild_update; let i=index" class="error-item">
+                                            <span class="file-name">{{(i + 1)}} {{ error.message }}</span>
+                                        </div>
+                                    </div> -->
+
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="cover-spin"></div>
+
+            <!-- Reactive Replacement for ng-if -->
+            <div class="card p-3">
+                <div class="form-group">
+                    <div class="row">
+                        <div class="offset-md-1 col-md-1"></div>
+                        <div class="col-md-8">
+                            <label for="query"></label>
+                            <input type="text" id="query" [(ngModel)]="searchText" placeholder="Search Task Instance" class="form-control" />
+                        </div>
+                    </div>
+                </div>
+
+                <!-- <div class="tableContainer scrollable-table" style="min-width: 60% !important;">
+                    <table class="table table-bordered table-striped text-nowrap">
+                        <tbody>
+                            <tr *ngFor="let row of data; let i = index">
+                                <td [ngClass]="{ 'sticky-row': i === 0 }">{{ i === 0 ? 'Sr no.' : i }}</td>
+                                <td *ngFor="let val of row"
+                                    [ngClass]="{ 'sticky-row': i === 0, 'error-cell': hasError(row) }">
+                                    {{ val }}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div> -->
+
+                <div class="tableContainer tree-scrollable-table" style="min-width: 60%">
+
+                    <table class="table table-bordered table-striped text-nowrap">
+
+                        <thead class="sticky-row">
+
+                            <tr *ngFor="let key of excelHeader">
+                                <th>{{key.WBS ? key.WBS : 'WBS'}}</th>
+                                <th>{{key.Name}}</th>
+                                <th class="truncate-date">{{key.Duration}}</th>
+                                <th class="truncate-date">{{key.Start_Date}}</th>
+                                <th>{{key.Finish_Date}}</th>
+                                <th>{{key.Predecessors}}</th>
+                                <th>{{key.Resource_Names}}</th>
+                                <th>{{key.Text1}}</th>
+                                <th>{{key.Outline_Level}}</th>
+                                <th>{{key.Number1}}</th>
+                                <th>{{key.Unique_ID}}</th>
+                                <th>{{key.Percent_Complete}}</th>
+                                <th class="truncate-date">{{key.Remarks}}</th>
+                            </tr>
+                            
+                        </thead>
+
+                        <tbody>
+                            <ng-template #recursiveTaskTemplate let-tasks>
+                                <ng-container *ngFor="let task of tasks | mspSearchPipe : searchText">
+                                    <tr [ngClass]="{
+                                        'error-cell': task.wbs?.Remarks && 
+                                                    !task.wbs.Remarks.startsWith('Created') && 
+                                                    !task.wbs.Remarks.endsWith('Successfully')
+                                        }">
+                                        <td style="width: 170px;" >
+                                            <ng-container *ngIf="task.wbs.wbs">
+                                                <span
+                                                    [style.marginLeft.px]="calculateIndentation(task.wbs.wbs, task.subtask && task.subtask.length > 0 ? 12 : 17)">
+                                                    <mat-icon *ngIf="task.subtask && task.subtask.length > 0"
+                                                        (click)="toggleVisibility(task)" style="cursor: pointer;">
+                                                        <img
+                                                            src="../../../../assets/Content/images/{{ task.visible ? 'collapse.png' : 'expand.png' }}">
+                                                    </mat-icon>
+                                                    {{ task.wbs.wbs }}
+                                                </span>
+                                            </ng-container>
+                                        </td>
+                                        <td class="truncate-text">{{ task.wbs?.Name }}</td>
+                                        <td class="truncate-text">{{ task.wbs?.Duration }}</td>
+                                        <td>{{ task.wbs?.Start_Date }}</td>
+                                        <td>{{ task.wbs?.Finish_Date }}</td>
+                                        <td class="truncate-text">{{task.wbs?.Predecessors}}</td>
+                                        <td>{{ task.wbs?.Resource_Names }}</td>
+                                        <td class="truncate-text">{{ task.wbs?.Text1 }}</td>
+                                        <td class="truncate-text">{{ task.wbs?.Outline_Level }}</td>
+                                        <td class="truncate-text">{{ task.wbs?.Number1 }}</td>
+                                        <td class="truncate-text">{{ task.wbs?.Unique_ID }}</td>
+                                        <td class="truncate-text">{{ task.wbs?.Percent_Complete }}</td>
+                                        <td class="truncate-text">{{ task.wbs?.Remarks }}</td>
+                                    </tr>
+                                    <ng-container *ngIf="task.visible && task.subtask && task.subtask.length > 0">
+                                        <ng-container
+                                            *ngTemplateOutlet="recursiveTaskTemplate; context: { $implicit: task.subtask }"></ng-container>
+                                    </ng-container>
+                                </ng-container>
+                            </ng-template>
+
+                            <ng-container *ngFor="let task of subTasks | mspSearchPipe : searchText" >
+                                <tr [ngClass]="{
+                                        'error-cell': task.wbs?.Remarks && 
+                                                    !task.wbs.Remarks.startsWith('Created') && 
+                                                    !task.wbs.Remarks.endsWith('Successfully')
+                                        }">
+                                    <td style="width: 170px;">
+                                        <ng-container *ngIf="task.wbs.wbs">
+                                            <span
+                                                [style.marginLeft.px]="calculateIndentation(task.wbs.wbs, task.subtask && task.subtask.length > 0 ? 12 : 17)">
+                                                <mat-icon *ngIf="task.subtask && task.subtask.length > 0"
+                                                    (click)="toggleVisibility(task)" style="cursor: pointer;">
+                                                    <img
+                                                        src="../../../../assets/Content/images/{{ task.visible ? 'collapse.png' : 'expand.png' }}">
+                                                </mat-icon>
+                                                {{ task.wbs.wbs }}
+                                            </span>
+                                        </ng-container>
+                                    </td>
+                                    <td class="truncate-text">{{ task.wbs?.Name }}</td>
+                                    <td class="truncate-text">{{ task.wbs?.Duration }}</td>
+                                    <td>{{ task.wbs?.Start_Date }}</td>
+                                    <td>{{ task.wbs?.Finish_Date }}</td>
+                                    <td class="truncate-text">{{task.wbs?.Predecessors}}</td>
+                                    <td>{{ task.wbs?.Resource_Names }}</td>
+                                    <td class="truncate-text">{{ task.wbs?.Text1 }}</td>
+                                    <td class="truncate-text">{{ task.wbs?.Outline_Level }}</td>
+                                    <td class="truncate-text">{{ task.wbs?.Number1 }}</td>
+                                    <td class="truncate-text">{{ task.wbs?.Unique_ID }}</td>
+                                    <td class="truncate-text">{{ task.wbs?.Percent_Complete }}</td>
+                                    <td class="truncate-text">{{ task.wbs?.Remarks }}</td>
+                                </tr>
+                                <ng-container *ngIf="task.visible && task.subtask && task.subtask.length > 0">
+                                    <ng-container
+                                        *ngTemplateOutlet="recursiveTaskTemplate; context: { $implicit: task.subtask }"></ng-container>
+                                </ng-container>
+                            </ng-container>
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+                <div class="form-group">
+
+                    <div class="file-download-container" *ngIf="extractFile">
+                        <span class="file-name">{{ selectedFileName() }}</span>
+                        <button class="download-button" (click)="exportToExcel()" aria-label="Download as Excel">
+                            <i class="fa fa-download" aria-hidden="true"></i>
+                        </button>
+                    </div>
+
+                    <label>
+                        <span>
+                            Total Records: Total Record(s): {{ (data || []).length > 0 ? data.length - 1 : 0 }}
+                        </span>/
+                        <span class="errorRecord error_count">Total Error Record(s): <span class="error_count"> {{error
+                                ? error : 0}}</span></span> /
+                        <span class="errorRecord success_count">Total Success Record(s): <span
+                                class="success_count">{{no_error? no_error : 0}}</span></span>
+                    </label>
+
+                    <button type="button" [disabled]="procedureDisable" [ngClass]="{ 'disabled-field': !(fileTab && noFileExist) && type === 'upload' }" *ngIf="type === 'upload'"
+                        class="btn btn-primary pull-right">
+                        <div (click)="proceed()">
+                            <div *ngIf="!lodingTrue">Proceed</div>
+                        </div>
+                        <div class="spinner-border mt-2" *ngIf="lodingTrue" role="status"></div>
+                    </button>
+
+                    <button type="button" [disabled]="procedureDisable"  [ngClass]="{ 'disabled-field': (fileTab && noFileExist) && type === 'modify' }" *ngIf="type === 'modify'"
+                        class="btn btn-primary pull-right">
+                        <div (click)="proceed()">
+                            <div *ngIf="!lodingTrue">Update</div>
+                        </div>
+                        <div class="spinner-border mt-2" *ngIf="lodingTrue" role="status"></div>
+                    </button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

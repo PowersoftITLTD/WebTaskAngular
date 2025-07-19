@@ -1,0 +1,392 @@
+<app-header-bar (loggedInUserEmitter)="receiveLoggedInUser($event)"></app-header-bar>
+
+<div class="tab-pane fade show main" id="ProgressTab" role="tabpanel" aria-labelledby="product-images-tab">
+    <div id="wrapper">
+
+        <!-- Include Header -->
+        <!-- Header would be included here -->
+
+        <div class="content custom-scrollbar">
+            <div id="project-dashboard" class="page-layout simple right-sidebar">
+                <div class="page-content-wrapper custom-scrollbar">
+                    <div class="page-content">
+                        <ul class="nav nav-tabs" id="myTab" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link btn active" id="upload-project-tab" data-toggle="tab"
+                                    href="#Upload-Project-Pane" role="tab">Project Upload</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link btn" id="modify-project-tab" data-toggle="tab"
+                                    href="#modify-project-pane" role="tab">Project Modify</a>
+                            </li>
+                        </ul>
+
+                        <div class="tab-content">
+
+                            <!-- Upload Project Tab -->
+                            <div class="tab-pane fade show active p-3" id="Upload-Project-Pane" role="tabpanel">
+                                <div class="widget-group row no-gutters">
+                                    <div class="col-12">
+                                        <div class="card">
+                                            <div class="tab-content">
+                                                <div class="tab-pane fade show active" id="basic-info-tab-pane">
+                                                    <div class="card p-6">
+                                                        <form name="uploadForm">
+                                                            <div class="row">
+                                                                <div class="col-md-6">
+                                                                    <div class="form-group">
+                                                                        <label>Project</label>
+                                                                        <select class="h6 custom-select"
+                                                                            style="width:100%">
+                                                                            <option value=""> Select Project</option>
+                                                                        </select>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-6">
+                                                                    <div class="form-group">
+                                                                        <label>Sub-Project</label>
+                                                                        <select class="h6 custom-select"
+                                                                            style="width:100%">
+                                                                            <option value=""> Select Sub-Project
+                                                                            </option>
+                                                                        </select>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col-md-6">
+                                                                    <div class="form-group">
+                                                                        <label>Select File</label>
+                                                                        <input class="form-control" type="file"
+                                                                            accept=".xlsx, .xls" required />
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-4">
+                                                                    <div class="form-group">
+                                                                        <label>MPP Name</label>
+                                                                        <input type="text" maxlength="100"
+                                                                            placeholder="e.g.: xyz.mpp"
+                                                                            class="form-control" required />
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-2">
+                                                                    <div class="form-group">
+                                                                        <label>&nbsp;</label>
+                                                                        <button type="submit"
+                                                                            class="w-100 btn btn-primary">Submit</button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="cover-spin"></div>
+                                        </div>
+
+                                        <!-- Display Table Placeholder -->
+                                        <div class="card p-6">
+                                            <div class="form-group">
+                                                <div class="row">
+                                                    <div class="offset-md-1 col-md-1">
+                                                        <label for="query">Search:</label>
+                                                    </div>
+                                                    <div class="col-md-8">
+                                                        <input type="search" id="query" class="form-control" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="tableContainer" style="min-width: 60% !important;">
+                                                <table class="table table-bordered table-striped text-nowrap"
+                                                    id="excelTable">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Excel Row No.</th>
+                                                            <th>WBS</th>
+                                                            <th>Name</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <!-- Dynamic rows go here -->
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Total Records: 0 / <span class="errorRecord">Total Error
+                                                        Record(s): 0</span></label>
+                                                <button type="button" class="btn btn-primary pull-right"
+                                                    disabled>Proceed</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Modify Project Tab -->
+                            <div class="tab-pane fade p-3" id="modify-project-pane" role="tabpanel">
+                                <div class="widget-group row no-gutters">
+                                    <div class="col-12">
+                                        <div class="card">
+                                            <div class="tab-content">
+                                                <div class="tab-pane fade show active" id="basic-info-tab-pane">
+                                                    <div class="card p-6">
+                                                        <form name="uploadForm">
+                                                            <div class="row">
+                                                                <div class="col-md-6">
+                                                                    <div class="form-group">
+                                                                        <label>Project</label>
+                                                                        <select class="h6 custom-select"
+                                                                            style="width:100%">
+                                                                            <option value=""> Select Project</option>
+                                                                        </select>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-6">
+                                                                    <div class="form-group">
+                                                                        <label>Sub-Project</label>
+                                                                        <select class="h6 custom-select"
+                                                                            style="width:100%">
+                                                                            <option value=""> Select Sub-Project
+                                                                            </option>
+                                                                        </select>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col-md-6">
+                                                                    <div class="form-group">
+                                                                        <label>Select File</label>
+                                                                        <input class="form-control" type="file"
+                                                                            accept=".xlsx, .xls" required />
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-4">
+                                                                    <div class="form-group">
+                                                                        <label>MPP Name</label>
+                                                                        <input type="text" maxlength="100"
+                                                                            placeholder="e.g.: xyz.mpp"
+                                                                            class="form-control" required />
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-2">
+                                                                    <div class="form-group">
+                                                                        <label>&nbsp;</label>
+                                                                        <button type="submit"
+                                                                            class="w-100 btn btn-primary">Submit</button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="cover-spin"></div>
+                                            <div class="card p-6">
+                                                <div class="form-group">
+                                                    <div class="row">
+                                                        <div class="offset-md-1 col-md-1">
+                                                            <label for="query">Search:</label>
+                                                        </div>
+                                                        <div class="col-md-8">
+                                                            <input type="search" id="query" class="form-control" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="tableContainer" style="min-width: 60% !important;">
+                                                    <table class="table table-bordered table-striped text-nowrap"
+                                                        id="excelTable">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Excel Row No.</th>
+                                                                <th>WBS</th>
+                                                                <th>Name</th>
+                                                                <th>Duration</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <!-- Dynamic rows go here -->
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Total Records: 0 / <span class="errorRecord">Total Error
+                                                            Record(s): 0</span></label>
+                                                    <button type="button" class="btn btn-primary pull-right"
+                                                        disabled>Proceed</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div> <!-- tab-content -->
+                    </div> <!-- page-content -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Include Footer -->
+        <!-- Footer would be included here -->
+
+    </div>
+
+        <body class="main ">
+            <main ng-app="MyApp">
+                <div id="wrapper" ng-controller="DashboardController">
+        
+                    <div class="content side-bar-scroll">
+                        <div id="project-dashboard" class="page-layout simple right-sidebar">
+                            <div class="page-content-wrapper custom-scrollbar">
+        
+                                <div class="page-content">
+                                    <div class="tab-content">
+                                        <div class="tab-pane fade show active p-0" id="budget-summary-tab-ProjectView-Pane" role="tabpanel" aria-labelledby="team-members-tab">
+                                            <div class="widget-group row no-gutters">
+                                                <div class="col-12">
+                                                    <div class="card">
+                                                        <div class="tab-content">
+                                                            <div class="tab-pane fade show active" id="basic-info-tab-pane" role="tabpanel" aria-labelledby="basic-info-tab">
+                                                                <div class="card p-0">
+                                                                    <form>
+                                                                        <div class="row ml-30">
+                                                                            <div class="col-4">
+                                                                                <div class="form-group">
+                                                                                    <label>Property</label>                                                                                  
+                                                                                    <select class="h6 custom-select " style="width:90%" #projectSelect
+                                                                                    (change)="onProjectSelect(projectSelect)">
+                                                                                    <option value="" selected>Select</option>
+                                                                                    <option *ngFor="let p of project" Value="p">{{ p.TYPE_DESC }}</option>
+                                                                                  </select>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-4">
+                                                                                <div class="form-group">
+                                                                                    <label>Building</label>                                                                                    
+                                                                                    <select class="h6 custom-select cate" style="width:90%">
+                                                                                        <option value="" selected>Select</option>
+                                                                                        <option *ngFor="let s of sub_proj" Value="s">{{ s.TYPE_DESC }}</option>
+                                                                                    </select>                                                                                    
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-4">
+                                                                                <div class="form-group pt-8">
+                                                                                    <input type="button" id="btnGo" class="btn btn-secondary fuse-ripple-ready" value="Get Details" ng-click="FunGetDetails()" />
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="row">
+                                                                            <div class="col-md-6">
+                                                                                <div class="form-group">
+                                                                                    <label>Select File </label>
+                                                                                    <input class="form-control" type="file" ng-model="excelFile" ngf-select="SelectFile($file)" accept=".xlsx, .xls" required />
+                                                                                </div>
+                                                                                <!-- <span ng-show="excelFile.$invalid" class="text-danger">The valid file is required.</span> -->
+                                                                            </div>
+                                                                            <div class="col-md-4">
+                                                                                <div class="form-group">
+                                                                                    <label>MPP Name</label>
+                                                                                    <input type="text" maxlength="100" placeholder="e.g.: xyz.mpp" class="form-control" aria-describedby="width" ng-model="mpp_name" required />
+                                                                                </div>
+                                                                                <!-- <span ng-show="mpp_name.$invalid" class="text-danger">The Mpp Name is required.</span> -->
+                                                                            </div>
+                                                                            <div class="col-md-2">
+                                                                                <div class="form-group">
+                                                                                    <label>&nbsp;&nbsp;&nbsp;&nbsp;</label>
+                                                                                    <!-- <input type="submit" class="w-100 btn btn-primary fuse-ripple-ready" value="Submit"/> -->
+                                                                                    <button type="submit" ng-click="submitForm()" class="w-100 btn btn-primary fuse-ripple-ready">Submit</button>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </form>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+        
+                                                        <div class="card p-0">
+                                                            <div class="mt-3" role="document" style="min-width: 60% !important;">
+                                                                <span class="h-75 ml-2">Task Details</span>
+                                                                <div class="col-md-8" style="float:right">
+                                                                    <input type="button" value="Export" id="btnExport" class="btn btn-secondary fuse-ripple-ready mr-2" ng-click="FunExportDetails()" />
+                                                                    <input type="button" value="Export Completed Task" class="btn btn-secondary fuse-ripple-ready" ng-click="FunExportCompletedTask()" />
+                                                                </div>
+                                                                <div class="card-body p-0">
+                                                                    <div class="widget-header px-2 py-3 row no-gutters align-items-center justify-content-between">
+                                                                        <div class="col">
+                                                                            <div class="row" ng-repeat="Records in GetProjectViewDetails">
+                                                                                <div class="col-12">
+                                                                                    <div class="form-group">
+                                                                                        <a href="#" ng-click="FunGetProjectwithTeamDetails(Records.Mkey)">Records.TaskDetails</a>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+        
+                                                        <div class="card p-1">
+                                                            <form style="width: 100%;">
+                                                                <div class="input-group mb-4">
+                                                                    <div class="container-fluid">
+                                                                        <div class="row page-content justify-content-center pr-8">
+                                                                            <span class="pt-4"></span>
+                                                                            <div class="attachment form-group">
+                                                                                <div class="source-preview-wrapper">
+                                                                                    <!-- <label>Please upload file</label> -->
+                                                                                    <div class="custom-file attachment">
+                                                                                        <input type="file" style="width: 70rem;" class="custom-file-input"
+                                                                                            (change)="uploadExcelFile($event)" id="TaskProgressFile">
+                                                                                        <label class="custom-file-label mr-3" for="customFile"
+                                                                                            id="TaskAttachmentDetails">Please upload file</label>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="attachment form-group">
+                                                                                <div class="source-preview-wrapper">
+                                                                                    <button type="button" class="btn "> <!--mt-7-->
+                                                                                        <div (click)="readFileData()">
+                                                                                            <div *ngIf="!loading">Import</div>
+                                                                                        </div>
+                                                                                        <div class="spinner-border mt-2" *ngIf="loading" role="status"></div>
+                                                                                    </button>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </form>
+                                                    
+                                                        <ng-template *ngIf="loading" class="loading lodingMessage">
+                                                            <img src="../../../assets/images/100flops.png" alt="Loading...">
+                                                        </ng-template>
+                                                        <div>
+                                                        </div>
+                                                    
+                                                        <div class="page-layout carded full-width" style="width:100%;" *ngIf="!loading">
+                                                            <div class="progress-details table-scroll-container">
+                                                                <table class="task-table">
+                                                                    <tbody>
+                                                                        <tr *ngFor="let row of data; let i = index">
+                                                                            <td>{{ i === 0 ? 'Sr no.' : i }}</td>
+                                                                            <td *ngFor="let val of row">{{ val }}</td>
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div>                                                        
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div> <!-- End widget-group -->
+                                        </div>
+                                    </div>
+                                </div> <!-- End page-content -->
+                            </div> <!-- End page-content-wrapper -->
+                        </div> <!-- End project-dashboard -->
+                    </div> <!-- End content -->
+                </div> <!-- End wrapper -->
+            </main>
+        </body>                    
+</div>
