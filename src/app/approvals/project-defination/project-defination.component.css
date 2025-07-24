@@ -87,7 +87,7 @@
     text-align: left;
   }
   
-  .task-table th {
+  .task-table th td{
     background-color: #f2f2f2;
     text-align: center;
   }
@@ -138,8 +138,12 @@
 
   
   .table-scroll-container {
-    max-height: 400px; /* Adjust to the desired height */
+    /* min-width: 100rem;*/
+    /* min-width: 130rem; 
+    max-width: 130rem; */
+    max-height: 390px; /* Adjust to the desired height */
     overflow-y: auto;
+    display: flex;
   }
   
   .table-header th {
@@ -170,7 +174,6 @@
 
 
   .table-scroll-container::-webkit-scrollbar {
-    margin-top: 200px;
 
     width: 14px;  /* Vertical scrollbar width */
     height: 14px; /* Horizontal scrollbar height */
@@ -180,11 +183,14 @@
 
     background: #888;
     border-radius: 15px;
+    
   }
   
   .table-scroll-container::-webkit-scrollbar-thumb:hover {
     background: #555;
   }
+
+  
   
   /* .truncate-text {
     white-space: nowrap;
@@ -405,9 +411,10 @@
   }
     
   
-  body {
-    padding-left: 250px;
-  }
+body {
+margin-right: -671rem;
+padding-left:250px ;
+}
   
 
   
@@ -711,3 +718,8 @@
 }
   
   
+
+.container-shrink {
+    padding-left: 10px; /* Shrink from left */
+    padding-right: 10px; /* Shrink from right */
+}

@@ -273,7 +273,7 @@ export class ProjectDocumentDepositoryComponent implements OnInit {
     };
 
 
-    console.log('FILE', this.file.name)
+   // console.log('FILE', this.file.name)
 
     if (this.file) {
       const additionalAttributes = {
@@ -281,7 +281,7 @@ export class ProjectDocumentDepositoryComponent implements OnInit {
         FILE_NAME: this.file,
       };
 
-      console.log('additionalAttributes', additionalAttributes)
+     // console.log('additionalAttributes', additionalAttributes)
 
       this.apiService.postDocUploadDepository(this.file, additionalAttributes, this.recursiveLogginUser).subscribe(
         response => {
@@ -302,8 +302,9 @@ export class ProjectDocumentDepositoryComponent implements OnInit {
   downloadFile(file_path: any): any {
 
    // const baseUrl = 'http://192.168.19.188:8065/';
-    const baseUrl = 'http://task.piplapps.com:8074/';
-    const fullPath = `${baseUrl}/${file_path}`;
+    const baseUrl = 'https://task.piplapps.com:8074/';
+    const fullPath = `${this.apiService.downloadUrl}/${file_path}`;
+    console.log('Check full path: ', fullPath)
     return fullPath;
   }
 
@@ -673,7 +674,8 @@ export class ProjectDocumentDepositoryComponent implements OnInit {
 
   fileUrl(filePath: string) {
   
-    return `http://task.piplapps.com:8074/${filePath}`;
+    return `${this.apiService.downloadUrl}${filePath}`;
+    
 
    // return `http://192.168.19.188:8087/${filePath}`
   }

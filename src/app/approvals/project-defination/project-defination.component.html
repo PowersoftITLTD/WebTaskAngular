@@ -479,6 +479,7 @@
                                             *ngTemplateOutlet="recursiveTaskTemplate; context: { $implicit: task.subtask }"></ng-container>
                                         </ng-container>
                                       </ng-container>
+                                      
                                     </ul>
                                   </ng-container>                                 
 
@@ -556,7 +557,7 @@
                                       </td>
                                       <td>
                                         <a href="javascript:void(0);" (click)="openSelectedTask(task.TASK_NO?.task_MKEY)">
-                                          {{task.TASK_NO?.seQ_NO}}
+                                          <!-- {{task.TASK_NO?.seQ_NO}} -->
                                         </a>
                                       </td>
                                       
@@ -620,13 +621,13 @@
                                                 type="button" 
                                                 class="badge badge-pill badge-info ml-1" 
                                                 (click)="initiateToApprovalInitiation(task.TASK_NO.approvaL_MKEY)">
-                                                Initiation
+                                                Initiation for {{task.TASK_NO.TASK_NO}}
                                             </span> -->
                                         </div>
                                       </td>
                                       <td class="truncate-text"
                                        style="max-width:100rem; position: sticky; right: 0; background: white; z-index: 1;">
-                                        {{task.TASK_NO?.tasK_STATUS}}                                        
+                                        {{task.TASK_NO?.tasK_STATUS}}                                           
                                       </td>
                                       <!-- <td
                                         style="max-width:100rem; position: sticky; right: 0; background: white; z-index: 1;">
@@ -668,7 +669,7 @@
                                     </td>
                                     <td>
                                       <a href="javascript:void(0);" (click)="openSelectedTask(task.TASK_NO?.task_MKEY)">
-                                        {{task.TASK_NO?.seQ_NO}}
+                                        <!-- {{task.TASK_NO?.seQ_NO}} -->
                                       </a>
                                     </td>
                                     <td class="truncate-text" matTooltip="{{ task.TASK_NO?.maiN_ABBR }}">{{
@@ -724,7 +725,7 @@
                                         <span *ngIf="task.TASK_NO?.status === 'Ready to Initiate'" type="button"
                                           class="badge badge-pill badge-info ml-1"
                                           (click)="initiateToApprovalInitiation(task.TASK_NO.approvaL_MKEY)">
-                                          Initiation
+                                          Initiation for {{task.TASK_NO.TASK_NO}}
                                         </span>
                                       </div>
                                     </td>
@@ -758,10 +759,13 @@
                                 </div>
                               </div>                            
                             </div> 
-                            <div *ngIf="!loading && selectedSeqArr.length === 0 || ''"
-                              class="no-data py-3 d-flex justify-content-center align-items-center">
-                              No row to show
-                            </div>
+                            <div>
+                              <div *ngIf="!loading && selectedSeqArr.length === 0 || ''"
+                                  class="no-data py-3 d-flex justify-content-center align-items-center">
+                                  No row to show
+                              </div>
+                           </div>
+                            
                           </div>
                         </div>
                       </div>

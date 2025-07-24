@@ -132,6 +132,7 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
           this.taskData = JSON.parse(RecursiveTaskData);
           if (!isNewTemp) {
             this.updatedDetails = this.taskData.mkey ? true : false;
+            console.log('this.taskData: ', this.taskData);
           }
         } catch (error) {
           console.error('Failed to parse task data', error);
@@ -342,6 +343,8 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
 
 
     const taskId = task?.TASK_NO?.TASK_NO;
+    const selectedTask = task;
+
 
     // Toggle individual selection
     if (this.selectedTasksId.has(taskId)) {
@@ -355,13 +358,26 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
     // Combine and deduplicate tasks
     let selectedTasksArray: any[];
 
+    const updateTaskSelection = (task: any, isChecked: boolean) => {
+      task.checked = isChecked;
+      //console.log(`Updated task ${task.TASK_NO?.TASK_NO || 'subtask'} to ${isChecked}`);
+
+      if (task.subtask && task.subtask.length > 0) {
+        task.subtask.forEach((innerTask: any) => {
+          updateTaskSelection(innerTask, isChecked);
+        });
+      }
+    };
+
     // Utility function to count maiN_ABBR occurrences
     const getUniqueTasks = (tasksArray: any[]): any[] => {
+
+      console.log('tasksArray unique list: ', tasksArray)
       const abbrCount = new Map();
 
       const countAbbr = (tasks: any[]) => {
         tasks.forEach((task: any) => {
-          console.log('task', task.TASK_NO)
+          //console.log('task', task.TASK_NO)
           const abbr = task?.TASK_NO?.maiN_ABBR;
           if (abbr) abbrCount.set(abbr, (abbrCount.get(abbr) || 0) + 1);
 
@@ -374,7 +390,7 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
           .filter((task: any) => abbrCount.get(task?.TASK_NO?.maiN_ABBR) === 1)
           .map((task: any) => ({
             ...task,
-            subtask: filterUniqueTasks(task.subtask || []), // Recursive filtering
+            subtask: filterUniqueTasks(task.subtask), // Recursive filtering
           }));
       };
 
@@ -385,23 +401,77 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
     if (this.taskData?.mkey && !this.isCleared) {
       const status = this.taskData.approvalS_ABBR_LIST?.[0]?.status;
 
+      //console.log('this.taskData.approvalS_ABBR_LIST: ', this.taskData.approvalS_ABBR_LIST)
+
       if (status === 'Initiated' || status === 'Ready to Initiate') {
         // console.log('Combining data', this.new_list_of_selectedSeqArr);
 
         // Merge, deduplicate, and filter for unique tasks
         selectedTasksArray = [...this.selectedTasks, ...this.new_list_of_selectedSeqArr];
-        const uniqueTasksArray = getUniqueTasks(selectedTasksArray);
 
+        console.log('selectedTasksArray first', selectedTasksArray)
+
+        for (let i = 0; i < selectedTasksArray.length; i++) {
+          const task = selectedTasksArray[i];
+
+          // Check if task.TASK_NO.TASK_NO exactly matches taskId
+          if (task.TASK_NO.TASK_NO === taskId) {
+            //task.checked = true; // Set checked to true if taskId matches
+            console.log('Yes, task is checked!', selectedTask);
+            updateTaskSelection(task, true);
+            break; // Exit the loop once the task is found and processed
+          } else {
+            //task.checked = false; // Set unchecked for all other tasks
+            console.log('No, task is unchecked!', selectedTask);
+            updateTaskSelection(selectedTask, false);
+          }
+        }
+
+        //console.log('selectedTasksArray: ',selectedTasksArray);
+        const uniqueTasksArray = getUniqueTasks(selectedTasksArray);
+        //console.log('uniqueTasksArray: ',uniqueTasksArray);
+
+        console.log('new_list_of_selectedSeqArr: ', this.new_list_of_selectedSeqArr);
+        console.log('uniqueTasksArray: ', uniqueTasksArray);
+        console.log('selectedTasks: ', this.selectedTasks)
+
+        
         selectedTasksArray = [...uniqueTasksArray, ...this.new_list_of_selectedSeqArr];
+
+        console.log('final selectedTasksArray: ', selectedTasksArray);
       } else {
         // Only existing tasks
         selectedTasksArray = [...this.selectedTasks];
       }
     } else {
       selectedTasksArray = [...this.selectedTasks];
+      if (selectedTasksArray.length > 0) {
+        for (let i = 0; i < selectedTasksArray.length; i++) {
+          const task = selectedTasksArray[i];
+          // console.log(task)
+          // console.log('task.TASK_NO.TASK_NO: ', task);
+          // console.log('taskId : ', taskId);
+          // console.log('this.selectedTasks ', this.selectedTasks);
+          if (task.TASK_NO.TASK_NO === taskId) {
+            // selectedTasksArray = []
+            //console.log('selectedTasksArray if: ', selectedTasksArray);
+            updateTaskSelection(task, true); // Use current task
+          } else if (selectedTasksArray.length === 0 || task.TASK_NO.TASK_NO !== taskId) {
+            // selectedTasksArray = []
+            //console.log('selectedTasksArray else: ', selectedTasksArray);
+            updateTaskSelection(selectedTask, false); // Use current task
+          }
+        }
+      } else if (selectedTasksArray.length === 0) {
+        console.log('coming to 0 selectedTaskArr: ', selectedTasksArray)
+        updateTaskSelection(selectedTask, false); // Use current task
+      }
     }
 
-
+    // if(selectedTasksArray.length === 0){
+    //     console.log('coming to 0 selectedTaskArr: ', selectedTasksArray)        
+    //     updateTaskSelection(selectedTask, false); // Use current task
+    // }
 
     // Function to check if task exists as a subtask
     const hasMatchingSubtask = (task: any, tasks: any[]): boolean => {
@@ -479,6 +549,9 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
     // Update the uniqueSubTask property
     this.uniqueSubTask = uniqueTasks;
     // this.updateSelectAllState();
+
+
+
   }
 
 
@@ -512,21 +585,18 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
       return false;
     }
 
-    //console.log('approvalS_ABBR_LIST: ',this.taskData?.approvalS_ABBR_LIST[0]);
+    // console.log('approvalS_ABBR_LIST: ',this.taskData?.approvalS_ABBR_LIST[0]);
     // console.log('task: ', task)
 
     if (this.taskData?.approvalS_ABBR_LIST[0].status === 'Initiated' || this.taskData?.approvalS_ABBR_LIST[0].status === 'Ready to Initiate') {
+      
       const savedTaskNos = this.taskData?.approvalS_ABBR_LIST.map((item: any) => item.approvaL_ABBRIVATION.trim());
       // console.log("Saved Task Numbers (Trimmed):", savedTaskNos);
-
       if (savedTaskNos.includes(task.TASK_NO?.maiN_ABBR.trim())) {
-        // console.log("Disabling Task:", task.TASK_NO?.TASK_NO.trim());
         return true;
       }
-
       return false;
     }
-
     return false;
   }
 
@@ -707,7 +777,7 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
       next: (addData: any) => {
         console.log('Data added successfully', addData)
 
-        if(addData.status === 'Error'){
+        if (addData.status === 'Error') {
           this.tostar.error('This project is already exist for same property and building');
           this.lodingTrue = false;
 
@@ -718,12 +788,12 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
 
         this.lodingTrue = false;
 
-      }, error: (error: ErrorHandler|any) => {
+      }, error: (error: ErrorHandler | any) => {
 
         this.lodingTrue = false;
         const errorData = error.error.errors;
         const errorMessage = Object.values(errorData).flat().join(' , ');
-        this.tostar.error(errorMessage, 'Error Occured in server') 
+        this.tostar.error(errorMessage, 'Error Occured in server')
 
       }
     });
@@ -741,11 +811,11 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
     // console.log('Project', this.taskData.property)
 
     const PROJECT = this.projectDefForm.get('property')?.value;
-   // console.log('PROJECT.MASTER_MKEY', PROJECT.MASTER_MKEY)
+    // console.log('PROJECT.MASTER_MKEY', PROJECT.MASTER_MKEY)
     const matchedProject = this.project.find((project: any) => project.TYPE_DESC === PROJECT);
 
     const SUB_PROJECT = this.projectDefForm.get('subProject')?.value;
-  //  console.log(SUB_PROJECT)
+    //  console.log(SUB_PROJECT)
 
     const SELECTED_PROJ = this.sub_proj.find((sub_proj: any) => sub_proj.TYPE_DESC === SUB_PROJECT);
 
@@ -778,7 +848,7 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
     this.apiService.putProjectDefination(updateProjectDefination, headerMkey, this.recursiveLogginUser).subscribe({
       next: (addData: any) => {
         console.log('Data added successfully', addData)
-        if(addData.status === 'Error'){
+        if (addData.status === 'Error') {
           this.tostar.error('Unable to update data');
           return;
         }
@@ -796,7 +866,7 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
 
 
   initiateToApprovalInitiation(approvalKey: any) {
-    console.log('approvalKey', approvalKey)
+    // console.log('approvalKey', approvalKey)
     this.recursiveLogginUser = this.apiService.getRecursiveUser();
     const project_mkey = this.taskData.mkey
     const approval_mkey = this.taskData.approvalS_ABBR_LIST[0].approvaL_MKEY
@@ -1205,7 +1275,7 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
       this.apiService.projectDefinationOption(USER_CRED[0]?.MKEY, token, buildingCla, buildingStd, statutoryAuth).subscribe({
         next: (gerAbbrRelData) => {
           this.getTree(gerAbbrRelData);
-          // console.log('gerAbbrRelData', gerAbbrRelData)
+           console.log('gerAbbrRelData', gerAbbrRelData)
           this.isLoading = false;
         },
         error: (error) => {
@@ -1433,44 +1503,50 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
     );
   }
 
-  convertTaskNo(tasks: any[]): any[] {
-    const parentTaskCount = new Map<number, number>();
-    const taskNumbers = new Map<number, string>();
+  // convertTaskNo(tasks: any[], selectedTask?:any[]): any[] {
+    
+  //   const parentTaskCount = new Map<number, number>();
+  //   const taskNumbers = new Map<number, string>();
 
-    // Step 1: Organize tasks by parent ID
-    const taskMap = new Map<number, any[]>();
-    tasks.forEach((task) => {
-      if (!taskMap.has(task.SUBTASK_PARENT_ID)) {
-        taskMap.set(task.SUBTASK_PARENT_ID, []);
-      }
-      taskMap.get(task.SUBTASK_PARENT_ID)?.push(task);
+  //   // Step 1: Organize tasks by parent ID
+  //   const taskMap = new Map<number, any[]>();
+  //   tasks.forEach((task) => {
+  //     if (!taskMap.has(task.SUBTASK_PARENT_ID)) {
+  //       taskMap.set(task.SUBTASK_PARENT_ID, []);
+  //     }
+  //     taskMap.get(task.SUBTASK_PARENT_ID)?.push(task);
+  //     //console.log('Check Map',taskMap)
+  //   });
 
-    });
+  //   let task_list = this.taskData.approvalS_ABBR_LIST;
+  //   // Step 2: Recursive function to assign TASK_NO, In this it will assign the 
+  //   function assignTaskNumbers(parentId: number, prefix = "") {
 
-    // Step 2: Recursive function to assign TASK_NO, In this it will assign the 
-    function assignTaskNumbers(parentId: number, prefix = "") {
-      if (!taskMap.has(parentId)) return;
+  //     if (!taskMap.has(parentId)) return;
 
-      let count = 1;
-      for (const task of taskMap.get(parentId)!) {
-        // console.log('task: ', task)        
-        const taskNo = prefix ? `${prefix}.${count}` : `${count}`;
-        task.TASK_NO = taskNo;
-        taskNumbers.set(task.HEADER_MKEY, taskNo);
-        parentTaskCount.set(task.HEADER_MKEY, 0);
-        count++;
+  //     let count = 1;
+  //     for (const task of taskMap.get(parentId)!) {
+  //                 console.log('task_list: ', task_list)
+  //       const taskNo = prefix ? `${prefix}.${count}` : `${count}`;
+  //       task.TASK_NO = taskNo;
+  //        console.log('taskNo: ', taskNo)
+  //       taskNumbers.set(task.HEADER_MKEY, taskNo);
+  //       parentTaskCount.set(task.HEADER_MKEY, 0);
+  //       count++;
 
-        // Recursively process subtasks
-        assignTaskNumbers(task.HEADER_MKEY, taskNo);
-      }
-    }
+  //       // Recursively process subtasks
+  //       assignTaskNumbers(task.HEADER_MKEY, taskNo);
+  //     }
+      
+  //   }
 
-    // Step 3: Assign numbers starting from top-level parents (SUBTASK_PARENT_ID = 0)
-    assignTaskNumbers(0);
 
-    // console.log("Check the task from convertTaskNo", tasks);
-    return tasks;
-  }
+  //   // Step 3: Assign numbers starting from top-level parents (SUBTASK_PARENT_ID = 0)
+  //   assignTaskNumbers(0);
+
+  //   // console.log("Check the task from convertTaskNo", tasks);
+  //   return tasks;
+  // }
 
 
   // convertTaskNo(tasks: any[]): any[] {
@@ -1555,7 +1631,77 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
   // }
 
 
+convertTaskNo(tasks: any[], selectedTask?:any[]): any[] {
+    
+    const parentTaskCount = new Map<number, number>();
+    const taskNumbers = new Map<number, string>();
 
+    // Step 1: Organize tasks by parent ID
+    const taskMap = new Map<number, any[]>();
+    tasks.forEach((task) => {
+      if (!taskMap.has(task.SUBTASK_PARENT_ID)) {
+        taskMap.set(task.SUBTASK_PARENT_ID, []);
+      }
+      taskMap.get(task.SUBTASK_PARENT_ID)?.push(task);
+      //console.log('Check Map',taskMap)
+    });
+
+    let task_list = this.taskData.approvalS_ABBR_LIST;
+    // Step 2: Recursive function to assign TASK_NO, In this it will assign the 
+    // function assignTaskNumbers(parentId: number, prefix = "") {
+
+    //   if (!taskMap.has(parentId)) return;
+
+    //   let count = 1;
+    //   for (const task of taskMap.get(parentId)!) {
+    //               console.log('task_list: ', task_list)
+    //                console.log('task: ', task)
+    //     const taskNo = prefix ? `${prefix}.${count}` : `${count}`;
+    //     task.TASK_NO = taskNo;
+        
+    //     taskNumbers.set(task.HEADER_MKEY, taskNo);
+    //     parentTaskCount.set(task.HEADER_MKEY, 0);
+    //     count++;
+
+    //     // Recursively process subtasks
+    //     assignTaskNumbers(task.HEADER_MKEY, taskNo);
+    //   }
+      
+    // }
+
+      function assignTaskNumbers(parentId: number, prefix = "") {
+  if (!taskMap.has(parentId)) return;
+
+  let count = 1;
+  for (const task of taskMap.get(parentId)!) {
+    const taskNo = prefix ? `${prefix}.${count}` : `${count}`;
+    task.TASK_NO = taskNo;
+
+    taskNumbers.set(task.HEADER_MKEY, taskNo);
+    parentTaskCount.set(task.HEADER_MKEY, 0);
+
+    console.log('task_list: ', task_list)
+    // ✅ Match approvaL_MKEY from task_list with SUBTASK_PARENT_ID and update task.TASK_NO
+    const matchingAbbrTask = task_list.find((t:any) => t.approvaL_MKEY === task.SUBTASK_PARENT_ID);
+    console.log('Check matchingAbbrTask: ', matchingAbbrTask)
+    if (matchingAbbrTask && matchingAbbrTask.tasK_NO) {
+      console.log(`Replacing TASK_NO for HEADER_MKEY ${task.HEADER_MKEY} with ${matchingAbbrTask.tasK_NO}`);
+      task.TASK_NO = `${matchingAbbrTask.tasK_NO}.${count}`;
+    }
+
+    count++;
+    assignTaskNumbers(task.HEADER_MKEY, task.TASK_NO);
+  }
+}
+
+
+
+    // Step 3: Assign numbers starting from top-level parents (SUBTASK_PARENT_ID = 0)
+    assignTaskNumbers(0);
+
+    // console.log("Check the task from convertTaskNo", tasks);
+    return tasks;
+  }
 
 
 
@@ -1582,7 +1728,7 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
       // Then fetch job role data
       jobRole_new = await this.apiService.getJobRoleDP(this.recursiveLogginUser).toPromise();
 
-      // console.log('jobRole_new: ', jobRole_new)
+      //console.log('jobRole_new tree: ', jobRole_new)
     } catch (error) {
       console.error('Error fetching data:', error);
     }
@@ -1607,10 +1753,17 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
       .filter((item: any) => item.tasK_NO !== null)
       .map((item: any) => {
 
-        // console.log('Item', item)
+         //console.log('Item', item.JOB_ROLE)
+         //console.log('jobRoleList: ', jobRoleList)
 
         const jobRole = jobRoleList.find((role: any) => role.mkey === parseInt(item.JOB_ROLE));
         const departmentRole = departmentList.find((department: any) => department.mkey === parseInt(item.AUTHORITY_DEPARTMENT))
+
+        //console.log('jobRole: ', jobRole)
+
+        if(!jobRole || !departmentRole){
+          this.tostar.error('Unable to find job role or department ID')
+        }
         const assignedEmployee = this.employees.find(employee => employee.MKEY === parseInt(item.RESPOSIBLE_EMP_MKEY));
 
         return {
@@ -1626,7 +1779,7 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
           department_mkey: departmentRole.mkey,
           approvaL_MKEY: item.HEADER_MKEY,
           // tasK_STATUS:item.tasK_STATUS,
-          task_MKEY:item.task_MKEY,
+          task_MKEY: item.task_MKEY,
           // resposiblE_EMP: assignedEmployee.Assign_to,
           resposiblE_EMP_MKEY: item.RESPOSIBLE_EMP_MKEY
         }
@@ -1771,7 +1924,7 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
     // console.log('filteredTasks', filteredTasks)
 
     // this.selectedSeqArr = [...this.subTasks]
-    
+
 
   }
 
@@ -2041,7 +2194,7 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
 
   async getTree_new() {
 
-    this.convertTaskNo(this.taskData.approvalS_ABBR_LIST);
+    this.convertTaskNo(this.taskData.approvalS_ABBR_LIST, this.taskData.approvalS_ABBR_LIST);
 
 
     let department_new: any;
@@ -2056,20 +2209,23 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
     }
 
     const jobRoleList = jobRole_new;
+    //console.log('jobRoleList: ', jobRoleList)
     const departmentList = department_new
 
-   // console.log('Item: ',  this.taskData.approvalS_ABBR_LIST);
+    // console.log('Item: ',  this.taskData.approvalS_ABBR_LIST);
 
-   
+
     const optionListArr = this.taskData.approvalS_ABBR_LIST
       .filter((item: any) => item.tasK_NO !== null)
       .map((item: any) => {
+
 
         // console.log("item.resposiblE_EMP_MKEY:", item.resposiblE_EMP_MKEY);
         const jobRole = jobRoleList.find((role: any) => role.mkey === parseInt(item.joB_ROLE));
         const departmentRole = departmentList.find((department: any) => department.mkey === parseInt(item.department));
 
-       // console.log('Item',item)
+        // console.log('jobRole: ', jobRole)
+        // console.log('Item',item)
 
         return {
           TASK_NO: item.tasK_NO,
@@ -2086,8 +2242,8 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
           end_date: item.tentativE_END_DATE,
           approvaL_MKEY: item.approvaL_MKEY,
           status: item.status,
-          tasK_STATUS:item.tasK_STATUS,
-          task_MKEY:item.mkey,
+          tasK_STATUS: item.tasK_STATUS,
+          task_MKEY: item.mkey,
           resposiblE_EMP: item.resposiblE_EMP_NAME,
           resposiblE_EMP_MKEY: item.resposiblE_EMP_MKEY
         }
@@ -2095,10 +2251,7 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
 
     //  console.log('Updated optionListArr with typE_DESC getTree_new:', optionListArr);
 
-
-
     this.loading = true;
-
 
     const same_data = optionListArr;
     const noSubParentTasks: any = []

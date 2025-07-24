@@ -416,9 +416,9 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
     };
 
 
-    console.log('this.breakToLinear(this.subTasks)', this.breakToLinear(this.subTasks));
+   // console.log('this.breakToLinear(this.subTasks)', this.breakToLinear(this.subTasks));
 
-    console.log('this.taskData.SUBTASK_LIST', this.taskData.SUBTASK_LIST);
+   // console.log('this.taskData.SUBTASK_LIST', this.taskData.SUBTASK_LIST);
 
 
     // console.log('this.breakToLinear(this.taskData.SUBTASK_LIST)', this.breakToLinear(this.taskData.SUBTASK_LIST));
@@ -431,7 +431,7 @@ export class ApprovalTaskInitationComponent implements OnInit, OnDestroy {
         console.log(response.message)
         if (response.status === 'Error') {
           this.tostar.error(response.message)
-          return
+          return;
         }
         this.router.navigate(['/task/task-management']);
 

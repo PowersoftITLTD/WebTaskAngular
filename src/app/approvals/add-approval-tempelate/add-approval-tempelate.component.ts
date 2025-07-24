@@ -430,6 +430,7 @@ export class AddApprovalTempelateComponent implements OnInit {
       try {
         const isAbbrUsed = await this.apiService.getAbbrivationCheck(abbrivation, this.recursiveLogginUser).toPromise();
         if (isAbbrUsed) {
+          console.log('Check abbrivarion: ', isAbbrUsed);
           this.abbrivationError = 'Abbreviation name already been taken.';
           addFieldError('Abbreviation name already exist');
         }
