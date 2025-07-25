@@ -37,6 +37,7 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
   flatList: any
   subtask_len: any = [];
   real_len: any = [];
+  updatedList:any = [];
 
   formVisibleMap: boolean[] = [];
 
@@ -1338,7 +1339,7 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
           if (!this.isCleared) { // Only call getTree if not cleared
             this.projDefinationTable = gerAbbrRelData
 
-            // console.log('selectedOptionList', gerAbbrRelData)
+            console.log('selectedOptionList', gerAbbrRelData)
             this.getTree(gerAbbrRelData);
           }
 
@@ -1503,7 +1504,7 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
     );
   }
 
-  // convertTaskNo(tasks: any[], selectedTask?:any[]): any[] {
+  // convertTaskNo(tasks: any[]): any[] {
 
   //   const parentTaskCount = new Map<number, number>();
   //   const taskNumbers = new Map<number, string>();
@@ -1518,27 +1519,23 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
   //     //console.log('Check Map',taskMap)
   //   });
 
-  //   let task_list = this.taskData.approvalS_ABBR_LIST;
+  //   //let task_list = this.taskData.approvalS_ABBR_LIST;
   //   // Step 2: Recursive function to assign TASK_NO, In this it will assign the 
-  //   function assignTaskNumbers(parentId: number, prefix = "") {
+  //  function assignTaskNumbers(parentId: number, prefix = "") {
+  //       if (!taskMap.has(parentId)) return;
 
-  //     if (!taskMap.has(parentId)) return;
+  //       let count = 1;
+  //       for (const task of taskMap.get(parentId)!) {
+  //         const taskNo = prefix ? `${prefix}.${count}` : `${count}`;
+  //         task.TASK_NO = taskNo;
 
-  //     let count = 1;
-  //     for (const task of taskMap.get(parentId)!) {
-  //                 console.log('task_list: ', task_list)
-  //       const taskNo = prefix ? `${prefix}.${count}` : `${count}`;
-  //       task.TASK_NO = taskNo;
-  //        console.log('taskNo: ', taskNo)
-  //       taskNumbers.set(task.HEADER_MKEY, taskNo);
-  //       parentTaskCount.set(task.HEADER_MKEY, 0);
-  //       count++;
+  //         taskNumbers.set(task.HEADER_MKEY, taskNo);
+  //         parentTaskCount.set(task.HEADER_MKEY, 0);
+  //         count++;
 
-  //       // Recursively process subtasks
-  //       assignTaskNumbers(task.HEADER_MKEY, taskNo);
+  //         assignTaskNumbers(task.HEADER_MKEY, taskNo);
+  //       }
   //     }
-
-  //   }
 
 
   //   // Step 3: Assign numbers starting from top-level parents (SUBTASK_PARENT_ID = 0)
@@ -1549,7 +1546,71 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
   // }
 
 
+  // convertTaskNo(tasks: any[], selectedTask?: any[]): any[] {
+  //   const parentTaskCount = new Map<number, number>();
+  //   const taskNumbers = new Map<number, string>();
+
+  //   const taskMap = new Map<number, any[]>();
+  //   tasks.forEach((task) => {
+  //     if (!taskMap.has(task.SUBTASK_PARENT_ID)) {
+  //       taskMap.set(task.SUBTASK_PARENT_ID, []);
+  //     }
+  //     taskMap.get(task.SUBTASK_PARENT_ID)?.push(task);
+  //   });
+
+  //   const task_list = this.taskData?.approvalS_ABBR_LIST;
+
+  //   if (task_list && Array.isArray(task_list)) {
+  //     function assignTaskNumbers_taskList(parentId: number, prefix = "") {
+  //       if (!taskMap.has(parentId)) return;
+
+  //       let count = 1;
+  //       for (const task of taskMap.get(parentId)!) {
+  //         let taskNo = prefix ? `${prefix}.${count}` : `${count}`;
+  //         console.log('task.TASK_NO outside: ', taskNo)
+
+  //         const matchingAbbrTask = task_list.find((t: any) => t.approvaL_MKEY === task.HEADER_MKEY);
+  //         if (matchingAbbrTask && matchingAbbrTask.tasK_NO) {
+  //           taskNo = matchingAbbrTask.tasK_NO;
+  //           console.log('task.TASK_NO inside: ', taskNo)
+  //         }
+
+  //         task.TASK_NO = taskNo;
+  //         taskNumbers.set(task.HEADER_MKEY, taskNo);
+  //         parentTaskCount.set(task.HEADER_MKEY, 0);
+  //         count++;
+
+  //         assignTaskNumbers_taskList(task.HEADER_MKEY, task.TASK_NO);
+  //       }
+  //     }
+
+  //     assignTaskNumbers_taskList(0);
+
+  //   } else {
+  //     function assignTaskNumbers(parentId: number, prefix = "") {
+  //       if (!taskMap.has(parentId)) return;
+
+  //       let count = 1;
+  //       for (const task of taskMap.get(parentId)!) {
+  //         const taskNo = prefix ? `${prefix}.${count}` : `${count}`;
+  //         task.TASK_NO = taskNo;
+  //         taskNumbers.set(task.HEADER_MKEY, taskNo);
+  //         parentTaskCount.set(task.HEADER_MKEY, 0);
+  //         count++;
+
+  //         assignTaskNumbers(task.HEADER_MKEY, taskNo);
+  //       }
+  //     }
+
+  //     assignTaskNumbers(0);
+  //   }
+
+  //   return tasks;
+  // }
+
+
   convertTaskNo(tasks: any[], selectedTask?: any[]): any[] {
+    console.log('Check Task: ', tasks);
     const parentTaskCount = new Map<number, number>();
     const taskNumbers = new Map<number, string>();
 
@@ -1563,6 +1624,8 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
 
     const task_list = this.taskData?.approvalS_ABBR_LIST;
 
+
+
     if (task_list && Array.isArray(task_list)) {
       function assignTaskNumbers_taskList(parentId: number, prefix = "") {
         if (!taskMap.has(parentId)) return;
@@ -1571,10 +1634,25 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
         for (const task of taskMap.get(parentId)!) {
           let taskNo = prefix ? `${prefix}.${count}` : `${count}`;
 
-          const matchingAbbrTask = task_list.find((t: any) => t.approvaL_MKEY === task.HEADER_MKEY);
-          if (matchingAbbrTask && matchingAbbrTask.tasK_NO) {
-            taskNo = matchingAbbrTask.tasK_NO;
-          }
+          // const matchingAbbrTask = task_list.find((t: any) => t.approvaL_MKEY === task.HEADER_MKEY);
+          // if (matchingAbbrTask && matchingAbbrTask.tasK_NO) {
+          //   taskNo = matchingAbbrTask.tasK_NO;
+          // }
+
+          task_list.forEach((t: any) => {
+              if (t.approvaL_MKEY === task.HEADER_MKEY) {
+                console.log('approvaL_MKEY: ', t.approvaL_ABBRIVATION);
+                console.log('HEADER_MKEY: ', task.MAIN_ABBR);
+
+                console.log('t.task_NO: ',taskNo);
+                console.log('task.tasK_NO: ',task.tasK_NO);
+                task.tasK_NO = taskNo; // or whatever new task number you want to assign
+              }
+            });
+          console.log('task_list res', task_list);
+          convertUpdatedTask(task_list , tasks);
+                  
+          //console.log('matchingAbbrTask: ', matchingAbbrTask);
 
           task.TASK_NO = taskNo;
           taskNumbers.set(task.HEADER_MKEY, taskNo);
@@ -1582,10 +1660,18 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
           count++;
 
           assignTaskNumbers_taskList(task.HEADER_MKEY, task.TASK_NO);
+          
         }
+        
       }
 
+      
+
       assignTaskNumbers_taskList(0);
+      this.updatedList = convertUpdatedTask(task_list, tasks);
+
+      console.log('Item appr2 1: ', this.updatedList)
+
 
     } else {
       function assignTaskNumbers(parentId: number, prefix = "") {
@@ -1595,7 +1681,6 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
         for (const task of taskMap.get(parentId)!) {
           const taskNo = prefix ? `${prefix}.${count}` : `${count}`;
           task.TASK_NO = taskNo;
-
           taskNumbers.set(task.HEADER_MKEY, taskNo);
           parentTaskCount.set(task.HEADER_MKEY, 0);
           count++;
@@ -1611,7 +1696,9 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
   }
 
 
+  convertUpdatedTask(Header:any, task_list:any, taskNo:number){
 
+  }
 
 
   removeDuplicates(array: any[]): any[] {
@@ -2102,9 +2189,11 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
 
   async getTree_new() {
 
-    this.convertTaskNo(this.taskData.approvalS_ABBR_LIST, this.taskData.approvalS_ABBR_LIST);
 
 
+    this.convertTaskNo(this.taskData.approvalS_ABBR_LIST);
+
+    console.log('Updated task_list: ', this.updatedList);
     let department_new: any;
     let jobRole_new: any;
 
@@ -2120,8 +2209,8 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
     //console.log('jobRoleList: ', jobRoleList)
     const departmentList = department_new
 
-    // console.log('Item: ',  this.taskData.approvalS_ABBR_LIST);
-
+    console.log('Item appr1: ',  this.taskData.approvalS_ABBR_LIST);
+    console.log('Item appr2: ',  this.updatedList);
 
     const optionListArr = this.taskData.approvalS_ABBR_LIST
       .filter((item: any) => item.tasK_NO !== null)
@@ -2179,6 +2268,8 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
 
     this.new_list_of_selectedSeqArr = this.subTasks
     // this.selectedSeqArr = [...this.optionSubTASk]
+
+    console.log()
 
     this.noParentTree_new(noSubParentTasks)
   }
@@ -2241,6 +2332,8 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
     this.new_list_of_selectedSeqArr = this.selectedSeqArr
     this.loading = false;
 
+    console.log('new_list_of_selectedSeqArr: ', this.new_list_of_selectedSeqArr)
+
 
   }
 
@@ -2255,3 +2348,36 @@ export class ProjectDefinationComponent implements OnInit, OnDestroy {
     sessionStorage.removeItem('task');
   }
 }
+function convertUpdatedTask(task_list: any[], task: any[]) {
+  console.log('new fun task_list', task_list);
+  console.log('new fun task', task);
+
+   console.log('Original task_list:', task_list);
+  console.log('Reference task:', task);
+
+  // Create a map of HEADER_MKEY to corresponding task object from `task`
+  const taskMap = new Map<string | number, any>();
+  for (const t of task) {
+    taskMap.set(t.HEADER_MKEY, t);
+  }
+
+  // Update each item in task_list using the map
+  const updatedTaskList = task_list.map((tlItem:any) => {
+    const matchingTask = taskMap.get(tlItem.approvaL_MKEY);
+    if (matchingTask) {
+      // Replace tasK_NO
+      return {
+        ...tlItem,
+        tasK_NO: matchingTask.TASK_NO || matchingTask.tasK_NO // support fallback
+      };
+    }
+    return tlItem; // If no match found, return original
+  });
+return updatedTaskList;
+  
+  // console.log('Updated task_list:', updatedTaskList);
+
+}
+
+
+
